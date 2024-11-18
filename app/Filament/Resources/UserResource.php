@@ -19,8 +19,9 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationLabel = 'Usuarios';
     protected static ?string $navigationGroup = 'Administrar';
+    protected static ?string $navigationLabel = 'Usuarios';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -44,6 +45,7 @@ class UserResource extends Resource
                                     ->helperText('Ingresa una contraseña')
                                     ->required()
                                     ->password()
+                                    ->disabledOn('edit')
                             ])->columns(1)
                     ]),
                 Forms\Components\Group::make()
@@ -105,7 +107,6 @@ class UserResource extends Resource
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
                 ])
-
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
