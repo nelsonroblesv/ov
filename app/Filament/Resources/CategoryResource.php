@@ -50,7 +50,8 @@ class CategoryResource extends Resource
                                     ->disabled()
                                     ->dehydrated()
                                     ->required()
-                                    ->unique(Category::class, 'slug', ignoreRecord:true),
+                                    ->unique(Category::class, 'slug', ignoreRecord:true)
+                                    ->helperText('Este campo no es editable.'),
                                 Forms\Components\MarkdownEditor::make('description')
                                     ->columnSpan('full')
                                     ->label('Descripción')
@@ -75,7 +76,10 @@ class CategoryResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('url')
                                     ->label('Ingresa una URL')
-                                    ->url(),
+                                    ->url()
+                                    ->suffixIcon('heroicon-m-globe-alt'),
+                                    //->prefix('https://')
+                                    //->suffix('.com'),
                                 Forms\Components\ColorPicker::make('primary_color')
                                     ->label('Selecciona un color'),
                                 Forms\Components\Toggle::make('is_active')
@@ -105,7 +109,8 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->sortable()
-                    ->label('Slug'),
+                    ->label('Slug')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Logo'),
                 Tables\Columns\ColorColumn::make('primary_color')

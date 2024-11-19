@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\UserTypeEnum;
+use App\Enums\UserRoleEnum;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
@@ -40,11 +40,19 @@ class UserResource extends Resource
                                     ->helperText('Escribe tu correo')
                                     ->required()
                                     ->email(),
+                                Forms\Components\TextInput::make('phone')
+                                    ->label('Teléfono')
+                                    ->helperText('Ingresa un telefono')
+                                    ->dehydrated(fn($state) => filled($state))
+                                    ->required()
+                                    ->tel(),
                                 Forms\Components\TextInput::make('password')
                                     ->label('Contraseña')
                                     ->helperText('Ingresa una contraseña')
-                                    ->required()
                                     ->password()
+                                    ->revealable()
+                                    ->dehydrated(fn($state) => filled($state))
+                                    ->required(fn(string $context): bool => $context === 'create')
                                     ->disabledOn('edit')
                             ])->columns(1)
                     ]),
@@ -52,13 +60,13 @@ class UserResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Acceso & Control')
                             ->schema([
-                                Forms\Components\Select::make('type')
+                                Forms\Components\Select::make('role')
                                     ->label('Tipo de usuario')
                                     ->required()
                                     ->options([
-                                        'administrator' => UserTypeEnum::ADMINISTATOR->value,
-                                        'manager' => UserTypeEnum::MANAGER->value,
-                                        'seller' => UserTypeEnum::SELLER->value,
+                                        'administrator' => UserRoleEnum::ADMINISTATOR->value,
+                                        'manager' => UserRoleEnum::MANAGER->value,
+                                        'seller' => UserRoleEnum::SELLER->value,
                                     ]),
                                 Forms\Components\Toggle::make('is_active')
                                     ->label('¿Usuario activo?')
@@ -92,11 +100,15 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Correo'),
-                Tables\Columns\TextColumn::make('type')
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Teléfono'),
+                Tables\Columns\TextColumn::make('role')
                     ->label('Tipo'),
                 Tables\Columns\IconColumn::make('is_active')
-                    ->boolean()
-                    ->label('¿Activo?'),
+                    ->label('Activo')
+                    ->boolean(),
             ])
             ->filters([
                 //
