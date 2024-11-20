@@ -27,7 +27,12 @@ class DashboardPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
-            ->brandName('Avyna')
+            //->registration()
+            //->passwordReset()
+            //->emailVerification()
+            //->profile()
+            //->brandName('Avyna')
+            ->brandLogo(asset('images/logo_ovalle.png'))
             ->colors([
                 'primary' => Color::Emerald,
             ])

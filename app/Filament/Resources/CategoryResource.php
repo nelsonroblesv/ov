@@ -6,8 +6,10 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Form;
 use Filament\Forms\FormsComponent;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
@@ -16,12 +18,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use PhpParser\Node\Expr\Cast\String_;
+use Filament\Forms\Components\FileUpload;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Categorías';
     protected static ?int $navigationSort = 2;
@@ -32,7 +35,8 @@ class CategoryResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Básicos')
+                        Forms\Components\Section::make('Información General')
+                            ->icon('heroicon-o-information-circle')
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->required()
@@ -40,18 +44,22 @@ class CategoryResource extends Resource
                                     ->helperText('Ingresa un nombre para la Categoría')
                                     ->disabledOn('edit')
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(function(string $operation, $state, Forms\Set $set){
-                                        if($operation !== 'create'){
+                                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                        if ($operation !== 'create') {
                                             return;
                                         }
                                         $set('slug', Str::slug($state));
-                                    }),
+                                    })
+                                    ->suffixIcon('heroicon-m-rectangle-stack'),
+
                                 Forms\Components\TextInput::make('slug')
                                     ->disabled()
                                     ->dehydrated()
                                     ->required()
-                                    ->unique(Category::class, 'slug', ignoreRecord:true)
-                                    ->helperText('Este campo no es editable.'),
+                                    ->unique(Category::class, 'slug', ignoreRecord: true)
+                                    ->helperText('Este campo no es editable.')
+                                    ->suffixIcon('heroicon-m-at-symbol'),
+
                                 Forms\Components\MarkdownEditor::make('description')
                                     ->columnSpan('full')
                                     ->label('Descripción')
@@ -67,34 +75,39 @@ class CategoryResource extends Resource
                                         'redo',
                                         'strike',
                                         'undo',
-                                    ])
+                                    ]),
                             ])->columns(1)
                     ]),
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make('Identificadores')
+                            ->icon('heroicon-o-key')
                             ->schema([
                                 Forms\Components\TextInput::make('url')
                                     ->label('Ingresa una URL')
                                     ->url()
                                     ->suffixIcon('heroicon-m-globe-alt'),
-                                    //->prefix('https://')
-                                    //->suffix('.com'),
-                                Forms\Components\ColorPicker::make('primary_color')
-                                    ->label('Selecciona un color'),
-                                Forms\Components\Toggle::make('is_active')
-                                    ->label('¿Categoría Activa?')
-                                    ->onIcon('heroicon-m-user-plus')
-                                    ->offIcon('heroicon-m-user-minus')
-                                    ->onColor('success')
-                                    ->offColor('danger'),
-                                Forms\Components\FileUpload::make('image')
+                                    Forms\Components\ColorPicker::make('primary_color')
+                                    ->label('Selecciona un color')
+                                    ->required(),
+                                    Forms\Components\FileUpload::make('thumbail')
                                     ->label('Imagen de la Categoría')
                                     ->image()
                                     ->imageEditor()
-                            ])
-                    ])
+                                    ->directory('category-images')
+                            ]),
 
+                        Forms\Components\Section::make('Control')
+                            ->icon('heroicon-o-user-circle')
+                            ->schema([
+                                Forms\Components\Toggle::make('is_active')
+                                ->label('¿Categoría Activa?')
+                                ->onIcon('heroicon-m-check')
+                                ->offIcon('heroicon-m-x-mark')
+                                ->onColor('success')
+                                ->offColor('danger')
+                            ])->columns(1),
+                    ])
             ]);
     }
 
@@ -118,12 +131,10 @@ class CategoryResource extends Resource
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
                     ->label('¿Activo?'),
-                    Tables\Columns\TextColumn::make('url')
+                Tables\Columns\TextColumn::make('url')
                     ->searchable()
                     ->sortable()
-                    ->label('URL'),
-                /*Tables\Columns\TextColumn::make('description')
-                    ->label('Descripción'),*/
+                    ->label('URL')
             ])
             ->filters([
                 //

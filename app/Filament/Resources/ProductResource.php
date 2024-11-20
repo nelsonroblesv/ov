@@ -7,6 +7,7 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
@@ -20,7 +21,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Productos';
     protected static ?int $navigationSort = 3;
@@ -29,75 +30,85 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Nombre')
-                    ->helperText('Ingresa el nombre del Producto')
-                    ->disabledOn('edit')
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function(string $operation, $state, Forms\Set $set){
-                        if($operation !== 'create'){
-                            return;
-                        }
-                        $set('slug', Str::slug($state));
-                    }),
-                Forms\Components\TextInput::make('slug')
-                    ->disabled()
-                    ->dehydrated()
-                    ->required()
-                    ->unique(Product::class, 'slug', ignoreRecord:true)
-                    ->helperText('Este campo no es editable.'),
-                    Forms\Components\MarkdownEditor::make('description')
-                    ->columnSpan('full')
-                    ->label('Descripción')
-                    ->toolbarButtons([
-                        'blockquote',
-                        'bold',
-                        'bulletList',
-                        'codeBlock',
-                        'heading',
-                        'italic',
-                        'link',
-                        'orderedList',
-                        'redo',
-                        'strike',
-                        'undo',
+                Section::make('Información Básica')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
+                            ->label('Nombre')
+                            ->helperText('Ingresa el nombre del Producto')
+                            ->disabledOn('edit')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                if ($operation !== 'create') {
+                                    return;
+                                }
+                                $set('slug', Str::slug($state));
+                            }),
+
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->unique(Product::class, 'slug', ignoreRecord: true)
+                            ->helperText('Este campo no es editable.'),
+
+                        Forms\Components\Select::make('category_id')
+                            ->required()
+                            ->label('Familia')
+                            ->relationship('category', 'name'),
+
+                        Forms\Components\FileUpload::make('thumbnail')
+                            ->label('Imagen del Producto')
+                            ->image()
+                            ->imageEditor()
+                            ->directory('product-images')
+                    ])->columns(2),
+
+                Section::make('Inventario')
+                    ->schema([
+                        Forms\Components\TextInput::make('price')
+                            ->required()
+                            ->numeric()
+                            ->prefix('$')
+                            ->label('Precio'),
+
+                        Forms\Components\TextInput::make('sku')
+                            ->required()
+                            ->label('SKU')
+                            ->maxLength(255),
+                    ])->columns(2),
+
+                Section::make('Extras')
+                    ->schema([
+                        Forms\Components\MarkdownEditor::make('description')
+                            ->label('Descripción e información adicional')
+                            ->columnSpanFull()
                     ]),
-                Forms\Components\FileUpload::make('image')
-                    ->label('Imagen del Producto')
-                    ->image()
-                    ->imageEditor(),
-                Forms\Components\Select::make('category_id')
-                    ->required()
-                    ->options(Category::all()->pluck('name', 'id')),
-                Forms\Components\Toggle::make('visibility')
-                    ->label('Visible')
-                    ->onIcon('heroicon-m-eye')
-                    ->offIcon('heroicon-m-eye-slash')
-                    ->onColor('success')
-                    ->offColor('danger'),
-                Forms\Components\Toggle::make('availability')
-                    ->label('Disponible')
-                    ->onIcon('heroicon-m-check-circle')
-                    ->offIcon('heroicon-m-no-symbol')
-                    ->onColor('success')
-                    ->offColor('danger'),
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->prefix('$')
-                    ->label('Precio'),
-                Forms\Components\TextInput::make('sku')
-                    ->label('SKU')
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('shipping')
-                    ->required()
-                    ->label('Para Envío')
-                    ->onIcon('heroicon-m-truck')
-                    ->offIcon('heroicon-m-no-symbol')
-                    ->onColor('success')
-                    ->offColor('danger'),
+
+                Section::make('Control')
+                    ->schema([
+                        Forms\Components\Toggle::make('visibility')
+                            ->label('Visible')
+                            ->onIcon('heroicon-m-eye')
+                            ->offIcon('heroicon-m-eye-slash')
+                            ->onColor('success')
+                            ->offColor('danger'),
+
+                        Forms\Components\Toggle::make('availability')
+                            ->label('Disponible')
+                            ->onIcon('heroicon-m-check-circle')
+                            ->offIcon('heroicon-m-no-symbol')
+                            ->onColor('success')
+                            ->offColor('danger'),
+
+                        Forms\Components\Toggle::make('shipping')
+                            ->label('Para Envío')
+                            ->onIcon('heroicon-m-truck')
+                            ->offIcon('heroicon-m-no-symbol')
+                            ->onColor('success')
+                            ->offColor('danger')
+                    ])->columns(3)
             ]);
     }
 
@@ -105,37 +116,52 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('thumbnail')
+                    ->label('Imagen'),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Producto')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('category_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('visibility')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-eye')
-                    ->falseIcon('heroicon-o-eye-slash'),
-                Tables\Columns\IconColumn::make('availability')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-no-symbol'),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('Familia')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sku')
                     ->label('SKU')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money()
+                    ->sortable(),
+
+                Tables\Columns\IconColumn::make('visibility')
+                    ->label('Visible')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-eye')
+                    ->falseIcon('heroicon-o-eye-slash')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\IconColumn::make('availability')
+                    ->label('Disponible')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-no-symbol')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\IconColumn::make('shipping')
+                    ->label('Envío')
                     ->boolean()
                     ->trueIcon('heroicon-o-truck')
-                    ->falseIcon('heroicon-o-no-symbol'),
+                    ->falseIcon('heroicon-o-no-symbol')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
