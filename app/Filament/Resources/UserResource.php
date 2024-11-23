@@ -67,19 +67,6 @@ class UserResource extends Resource
                     ]),
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Rol de Usuario')
-                        ->icon('heroicon-o-key')
-                            ->schema([
-                                Forms\Components\Select::make('role')
-                                    ->label('Tipo de usuario')
-                                    ->required()
-                                    ->options([
-                                        'administrator' => UserRoleEnum::ADMINISTATOR->value,
-                                        'manager' => UserRoleEnum::MANAGER->value,
-                                        'seller' => UserRoleEnum::SELLER->value,
-                                    ])
-                            ]),
-
                             Forms\Components\Section::make('Avatar')
                             ->icon('heroicon-o-user-circle')
                             ->schema([
@@ -124,8 +111,6 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Teléfono'),
-                Tables\Columns\TextColumn::make('role')
-                    ->label('Tipo'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Activo')
                     ->boolean(),

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('phone');
             $table->string('avatar');
             $table->string('address');
-            $table->string('state');
-            $table->string('municipality');
+            $table->string('state_id');
+            $table->string('municipality_id');
             $table->string('locality');
             $table->string('zip_code');
             $table->string('contact');
@@ -31,7 +31,6 @@ return new class extends Migration
             $table->string('extra');
             $table->boolean('is_visible')->default(true);
             $table->boolean('is_active')->default(true);
-            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

@@ -90,7 +90,7 @@ class CategoryResource extends Resource
                                     Forms\Components\ColorPicker::make('primary_color')
                                     ->label('Selecciona un color')
                                     ->required(),
-                                    Forms\Components\FileUpload::make('thumbail')
+                                    Forms\Components\FileUpload::make('thumbnail')
                                     ->label('Imagen de la Categoría')
                                     ->image()
                                     ->imageEditor()
@@ -124,7 +124,7 @@ class CategoryResource extends Resource
                     ->sortable()
                     ->label('Slug')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('thumbnail')
                     ->label('Logo'),
                 Tables\Columns\ColorColumn::make('primary_color')
                     ->label('Color'),
