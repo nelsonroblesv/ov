@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
 use App\Models\Customer;
 use App\Models\Municipality;
 use App\Models\State;
@@ -38,6 +39,7 @@ class CustomerResource extends Resource
         return $form
             ->schema([
                 Section::make('Información General')
+                ->collapsible()
                     ->icon('heroicon-o-user-plus')
                     ->schema([
                         Forms\Components\TextInput::make('name')
@@ -79,6 +81,7 @@ class CustomerResource extends Resource
                     ])->columns(3),
 
                 Section::make('Domicilio')
+                ->collapsible()
                     ->icon('heroicon-o-map-pin')
                     ->schema([
                         Forms\Components\TextInput::make('address')
@@ -146,13 +149,16 @@ class CustomerResource extends Resource
                             ->directory('customer-images'),
                     ])->columns(2),
 
-                Section::make('Extra')->schema([
+                Section::make('Extra')
+                    ->collapsible()
+                    ->schema([
                     Forms\Components\MarkdownEditor::make('extra')
                         ->label('Información adicional')
                 ])->icon('heroicon-o-information-circle'),
                 Group::make()
                     ->schema([
                         Section::make('Tipo de usuario')
+                        ->collapsible()
                             ->schema([
                                 Forms\Components\Select::make('type')
                                     ->label('Selecciona el tipo de Cliente')
@@ -166,6 +172,7 @@ class CustomerResource extends Resource
                 Group::make()
                     ->schema([
                         Section::make('Control')
+                        ->collapsible()
                             ->schema([
                                 Forms\Components\Toggle::make('is_visible')
                                 ->label('Cliente Visible'),
@@ -194,26 +201,33 @@ class CustomerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->label('Direccion')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\TextColumn::make('state.name')
                     ->label('Estado')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\TextColumn::make('municipality.name')
                     ->label('Municipio')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\TextColumn::make('locality')
                     ->label('Localidad')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\TextColumn::make('zip_code')
                     ->label('Codigo postal')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\TextColumn::make('contact')
                     ->label('Contacto')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('front_image')
-                    ->label('Exterior'),
+                    ->label('Exterior')
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\ImageColumn::make('inside_image')
-                    ->label('Interior'),
+                    ->label('Interior')
+                    ->toggleable(isToggledHiddenByDefault:true),
                 Tables\Columns\TextColumn::make('coordinate')
                     ->label('Coordenadas')
                     ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->coordinate}")
@@ -261,7 +275,7 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            OrdersRelationManager::class
         ];
     }
 
@@ -271,6 +285,7 @@ class CustomerResource extends Resource
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
+            'view' => Pages\ViewCustomer::route('/{record}'),
         ];
     }
 }

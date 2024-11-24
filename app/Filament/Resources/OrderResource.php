@@ -17,9 +17,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 use App\Enums\OrderStatusEnum;
+use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
 use App\Models\OrderItem;
 use App\Models\Product;
-use Faker\Core\Number;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
@@ -29,12 +29,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\Relationship;
+use Illuminate\Support\Number;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Ordenes';
     protected static ?int $navigationSort = 0;
@@ -156,7 +157,7 @@ class OrderResource extends Resource
                                 }
                                 
                                 $set('grand_total', $total);
-                                return  '$'.number_format($total, 2);
+                                return  Number::currency($total, 'USD');
                             })
                             ->extraAttributes(['style' => 'text-align:right']),
 
@@ -198,7 +199,7 @@ class OrderResource extends Resource
                     ])
                     ->icons([
                         'heroicon-o-x',
-                        'heroicon-o-exclamation-circle' => 'pending',
+                        'heroicon-o-clock' => 'pending',
                         'heroicon-o-x-mark' => 'declined',
                         'heroicon-o-check' => 'completed',
                         'heroicon-o-arrow-path' => 'processing'
@@ -209,10 +210,8 @@ class OrderResource extends Resource
                     TextColumn::make('grand_total')
                     ->money('USD')
                     ->label('Total'),
-                    //->icon('heroicon-m-currency-dollar')
-                    //->iconColor('success'),
                 TextColumn::make('created_at')
-                    ->label('Fecha')
+                    ->label('Fecha de Orden')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -245,7 +244,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           
             
         ];
     }
@@ -256,6 +255,19 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'view' => Pages\ViewOrder::route('/{record}'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'pending')->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::where('status', '-', 'pending')->count() > 1 ? 'success' : 'info';
+    }
+
+    protected static ?string $navigationBadgeTooltip = 'Ordenes Pendientes';
 }

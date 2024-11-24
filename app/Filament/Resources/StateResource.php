@@ -7,6 +7,7 @@ use App\Filament\Resources\StateResource\RelationManagers;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -51,6 +52,16 @@ class StateResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->successNotification(
+                    Notification::make()
+                         ->success()
+                         ->title('Estado eliminado')
+                         ->body('Se ha eliminado un registro.')
+                         ->icon('heroicon-o-x-mark')
+                         ->iconColor('danger')
+                         ->color('danger'),
+                )
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
