@@ -177,6 +177,8 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Ordenes')
+        ->description('Gestion de ordenes.')
             ->columns([
                 TextColumn::make('number')
                 ->label('Num. Orden')

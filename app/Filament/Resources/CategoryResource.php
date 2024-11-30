@@ -114,6 +114,8 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Familias')
+        ->description('Familias de la marca.')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Categoría')

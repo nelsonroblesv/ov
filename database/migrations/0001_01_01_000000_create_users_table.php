@@ -14,12 +14,36 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->timestamp('birthday')->nullable();
             $table->string('email')->unique();
             $table->string('phone')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('image')->nullable();
+            $table->string('avatar')->nullable();
+
+            // Fiscales
+            $table->string('rfc')->nullable();
+            $table->string('rfc_doc')->nullable();
+            $table->string('curp')->nullable();
+            $table->string('curp_doc')->nullable();
+            $table->string('imss')->nullable();
+            $table->string('imss_doc')->nullable();
+            $table->string('comprobante_domicilio_doc')->nullable();
+            $table->string('banco')->nullable();
+            $table->string('cuenta')->nullable();
+            $table->string('clabe')->nullable();
+
+            // Empresa
+            $table->string('email_empresa')->nullable();
+            $table->string('phone_empresa')->nullable();
+            $table->timestamp('fecha_inicio')->nullable();
+            $table->timestamp('fecha_fin')->nullable();
+            $table->string('licencia_image')->nullable();
+            $table->string('ine_image')->nullable();
+            $table->string('color')->nullable();
+            $table->enum('role', ['Vendedor', 'Administrador', 'Gerente'])->default('Vendedor');
             $table->boolean('is_active')->default(true);
+
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

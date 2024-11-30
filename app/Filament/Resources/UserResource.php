@@ -9,6 +9,8 @@ use App\Filament\Resources\UserResource\RelationManagers\OrdersRelationManager;
 use App\Models\User;
 use Directory;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -16,6 +18,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 
 class UserResource extends Resource
 {
@@ -33,30 +44,37 @@ class UserResource extends Resource
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make('Datos personales')
-                        ->icon('heroicon-o-user')
+                            ->collapsible()
+                            ->icon('heroicon-o-user')
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label('Nombre')
                                     ->helperText('Escribe tu nombre completo')
                                     ->required()
                                     ->suffixIcon('heroicon-m-user'),
 
-                                Forms\Components\TextInput::make('email')
+                                DatePicker::make('birthday')
+                                    ->label('Fecha de nacimiento')
+                                    ->helperText('Usa el formato dd/mm/aaaa')
+                                    ->required()
+                                    ->suffixIcon('heroicon-m-cake'),
+
+                                TextInput::make('email')
                                     ->label('Correo electrónico')
                                     ->helperText('Escribe tu correo')
                                     ->required()
                                     ->email()
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
-                                Forms\Components\TextInput::make('phone')
+                                TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->helperText('Ingresa un telefono')
                                     ->dehydrated(fn($state) => filled($state))
                                     ->required()
                                     ->tel()
                                     ->suffixIcon('heroicon-m-phone'),
-                                    
-                                Forms\Components\TextInput::make('password')
+
+                                TextInput::make('password')
                                     ->label('Contraseña')
                                     ->helperText('Ingresa una contraseña')
                                     ->password()
@@ -64,55 +82,190 @@ class UserResource extends Resource
                                     ->dehydrated(fn($state) => filled($state))
                                     ->required(fn(string $context): bool => $context === 'create')
                                     ->disabledOn('edit')
-                            ])->columns(1)
-                    ]),
-                Forms\Components\Group::make()
-                    ->schema([
-                            Forms\Components\Section::make('Avatar')
+                            ])->columns(1),
+
+                        Section::make('Avatar')
+                            ->collapsible()
                             ->icon('heroicon-o-user-circle')
                             ->schema([
-                                FileUpload::make('image')
+                                FileUpload::make('avatar')
                                     ->label('Foto de perfil')
                                     ->image()
                                     //->avatar()
                                     ->imageEditor()
                                     ->circleCropper()
-                                    ->directory('user-images')
+                                    ->directory('user-avatar')
                             ])->columns(1),
-                        
-                            Forms\Components\Section::make('Control')
+
+                        Section::make('Empresa')
+                            ->collapsible()
+                            ->icon('heroicon-o-shield-check')
+                            ->schema([
+                                TextInput::make('email_empresa')
+                                    ->label('Correo electrónico de la empresa')
+                                    ->helperText('Escribe el correo asignado')
+                                    ->required()
+                                    ->email()
+                                    ->suffixIcon('heroicon-m-at-symbol'),
+
+                                TextInput::make('phone_empresa')
+                                    ->label('Teléfono de la empresa')
+                                    ->helperText('Ingresa el telefono asignado.')
+                                    ->dehydrated(fn($state) => filled($state))
+                                    ->required()
+                                    ->tel()
+                                    ->suffixIcon('heroicon-m-phone'),
+
+                                Select::make('role')
+                                    ->label('Rol asignado')
+                                    ->required()
+                                    ->dehydrated()
+                                    ->options([
+                                        'Administrador' => UserRoleEnum::ADMINISTRADOR->value,
+                                        'Gerente' => UserRoleEnum::GERENTE->value,
+                                        'Vendedor' => UserRoleEnum::VENDEDOR->value,
+                                    ])
+                                    ->suffixIcon('heroicon-m-user-plus'),
+
+                                ColorPicker::make('color')
+                                    ->label('Selecciona un color')
+                                    ->required(),
+
+                                DatePicker::make('fecha_inicio')
+                                    ->label('Inicio de contrato')
+                                    ->required(),
+
+                                DatePicker::make('fecha_fin')
+                                    ->label('Fin de contrato')
+                                    ->required()
+                            ]),
+
+                        Section::make('Control')
+                            ->collapsible()
                             ->icon('heroicon-o-adjustments-vertical')
                             ->schema([
-                                Forms\Components\Toggle::make('is_active')
+                                Toggle::make('is_active')
                                     ->label('¿Usuario activo?')
                                     ->onIcon('heroicon-m-user-plus')
                                     ->offIcon('heroicon-m-user-minus')
                                     ->onColor('success')
                                     ->offColor('danger'),
                             ])
+                    ]),
+
+                Group::make()
+                    ->schema([
+                        Section::make('Expediente')
+                            ->collapsible()
+                            ->icon('heroicon-o-rectangle-stack')
+                            ->schema([
+                                TextInput::make('rfc')
+                                    ->label('Ingresa el RFC')
+                                    ->helperText('Maximo 13 caracteres. Mayusculas.')
+                                    ->required()
+                                    ->maxLength(13)
+                                    ->autocapitalize(true),
+
+                                FileUpload::make('rfc_doc')
+                                    ->label('RFC')
+                                    ->helperText('En formato PDF')
+                                    ->directory('rfc-user'),
+
+                                TextInput::make('curp')
+                                    ->label('Ingresa la CURP. Mayusculas.')
+                                    ->helperText('Maximo 18 caracteres')
+                                    ->required()
+                                    ->maxLength(18),
+
+                                FileUpload::make('curp_doc')
+                                    ->label('CURP')
+                                    ->helperText('En formato PDF')
+                                    ->directory('curp-user'),
+
+                                TextInput::make('imss')
+                                    ->label('Ingresa Numero de Seguridad Social')
+                                    ->helperText('Maximo 11 digitos')
+                                    ->required()
+                                    ->numeric()
+                                    ->maxLength(11),
+
+                                FileUpload::make('imss_doc')
+                                    ->label('Documento IMSS')
+                                    ->helperText('En formato PDF')
+                                    ->directory('imss-user'),
+
+                                FileUpload::make('comprobante_domicilio_doc')
+                                    ->label('Comprobante de domiclio')
+                                    ->helperText('En formato PDF')
+                                    ->directory('domicilio-user'),
+
+                                FileUpload::make('licencia_image')
+                                    ->label('Licencia de conducir')
+                                    ->helperText('En formato de imagen')
+                                    ->image()
+                                    ->directory('licencia-user'),
+
+                                FileUpload::make('ine_image')
+                                    ->label('INE')
+                                    ->helperText('En formato de imagen')
+                                    ->image()
+                                    ->directory('ine-user')
+                            ]),
+                        Section::make('Datos financieros')
+                            ->collapsible()
+                            ->icon('heroicon-o-credit-card')
+                            ->schema([
+                                TextInput::make('banco')
+                                    ->label('Nombre del banco')
+                                    ->required(),
+                                TextInput::make('cuenta')
+                                    ->label('Numero de cuenta')
+                                    ->required(),
+                                TextInput::make('clabe')
+                                    ->label('CLABE')
+                                    ->required()
+                            ])
                     ])
-                ]);
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Usuarios')
+        ->description('Gestion de usuarios del sistema.')
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
+                ImageColumn::make('avatar')
                     ->label('Perfil'),
-                Tables\Columns\TextColumn::make('name')
+                ColorColumn::make('color')
+                    ->label('Color'),
+                TextColumn::make('name')
                     ->searchable()
                     ->sortable()
                     ->label('Nombre'),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('role')
                     ->searchable()
                     ->sortable()
-                    ->label('Correo'),
-                Tables\Columns\TextColumn::make('phone')
+                    ->label('Rol'),
+                TextColumn::make('email')
                     ->searchable()
                     ->sortable()
-                    ->label('Teléfono'),
-                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Correo')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('email_empresa')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Correo Empresa'),
+                TextColumn::make('phone')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Teléfono')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('phone_empresa')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Teléfono Empresa'),
+                IconColumn::make('is_active')
                     ->label('Activo')
                     ->boolean(),
             ])
@@ -136,7 +289,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-           // OrdersRelationManager::class
+            // OrdersRelationManager::class
         ];
     }
 
@@ -146,6 +299,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}')
         ];
     }
 }

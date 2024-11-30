@@ -77,7 +77,7 @@ class CustomerResource extends Resource
                             ->label('Avatar')
                             ->image()
                             ->avatar()
-                            ->directory('profile-images')
+                            ->directory('customer-avatar')
                     ])->columns(3),
 
                 Section::make('Domicilio')
@@ -187,6 +187,8 @@ class CustomerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Clientes')
+        ->description('Gestion de clientes.')
             ->columns([
                 Tables\Columns\ImageColumn::make('avatar')
                     ->searchable(),

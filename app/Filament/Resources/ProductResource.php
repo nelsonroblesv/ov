@@ -115,6 +115,8 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Productos')
+        ->description('Gestion de Productos de la marca.')
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail')
                     ->label('Imagen'),

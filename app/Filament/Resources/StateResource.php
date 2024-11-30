@@ -35,6 +35,8 @@ class StateResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Estados')
+        ->description('Gestion de Estados.')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),

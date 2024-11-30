@@ -38,6 +38,8 @@ class MunicipalityResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Municipios')
+        ->description('Gestion de Municipios.')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
