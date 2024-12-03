@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "bezhansalleh/filament-language-switch": "^3.1",
         "filament/filament": "^3.2",
+        "laravel-lang/common": "^6.4",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9"
     },
@@ -38,7 +40,8 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade"
+            "@php artisan filament:upgrade",
+             "@php artisan lang:update"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

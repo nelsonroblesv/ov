@@ -153,6 +153,7 @@ class CustomerResource extends Resource
                     ->collapsible()
                     ->schema([
                     Forms\Components\MarkdownEditor::make('extra')
+                        ->required()
                         ->label('Información adicional')
                 ])->icon('heroicon-o-information-circle'),
                 Group::make()

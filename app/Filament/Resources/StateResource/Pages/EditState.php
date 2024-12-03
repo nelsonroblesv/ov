@@ -13,7 +13,8 @@ class EditState extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+            ->label('Borrar Estado'),
         ];
     }
 }
