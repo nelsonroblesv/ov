@@ -9,8 +9,12 @@ class Customer extends Model
 {
     //
     protected $fillable = [
-        'alias', 'name', 'email', 'phone', 'avatar', 'address', 'state_id', 'municipality_id', 'locality', 'zip_code',
-        'contact', 'front_image', 'inside_image', 'coordinate', 'type', 'extra', 'is_visible', 'is_active'
+        'alias', 'name', 'email', 'phone', 'avatar', 'address', 'state_id', 
+        'municipality_id', 'locality', 'zip_code', 'front_image', 'inside_image', 'coordinate', 
+        'type', 'extra', 'is_visible', 'is_active', 'name_facturacion', 'razon_social', 'address_facturacion',
+        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document'
+
+        //'contact'
     ];
 
    /* public function users(){

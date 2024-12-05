@@ -11,6 +11,8 @@ class CreateState extends CreateRecord
 {
     protected static string $resource = StateResource::class;
 
+    protected static ?string $title = 'Registrar Nuevo Estado';
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -21,7 +23,7 @@ class CreateState extends CreateRecord
         return Notification::make()
             ->success()
             ->title('Estado registrado')
-            ->body('Se ha creado un nuevo registro.')
+            ->body('Se ha registrado un nuevo Estado de forma exitosa.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');

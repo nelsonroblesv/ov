@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\CfdiTypeEnum;
+use App\Enums\SociedadTypeEnum;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
@@ -10,20 +12,26 @@ use App\Models\Municipality;
 use App\Models\State;
 use Carbon\Callback;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section as ComponentsSection;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Wizard;
 use Filament\Forms\Get;
 use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Livewire\Attributes\Reactive;
 use PhpParser\ErrorHandler\Collecting;
-
 
 class CustomerResource extends Resource
 {
@@ -38,158 +46,211 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Información General')
-                ->collapsible()
-                    ->icon('heroicon-o-user-plus')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Nombre completo')
-                            ->required()
-                            ->maxLength(255)
-                            ->suffixIcon('heroicon-m-user'),
+                Wizard::make([
+                    Wizard\Step::make('Informacion Personal')
+                        ->schema([
+                            TextInput::make('name')
+                                ->label('Nombre completo')
+                                ->required()
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-user'),
 
-                        Forms\Components\TextInput::make('alias')
-                            ->required()
-                            ->maxLength(255)
-                            ->suffixIcon('heroicon-m-user-circle'),
+                            TextInput::make('alias')
+                                ->label('Alias')
+                                ->required()
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-user-circle'),
 
-                        Forms\Components\TextInput::make('email')
-                            ->label('Correo electrónico')
-                            ->email()
-                            ->required()
-                            ->maxLength(255)
-                            ->suffixIcon('heroicon-m-at-symbol'),
+                           TextInput::make('email')
+                                ->label('Correo electrónico')
+                                ->email()
+                                ->required()
+                                ->unique(ignoreRecord:true)
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-at-symbol'),
 
-                        Forms\Components\TextInput::make('phone')
-                            ->label('Teléfono')
-                            ->tel()
-                            ->required()
-                            ->maxLength(255)
-                            ->suffixIcon('heroicon-m-phone'),
+                            TextInput::make('phone')
+                                ->label('Teléfono')
+                                ->tel()
+                                ->required()
+                                ->unique(ignoreRecord:true)
+                                ->maxLength(50)
+                                ->suffixIcon('heroicon-m-phone'),
 
-                        Forms\Components\TextInput::make('contact')
+                            DatePicker::make('birthday')
+                                ->label('Fecha de nacimiento')
+                                ->suffixIcon('heroicon-m-cake'),
+                            /*
+                            Forms\Components\TextInput::make('contact')
                             ->label('Contacto')
                             ->required()
                             ->tel()
                             ->suffixIcon('heroicon-m-device-phone-mobile'),
+                        */
 
-                        Forms\Components\FileUpload::make('avatar')
-                            ->label('Avatar')
-                            ->image()
-                            ->avatar()
-                            ->directory('customer-avatar')
-                    ])->columns(3),
+                           FileUpload::make('avatar')
+                                ->label('Avatar')
+                                ->image()
+                                ->avatar()
+                                ->directory('customer-avatar')
+                        ])->columns(2),
 
-                Section::make('Domicilio')
-                ->collapsible()
-                    ->icon('heroicon-o-map-pin')
-                    ->schema([
-                        Forms\Components\TextInput::make('address')
-                            ->label('Dirección')
-                            ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
-                            ->required()
-                            ->maxLength(255)
-                            ->suffixIcon('heroicon-m-map'),
+                    Wizard\Step::make('Informacion del establecimiento')
+                        ->schema([
+                            TextInput::make('address')
+                                ->label('Dirección')
+                                ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
+                                // ->required()
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-map')
+                                ->columnSpanFull(),
 
-                        Forms\Components\Select::make('state_id')
-                            ->options(State::all()->pluck('name', 'id')->toArray())
-                            ->label('Estado')
-                            ->searchable()
-                            ->reactive()
-                            ->preload()
-                            ->live()
-                            ->required()
-                            ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
+                            Select::make('state_id')
+                                ->options(State::all()->pluck('name', 'id')->toArray())
+                                ->label('Estado')
+                                ->searchable()
+                                ->reactive()
+                                ->preload()
+                                ->live()
+                                //->required()
+                                ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
 
-                        Forms\Components\Select::make('municipality_id')
-                            ->options(function (callable $get) {
-                                $estado = State::find($get('state_id'));
-                                if (!$estado) {
-                                    return Municipality::all()->pluck('name', 'id');
-                                }
-                                return $estado->municipality->pluck('name', 'id');
-                            })
-                            ->reactive()
-                            ->label('Municipio')
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->required(),
+                            Select::make('municipality_id')
+                                ->options(function (callable $get) {
+                                    $estado = State::find($get('state_id'));
+                                    if (!$estado) {
+                                        return Municipality::all()->pluck('name', 'id');
+                                    }
+                                    return $estado->municipality->pluck('name', 'id');
+                                })
+                                ->reactive()
+                                ->label('Municipio')
+                                //  ->required()
+                                ->searchable()
+                                ->preload()
+                                ->live(),
 
-                        Forms\Components\TextInput::make('locality')
-                            ->label('Localidad')
-                            ->required(),
+                            TextInput::make('locality')
+                                //  ->required()
+                                ->label('Localidad'),
 
-                        Forms\Components\TextInput::make('zip_code')
-                            ->label('Código Postal')
-                            ->required()
-                            ->numeric()
-                            ->maxLength(5)
-                            ->suffixIcon('heroicon-m-hashtag'),
+                            TextInput::make('zip_code')
+                                ->label('Código Postal')
+                                //   ->required()
+                                ->numeric()
+                                ->maxLength(5)
+                                ->suffixIcon('heroicon-m-hashtag'),
 
-                        Forms\Components\TextInput::make('coordinate')
-                            ->label('Coordenadas Google Maps')
-                            ->helperText('Formato: 20.1845751, -90.1334567')
-                            ->required()
-                            ->maxLength(255)
-                            ->suffixIcon('heroicon-m-map-pin'),
+                            TextInput::make('coordinate')
+                                ->label('Coordenadas Google Maps')
+                                ->helperText('Formato: 20.1845751, -90.1334567')
+                                //   ->required()
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-map-pin'),
 
-                        Forms\Components\FileUpload::make('front_image')
-                            ->label('Foto Exterior')
-                            ->image()
-                            ->required()
-                            ->imageEditor()
-                            ->directory('customer-images'),
+                            Section::make('Fotos del establecimiento')
+                                ->collapsible()
+                                ->schema([
+                                    FileUpload::make('front_image')
+                                        ->label('Foto Exterior')
+                                        ->helperText('Carga una foto del exterior del establecimiento')
+                                        ->image()
+                                        //  ->required()
+                                        ->imageEditor()
+                                        ->directory('customer-images'),
 
-                        Forms\Components\FileUpload::make('inside_image')
-                            ->label('Foto Interior')
-                            ->image()
-                            ->required()
-                            ->imageEditor()
-                            ->directory('customer-images'),
-                    ])->columns(2),
+                                    FileUpload::make('inside_image')
+                                        ->label('Foto Interior')
+                                        ->helperText('Carga una foto del interior del establecimiento')
+                                        ->image()
+                                        //   ->required()
+                                        ->imageEditor()
+                                        ->directory('customer-images'),
+                                ])->columns(2),
 
-                Section::make('Extra')
-                    ->collapsible()
-                    ->schema([
-                    Forms\Components\MarkdownEditor::make('extra')
-                        ->required()
-                        ->label('Información adicional')
-                ])->icon('heroicon-o-information-circle'),
-                Group::make()
-                    ->schema([
-                        Section::make('Tipo de usuario')
-                        ->collapsible()
-                            ->schema([
-                                Forms\Components\Select::make('type')
-                                    ->label('Selecciona el tipo de Cliente')
-                                    ->required()
-                                    ->options([
-                                        'par' => 'PAR',
-                                        'non' => 'NON'
-                                    ])
-                            ])->icon('heroicon-o-users')
-                    ]),
-                Group::make()
-                    ->schema([
-                        Section::make('Control')
-                        ->collapsible()
-                            ->schema([
-                                Forms\Components\Toggle::make('is_visible')
-                                ->label('Cliente Visible'),
+                            Section::make('Informacion adicional')
+                                ->collapsible()
+                                ->schema([
+                                    MarkdownEditor::make('extra')
+                                        //  ->required()
+                                        ->label('Datos extra del cliente')
+                                ])->icon('heroicon-o-information-circle')
+                        ])->columns(2),
 
-                            Forms\Components\Toggle::make('is_active')
-                                ->label('Cliente Activo')
-                            ])->icon('heroicon-o-adjustments-vertical')
-                    ])
+                    Wizard\Step::make('Datos de Facturacion')
+                        ->schema([
+                            TextInput::make('name_facturacion')
+                                ->label('Nombre')
+                                //   ->required()
+                                ->suffixIcon('heroicon-m-user-circle'),
+
+                                TextInput::make('razon_social')
+                                ->label('Razon Social')
+                                //   ->required()
+                                ->suffixIcon('heroicon-m-building-library'),
+
+                                TextInput::make('address_facturacion')
+                                ->label('Direccion')
+                                //   ->required()
+                                ->suffixIcon('heroicon-m-map-pin'),
+
+                               TextInput::make('postal_code_facturacion')
+                                ->label('Codigo Postal')
+                                ->numeric()
+                                //   ->required()
+                                ->suffixIcon('heroicon-m-hashtag'),
+
+                                Select::make('tipo_cfdi')
+                                ->label('Tipo de CFDI')
+                                ->options([
+                                   'Ingreso' => CfdiTypeEnum::INGRESO->value,
+                                   'Egreso' => CfdiTypeEnum::EGRESO->value,
+                                   'Traslado' => CfdiTypeEnum::TRASLADO->value,
+                                   'Nomina' => CfdiTypeEnum::NOMINA->value
+                                ])
+                                ->suffixIcon('heroicon-m-document-text'),
+
+                                Select::make('tipo_razon_social')
+                                ->label('Tipo de Razon Social')
+                                ->options([
+                                   'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
+                                   'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
+                                ])
+                                ->suffixIcon('heroicon-m-document-text'),
+
+                                FileUpload::make('cfdi_document')
+                                     ->columnSpanFull()
+                                        ->label('CFDI')
+                                        ->helperText('Carga un CFDI en formato PDF')
+                                        //   ->required()
+                                        ->directory('customer-cfdi'),
+
+                        ])->columns(2),
+
+                    Wizard\Step::make('Administracion del Cliente')
+                        ->schema([
+                            Section::make('Control')
+                            ->collapsible()
+                                ->schema([
+                                    Forms\Components\Toggle::make('is_visible')
+                                    ->label('Cliente Visible')
+                                    ->default(true),
+    
+                                Forms\Components\Toggle::make('is_active')
+                                    ->label('Cliente Activo')
+                                    ->default(true)
+                                ])->icon('heroicon-o-adjustments-vertical')->columns(2)
+                        ])->columns(2),
+
+                ])->columnSpanFull()
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Clientes')
-        ->description('Gestion de clientes.')
+            ->heading('Clientes')
+            ->description('Gestion de clientes.')
             ->columns([
                 Tables\Columns\ImageColumn::make('avatar')
                     ->searchable(),
@@ -205,32 +266,29 @@ class CustomerResource extends Resource
                 Tables\Columns\TextColumn::make('address')
                     ->label('Direccion')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('state.name')
                     ->label('Estado')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('municipality.name')
                     ->label('Municipio')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('locality')
                     ->label('Localidad')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('zip_code')
                     ->label('Codigo postal')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault:true),
-                Tables\Columns\TextColumn::make('contact')
-                    ->label('Contacto')
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('front_image')
                     ->label('Exterior')
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('inside_image')
                     ->label('Interior')
-                    ->toggleable(isToggledHiddenByDefault:true),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('coordinate')
                     ->label('Coordenadas')
                     ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->coordinate}")

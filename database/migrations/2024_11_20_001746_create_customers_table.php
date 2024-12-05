@@ -15,23 +15,35 @@ return new class extends Migration
             $table->id();
             $table->string('alias')->unique();
             $table->string('name')->unique();
-            $table->string('email');
-            $table->string('phone');
-            $table->string('avatar');
-            $table->string('address');
-            $table->string('state_id');
-            $table->string('municipality_id');
-            $table->string('locality');
-            $table->string('zip_code');
-            $table->string('contact');
-            $table->string('front_image');
-            $table->string('inside_image');
-            $table->string('coordinate');
-            $table->enum('type' , ['par', 'non']);
-            $table->string('extra');
+            $table->string('email')->unique();
+            $table->string('phone')->unique();
+            $table->timestamp('birthday')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('address')->nullable();
+            $table->string('state_id')->nullable();
+            $table->string('municipality_id')->nullable();
+            $table->string('locality')->nullable();
+            $table->string('zip_code')->nullable();
+           // $table->string('contact')->nullable();
+            $table->string('front_image')->nullable();
+            $table->string('inside_image')->nullable();
+            $table->string('coordinate')->nullable();
+            $table->enum('type' , ['par', 'non'])->default('par');
+            $table->string('extra')->nullable();
             $table->boolean('is_visible')->default(true);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            //Facturacion
+            $table->string('name_facturacion')->nullable();
+            $table->string('razon_social')->nullable();
+            $table->string('address_facturacion')->nullable();
+            $table->string('postal_code_facturacion')->nullable();
+            $table->enum('tipo_cfdi', ['Ninguno', 'Ingreso', 'Egreso', 'Traslado', 'Nomina'])
+                    ->default('Ninguno')->nullable();
+            $table->enum('tipo_razon_social', ['Ninguna', 'Sociedad Anonima', 'Sociedad Civil'])
+                        ->default('Ninguna')->nullable();
+            $table->string('cfdi_document')->nullable();
         });
     }
 
