@@ -32,7 +32,12 @@ class DashboardPanelProvider extends PanelProvider
             //->emailVerification()
             //->profile()
             //->brandName('Avyna')
-            ->brandLogo(asset('images/logo_ovalle.png'))
+           // ->brandLogo(asset('images/logo_ovalle.png'))
+            //->brandLogoHeight('5rem')
+
+            ->brandLogo(fn () => view('filament.logo'))
+
+            ->favicon(asset('images/logo_ovalle.png'))
             ->colors([
                 'primary' => Color::Emerald,
             ])
@@ -46,7 +51,7 @@ class DashboardPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
