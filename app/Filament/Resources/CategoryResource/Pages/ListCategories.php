@@ -9,12 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListCategories extends ListRecords
 {
     protected static string $resource = CategoryResource::class;
+    protected static ?string $title = 'Familias de Productos';
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('Crear Categoria'),
+                ->label('Registrar Familia'),
         ];
     }
 }

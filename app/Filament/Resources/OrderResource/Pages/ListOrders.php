@@ -12,12 +12,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
+    protected static ?string $title = 'Pedidos';
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('Nuevo Pedido'),
+                ->label('Registrar Pedido'),
         ];
     }
 

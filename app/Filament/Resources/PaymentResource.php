@@ -36,6 +36,7 @@ class PaymentResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Pagos';
+    protected static ?string $breadcrumb = "Pagos";
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
