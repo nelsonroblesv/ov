@@ -53,22 +53,16 @@ class OrderResource extends Resource
                                 ->disabledOn('edit')
                                 ->searchable()
                                 ->preload()
-                                ->required()
-                                /*->createOptionForm([
-                                    Forms\Components\TextInput::make('name')
-                                        ->required(),
-                                    Forms\Components\TextInput::make('email')
-                                        ->required()
-                                        ->email(),
-                                ])*/,
-                                Forms\Components\TextInput::make('number')
+                                ->required(),
+
+                            Forms\Components\TextInput::make('number')
                                 ->required()
                                 ->disabled()
-                                ->default('OR-'.random_int(100000, 9999999))
+                                ->default('OR-' . random_int(100000, 9999999))
                                 ->dehydrated()
                                 ->maxLength(255),
-                           
-                                Forms\Components\ToggleButtons::make('status')
+
+                            Forms\Components\ToggleButtons::make('status')
                                 ->required()
                                 ->inline()
                                 ->options([
@@ -95,81 +89,79 @@ class OrderResource extends Resource
 
                     Step::make('Productos')
                         ->schema([
-                           Repeater::make('items')
-                           ->relationship()
-                            ->schema([
-                                Select::make('product_id')
-                                ->relationship('product', 'name')
-                                ->label('Productos')
-                                ->preload()
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->distinct()
-                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->columnSpan(6)
-                                ->afterStateUpdated(fn ($state, Set $set) => 
-                                                    $set('unit_price', Product::find($state)?->price ?? 0))
-                                ->afterStateUpdated(fn ($state, Set $set) => 
-                                                    $set('total_price', Product::find($state)?->price ?? 0)),
+                            Repeater::make('items')
+                                ->relationship()
+                                ->schema([
+                                    Select::make('product_id')
+                                        ->relationship('product', 'name')
+                                        ->label('Productos')
+                                        ->preload()
+                                        ->searchable()
+                                        ->required()
+                                        ->reactive()
+                                        ->distinct()
+                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                        ->afterStateUpdated(fn($state, Set $set) =>
+                                        $set('unit_price', Product::find($state)?->price ?? 0))
+                                        ->afterStateUpdated(fn($state, Set $set) =>
+                                        $set('total_price', Product::find($state)?->price ?? 0))
+                                        ->columnSpanFull(),
 
-                            TextInput::make('quantity')
-                                ->numeric()
-                                ->default(1)
-                                ->minValue(1)
-                                ->live()
-                                ->dehydrated()
-                                ->columnSpan(1)
-                                ->reactive()
-                                ->required()
-                                ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', $state * $get('unit_price'))),
-                            
-                                TextInput::make('unit_price')
-                                    ->label('Precio unitario')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->numeric()
-                                    ->columnSpan(2)
-                                    ->inputMode('decimal')
-                                    ->required()
-                                    ->extraInputAttributes(['style' => 'text-align:right']),
+                                    TextInput::make('quantity')
+                                        ->label('Cantidad')
+                                        ->numeric()
+                                        ->default(1)
+                                        ->minValue(1)
+                                        ->live()
+                                        ->dehydrated()
+                                        ->reactive()
+                                        ->required()
+                                        ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', $state * $get('unit_price'))),
 
-                                TextInput::make('total_price')
-                                    ->label('Precio total')
-                                    ->numeric()
-                                    ->inputMode('decimal')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->columnSpan(3)
-                                    ->prefixIcon('heroicon-m-currency-dollar')
-                                    ->prefixIconColor('success')
-                                    ->extraInputAttributes(['style' => 'text-align:right'])
-                            ])->columns(12),
+                                    TextInput::make('unit_price')
+                                        ->label('Precio unitario')
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->numeric()
+                                        ->inputMode('decimal')
+                                        ->required()
+                                        ->extraInputAttributes(['style' => 'text-align:right']),
 
-                        Placeholder::make('grand_total')
-                            ->label('Total a pagar')
-                            ->content(function(Get $get, Set $set){
-                                $total = 0;
-                                if(!$repeaters = $get('items')){
-                                    return $total;
-                                }
-                                foreach($repeaters as $key => $repeater){
-                                    $total += $get("items.{$key}.total_price");
-                                }
-                                
-                                $set('grand_total', $total);
-                                return  Number::currency($total, 'USD');
-                            })
-                            ->extraAttributes(['style' => 'text-align:right']),
+                                    TextInput::make('total_price')
+                                        ->label('Precio total')
+                                        ->numeric()
+                                        ->inputMode('decimal')
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->prefixIcon('heroicon-m-currency-dollar')
+                                        ->prefixIconColor('success')
+                                        ->extraInputAttributes(['style' => 'text-align:right'])
+                                ])->columns(3),
+
+                            Placeholder::make('grand_total')
+                                ->label('Total a pagar')
+                                ->content(function (Get $get, Set $set) {
+                                    $total = 0;
+                                    if (!$repeaters = $get('items')) {
+                                        return $total;
+                                    }
+                                    foreach ($repeaters as $key => $repeater) {
+                                        $total += $get("items.{$key}.total_price");
+                                    }
+
+                                    $set('grand_total', $total);
+                                    return  Number::currency($total, 'USD');
+                                })
+                                ->extraAttributes(['style' => 'text-align:right']),
 
                             Hidden::make('grand_total')
-                            ->default(0),
-                            
+                                ->default(0),
+
                             MarkdownEditor::make('notes')
                                 ->columnSpanFull()
 
                         ])->columnSpanFull(),
-                        
+
                 ])->columnSpanFull()
 
             ]);
@@ -178,11 +170,11 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Ordenes')
-        ->description('Gestion de ordenes.')
+            ->heading('Ordenes')
+            ->description('Gestion de ordenes.')
             ->columns([
                 TextColumn::make('number')
-                ->label('Num. Orden')
+                    ->label('Num. Orden')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('customer.name')
@@ -210,7 +202,7 @@ class OrderResource extends Resource
                 TextColumn::make('notes')
                     ->label('Notas')
                     ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('grand_total')
+                TextColumn::make('grand_total')
                     ->money('USD')
                     ->label('Total'),
                 TextColumn::make('created_at')
@@ -246,10 +238,7 @@ class OrderResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-           
-            
-        ];
+        return [];
     }
 
     public static function getPages(): array
