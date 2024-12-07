@@ -11,11 +11,14 @@ use App\Models\Customer;
 use App\Models\Municipality;
 use App\Models\State;
 use Carbon\Callback;
+use DeepCopy\Filter\Filter;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section as ComponentsSection;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
@@ -26,12 +29,19 @@ use Filament\Forms\Get;
 use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter as FiltersFilter;
 use Filament\Tables\Table;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Livewire\Attributes\Reactive;
 use PhpParser\ErrorHandler\Collecting;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerResource extends Resource
 {
@@ -62,11 +72,11 @@ class CustomerResource extends Resource
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-user-circle'),
 
-                           TextInput::make('email')
+                            TextInput::make('email')
                                 ->label('Correo electrónico')
                                 ->email()
                                 ->required()
-                                ->unique(ignoreRecord:true)
+                                ->unique(ignoreRecord: true)
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-at-symbol'),
 
@@ -74,22 +84,22 @@ class CustomerResource extends Resource
                                 ->label('Teléfono')
                                 ->tel()
                                 ->required()
-                                ->unique(ignoreRecord:true)
+                                ->unique(ignoreRecord: true)
                                 ->maxLength(50)
                                 ->suffixIcon('heroicon-m-phone'),
 
                             DatePicker::make('birthday')
                                 ->label('Fecha de nacimiento')
                                 ->suffixIcon('heroicon-m-cake'),
-                            /*
-                            Forms\Components\TextInput::make('contact')
-                            ->label('Contacto')
-                            ->required()
-                            ->tel()
-                            ->suffixIcon('heroicon-m-device-phone-mobile'),
-                        */
 
-                           FileUpload::make('avatar')
+                            Select::make('type')
+                                ->label('Tipo')
+                                ->options([
+                                    'par' => 'Par',
+                                    'non' => 'Non'
+                                ]),
+
+                            FileUpload::make('avatar')
                                 ->label('Avatar')
                                 ->image()
                                 ->avatar()
@@ -185,65 +195,67 @@ class CustomerResource extends Resource
                                 //   ->required()
                                 ->suffixIcon('heroicon-m-user-circle'),
 
-                                TextInput::make('razon_social')
+                            TextInput::make('razon_social')
                                 ->label('Razon Social')
                                 //   ->required()
                                 ->suffixIcon('heroicon-m-building-library'),
 
-                                TextInput::make('address_facturacion')
+                            TextInput::make('address_facturacion')
                                 ->label('Direccion')
                                 //   ->required()
                                 ->suffixIcon('heroicon-m-map-pin'),
 
-                               TextInput::make('postal_code_facturacion')
+                            TextInput::make('postal_code_facturacion')
                                 ->label('Codigo Postal')
                                 ->numeric()
                                 //   ->required()
                                 ->suffixIcon('heroicon-m-hashtag'),
 
-                                Select::make('tipo_cfdi')
+                            Select::make('tipo_cfdi')
                                 ->label('Tipo de CFDI')
                                 ->options([
-                                   'Ingreso' => CfdiTypeEnum::INGRESO->value,
-                                   'Egreso' => CfdiTypeEnum::EGRESO->value,
-                                   'Traslado' => CfdiTypeEnum::TRASLADO->value,
-                                   'Nomina' => CfdiTypeEnum::NOMINA->value
+                                    'Ingreso' => CfdiTypeEnum::INGRESO->value,
+                                    'Egreso' => CfdiTypeEnum::EGRESO->value,
+                                    'Traslado' => CfdiTypeEnum::TRASLADO->value,
+                                    'Nomina' => CfdiTypeEnum::NOMINA->value
                                 ])
                                 ->suffixIcon('heroicon-m-document-text'),
 
-                                Select::make('tipo_razon_social')
+                            Select::make('tipo_razon_social')
                                 ->label('Tipo de Razon Social')
                                 ->options([
-                                   'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
-                                   'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
+                                    'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
+                                    'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
                                 ])
                                 ->suffixIcon('heroicon-m-document-text'),
 
-                                FileUpload::make('cfdi_document')
-                                     ->columnSpanFull()
-                                        ->label('CFDI')
-                                        ->helperText('Carga un CFDI en formato PDF')
-                                        //   ->required()
-                                        ->directory('customer-cfdi'),
+                            FileUpload::make('cfdi_document')
+                                ->columnSpanFull()
+                                ->label('CFDI')
+                                ->helperText('Carga un CFDI en formato PDF')
+                                //   ->required()
+                                ->directory('customer-cfdi'),
 
                         ])->columns(2),
 
                     Wizard\Step::make('Administracion del Cliente')
                         ->schema([
                             Section::make('Control')
-                            ->collapsible()
+                                ->collapsible()
                                 ->schema([
                                     Forms\Components\Toggle::make('is_visible')
-                                    ->label('Cliente Visible')
-                                    ->default(true),
-    
-                                Forms\Components\Toggle::make('is_active')
-                                    ->label('Cliente Activo')
-                                    ->default(true)
+                                        ->label('Cliente Visible')
+                                        ->default(true),
+
+                                    Forms\Components\Toggle::make('is_active')
+                                        ->label('Cliente Activo')
+                                        ->default(true)
                                 ])->icon('heroicon-o-adjustments-vertical')->columns(2)
                         ])->columns(2),
 
-                ])->columnSpanFull()
+                ])->columnSpanFull(),
+
+                Hidden::make('user_id')->default(fn() => auth()->id()),
             ]);
     }
 
@@ -253,72 +265,112 @@ class CustomerResource extends Resource
             ->heading('Clientes')
             ->description('Gestion de clientes.')
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
+                ImageColumn::make('avatar')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+
+                TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+
+                TextColumn::make('birthday')
+                    ->label('Fecha de nacimiento')
+                    ->date()
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('alias')
+                    ->label('Alias')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('type')
+                    ->label('Tipo')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'par',
+                        'warning' => 'non',
+                    ]),
+                TextColumn::make('email')
                     ->label('Correo')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
+
+                TextColumn::make('phone')
                     ->label('Telefono')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+
+                TextColumn::make('address')
                     ->label('Direccion')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('state.name')
+
+                TextColumn::make('state.name')
                     ->label('Estado')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('municipality.name')
+
+                TextColumn::make('municipality.name')
                     ->label('Municipio')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('locality')
+
+                TextColumn::make('locality')
                     ->label('Localidad')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('zip_code')
+
+                TextColumn::make('zip_code')
                     ->label('Codigo postal')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('front_image')
+
+                ImageColumn::make('front_image')
                     ->label('Exterior')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('inside_image')
+
+                ImageColumn::make('inside_image')
                     ->label('Interior')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('coordinate')
+
+                TextColumn::make('coordinate')
                     ->label('Coordenadas')
                     ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->coordinate}")
                     ->icon('heroicon-o-map-pin')
                     ->iconColor('danger')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Tipo'),
-                Tables\Columns\TextColumn::make('extra')
-                    ->label('Notas')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\IconColumn::make('is_visible')
+
+                IconColumn::make('is_visible')
                     ->label('Visible')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                IconColumn::make('is_active')
                     ->label('Activo')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('created_at')
+                    ->label('Fecha registro')
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('user_id')
+                    ->label('Asingado a')
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
-                //
+                FiltersFilter::make('is_active')
+                    ->query(fn(Builder $query): Builder => $query->where('is_active', true))
+                    ->label('Activos')
+                    ->toggle(),
+
+                FiltersFilter::make('type')
+                    ->query(fn(Builder $query): Builder => $query->where('type', 'par'))
+                    ->label('Pares')
+                    ->toggle()
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

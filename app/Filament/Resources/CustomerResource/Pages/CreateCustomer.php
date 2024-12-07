@@ -29,4 +29,5 @@ class CreateCustomer extends CreateRecord
             ->iconColor('success')
             ->color('success');
     }
+
 }

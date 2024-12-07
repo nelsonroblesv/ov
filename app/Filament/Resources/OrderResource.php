@@ -177,10 +177,12 @@ class OrderResource extends Resource
                     ->label('Num. Orden')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('customer.name')
                     ->label('Cliente')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('status')
                     ->searchable()
                     ->sortable()
@@ -202,18 +204,22 @@ class OrderResource extends Resource
                 TextColumn::make('notes')
                     ->label('Notas')
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('grand_total')
                     ->money('USD')
                     ->label('Total'),
+
                 TextColumn::make('created_at')
                     ->label('Fecha de Orden')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                    
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()

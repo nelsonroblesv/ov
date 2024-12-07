@@ -9,18 +9,17 @@ class Customer extends Model
 {
     //
     protected $fillable = [
-        'alias', 'name', 'email', 'phone', 'avatar', 'address', 'state_id', 
+        'alias', 'name', 'email', 'phone', 'avatar', 'address', 'state_id', 'birthday',
         'municipality_id', 'locality', 'zip_code', 'front_image', 'inside_image', 'coordinate', 
         'type', 'extra', 'is_visible', 'is_active', 'name_facturacion', 'razon_social', 'address_facturacion',
-        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document'
+        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id'
 
         //'contact'
     ];
 
-   /* public function users(){
+   public function users(){
         return $this->belongsTo(User::class);
-    }*/
-
+    }
     public function state(){
         return $this->belongsTo(State::class);
     }

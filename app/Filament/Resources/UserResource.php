@@ -125,6 +125,7 @@ class UserResource extends Resource
                                         'Administrador' => UserRoleEnum::ADMINISTRADOR->value,
                                         'Gerente' => UserRoleEnum::GERENTE->value,
                                         'Vendedor' => UserRoleEnum::VENDEDOR->value,
+                                        'Repartidor' => UserRoleEnum::REPARTIDOR->value,
                                     ])
                                     ->suffixIcon('heroicon-m-user-plus'),
 
