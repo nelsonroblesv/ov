@@ -1,46 +1,33 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\App\Resources;
 
 use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
-use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
+use App\Filament\App\Resources\CustomerResource\Pages;
+use App\Filament\App\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
 use App\Models\Municipality;
 use App\Models\State;
-use Carbon\Callback;
-use DeepCopy\Filter\Filter;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section as ComponentsSection;
-use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Wizard;
-use Filament\Forms\Get;
-use Filament\Notifications\Collection;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter as FiltersFilter;
 use Filament\Tables\Table;
-use GuzzleHttp\Psr7\UploadedFile;
+use Filament\Tables\Filters\Filter as FiltersFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Livewire\Attributes\Reactive;
-use PhpParser\ErrorHandler\Collecting;
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerResource extends Resource
@@ -60,6 +47,8 @@ class CustomerResource extends Resource
                 Wizard::make([
                     Wizard\Step::make('Informacion Personal')
                         ->schema([
+                         Hidden::make('user_id')->default(fn() => auth()->id()),
+
                             TextInput::make('name')
                                 ->label('Nombre completo')
                                // ->required()
@@ -237,22 +226,6 @@ class CustomerResource extends Resource
                                 ->directory('customer-cfdi'),
 
                         ])->columns(2),
-
-                    Wizard\Step::make('Administracion del Cliente')
-                        ->schema([
-                            Section::make('Control')
-                                ->collapsible()
-                                ->schema([
-                                    Forms\Components\Toggle::make('is_visible')
-                                        ->label('Cliente Visible')
-                                        ->default(true),
-
-                                    Forms\Components\Toggle::make('is_active')
-                                        ->label('Cliente Activo')
-                                        ->default(true)
-                                ])->icon('heroicon-o-adjustments-vertical')->columns(2),
-                               
-                        ])->columns(2),
                 ])->columnSpanFull(),
             ]);
     }
@@ -262,6 +235,7 @@ class CustomerResource extends Resource
         return $table
             ->heading('Clientes')
             ->description('Gestion de clientes.')
+           ->modifyQueryUsing(fn (Builder $query) => $query->where('user_id', auth()->id()))
             ->columns([
                 ImageColumn::make('avatar')
                     ->searchable(),
@@ -370,20 +344,18 @@ class CustomerResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
+                  //  Tables\Actions\DeleteAction::make()
                 ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+               
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            OrdersRelationManager::class
+            //
         ];
     }
 

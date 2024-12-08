@@ -57,7 +57,7 @@ class UserResource extends Resource
                                 DatePicker::make('birthday')
                                     ->label('Fecha de nacimiento')
                                     ->helperText('Usa el formato dd/mm/aaaa')
-                                    ->required()
+                                 //   ->required()
                                     ->suffixIcon('heroicon-m-cake'),
 
                                 TextInput::make('email')
@@ -71,7 +71,7 @@ class UserResource extends Resource
                                     ->label('Teléfono')
                                     ->helperText('Ingresa un telefono')
                                     ->dehydrated(fn($state) => filled($state))
-                                    ->required()
+                                 //   ->required()
                                     ->tel()
                                     ->suffixIcon('heroicon-m-phone'),
 
@@ -105,7 +105,7 @@ class UserResource extends Resource
                                 TextInput::make('email_empresa')
                                     ->label('Correo electrónico de la empresa')
                                     ->helperText('Escribe el correo asignado')
-                                    ->required()
+                                //    ->required()
                                     ->email()
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
@@ -113,7 +113,7 @@ class UserResource extends Resource
                                     ->label('Teléfono de la empresa')
                                     ->helperText('Ingresa el telefono asignado.')
                                     ->dehydrated(fn($state) => filled($state))
-                                    ->required()
+                                 //   ->required()
                                     ->tel()
                                     ->suffixIcon('heroicon-m-phone'),
 
@@ -130,16 +130,16 @@ class UserResource extends Resource
                                     ->suffixIcon('heroicon-m-user-plus'),
 
                                 ColorPicker::make('color')
-                                    ->label('Selecciona un color')
-                                    ->required(),
+                                    ->label('Selecciona un color'),
+                                 //   ->required(),
 
                                 DatePicker::make('fecha_inicio')
-                                    ->label('Inicio de contrato')
-                                    ->required(),
+                                    ->label('Inicio de contrato'),
+                                 //   ->required(),
 
                                 DatePicker::make('fecha_fin')
-                                    ->label('Fin de contrato')
-                                    ->required()
+                                    ->label('Fin de contrato'),
+                               //     ->required()
                             ]),
 
                         Section::make('Control')
@@ -164,7 +164,7 @@ class UserResource extends Resource
                                 TextInput::make('rfc')
                                     ->label('Ingresa el RFC')
                                     ->helperText('Maximo 13 caracteres. Mayusculas.')
-                                    ->required()
+                             //       ->required()
                                     ->maxLength(13)
                                     ->autocapitalize(true),
 
@@ -176,7 +176,7 @@ class UserResource extends Resource
                                 TextInput::make('curp')
                                     ->label('Ingresa la CURP. Mayusculas.')
                                     ->helperText('Maximo 18 caracteres')
-                                    ->required()
+                             //       ->required()
                                     ->maxLength(18),
 
                                 FileUpload::make('curp_doc')
@@ -187,7 +187,7 @@ class UserResource extends Resource
                                 TextInput::make('imss')
                                     ->label('Ingresa Numero de Seguridad Social')
                                     ->helperText('Maximo 11 digitos')
-                                    ->required()
+                             //       ->required()
                                     ->numeric()
                                     ->maxLength(11),
 
@@ -218,14 +218,14 @@ class UserResource extends Resource
                             ->icon('heroicon-o-credit-card')
                             ->schema([
                                 TextInput::make('banco')
-                                    ->label('Nombre del banco')
-                                    ->required(),
+                                    ->label('Nombre del banco'),
+                            //        ->required(),
                                 TextInput::make('cuenta')
-                                    ->label('Numero de cuenta')
-                                    ->required(),
+                                    ->label('Numero de cuenta'),
+                            //        ->required(),
                                 TextInput::make('clabe')
                                     ->label('CLABE')
-                                    ->required()
+                             //       ->required()
                             ])
                     ])
             ]);

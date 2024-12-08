@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('alias')->unique();
             $table->string('name')->unique();
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
+            $table->string('email')->unique()->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->timestamp('birthday')->nullable();
             $table->string('avatar')->nullable();
             $table->string('address')->nullable();
@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('municipality_id')->nullable();
             $table->string('locality')->nullable();
             $table->string('zip_code')->nullable();
-           // $table->string('contact')->nullable();
             $table->string('front_image')->nullable();
             $table->string('inside_image')->nullable();
             $table->string('coordinate')->nullable();
@@ -44,7 +43,6 @@ return new class extends Migration
             $table->enum('tipo_razon_social', ['Ninguna', 'Sociedad Anonima', 'Sociedad Civil'])
                         ->default('Ninguna')->nullable();
             $table->string('cfdi_document')->nullable();
-
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }

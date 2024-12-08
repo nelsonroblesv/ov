@@ -13,16 +13,16 @@ class Customer extends Model
         'municipality_id', 'locality', 'zip_code', 'front_image', 'inside_image', 'coordinate', 
         'type', 'extra', 'is_visible', 'is_active', 'name_facturacion', 'razon_social', 'address_facturacion',
         'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id'
-
-        //'contact'
     ];
 
    public function users(){
         return $this->belongsTo(User::class);
     }
+
     public function state(){
         return $this->belongsTo(State::class);
     }
+
     public function municipality(){
         return $this->belongsTo(Municipality::class);
     }
@@ -31,6 +31,7 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class);
     }
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
