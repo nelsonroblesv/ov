@@ -60,22 +60,30 @@ class CustomerResource extends Resource
                 Wizard::make([
                     Wizard\Step::make('Informacion Personal')
                         ->schema([
+
+                            Select::make('user_id')
+                               ->relationship('user', 'name')
+                                ->label('Registrado por:')
+                                ->required(),
+
                             TextInput::make('name')
                                 ->label('Nombre completo')
-                               // ->required()
+                                ->required()
                                 ->maxLength(255)
+                                ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user'),
 
                             TextInput::make('alias')
                                 ->label('Alias')
-                                //->required()
+                                ->required()
                                 ->maxLength(255)
+                                ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user-circle'),
 
                             TextInput::make('email')
                                 ->label('Correo electrónico')
                                 ->email()
-                              //  ->required()
+                                ->required()
                                 ->unique(ignoreRecord: true)
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-at-symbol'),
@@ -83,17 +91,19 @@ class CustomerResource extends Resource
                             TextInput::make('phone')
                                 ->label('Teléfono')
                                 ->tel()
-                               // ->required()
+                                ->required()
                                 ->unique(ignoreRecord: true)
                                 ->maxLength(50)
                                 ->suffixIcon('heroicon-m-phone'),
 
                             DatePicker::make('birthday')
                                 ->label('Fecha de nacimiento')
-                                ->suffixIcon('heroicon-m-cake'),
+                                ->suffixIcon('heroicon-m-cake')
+                                ->required(),
 
                             Select::make('type')
                                 ->label('Tipo')
+                                ->required()
                                 ->options([
                                     'par' => 'Par',
                                     'non' => 'Non'
@@ -251,7 +261,7 @@ class CustomerResource extends Resource
                                         ->label('Cliente Activo')
                                         ->default(true)
                                 ])->icon('heroicon-o-adjustments-vertical')->columns(2),
-                               
+
                         ])->columns(2),
                 ])->columnSpanFull(),
             ]);
@@ -263,11 +273,16 @@ class CustomerResource extends Resource
             ->heading('Clientes')
             ->description('Gestion de clientes.')
             ->columns([
+
                 ImageColumn::make('avatar')
                     ->searchable(),
 
                 TextColumn::make('name')
                     ->label('Nombre')
+                    ->searchable(),
+
+                TextColumn::make('user.name')
+                    ->label('Registrado por:')
                     ->searchable(),
 
                 TextColumn::make('birthday')

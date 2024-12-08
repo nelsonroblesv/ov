@@ -13,6 +13,22 @@ class EditCustomer extends EditRecord
 
     protected static ?string $title = 'Editar cliente';
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getSavedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Cambios realizados')
+            ->body('Se ha actualizado el registro correctamente.')
+            ->icon('heroicon-o-check')
+            ->iconColor('success')
+            ->color('success');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -15,7 +15,7 @@ class Customer extends Model
         'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id'
     ];
 
-   public function users(){
+   public function user(){
         return $this->belongsTo(User::class);
     }
 
