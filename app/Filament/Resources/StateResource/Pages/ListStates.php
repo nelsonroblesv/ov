@@ -9,12 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListStates extends ListRecords
 {
     protected static string $resource = StateResource::class;
+    protected static ?string $title = 'Estados';
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-            ->label('Registrar Estado'),
+            ->label('Nuevo Estado'),
         ];
     }
 }

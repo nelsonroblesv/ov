@@ -10,6 +10,7 @@ use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManag
 use App\Models\Customer;
 use App\Models\Municipality;
 use App\Models\State;
+use App\Models\StatesMunicipalities;
 use Carbon\Callback;
 use DeepCopy\Filter\Filter;
 use Filament\Forms;
@@ -99,7 +100,7 @@ class CustomerResource extends Resource
                             DatePicker::make('birthday')
                                 ->label('Fecha de nacimiento')
                                 ->suffixIcon('heroicon-m-cake')
-                                ->required(),
+                               ->required(),
 
                             Select::make('type')
                                 ->label('Tipo')
@@ -113,6 +114,7 @@ class CustomerResource extends Resource
                                 ->label('Avatar')
                                 ->image()
                                 ->avatar()
+                                ->circleCropper()
                                 ->directory('customer-avatar')
                         ])->columns(2),
 
@@ -127,29 +129,34 @@ class CustomerResource extends Resource
                                 ->columnSpanFull(),
 
                             Select::make('state_id')
-                                ->options(State::all()->pluck('name', 'id')->toArray())
                                 ->label('Estado')
-                                ->searchable()
+                                ->options(State::query()->pluck('name', 'id'))
                                 ->reactive()
+                                ->searchable()
                                 ->preload()
-                                ->live()
                                 //->required()
                                 ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
 
                             Select::make('municipality_id')
-                                ->options(function (callable $get) {
-                                    $estado = State::find($get('state_id'));
-                                    if (!$estado) {
-                                        return Municipality::all()->pluck('name', 'id');
+                                ->label('Municipio')
+                                ->options(function (callable $get){
+                                    $stateId = $get('state_id');
+
+                                    if(!$stateId){
+                                        return [];
                                     }
-                                    return $estado->municipality->pluck('name', 'id');
+
+                                    return Municipality::whereHas('state', function ($query) use ($stateId) {
+                                        $query->where('state_id', $stateId);
+                                    })->pluck('name', 'id');
+                                })
+                                ->disabled(function (callable $get){
+                                    return !$get('state_id');
                                 })
                                 ->reactive()
-                                ->label('Municipio')
                                 //  ->required()
                                 ->searchable()
-                                ->preload()
-                                ->live(),
+                                ->preload(),
 
                             TextInput::make('locality')
                                 //  ->required()

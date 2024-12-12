@@ -23,6 +23,8 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -42,200 +44,181 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Group::make()
-                    ->schema([
-                        Forms\Components\Section::make('Datos personales')
-                            ->collapsible()
-                            ->icon('heroicon-o-user')
-                            ->schema([
-                                TextInput::make('name')
-                                    ->label('Nombre')
-                                    ->helperText('Escribe tu nombre completo')
-                                    ->required()
-                                    ->suffixIcon('heroicon-m-user'),
+                Wizard::make([
+                    Wizard\Step::make('Datos personales')
+                        ->schema([
+                            TextInput::make('name')
+                                ->label('Nombre')
+                                ->helperText('Nombre completo')
+                                ->required()
+                                ->suffixIcon('heroicon-m-user')
+                                ->columnSpanFull(),
 
-                                DatePicker::make('birthday')
-                                    ->label('Fecha de nacimiento')
-                                    ->helperText('Usa el formato dd/mm/aaaa')
-                                 //   ->required()
-                                    ->suffixIcon('heroicon-m-cake'),
+                            DatePicker::make('birthday')
+                                ->label('Fecha de nacimiento')
+                                ->helperText('Usa el formato dd/mm/aaaa')
+                                ->required()
+                                ->suffixIcon('heroicon-m-cake')
+                                ->columns(2),
 
-                                TextInput::make('email')
-                                    ->label('Correo electrónico')
-                                    ->helperText('Escribe tu correo')
-                                    ->required()
-                                    ->email()
-                                    ->suffixIcon('heroicon-m-at-symbol'),
+                            TextInput::make('email')
+                                ->label('Correo electrónico')
+                                ->helperText('Escribe tu correo')
+                                ->required()
+                                ->email()
+                                ->suffixIcon('heroicon-m-at-symbol')
+                                ->columns(2),
 
-                                TextInput::make('phone')
-                                    ->label('Teléfono')
-                                    ->helperText('Ingresa un telefono')
-                                    ->dehydrated(fn($state) => filled($state))
-                                 //   ->required()
-                                    ->tel()
-                                    ->suffixIcon('heroicon-m-phone'),
+                            TextInput::make('phone')
+                                ->label('Teléfono')
+                                ->helperText('Ingresa un telefono')
+                                ->dehydrated(fn($state) => filled($state))
+                                ->required()
+                                ->tel()
+                                ->suffixIcon('heroicon-m-phone'),
 
-                                TextInput::make('password')
-                                    ->label('Contraseña')
-                                    ->helperText('Ingresa una contraseña')
-                                    ->password()
-                                    ->revealable()
-                                    ->dehydrated(fn($state) => filled($state))
-                                    ->required(fn(string $context): bool => $context === 'create')
-                                    ->disabledOn('edit')
-                            ])->columns(1),
+                            TextInput::make('password')
+                                ->label('Contraseña')
+                                ->helperText('Ingresa una contraseña')
+                                ->password()
+                                ->revealable()
+                                ->dehydrated(fn($state) => filled($state))
+                                ->required(fn(string $context): bool => $context === 'create')
+                                ->disabledOn('edit'),
 
-                        Section::make('Avatar')
-                            ->collapsible()
-                            ->icon('heroicon-o-user-circle')
-                            ->schema([
-                                FileUpload::make('avatar')
-                                    ->label('Foto de perfil')
-                                    ->image()
-                                    //->avatar()
-                                    ->imageEditor()
-                                    ->circleCropper()
-                                    ->directory('user-avatar')
-                            ])->columns(1),
-
-                        Section::make('Empresa')
-                            ->collapsible()
-                            ->icon('heroicon-o-shield-check')
-                            ->schema([
-                                TextInput::make('email_empresa')
-                                    ->label('Correo electrónico de la empresa')
-                                    ->helperText('Escribe el correo asignado')
+                            FileUpload::make('avatar')
+                                ->label('Foto de perfil')
+                                ->image()
+                                //->avatar()
+                                ->imageEditor()
+                                ->circleCropper()
+                                ->directory('user-avatar')
+                        ])->columns(2),
+                    Wizard\Step::make('Empresa')
+                        ->schema([
+                            TextInput::make('email_empresa')
+                                ->label('Correo electrónico de la empresa')
+                                ->helperText('Escribe el correo asignado')
                                 //    ->required()
-                                    ->email()
-                                    ->suffixIcon('heroicon-m-at-symbol'),
+                                ->email()
+                                ->suffixIcon('heroicon-m-at-symbol'),
 
-                                TextInput::make('phone_empresa')
-                                    ->label('Teléfono de la empresa')
-                                    ->helperText('Ingresa el telefono asignado.')
-                                    ->dehydrated(fn($state) => filled($state))
-                                 //   ->required()
-                                    ->tel()
-                                    ->suffixIcon('heroicon-m-phone'),
+                            TextInput::make('phone_empresa')
+                                ->label('Teléfono de la empresa')
+                                ->helperText('Ingresa el telefono asignado.')
+                                ->dehydrated(fn($state) => filled($state))
+                                //   ->required()
+                                ->tel()
+                                ->suffixIcon('heroicon-m-phone'),
 
-                                Select::make('role')
-                                    ->label('Rol asignado')
-                                    ->required()
-                                    ->dehydrated()
-                                    ->options([
-                                        'Administrador' => UserRoleEnum::ADMINISTRADOR->value,
-                                        'Gerente' => UserRoleEnum::GERENTE->value,
-                                        'Vendedor' => UserRoleEnum::VENDEDOR->value,
-                                        'Repartidor' => UserRoleEnum::REPARTIDOR->value,
-                                    ])
-                                    ->suffixIcon('heroicon-m-user-plus'),
+                            Select::make('role')
+                                ->label('Rol asignado')
+                                ->required()
+                                ->dehydrated()
+                                ->options([
+                                    'Administrador' => UserRoleEnum::ADMINISTRADOR->value,
+                                    'Gerente' => UserRoleEnum::GERENTE->value,
+                                    'Vendedor' => UserRoleEnum::VENDEDOR->value,
+                                    'Repartidor' => UserRoleEnum::REPARTIDOR->value,
+                                ])
+                                ->suffixIcon('heroicon-m-user-plus'),
 
-                                ColorPicker::make('color')
-                                    ->label('Selecciona un color'),
-                                 //   ->required(),
+                            ColorPicker::make('color')
+                                ->label('Selecciona un color'),
+                            //   ->required(),
 
-                                DatePicker::make('fecha_inicio')
-                                    ->label('Inicio de contrato'),
-                                 //   ->required(),
+                            DatePicker::make('fecha_inicio')
+                                ->label('Inicio de contrato'),
+                            //   ->required(),
 
-                                DatePicker::make('fecha_fin')
-                                    ->label('Fin de contrato'),
-                               //     ->required()
-                            ]),
+                            DatePicker::make('fecha_fin')
+                                ->label('Fin de contrato'),
+                            //     ->required()
 
-                        Section::make('Control')
-                            ->collapsible()
-                            ->icon('heroicon-o-adjustments-vertical')
-                            ->schema([
-                                Toggle::make('is_active')
-                                    ->label('¿Usuario activo?')
-                                    ->onIcon('heroicon-m-user-plus')
-                                    ->offIcon('heroicon-m-user-minus')
-                                    ->onColor('success')
-                                    ->offColor('danger'),
-                            ])
-                    ]),
+                            Toggle::make('is_active')
+                                ->label('¿Usuario activo?')
+                                ->onIcon('heroicon-m-user-plus')
+                                ->offIcon('heroicon-m-user-minus')
+                                ->onColor('success')
+                                ->offColor('danger')
+                                ->default(true),
+                        ])->columns(2),
+                    Wizard\Step::make('Expediente')
+                        ->schema([
+                            TextInput::make('rfc')
+                                ->label('Ingresa el RFC')
+                                ->helperText('Maximo 13 caracteres. Mayusculas.')
+                                //       ->required()
+                                ->maxLength(13)
+                                ->autocapitalize(true),
 
-                Group::make()
-                    ->schema([
-                        Section::make('Expediente')
-                            ->collapsible()
-                            ->icon('heroicon-o-rectangle-stack')
-                            ->schema([
-                                TextInput::make('rfc')
-                                    ->label('Ingresa el RFC')
-                                    ->helperText('Maximo 13 caracteres. Mayusculas.')
-                             //       ->required()
-                                    ->maxLength(13)
-                                    ->autocapitalize(true),
+                            FileUpload::make('rfc_doc')
+                                ->label('RFC')
+                                ->helperText('En formato PDF')
+                                ->directory('rfc-user'),
 
-                                FileUpload::make('rfc_doc')
-                                    ->label('RFC')
-                                    ->helperText('En formato PDF')
-                                    ->directory('rfc-user'),
+                            TextInput::make('curp')
+                                ->label('Ingresa la CURP. Mayusculas.')
+                                ->helperText('Maximo 18 caracteres')
+                                //       ->required()
+                                ->maxLength(18),
 
-                                TextInput::make('curp')
-                                    ->label('Ingresa la CURP. Mayusculas.')
-                                    ->helperText('Maximo 18 caracteres')
-                             //       ->required()
-                                    ->maxLength(18),
+                            FileUpload::make('curp_doc')
+                                ->label('CURP')
+                                ->helperText('En formato PDF')
+                                ->directory('curp-user'),
 
-                                FileUpload::make('curp_doc')
-                                    ->label('CURP')
-                                    ->helperText('En formato PDF')
-                                    ->directory('curp-user'),
+                            TextInput::make('imss')
+                                ->label('Ingresa Numero de Seguridad Social')
+                                ->helperText('Maximo 11 digitos')
+                                //       ->required()
+                                ->numeric()
+                                ->maxLength(11),
 
-                                TextInput::make('imss')
-                                    ->label('Ingresa Numero de Seguridad Social')
-                                    ->helperText('Maximo 11 digitos')
-                             //       ->required()
-                                    ->numeric()
-                                    ->maxLength(11),
+                            FileUpload::make('imss_doc')
+                                ->label('Documento IMSS')
+                                ->helperText('En formato PDF')
+                                ->directory('imss-user'),
 
-                                FileUpload::make('imss_doc')
-                                    ->label('Documento IMSS')
-                                    ->helperText('En formato PDF')
-                                    ->directory('imss-user'),
+                            FileUpload::make('comprobante_domicilio_doc')
+                                ->label('Comprobante de domiclio')
+                                ->helperText('En formato PDF')
+                                ->directory('domicilio-user'),
 
-                                FileUpload::make('comprobante_domicilio_doc')
-                                    ->label('Comprobante de domiclio')
-                                    ->helperText('En formato PDF')
-                                    ->directory('domicilio-user'),
+                            FileUpload::make('licencia_image')
+                                ->label('Licencia de conducir')
+                                ->helperText('En formato de imagen')
+                                ->image()
+                                ->directory('licencia-user'),
 
-                                FileUpload::make('licencia_image')
-                                    ->label('Licencia de conducir')
-                                    ->helperText('En formato de imagen')
-                                    ->image()
-                                    ->directory('licencia-user'),
+                            FileUpload::make('ine_image')
+                                ->label('INE')
+                                ->helperText('En formato de imagen')
+                                ->image()
+                                ->directory('ine-user')
+                        ])->columns(2),
 
-                                FileUpload::make('ine_image')
-                                    ->label('INE')
-                                    ->helperText('En formato de imagen')
-                                    ->image()
-                                    ->directory('ine-user')
-                            ]),
-                        Section::make('Datos financieros')
-                            ->collapsible()
-                            ->icon('heroicon-o-credit-card')
-                            ->schema([
-                                TextInput::make('banco')
-                                    ->label('Nombre del banco'),
+                    Wizard\Step::make('Informacion financiera')
+                        ->schema([
+                            TextInput::make('banco')
+                                ->label('Nombre del banco'),
                             //        ->required(),
-                                TextInput::make('cuenta')
-                                    ->label('Numero de cuenta'),
+                            TextInput::make('cuenta')
+                                ->label('Numero de cuenta'),
                             //        ->required(),
-                                TextInput::make('clabe')
-                                    ->label('CLABE')
-                             //       ->required()
-                            ])
-                    ])
+                            TextInput::make('clabe')
+                                ->label('CLABE')
+                            //       ->required()
+                        ])->columns(2)
+                ])->columnSpanFull(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Usuarios')
-        ->description('Gestion de usuarios del sistema.')
+            ->heading('Usuarios')
+            ->description('Gestion de usuarios del sistema.')
             ->columns([
                 ImageColumn::make('avatar')
                     ->label('Perfil'),
@@ -252,23 +235,24 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable()
-                    ->label('Correo')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Correo'),
                 TextColumn::make('email_empresa')
                     ->searchable()
                     ->sortable()
-                    ->label('Correo Empresa'),
+                    ->label('Correo Empresa')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('phone')
                     ->searchable()
                     ->sortable()
-                    ->label('Teléfono')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Teléfono'),
                 TextColumn::make('phone_empresa')
                     ->searchable()
                     ->sortable()
-                    ->label('Teléfono Empresa'),
+                    ->label('Teléfono Empresa')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_active')
                     ->label('Activo')
+                    ->sortable()
                     ->boolean(),
             ])
             ->filters([

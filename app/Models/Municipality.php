@@ -2,16 +2,23 @@
 
 namespace App\Models;
 
+use Filament\Forms\Form;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Municipality extends Model
 {
-    //
-    protected $fillable = [
-    'name', 'state_id'
-    ];
+    use HasFactory;
 
-    public function state(){
+    protected $fillable = ['name', 'state_id'];
+
+    public function state()
+    {
         return $this->belongsTo(State::class);
     }
+
+
 }

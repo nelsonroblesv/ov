@@ -10,11 +10,13 @@ class ListMunicipalities extends ListRecords
 {
     protected static string $resource = MunicipalityResource::class;
 
+    protected static ?string $title = 'Municipios';
+
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('Registrar Municipio'),
+            ->label('Nuevo Municipio'),
         ];
     }
 }

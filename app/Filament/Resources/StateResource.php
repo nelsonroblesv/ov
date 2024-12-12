@@ -21,6 +21,7 @@ class StateResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
     protected static ?string $navigationGroup = 'Ajustes';
     protected static ?string $navigationLabel = 'Estados';
+    protected static ?string $breadcrumb = "Estados";
     protected static ?int $navigationSort = 1;
     public static function form(Form $form): Form
     {
@@ -39,6 +40,7 @@ class StateResource extends Resource
         ->description('Gestion de Estados.')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Estado')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
