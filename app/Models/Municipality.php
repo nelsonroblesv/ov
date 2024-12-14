@@ -21,4 +21,10 @@ class Municipality extends Model
     }
 
 
+
+
+    public function zoneMunicipality()
+    {
+        return $this->hasMany(ZoneLocation::class);
+    }
 }

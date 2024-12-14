@@ -32,12 +32,12 @@ class MunicipalityResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->label('Nombre del Municipio')
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\Select::make('state_id')
+                Select::make('state_id')
                     ->label('Estado')
                     ->options(State::all()->pluck('name', 'id'))  // Cargar los estados
                     ->searchable()

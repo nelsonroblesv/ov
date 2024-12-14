@@ -18,4 +18,12 @@ class State extends Model
         return $this->hasMany(Municipality::class);
     }
 
+
+
+
+
+    public function zoneState()
+    {
+        return $this->hasMany(ZoneLocation::class);
+    }
 }

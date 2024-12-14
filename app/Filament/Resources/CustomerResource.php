@@ -52,7 +52,7 @@ class CustomerResource extends Resource
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Clientes';
     protected static ?string $breadcrumb = "Clientes";
-    protected static ?int $navigationSort = 2;
+    
 
     public static function form(Form $form): Form
     {
@@ -133,9 +133,9 @@ class CustomerResource extends Resource
                                 ->options(State::query()->pluck('name', 'id'))
                                 ->reactive()
                                 ->searchable()
-                                ->preload()
+                                ->preload(),
                                 //->required()
-                                ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
+                               // ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
 
                             Select::make('municipality_id')
                                 ->label('Municipio')

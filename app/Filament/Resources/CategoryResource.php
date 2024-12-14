@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
@@ -24,11 +24,11 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Administrar';
+    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+    protected static ?string $navigationGroup = 'Avyna';
     protected static ?string $navigationLabel = 'Familias';
     protected static ?string $breadcrumb = "Familias";
-    protected static ?int $navigationSort = 3;
+   protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
