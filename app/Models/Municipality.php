@@ -19,11 +19,8 @@ class Municipality extends Model
     {
         return $this->belongsTo(State::class);
     }
-
-
-
-
-    public function zoneMunicipality()
+    // Relación con ZoneLocation: Un municipio puede estar en muchas zonas (a través de ZoneLocation)
+    public function zoneLocations()
     {
         return $this->hasMany(ZoneLocation::class);
     }

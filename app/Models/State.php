@@ -17,13 +17,9 @@ class State extends Model
     {
         return $this->hasMany(Municipality::class);
     }
-
-
-
-
-
-    public function zoneState()
+    // Relación con Zone: Un estado tiene muchas zonas
+    public function zones()
     {
-        return $this->hasMany(ZoneLocation::class);
+        return $this->hasMany(Zone::class);
     }
 }

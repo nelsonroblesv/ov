@@ -9,13 +9,17 @@ use App\Models\State;
 use App\Models\Zone;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ColorColumn;
@@ -38,54 +42,53 @@ class ZoneResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('Datos de la Zona')->schema([
-                    TextInput::make('name')
-                        ->label('Nombre')
-                        ->required(),
+        ->schema([
+           Section::make('')->schema([
+                TextInput::make('name')
+                ->label('Nombre de la Zona')
+                ->required()
+                ->maxLength(255),
 
-                    ColorPicker::make('color')
-                        ->label('Asigna un color')
-                        ->required()
-                ])->columns(2),
+            ColorPicker::make('color'),
 
-                Repeater::make('ubicaciones')
-                    ->relationship('ubicaciones')
-                    ->schema([
-                        Section::make('')->schema([
-                            Select::make('state_id')
-                            ->label('Estado')
-                            ->options(State::query()->pluck('name', 'id'))
-                            ->reactive()
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+            
+            Select::make('state_id')
+                ->label('Estado')
+                ->options(State::query()->pluck('name', 'id'))
+                ->reactive()
+                ->searchable()
+                ->preload(),
+           ])->columns(3),
 
-                        Select::make('municipality_id')
-                            ->label('Municipio')
-                            ->options(function (callable $get) {
-                                $stateId = $get('state_id');
+           
+            Repeater::make('zoneLocations')
+                ->label('Agregar Municipios')
+                ->relationship() 
+                ->schema([
+                    Select::make('municipality_id')
+                    ->label('Municipio')
+                    ->options(function (callable $get, callable $set) {
+                        $stateId = $get('../../state_id'); // Accede al valor global de state_id
 
-                                if (!$stateId) {
-                                    return [];
-                                }
+                        if (!$stateId) {
+                            return [];
+                        }
 
-                                return Municipality::whereHas('state', function ($query) use ($stateId) {
-                                    $query->where('state_id', $stateId);
-                                })->pluck('name', 'id');
-                            })
-                            ->disabled(function (callable $get) {
-                                return !$get('state_id');
-                            })
-                            ->reactive()
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->distinct()
-                            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
-                        ])->columns(2),
-                    ])->columnSpanFull()
-            ]);
+                        return Municipality::where('state_id', $stateId)
+                            ->pluck('name', 'id');
+                    })
+                    ->disabled(function (callable $get) {
+                        return !$get('../../state_id'); 
+                    })
+                    ->reactive()
+                    ->searchable()
+                    ->preload()
+                    ->distinct()
+                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                ])
+                ->createItemButtonLabel('Agregar Municipio')
+                ->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -94,8 +97,8 @@ class ZoneResource extends Resource
             ->columns([
                 ColorColumn::make('color')->label('Color'),
                 TextColumn::make('name')->label('Nombre'),
-              //  TextColumn::make('ubicaciones.state.name')->label('Estado'),
-                TextColumn::make('ubicaciones.municipality.name')->label('Municipio')
+              TextColumn::make('state.name')->label('Estado'),
+                TextColumn::make('zoneLocations.municipality.name')->label('Municipio(s)')
             ])
             ->filters([
                 //

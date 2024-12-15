@@ -2,23 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
 use App\Models\User;
-use Database\Factories\UserFactory;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
-class DatabaseSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
-     protected static ?string $password;
-
     public function run(): void
-    {
+    {/*
         $user = new User();
         $user->name = 'Nelson Robles';
         $user->email = 'nelsonroblesv@gmail.com';
@@ -26,9 +21,6 @@ class DatabaseSeeder extends Seeder
         $user->role = 'Administrador';
         $user->email_verified_at = now();
         $user->password = Hash::make('iamwao');
-        $user->save();
-
-        User::factory(6)->create();
-        Customer::factory(10)->create();
+        $user->save();*/
     }
 }
