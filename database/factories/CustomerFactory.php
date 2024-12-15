@@ -19,10 +19,10 @@ class CustomerFactory extends Factory
     {
         return [
             'user_id'=>$this->faker->numberBetween(1,5),
-           'alias'=>$this->faker->userName(),
+           'alias'=>$this->faker->unique()->userName(),
            'name'=>$this->faker->name(),
            'email'=>$this->faker->unique->email(),
-           'phone'=>$this->faker->phoneNumber(),
+           'phone'=>$this->faker->unique()->phoneNumber(),
            'birthday'=>$this->faker->dateTime(),
            'created_at'=>$this->faker->dateTime(),
           'type'=>$this->faker->randomElement(['par', 'non'])

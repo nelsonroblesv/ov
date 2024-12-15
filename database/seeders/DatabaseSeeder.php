@@ -28,6 +28,16 @@ class DatabaseSeeder extends Seeder
         $user->password = Hash::make('iamwao');
         $user->save();
 
+        $user = new User();
+        $user->name = 'Osberh Valle';
+        $user->email = 'admin@osberthvalle.com';
+        $user->phone = '9811603253';
+        $user->role = 'Administrador';
+        $user->email_verified_at = now();
+        $user->password = Hash::make('avyna');
+        $user->save();
+
+
         User::factory(6)->create();
         Customer::factory(10)->create();
     }
