@@ -114,6 +114,7 @@ class CustomerResource extends Resource
                                 ->label('Avatar')
                                 ->image()
                                 ->avatar()
+                                ->imageEditor()
                                 ->circleCropper()
                                 ->directory('customer-avatar')
                         ])->columns(2),
