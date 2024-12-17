@@ -9,4 +9,5 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewZone extends ViewRecord
 {
     protected static string $resource = ZoneResource::class;
+    protected static ?string $title = 'Vista Zona';
 }

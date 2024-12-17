@@ -29,8 +29,8 @@ class DashboardPanelProvider extends PanelProvider
             ->path('dashboard')
 
             ->login()
-            ->brandLogo(fn () => view('filament.logo'))
-
+            //->brandLogo(fn () => view('filament.logo'))
+            ->brandName('Osberth Valle')
             ->favicon(asset('images/logo_ovalle.png'))
             ->colors([
                 'primary' => Color::Emerald,
