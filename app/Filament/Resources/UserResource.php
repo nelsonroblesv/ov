@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\OrdersRelationManager;
 use App\Models\User;
+use App\Models\Zone;
 use Directory;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,7 +41,7 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Usuarios';
     protected static ?string $breadcrumb = "Usuarios";
-  //  protected static ?int $navigationSort = 1;
+    //  protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -89,11 +92,12 @@ class UserResource extends Resource
                             FileUpload::make('avatar')
                                 ->label('Foto de perfil')
                                 ->image()
-                                //->avatar()
+                                ->avatar()
                                 ->imageEditor()
                                 ->circleCropper()
-                                ->directory('user-avatar')
+                                ->directory('user-avatar'),
                         ])->columns(2),
+                        
                     Wizard\Step::make('Empresa')
                         ->schema([
                             TextInput::make('email_empresa')
@@ -142,6 +146,25 @@ class UserResource extends Resource
                                 ->onColor('success')
                                 ->offColor('danger')
                                 ->default(true),
+
+                                Section::make('')->schema([
+                                    Repeater::make('zoneUser')
+                                        ->label('Asignar Zona(s) a Usuario')
+                                        ->relationship()
+                                        ->schema([
+                                            Select::make('zone_id')
+                                                ->label('Zonas disponibles')
+                                                ->placeholder('Selecciona una zona')
+                                                ->options(Zone::query()->pluck('name', 'id'))
+                                                ->reactive()
+                                                ->searchable()
+                                                ->preload()
+                                                ->distinct()
+                                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                            ])
+                                            ->createItemButtonLabel('Agregar Zona')
+                                            ->columnSpanFull(),
+                                ])          
                         ])->columns(2),
                     Wizard\Step::make('Expediente')
                         ->schema([

@@ -46,6 +46,7 @@ class ZoneResource extends Resource
            Section::make('')->schema([
                 TextInput::make('name')
                 ->label('Nombre de la Zona')
+                ->helperText('Escribe un nombre unico')
                 ->required()
                 ->maxLength(255),
 

@@ -9,12 +9,12 @@ use Filament\Resources\Pages\EditRecord;
 class EditState extends EditRecord
 {
     protected static string $resource = StateResource::class;
+    protected static ?string $title = 'Editar Estado';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-            ->label('Borrar Estado'),
+            Actions\DeleteAction::make(),
         ];
     }
 }

@@ -14,7 +14,7 @@ class Zone extends Model
     {
         return $this->belongsTo(State::class);
     }
-    // Relación con ZoneLocation
+   
     public function zoneLocations(): HasMany
     {
         return $this->hasMany(ZoneLocation::class);
@@ -23,6 +23,11 @@ class Zone extends Model
     public function customer()
     {
         return $this->hasMany(Customer::class);
+    }
+
+    public function zoneUser(): HasMany
+    {
+        return $this->hasMany(ZoneUser::class);
     }
 
 }
