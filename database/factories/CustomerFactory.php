@@ -25,7 +25,8 @@ class CustomerFactory extends Factory
            'phone'=>$this->faker->unique()->phoneNumber(),
            'birthday'=>$this->faker->dateTime(),
            'created_at'=>$this->faker->dateTime(),
-          'type'=>$this->faker->randomElement(['par', 'non'])
+          'type'=>$this->faker->randomElement(['par', 'non']),
+          
         ];
     }
 }

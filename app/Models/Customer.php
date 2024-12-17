@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
@@ -14,18 +15,21 @@ class Customer extends Model
         'alias', 'name', 'email', 'phone', 'avatar', 'address', 'state_id', 'birthday',
         'municipality_id', 'locality', 'zip_code', 'front_image', 'inside_image', 'coordinate', 
         'type', 'extra', 'is_visible', 'is_active', 'name_facturacion', 'razon_social', 'address_facturacion',
-        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id'
+        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id', 'zone_id'
     ];
 
-   public function user(){
+   public function user(): BelongsTo
+   {
         return $this->belongsTo(User::class);
     }
 
-    public function state(){
+    public function state(): BelongsTo
+    {
         return $this->belongsTo(State::class);
     }
 
-    public function municipality(){
+    public function municipality(): BelongsTo
+    {
         return $this->belongsTo(Municipality::class);
     }
 
@@ -37,5 +41,10 @@ class Customer extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
     }
 }

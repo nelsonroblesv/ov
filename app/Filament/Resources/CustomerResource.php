@@ -25,6 +25,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Get;
 use Filament\Notifications\Collection;
@@ -52,7 +53,7 @@ class CustomerResource extends Resource
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Clientes';
     protected static ?string $breadcrumb = "Clientes";
-    
+
 
     public static function form(Form $form): Form
     {
@@ -63,8 +64,13 @@ class CustomerResource extends Resource
                         ->schema([
 
                             Select::make('user_id')
-                               ->relationship('user', 'name')
+                                ->relationship('user', 'name')
                                 ->label('Registrado por:')
+                                ->required(),
+
+                            Select::make('zone_id')
+                                ->relationship('zone', 'name')
+                                ->label('Zona asignada:')
                                 ->required(),
 
                             TextInput::make('name')
@@ -100,7 +106,7 @@ class CustomerResource extends Resource
                             DatePicker::make('birthday')
                                 ->label('Fecha de nacimiento')
                                 ->suffixIcon('heroicon-m-cake')
-                               ->required(),
+                                ->required(),
 
                             Select::make('type')
                                 ->label('Tipo')
@@ -135,15 +141,15 @@ class CustomerResource extends Resource
                                 ->reactive()
                                 ->searchable()
                                 ->preload(),
-                                //->required()
-                               // ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
+                            //->required()
+                            // ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
 
                             Select::make('municipality_id')
                                 ->label('Municipio')
-                                ->options(function (callable $get){
+                                ->options(function (callable $get) {
                                     $stateId = $get('state_id');
 
-                                    if(!$stateId){
+                                    if (!$stateId) {
                                         return [];
                                     }
 
@@ -151,7 +157,7 @@ class CustomerResource extends Resource
                                         $query->where('state_id', $stateId);
                                     })->pluck('name', 'id');
                                 })
-                                ->disabled(function (callable $get){
+                                ->disabled(function (callable $get) {
                                     return !$get('state_id');
                                 })
                                 ->reactive()
@@ -261,11 +267,12 @@ class CustomerResource extends Resource
                             Section::make('Control')
                                 ->collapsible()
                                 ->schema([
-                                    Forms\Components\Toggle::make('is_visible')
+
+                                    Toggle::make('is_visible')
                                         ->label('Cliente Visible')
                                         ->default(true),
 
-                                    Forms\Components\Toggle::make('is_active')
+                                    Toggle::make('is_active')
                                         ->label('Cliente Activo')
                                         ->default(true)
                                 ])->icon('heroicon-o-adjustments-vertical')->columns(2),
@@ -291,6 +298,10 @@ class CustomerResource extends Resource
 
                 TextColumn::make('user.name')
                     ->label('Registrado por:')
+                    ->searchable(),
+
+                TextColumn::make('zone.name')
+                    ->label('Zona')
                     ->searchable(),
 
                 TextColumn::make('birthday')

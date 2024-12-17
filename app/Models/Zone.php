@@ -10,13 +10,19 @@ class Zone extends Model
 {
     protected $fillable = ['name', 'color', 'state_id'];
 
-    public function state()
+    public function state(): BelongsTo
     {
         return $this->belongsTo(State::class);
     }
     // Relación con ZoneLocation
-    public function zoneLocations()
+    public function zoneLocations(): HasMany
     {
         return $this->hasMany(ZoneLocation::class);
     }
+
+    public function customer()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
 }

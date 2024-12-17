@@ -13,12 +13,12 @@ class State extends Model
 
     protected $fillable = ['name'];
 
-    public function municipality()
+    public function municipality(): HasMany
     {
         return $this->hasMany(Municipality::class);
     }
     // Relación con Zone: Un estado tiene muchas zonas
-    public function zones()
+    public function zones(): HasMany
     {
         return $this->hasMany(Zone::class);
     }

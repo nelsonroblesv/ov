@@ -43,7 +43,9 @@ return new class extends Migration
             $table->enum('tipo_razon_social', ['Ninguna', 'Sociedad Anonima', 'Sociedad Civil'])
                         ->default('Ninguna')->nullable();
             $table->string('cfdi_document')->nullable();
+
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('zone_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 
