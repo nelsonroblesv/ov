@@ -131,6 +131,7 @@ class ZoneResource extends Resource
             'index' => Pages\ListZones::route('/'),
             'create' => Pages\CreateZone::route('/create'),
             'edit' => Pages\EditZone::route('/{record}/edit'),
+            'view' => Pages\ViewZone::route('/{record}'),
         ];
     }
 }
