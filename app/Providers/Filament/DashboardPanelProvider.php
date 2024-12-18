@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\CustomLogin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -27,10 +28,10 @@ class DashboardPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
-
-            ->login()
-            //->brandLogo(fn () => view('filament.logo'))
-            ->brandName('Osberth Valle')
+            ->login(CustomLogin::class)
+            ->profile()
+            ->brandLogo(fn () => view('filament.logo'))
+            //->brandName('Osberth Valle')
             ->favicon(asset('images/logo_ovalle.png'))
             ->colors([
                 'primary' => Color::Emerald,

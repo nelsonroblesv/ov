@@ -55,7 +55,14 @@ class UserResource extends Resource
                                 ->helperText('Nombre completo')
                                 ->required()
                                 ->suffixIcon('heroicon-m-user')
-                                ->columnSpanFull(),
+                                ->columns(2),
+
+                            TextInput::make('username')
+                                ->label('Username')
+                                ->helperText('Nombre de usuario (Unico)')
+                                ->required()
+                                ->suffixIcon('heroicon-m-user')
+                                ->columns(2),
 
                             DatePicker::make('birthday')
                                 ->label('Fecha de nacimiento')
@@ -67,7 +74,7 @@ class UserResource extends Resource
                             TextInput::make('email')
                                 ->label('Correo electrónico')
                                 ->helperText('Escribe tu correo')
-                                ->required()
+                                // ->required()
                                 ->email()
                                 ->suffixIcon('heroicon-m-at-symbol')
                                 ->columns(2),
@@ -97,7 +104,7 @@ class UserResource extends Resource
                                 ->circleCropper()
                                 ->directory('user-avatar'),
                         ])->columns(2),
-                        
+
                     Wizard\Step::make('Empresa')
                         ->schema([
                             TextInput::make('email_empresa')
@@ -147,24 +154,24 @@ class UserResource extends Resource
                                 ->offColor('danger')
                                 ->default(true),
 
-                                Section::make('')->schema([
-                                    Repeater::make('zoneUser')
-                                        ->label('Asignar Zona(s) a Usuario')
-                                        ->relationship()
-                                        ->schema([
-                                            Select::make('zone_id')
-                                                ->label('Zonas disponibles')
-                                                ->placeholder('Selecciona una zona')
-                                                ->options(Zone::query()->pluck('name', 'id'))
-                                                ->reactive()
-                                                ->searchable()
-                                                ->preload()
-                                                ->distinct()
-                                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                            ])
-                                            ->createItemButtonLabel('Agregar Zona')
-                                            ->columnSpanFull(),
-                                ])          
+                            Section::make('')->schema([
+                                Repeater::make('zoneUser')
+                                    ->label('Asignar Zona(s) a Usuario')
+                                    ->relationship()
+                                    ->schema([
+                                        Select::make('zone_id')
+                                            ->label('Zonas disponibles')
+                                            ->placeholder('Selecciona una zona')
+                                            ->options(Zone::query()->pluck('name', 'id'))
+                                            ->reactive()
+                                            ->searchable()
+                                            ->preload()
+                                            ->distinct()
+                                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ])
+                                    ->createItemButtonLabel('Agregar Zona')
+                                    ->columnSpanFull(),
+                            ])
                         ])->columns(2),
                     Wizard\Step::make('Expediente')
                         ->schema([
@@ -247,6 +254,10 @@ class UserResource extends Resource
                     ->label('Perfil'),
                 ColorColumn::make('color')
                     ->label('Color'),
+                TextColumn::make('username')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Username'),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()

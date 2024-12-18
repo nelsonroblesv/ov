@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         $user = new User();
         $user->name = 'Nelson Robles';
+        $user->username = 'NRobles';
         $user->email = 'nelsonroblesv@gmail.com';
         $user->phone = '9811320648';
         $user->role = 'Administrador';
@@ -30,6 +31,7 @@ class DatabaseSeeder extends Seeder
 
         $user = new User();
         $user->name = 'Osberh Valle';
+        $user->username = 'OValle';
         $user->email = 'admin@osberthvalle.com';
         $user->phone = '9811603253';
         $user->role = 'Administrador';
