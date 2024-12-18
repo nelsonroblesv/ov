@@ -103,6 +103,7 @@ class CategoryResource extends Resource
                             ->schema([
                                 Forms\Components\Toggle::make('is_active')
                                 ->label('¿Categoría Activa?')
+                                ->default(true)
                                 ->onIcon('heroicon-m-check')
                                 ->offIcon('heroicon-m-x-mark')
                                 ->onColor('success')
