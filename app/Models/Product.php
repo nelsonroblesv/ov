@@ -11,7 +11,7 @@ class Product extends Model
     //
     protected $fillable = [
         'name','slug','url','description','thumbnail','category_id', 'visibility','availability', 
-        'price', 'sku','shipping'
+        'price_distribuidor', 'price_salon', 'price_publico', 'sku','shipping'
     ];
 
     public function category() :BelongsTo

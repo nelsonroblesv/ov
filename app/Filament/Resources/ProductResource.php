@@ -8,11 +8,15 @@ use App\Models\Category;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -68,13 +72,38 @@ class ProductResource extends Resource
 
                 Section::make('Inventario')
                     ->schema([
-                        Forms\Components\TextInput::make('price')
+                        TextInput::make('price_distribuidor')
+                            ->label('Precio Distribuidor')
                             ->required()
                             ->numeric()
                             ->prefix('$')
-                            ->label('Precio'),
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set){
+                                $price_salon = $state * 1.7;
+                                $price_publico = $state * 2.4;
 
-                        Forms\Components\TextInput::make('sku')
+                                $set('price_salon', round($price_salon,2));
+                                $set('price_publico', round($price_publico,2));
+                            }),
+                            
+
+                        TextInput::make('price_salon')
+                            ->label('Precio Salon')
+                            ->required()
+                            ->numeric()
+                            ->prefix('$')
+                            ->disabled()
+                            ->dehydrated(),
+
+                        TextInput::make('price_publico')
+                            ->label('Precio Publico')
+                            ->required()
+                            ->numeric()
+                            ->prefix('$')
+                            ->disabled()
+                            ->dehydrated(),
+
+                        TextInput::make('sku')
                             ->required()
                             ->label('SKU')
                             ->maxLength(255),
@@ -91,6 +120,7 @@ class ProductResource extends Resource
                     ->schema([
                         Forms\Components\Toggle::make('visibility')
                             ->label('Visible')
+                            ->default(true)
                             ->onIcon('heroicon-m-eye')
                             ->offIcon('heroicon-m-eye-slash')
                             ->onColor('success')
@@ -98,6 +128,7 @@ class ProductResource extends Resource
 
                         Forms\Components\Toggle::make('availability')
                             ->label('Disponible')
+                            ->default(true)
                             ->onIcon('heroicon-m-check-circle')
                             ->offIcon('heroicon-m-no-symbol')
                             ->onColor('success')
@@ -105,6 +136,7 @@ class ProductResource extends Resource
 
                         Forms\Components\Toggle::make('shipping')
                             ->label('Para Envío')
+                            ->default(true)
                             ->onIcon('heroicon-m-truck')
                             ->offIcon('heroicon-m-no-symbol')
                             ->onColor('success')
@@ -116,56 +148,60 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Productos')
-        ->description('Gestion de Productos de la marca.')
+            ->heading('Productos')
+            ->description('Gestion de Productos de la marca.')
             ->columns([
-                Tables\Columns\ImageColumn::make('thumbnail')
+                ImageColumn::make('thumbnail')
                     ->label('Imagen'),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Producto')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('category.name')
+                TextColumn::make('category.name')
                     ->label('Familia')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('sku')
+                TextColumn::make('sku')
                     ->label('SKU')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
+                TextColumn::make('price_distribuidor')
+                    ->label('Distribuidor')
+                   // ->money()
                     ->sortable(),
-
-                Tables\Columns\IconColumn::make('visibility')
+                TextColumn::make('price_salon')
+                    ->label('Salon')
+                   // ->money()
+                    ->sortable(),
+                TextColumn::make('price_publico')
+                    ->label('Publico')
+                    //->money()
+                    ->sortable(),
+                IconColumn::make('visibility')
                     ->label('Visible')
                     ->boolean()
                     ->trueIcon('heroicon-o-eye')
                     ->falseIcon('heroicon-o-eye-slash')
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                Tables\Columns\IconColumn::make('availability')
+                IconColumn::make('availability')
                     ->label('Disponible')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-no-symbol')
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                Tables\Columns\IconColumn::make('shipping')
+                IconColumn::make('shipping')
                     ->label('Envío')
                     ->boolean()
                     ->trueIcon('heroicon-o-truck')
                     ->falseIcon('heroicon-o-no-symbol')
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
