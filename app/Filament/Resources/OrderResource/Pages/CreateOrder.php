@@ -14,7 +14,7 @@ class CreateOrder extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl('edit', ['record' => $this->record]);
     }
 
     protected function getCreatedNotification(): ?Notification
@@ -22,10 +22,9 @@ class CreateOrder extends CreateRecord
         return Notification::make()
             ->success()
             ->title('Pedido registrado')
-            ->body('Se ha registrado un nuevo Pedido de forma exitosa.')
+            ->body('Se ha registrado un nuevo Pedido, ahora ya puedes agregar productos.')
             ->icon('heroicon-o-check')
-            ->iconColor('success')
-            ->color('success');
+            ->iconColor('info')
+            ->color('info');
     }
-
 }
