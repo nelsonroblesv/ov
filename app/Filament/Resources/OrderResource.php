@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
+
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
@@ -20,6 +22,7 @@ use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
 use App\Models\OrderItem;
 use App\Models\Product;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
@@ -39,7 +42,7 @@ class OrderResource extends Resource
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Pedidos';
     protected static ?string $breadcrumb = "Pedidos";
-    
+
 
     public static function form(Form $form): Form
     {
@@ -89,54 +92,64 @@ class OrderResource extends Resource
 
                     Step::make('Productos')
                         ->schema([
-                            Repeater::make('items')
-                                ->relationship()
+                            Grid::make(1)
                                 ->schema([
-                                    Select::make('product_id')
-                                        ->relationship('product', 'name')
-                                        ->label('Productos')
-                                        ->preload()
-                                        ->searchable()
-                                        ->required()
-                                        ->reactive()
-                                        ->distinct()
-                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                        ->afterStateUpdated(fn($state, Set $set) =>
-                                        $set('unit_price', Product::find($state)?->price ?? 0))
-                                        ->afterStateUpdated(fn($state, Set $set) =>
-                                        $set('total_price', Product::find($state)?->price ?? 0))
-                                        ->columnSpanFull(),
+                                    TableRepeater::make('items')
+                                        ->relationship()
+                                        ->schema([
+                                            Select::make('product_id')
+                                                ->relationship('product', 'name')
+                                                ->label('Productos')
+                                                ->preload()
+                                                ->searchable()
+                                                ->required()
+                                                ->reactive()
+                                                ->distinct()
+                                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                                ->afterStateUpdated(fn($state, Set $set) =>
+                                                $set('price_publico', Product::find($state)?->price_publico ?? 0))
+                                                ->afterStateUpdated(fn($state, Set $set) =>
+                                                $set('total_price', Product::find($state)?->price_publico ?? 0)),
 
-                                    TextInput::make('quantity')
-                                        ->label('Cantidad')
-                                        ->numeric()
-                                        ->default(1)
-                                        ->minValue(1)
-                                        ->live()
-                                        ->dehydrated()
-                                        ->reactive()
-                                        ->required()
-                                        ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', $state * $get('unit_price'))),
+                                            TextInput::make('quantity')
+                                                ->label('Cantidad')
+                                                ->numeric()
+                                                ->default(1)
+                                                ->minValue(1)
+                                                ->live()
+                                                ->dehydrated()
+                                                ->reactive()
+                                                ->required()
+                                                ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', round($state * $get('price_publico'), 2))),
 
-                                    TextInput::make('unit_price')
-                                        ->label('Precio unitario')
-                                        ->disabled()
-                                        ->dehydrated()
-                                        ->numeric()
-                                        ->inputMode('decimal')
-                                        ->required()
-                                        ->extraInputAttributes(['style' => 'text-align:right']),
+                                            TextInput::make('price_publico')
+                                                ->label('Precio unitario')
+                                                ->disabled()
+                                                ->dehydrated()
+                                                ->numeric()
+                                                ->inputMode('decimal')
+                                                ->required()
+                                                ->extraInputAttributes(['style' => 'text-align:right']),
 
-                                    TextInput::make('total_price')
-                                        ->label('Precio total')
-                                        ->numeric()
-                                        ->inputMode('decimal')
-                                        ->disabled()
-                                        ->dehydrated()
-                                        ->prefixIcon('heroicon-m-currency-dollar')
-                                        ->prefixIconColor('success')
-                                        ->extraInputAttributes(['style' => 'text-align:right'])
-                                ])->columns(3),
+                                            TextInput::make('total_price')
+                                                ->label('Precio total')
+                                                ->numeric()
+                                                ->inputMode('decimal')
+                                                ->disabled()
+                                                ->dehydrated()
+                                                ->prefixIcon('heroicon-m-currency-dollar')
+                                                ->prefixIconColor('success')
+                                                ->extraInputAttributes(['style' => 'text-align:right'])
+                                        ])
+                                        ->defaultItems(1)
+                                        ->colStyles([
+                                            'quantity' => 'width: 100px;',
+                                            'price_publico' => 'width: 150px;',
+                                            'total_price' => 'width: 150px;',
+                                    ])
+                                    ->columnSpanFull()
+                                    ->extraAttributes(['style' => 'overflow-x: auto; display: block; white-space: nowrap;']), // Aquí se aplica el estilo para permitir el scroll horizontal
+                                ]),
 
                             Placeholder::make('grand_total')
                                 ->label('Total a pagar')
@@ -150,18 +163,17 @@ class OrderResource extends Resource
                                     }
 
                                     $set('grand_total', $total);
-                                    return  Number::currency($total, 'USD');
+                                    return  Number::currency($total, 'MXN');
                                 })
                                 ->extraAttributes(['style' => 'text-align:right']),
 
                             Hidden::make('grand_total')
                                 ->default(0),
 
+
                             MarkdownEditor::make('notes')
                                 ->columnSpanFull()
-
-                        ])->columnSpanFull(),
-
+                        ])
                 ])->columnSpanFull()
 
             ]);
@@ -206,7 +218,6 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('grand_total')
-                    ->money('USD')
                     ->label('Total'),
 
                 TextColumn::make('created_at')
@@ -214,12 +225,12 @@ class OrderResource extends Resource
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()

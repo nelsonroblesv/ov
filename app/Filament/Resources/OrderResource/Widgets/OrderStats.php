@@ -15,7 +15,7 @@ class OrderStats extends BaseWidget
             Stat::make('Ordenes Pendientes', Order::query()->where('status', 'pending')->count()),
             Stat::make('Ordenes en Proceso', Order::query()->where('status', 'processing')->count()),
             Stat::make('Ordenes Completadas', Order::query()->where('status', 'completed')->count()),
-            Stat::make('Total', Number::currency(Order::query()->sum('grand_total'), 'USD'))
+            Stat::make('Total', Number::currency(Order::query()->sum('grand_total'), 'MXN'))
             
         ];
     }
