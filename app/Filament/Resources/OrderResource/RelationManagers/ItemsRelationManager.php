@@ -81,6 +81,7 @@ class ItemsRelationManager extends RelationManager
                             ->prefixIconColor('success')
                             ->extraInputAttributes(['style' => 'text-align:right']), 
 
+                        /*    
                         Placeholder::make('grand_total')
                             ->label('Total a pagar')
                             ->content(function (Get $get, Set $set) {
@@ -96,7 +97,7 @@ class ItemsRelationManager extends RelationManager
 
                         Hidden::make('grand_total')
                             ->default(0),
-
+                        */
                     ])->columns(3),
 
             ]);
