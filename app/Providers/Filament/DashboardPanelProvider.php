@@ -31,6 +31,7 @@ class DashboardPanelProvider extends PanelProvider
             ->login(CustomLogin::class)
             ->profile()
             ->brandLogo(fn () => view('filament.logo'))
+            ->databaseNotifications()
             //->brandName('Osberth Valle')
             ->favicon(asset('images/logo_ovalle.png'))
             ->colors([

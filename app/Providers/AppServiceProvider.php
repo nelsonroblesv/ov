@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\PaymentObserver;
 use App\Models\Payment;
-
+use App\Observers\OrderObserver;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Payment::observe(PaymentObserver::class);
+        Order::observe(OrderObserver::class);
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
