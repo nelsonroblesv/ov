@@ -49,7 +49,9 @@ class PaymentResource extends Resource
                             ->icon('heroicon-o-user-circle')
                             ->schema([
                                 Select::make('customer_id')
-                                    ->options(Customer::all()->pluck('name', 'id')->toArray())
+                                    ->label('Cliente')
+                                    ->relationship('customer', 'name')                   
+                                    ->options(Customer::query()->whereHas('orders')->pluck('name', 'id'))
                                     ->searchable()
                                     ->reactive()
                                     ->preload()
@@ -58,6 +60,7 @@ class PaymentResource extends Resource
                                     ->afterStateUpdated(fn(callable $set) => $set('order_id', null)),
 
                                 Select::make('order_id')
+                                    ->label('No. Orden')
                                     ->options(fn(Get $get): Collection => Order::query()
                                         ->where('customer_id', $get('customer_id'))
                                         ->where([
@@ -72,6 +75,7 @@ class PaymentResource extends Resource
                                         ->required(),
 
                                 Select::make('type')
+                                    ->label('Tipo de pago')
                                         ->options([
                                            'cash' => PaymentTypeEnum::CASH->value,
                                            'transfer' => PaymentTypeEnum::TRANSFER->value
@@ -83,24 +87,28 @@ class PaymentResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Datos de Pago')
                         ->icon('heroicon-o-currency-dollar')
-                        ->live()
+                       // ->live()
                         ->schema([
                             Placeholder::make('grand_total')
                                 ->label('Saldo')
                                 ->content(
                                     function(Get $get, Set $set){
-                                        $total = 0;
-                                        $total = $get('order_id');
+                                      $total = 0;
+                                      
                                         $order = Order::find($get('order_id')) ?? 0;
                                         if($order){
-                                            $order = $order->grand_total;
+                                           if($order->grand_total)
+                                           {
+                                                $total = $order->grand_total;
+                                           }
                                         }
-                                        $set('grand_total', $order);
-                                    return Number::currency($order, 'USD');
+                                        $set('grand_total', $total);
+                                    return Number::currency($total, 'MXN');
                                     })
                                 ->extraAttributes(['style' => 'text-align:right']),
                             
                             Forms\Components\TextInput::make('amount')
+                                    ->label('Cantidad a pagar')
                                     ->required()
                                     ->minValue(1)
                                     ->numeric()
@@ -110,12 +118,14 @@ class PaymentResource extends Resource
                                     ->extraInputAttributes(['style' => 'text-align:right']),
 
                             Forms\Components\FileUpload::make('voucher')
+                                ->label('Comprobante de pago')
                                 ->image()
                                 ->required()
                                 ->imageEditor()
                                 ->directory('invoices-images'),
 
                             Forms\Components\Textarea::make('notes')
+                                ->label('Notas adicionales')
                                 ->columnSpanFull()
                         ])
                     ])
@@ -128,21 +138,11 @@ class PaymentResource extends Resource
         ->heading('Pagos')
         ->description('Administrador de realizados.')
             ->columns([
-                TextColumn::make('order.number')
-                    ->label('Num. Orden'),
-                TextColumn::make('customer.name')
-                    ->label('Cliente'),
-                TextColumn::make('amount')
-                    ->label('Cantidad')
-                    ->numeric()
-                    ->sortable()
-                    ->money('USD'),
-                TextColumn::make('order.grand_total')
-                    ->label('Saldo')
-                    ->numeric()
-                    ->money(),
-                TextColumn::make('type')
-                    ->label('Tipo de pago')
+                TextColumn::make('order.number')->label('Num. Orden'),
+                TextColumn::make('customer.name')->label('Cliente'),
+                TextColumn::make('amount')->label('Cantidad')->numeric()->sortable(),
+                TextColumn::make('order.grand_total')->label('Saldo'),
+                TextColumn::make('type')->label('Tipo de pago')
                     ->searchable()
                     ->sortable()
                     ->badge()
@@ -154,16 +154,12 @@ class PaymentResource extends Resource
                         'heroicon-o-credit-card' => 'transfer',
                         'heroicon-o-banknotes' => 'cash'
                     ]),
-                TextColumn::make('notes')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->label('Registro')
+                TextColumn::make('notes')->label('Notas')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Registro')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('voucher')
-                    ->label('Comprobante')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('voucher')->label('Comprobante')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
