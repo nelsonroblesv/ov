@@ -80,6 +80,7 @@ class ProductResource extends Resource
                             ->reactive()
                             ->dehydrated()
                             ->debounce(600)
+                            //->live(onBlur: true)
                             ->afterStateUpdated(function ($state, callable $set){
                                 $price_salon = $state * 1.7;
                                 $price_publico = $state * 2.4;

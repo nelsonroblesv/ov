@@ -59,6 +59,7 @@ class ItemsRelationManager extends RelationManager
                             ->reactive()
                             ->required()
                             ->debounce(600)
+                            //->live(onBlur: true)
                             ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', round($state * $get('price_publico'), 2))),
 
                         TextInput::make('price_publico')
@@ -118,7 +119,7 @@ class ItemsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->label('Agregar producto')
+                ->label('Agregar productos')
                 ->icon('heroicon-o-shopping-cart')
                 ->modalHeading('Agregar producto al Pedido')
                 ->modalSubmitActionLabel('Agregar')
