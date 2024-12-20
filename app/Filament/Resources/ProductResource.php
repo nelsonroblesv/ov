@@ -78,12 +78,14 @@ class ProductResource extends Resource
                             ->numeric()
                             ->prefix('$')
                             ->reactive()
+                            ->dehydrated()
+                            ->debounce(600)
                             ->afterStateUpdated(function ($state, callable $set){
                                 $price_salon = $state * 1.7;
                                 $price_publico = $state * 2.4;
 
-                                $set('price_salon', round($price_salon,2));
-                                $set('price_publico', round($price_publico,2));
+                               $set('price_salon', round($price_salon,2));
+                               $set('price_publico', round($price_publico,2));
                             }),
                             
 

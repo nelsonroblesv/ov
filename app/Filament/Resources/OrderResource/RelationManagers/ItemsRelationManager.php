@@ -58,6 +58,7 @@ class ItemsRelationManager extends RelationManager
                             ->dehydrated()
                             ->reactive()
                             ->required()
+                            ->debounce(600)
                             ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', round($state * $get('price_publico'), 2))),
 
                         TextInput::make('price_publico')
@@ -77,7 +78,7 @@ class ItemsRelationManager extends RelationManager
                             ->dehydrated()
                             ->prefixIcon('heroicon-m-currency-dollar')
                             ->prefixIconColor('success')
-                            ->extraInputAttributes(['style' => 'text-align:right']),
+                            ->extraInputAttributes(['style' => 'text-align:right']), 
 
                         Placeholder::make('grand_total')
                             ->label('Total a pagar')
