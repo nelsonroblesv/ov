@@ -52,8 +52,8 @@ class EditOrder extends EditRecord
     protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
-            ->label('Cancelar')
-            ->icon('heroicon-o-x-mark')
+            ->label('Regresar')
+            ->icon('heroicon-o-arrow-uturn-left')
             ->color('gray');
     }
 

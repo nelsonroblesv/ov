@@ -55,7 +55,6 @@ class ItemsRelationManager extends RelationManager
                             ->numeric()
                             ->default(1)
                             ->minValue(1)
-                            ->live()
                             ->dehydrated()
                             ->reactive()
                             ->required()
@@ -85,7 +84,7 @@ class ItemsRelationManager extends RelationManager
                             ->content(function (Get $get, Set $set) {
                                 $total = 0;
 
-                                $total = $get('quantity') * $get('price_publico');
+                                $total = intval($get('quantity')) * $get('price_publico');
 
                                 $set('grand_total', $total);
                                 return  Number::currency($total, 'MXN');
@@ -143,7 +142,10 @@ class ItemsRelationManager extends RelationManager
                             ->icon('heroicon-o-check')
                             ->iconColor('success')
                             ->color('success')
-                    ),
+                    )
+                    ->modalHeading('Editar Producto')
+                    ->modalDescription('Puedes editar los detalles del producto en el Pedido'),
+
                 Tables\Actions\DeleteAction::make()
                     ->successNotification(
                         Notification::make()
@@ -153,7 +155,10 @@ class ItemsRelationManager extends RelationManager
                             ->icon('heroicon-o-trash')
                             ->iconColor('danger')
                             ->color('danger')
-                    ),
+                    )
+                    ->modalHeading('Borrar Producto')
+                    ->modalDescription('Estas seguro que deseas eliminar este producto del Pedido? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

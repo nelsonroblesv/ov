@@ -90,7 +90,7 @@ class OrderResource extends Resource
                                 ->columnSpanFull(),
                         ])->columns(2),
 
-                    Step::make('Informacionn del Pedido')
+                    Step::make('Informacion del Pedido')
                         ->schema([
                             MarkdownEditor::make('notes')
                                 ->columnSpanFull()
@@ -103,8 +103,8 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->heading('Ordenes')
-            ->description('Gestion de ordenes.')
+            ->heading('Pedidos')
+            ->description('Gestion de Pedidos.')
             ->columns([
                 TextColumn::make('number')
                     ->label('Num. Orden')
@@ -115,6 +115,11 @@ class OrderResource extends Resource
                     ->label('Cliente')
                     ->sortable()
                     ->searchable(),
+
+                TextColumn::make('created_at')
+                    ->label('Fecha')
+                    ->date()
+                    ->sortable(),
 
                 TextColumn::make('status')
                     ->searchable()
@@ -140,12 +145,6 @@ class OrderResource extends Resource
 
                 TextColumn::make('grand_total')
                     ->label('Total'),
-
-                TextColumn::make('created_at')
-                    ->label('Fecha de Orden')
-                    ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
                     ->dateTime()
