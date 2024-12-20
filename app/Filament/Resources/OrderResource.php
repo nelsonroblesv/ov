@@ -22,7 +22,6 @@ use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Models\OrderItem;
-use App\Models\Product;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -93,73 +92,6 @@ class OrderResource extends Resource
 
                     Step::make('Informacionn del Pedido')
                         ->schema([
-                         /*   Repeater::make('items')
-                                ->relationship()
-                                ->schema([
-                                    Select::make('product_id')
-                                        ->relationship('product', 'name')
-                                        ->label('Productos')
-                                        ->preload()
-                                        ->searchable()
-                                        ->required()
-                                        ->reactive()
-                                        ->distinct()
-                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                        ->afterStateUpdated(fn($state, Set $set) =>
-                                        $set('price_publico', Product::find($state)?->price_publico ?? 0))
-                                        ->afterStateUpdated(fn($state, Set $set) =>
-                                        $set('total_price', Product::find($state)?->price_publico ?? 0)),
-
-                                    TextInput::make('quantity')
-                                        ->label('Cantidad')
-                                        ->numeric()
-                                        ->default(1)
-                                        ->minValue(1)
-                                        ->live()
-                                        ->dehydrated()
-                                        ->reactive()
-                                        ->required()
-                                        ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', round($state * $get('price_publico'), 2))),
-
-                                    TextInput::make('price_publico')
-                                        ->label('Precio unitario')
-                                        ->disabled()
-                                        ->dehydrated()
-                                        ->numeric()
-                                        ->inputMode('decimal')
-                                        ->required()
-                                        ->extraInputAttributes(['style' => 'text-align:right']),
-
-                                    TextInput::make('total_price')
-                                        ->label('Precio total')
-                                        ->numeric()
-                                        ->inputMode('decimal')
-                                        ->disabled()
-                                        ->dehydrated()
-                                        ->prefixIcon('heroicon-m-currency-dollar')
-                                        ->prefixIconColor('success')
-                                        ->extraInputAttributes(['style' => 'text-align:right'])
-                                ]),
-*/
-                              /*  Placeholder::make('grand_total')
-                                ->label('Total a pagar')
-                                ->content(function (Get $get, Set $set) {
-                                    $total = 0;
-                                    if (!$repeaters = $get('items')) {
-                                        return $total;
-                                    }
-                                    foreach ($repeaters as $key => $repeater) {
-                                        $total += $get("items.{$key}.total_price");
-                                    }
-
-                                    $set('grand_total', $total);
-                                    return  Number::currency($total, 'MXN');
-                                })
-                                ->extraAttributes(['style' => 'text-align:right']),
-
-                            Hidden::make('grand_total')
-                                ->default(0),
-*/
                             MarkdownEditor::make('notes')
                                 ->columnSpanFull()
                         ])
@@ -232,7 +164,7 @@ class OrderResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
+                    Tables\Actions\DeleteAction::make(),
                 ])
             ])
             ->bulkActions([

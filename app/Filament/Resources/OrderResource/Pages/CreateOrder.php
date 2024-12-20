@@ -4,8 +4,10 @@ namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\IconPosition;
 
 class CreateOrder extends CreateRecord
 {
@@ -27,4 +29,33 @@ class CreateOrder extends CreateRecord
             ->iconColor('info')
             ->color('info');
     }
+
+    // Customise the "Create" button
+    protected function getCreateFormAction(): Action
+    {
+        return parent::getCreateFormAction()
+            ->label('Registrar Pedido')
+            ->icon('heroicon-o-shopping-bag')
+            ->iconPosition(IconPosition::Before)
+            ->color('success');;
+    }
+
+   // Customise the "Create & Create Another" button
+   protected function getCreateAnotherFormAction(): Action
+   {
+       return parent::getCreateAnotherFormAction()
+           //->label('Save & Create Another')
+           //->icon('heroicon-o-plus-circle')
+           //->iconPosition(IconPosition::Before);
+           ->hidden();
+   }
+
+   // Customise the "Cancel" button
+   protected function getCancelFormAction(): Action
+   {
+       return parent::getCancelFormAction()
+           ->label('Regresar')
+           ->icon('heroicon-o-arrow-uturn-left')
+           ->color('gray');
+   }
 }

@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
 use App\Models\Product;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -17,6 +19,7 @@ use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\CreateAction as ActionsCreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -115,20 +118,20 @@ class ItemsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Agregar producto')
-                    ->icon('heroicon-o-shopping-cart')
-                    ->modalHeading('Agregar producto al Pedido')
-                    //->modalSubmitActionLabel('Agregar')
-                   // ->createAnother(false)
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Producto agregado')
-                            ->body('Puedes seguir agregando productos al Pedido.')
-                            ->icon('heroicon-o-check')
-                            ->iconColor('success')
-                            ->color('success')
-                    )
+                ->label('Agregar producto')
+                ->icon('heroicon-o-shopping-cart')
+                ->modalHeading('Agregar producto al Pedido')
+                ->modalSubmitActionLabel('Agregar')
+               // ->createAnother(false)
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Producto agregado')
+                        ->body('Puedes seguir agregando productos al Pedido.')
+                        ->icon('heroicon-o-check')
+                        ->iconColor('success')
+                        ->color('success')
+                )
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
