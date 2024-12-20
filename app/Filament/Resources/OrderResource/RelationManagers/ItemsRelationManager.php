@@ -58,8 +58,8 @@ class ItemsRelationManager extends RelationManager
                             ->dehydrated()
                             ->reactive()
                             ->required()
-                            ->debounce(600)
-                            //->live(onBlur: true)
+                            //->debounce(600)
+                            ->live(onBlur: true)
                             ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', round($state * $get('price_publico'), 2))),
 
                         TextInput::make('price_publico')
