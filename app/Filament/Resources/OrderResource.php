@@ -169,7 +169,7 @@ class OrderResource extends Resource
                         Notification::make()
                             ->success()
                             ->title('Pedido eliminado')
-                            ->body('El Pedido ha sido eliminado.')
+                            ->body('El Pedido ha sido eliminado del sistema.')
                             ->icon('heroicon-o-trash')
                             ->iconColor('danger')
                             ->color('danger')
@@ -186,7 +186,7 @@ class OrderResource extends Resource
                         Notification::make()
                             ->success()
                             ->title('Registros eliminados')
-                            ->body('Los Registros han sido eliminados.')
+                            ->body('Los registros seleccionados han sido eliminados.')
                             ->icon('heroicon-o-trash')
                             ->iconColor('danger')
                             ->color('danger')
@@ -225,5 +225,5 @@ class OrderResource extends Resource
         return static::getModel()::where('status', '-', 'pending')->count() > 1 ? 'success' : 'info';
     }
 
-    protected static ?string $navigationBadgeTooltip = 'Ordenes Pendientes';
+    protected static ?string $navigationBadgeTooltip = 'Pedidos Pendientes';
 }

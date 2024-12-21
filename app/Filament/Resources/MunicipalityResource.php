@@ -62,19 +62,34 @@ class MunicipalityResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                ->successNotification(
-                    Notification::make()
-                         ->success()
-                         ->title('Municipio eliminado')
-                         ->body('Se ha eliminado un registro.')
-                         ->icon('heroicon-o-x-mark')
-                         ->iconColor('danger')
-                         ->color('danger'),
-                )
-            ])
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Municipio eliminado')
+                            ->body('El Municipio ha sido eliminado  del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Municipio')
+                    ->modalDescription('Estas seguro que deseas eliminar este Municipio? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Municipios')
+                    ->modalDescription('Estas seguro que deseas eliminar los Municipios seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

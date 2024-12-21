@@ -12,6 +12,22 @@ class OrderItemObserver
      */
     public function created(OrderItem $orderItem): void
     {
+        $existingItem = OrderItem::where('order_id', $orderItem->order_id)
+        ->where('product_id', $orderItem->product_id)
+        ->where('id', '!=', $orderItem->id) // Excluye el registro actual
+        ->first();
+
+    if ($existingItem) {
+        // Actualizar cantidad y total en el registro existente
+        $existingItem->quantity += $orderItem->quantity;
+        $existingItem->total_price += $orderItem->total_price;
+        $existingItem->save();
+
+        // Eliminar el nuevo registro para evitar duplicados
+        $orderItem->delete();
+    }
+
+
         $this->updateOrderTotal($orderItem->order_id);
     }
 
@@ -28,7 +44,7 @@ class OrderItemObserver
      */
     public function deleted(OrderItem $orderItem): void
     {
-        //
+        $this->updateOrderTotal($orderItem->order_id);
     }
 
     /**

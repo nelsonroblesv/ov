@@ -58,19 +58,34 @@ class StateResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                ->successNotification(
-                    Notification::make()
-                         ->success()
-                         ->title('Estado eliminado')
-                         ->body('Se ha eliminado un registro.')
-                         ->icon('heroicon-o-x-mark')
-                         ->iconColor('danger')
-                         ->color('danger'),
-                )
-            ])
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Estado eliminado')
+                            ->body('El Estado ha sido eliminado  del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Estado')
+                    ->modalDescription('Estas seguro que deseas eliminar este Estado? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Pedidos')
+                    ->modalDescription('Estas seguro que deseas eliminar los Estados seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
