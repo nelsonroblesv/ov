@@ -27,7 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Payment::observe(PaymentObserver::class);
-        Order::observe(OrderObserver::class);
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
