@@ -17,6 +17,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -45,26 +46,35 @@ class CustomerResource extends Resource
         return $form
             ->schema([
                 Wizard::make([
-                    Wizard\Step::make('Informacion Personal')
+                    Wizard\Step::make('Basicos')
+                        ->description('Informacion Personal')
                         ->schema([
+                            
                          Hidden::make('user_id')->default(fn() => auth()->id()),
+
+                            Select::make('zone_id')
+                                ->relationship('zone', 'name')
+                                ->label('Zona asignada:')
+                                ->required(),
 
                             TextInput::make('name')
                                 ->label('Nombre completo')
-                               // ->required()
+                                ->required()
                                 ->maxLength(255)
+                                ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user'),
 
                             TextInput::make('alias')
                                 ->label('Alias')
                                 //->required()
                                 ->maxLength(255)
+                                ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user-circle'),
 
                             TextInput::make('email')
                                 ->label('Correo electrónico')
                                 ->email()
-                              //  ->required()
+                                ->required()
                                 ->unique(ignoreRecord: true)
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-at-symbol'),
@@ -72,17 +82,19 @@ class CustomerResource extends Resource
                             TextInput::make('phone')
                                 ->label('Teléfono')
                                 ->tel()
-                               // ->required()
+                                ->required()
                                 ->unique(ignoreRecord: true)
                                 ->maxLength(50)
                                 ->suffixIcon('heroicon-m-phone'),
 
                             DatePicker::make('birthday')
                                 ->label('Fecha de nacimiento')
-                                ->suffixIcon('heroicon-m-cake'),
+                                ->suffixIcon('heroicon-m-cake')
+                                ->required(),
 
                             Select::make('type')
                                 ->label('Tipo')
+                                ->required()
                                 ->options([
                                     'par' => 'Par',
                                     'non' => 'Non'
@@ -92,11 +104,13 @@ class CustomerResource extends Resource
                                 ->label('Avatar')
                                 ->image()
                                 ->avatar()
+                                ->imageEditor()
                                 ->circleCropper()
                                 ->directory('customer-avatar')
                         ])->columns(2),
 
-                    Wizard\Step::make('Informacion del establecimiento')
+                    Wizard\Step::make('Negocio')
+                        ->description('Informacion del establecimiento')
                         ->schema([
                             TextInput::make('address')
                                 ->label('Dirección')
@@ -107,29 +121,34 @@ class CustomerResource extends Resource
                                 ->columnSpanFull(),
 
                             Select::make('state_id')
-                                ->options(State::all()->pluck('name', 'id')->toArray())
                                 ->label('Estado')
-                                ->searchable()
+                                ->options(State::query()->pluck('name', 'id'))
                                 ->reactive()
-                                ->preload()
-                                ->live()
-                                //->required()
-                                ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
+                                ->searchable()
+                                ->preload(),
+                            //->required()
+                            // ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
 
                             Select::make('municipality_id')
+                                ->label('Municipio')
                                 ->options(function (callable $get) {
-                                    $estado = State::find($get('state_id'));
-                                    if (!$estado) {
-                                        return Municipality::all()->pluck('name', 'id');
+                                    $stateId = $get('state_id');
+
+                                    if (!$stateId) {
+                                        return [];
                                     }
-                                    return $estado->municipality->pluck('name', 'id');
+
+                                    return Municipality::whereHas('state', function ($query) use ($stateId) {
+                                        $query->where('state_id', $stateId);
+                                    })->pluck('name', 'id');
+                                })
+                                ->disabled(function (callable $get) {
+                                    return !$get('state_id');
                                 })
                                 ->reactive()
-                                ->label('Municipio')
                                 //  ->required()
                                 ->searchable()
-                                ->preload()
-                                ->live(),
+                                ->preload(),
 
                             TextInput::make('locality')
                                 //  ->required()
@@ -178,56 +197,62 @@ class CustomerResource extends Resource
                                 ])->icon('heroicon-o-information-circle')
                         ])->columns(2),
 
-                    Wizard\Step::make('Datos de Facturacion')
+                    Wizard\Step::make('Fiscales')
+                        ->description('Datos de facturacion')
                         ->schema([
-                            TextInput::make('name_facturacion')
-                                ->label('Nombre')
-                                //   ->required()
-                                ->suffixIcon('heroicon-m-user-circle'),
+                            Section::make('Cliente con facturacion')
+                                ->description('Despliega unicamente si el cliente cuenta con datos de facturacion')
+                                ->schema([
+                                TextInput::make('name_facturacion')
+                                    ->label('Nombre')
+                                    //   ->required()
+                                    ->suffixIcon('heroicon-m-user-circle'),
 
-                            TextInput::make('razon_social')
-                                ->label('Razon Social')
-                                //   ->required()
-                                ->suffixIcon('heroicon-m-building-library'),
+                                TextInput::make('razon_social')
+                                    ->label('Razon Social')
+                                    //   ->required()
+                                    ->suffixIcon('heroicon-m-building-library'),
 
-                            TextInput::make('address_facturacion')
-                                ->label('Direccion')
-                                //   ->required()
-                                ->suffixIcon('heroicon-m-map-pin'),
+                                TextInput::make('address_facturacion')
+                                    ->label('Direccion')
+                                    //   ->required()
+                                    ->suffixIcon('heroicon-m-map-pin'),
 
-                            TextInput::make('postal_code_facturacion')
-                                ->label('Codigo Postal')
-                                ->numeric()
-                                //   ->required()
-                                ->suffixIcon('heroicon-m-hashtag'),
+                                TextInput::make('postal_code_facturacion')
+                                    ->label('Codigo Postal')
+                                    ->numeric()
+                                    //   ->required()
+                                    ->suffixIcon('heroicon-m-hashtag'),
 
-                            Select::make('tipo_cfdi')
-                                ->label('Tipo de CFDI')
-                                ->options([
-                                    'Ingreso' => CfdiTypeEnum::INGRESO->value,
-                                    'Egreso' => CfdiTypeEnum::EGRESO->value,
-                                    'Traslado' => CfdiTypeEnum::TRASLADO->value,
-                                    'Nomina' => CfdiTypeEnum::NOMINA->value
-                                ])
-                                ->suffixIcon('heroicon-m-document-text'),
+                                Select::make('tipo_cfdi')
+                                    ->label('Tipo de CFDI')
+                                    ->options([
+                                        'Ingreso' => CfdiTypeEnum::INGRESO->value,
+                                        'Egreso' => CfdiTypeEnum::EGRESO->value,
+                                        'Traslado' => CfdiTypeEnum::TRASLADO->value,
+                                        'Nomina' => CfdiTypeEnum::NOMINA->value
+                                    ])
+                                    ->suffixIcon('heroicon-m-document-text'),
 
-                            Select::make('tipo_razon_social')
-                                ->label('Tipo de Razon Social')
-                                ->options([
-                                    'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
-                                    'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
-                                ])
-                                ->suffixIcon('heroicon-m-document-text'),
+                                Select::make('tipo_razon_social')
+                                    ->label('Tipo de Razon Social')
+                                    ->options([
+                                        'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
+                                        'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
+                                    ])
+                                    ->suffixIcon('heroicon-m-document-text'),
 
-                            FileUpload::make('cfdi_document')
-                                ->columnSpanFull()
-                                ->label('CFDI')
-                                ->helperText('Carga un CFDI en formato PDF')
-                                //   ->required()
-                                ->directory('customer-cfdi'),
+                                FileUpload::make('cfdi_document')
+                                    ->columnSpanFull()
+                                    ->label('CFDI')
+                                    ->helperText('Carga un CFDI en formato PDF')
+                                    //   ->required()
+                                    ->directory('customer-cfdi')
+                            ])->collapsed()
 
-                        ])->columns(2),
-                ])->columnSpanFull(),
+                        ])->columns(2),                            
+                               
+                ])->columnSpanFull()
             ]);
     }
 
