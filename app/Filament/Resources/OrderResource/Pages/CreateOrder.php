@@ -63,7 +63,6 @@ class CreateOrder extends CreateRecord
 
    protected function mutateFormDataBeforeCreate(array $data): array
    {
-    
     $recipient = auth()->user();
 
     Notification::make()
