@@ -27,7 +27,8 @@ class DashboardPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('dashboard')
-            ->path('dashboard')
+           // ->domain('dashboard.osberthvalle.com')
+            ->path('')
             ->login(CustomLogin::class)
             ->profile()
             ->brandLogo(fn () => view('filament.logo'))

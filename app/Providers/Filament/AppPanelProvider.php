@@ -27,6 +27,7 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login(CustomLogin::class)
+            //->domain('app.osberthvalle.com')
             ->profile()
             ->brandLogo(fn () => view('filament.logo'))
             ->databaseNotifications()
