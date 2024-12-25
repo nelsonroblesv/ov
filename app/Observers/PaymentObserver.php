@@ -14,16 +14,15 @@ class PaymentObserver
     {
         //
         $order = Order::where('id', $payment->order_id)->first();
-        
-        
+
+
         $order->grand_total = $order->grand_total -  $payment->amount;
 
-        if($order->grand_total == 0){
+        if ($order->grand_total == 0) {
             $order->status = 'completed';
         }
 
-       $order->save();
-
+        $order->save();
     }
 
     /**
@@ -39,7 +38,11 @@ class PaymentObserver
      */
     public function deleted(Payment $payment): void
     {
-        //
+        $amount = $payment->amount;
+        $order = Order::where('id', $payment->order_id)->first();
+        $order->grand_total = $order->grand_total + $amount;
+        $order->status = 'pending';
+        $order->save();
     }
 
     /**

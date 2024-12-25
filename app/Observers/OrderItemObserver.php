@@ -14,19 +14,16 @@ class OrderItemObserver
     {
         $existingItem = OrderItem::where('order_id', $orderItem->order_id)
         ->where('product_id', $orderItem->product_id)
-        ->where('id', '!=', $orderItem->id) // Excluye el registro actual
+        ->where('id', '!=', $orderItem->id)
         ->first();
 
-    if ($existingItem) {
-        // Actualizar cantidad y total en el registro existente
-        $existingItem->quantity += $orderItem->quantity;
-        $existingItem->total_price += $orderItem->total_price;
-        $existingItem->save();
+        if ($existingItem) {
+            $existingItem->quantity += $orderItem->quantity;
+            $existingItem->total_price += $orderItem->total_price;
+            $existingItem->save();
 
-        // Eliminar el nuevo registro para evitar duplicados
-        $orderItem->delete();
-    }
-
+            $orderItem->delete();
+        }
 
         $this->updateOrderTotal($orderItem->order_id);
     }
