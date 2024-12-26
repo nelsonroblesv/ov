@@ -28,11 +28,9 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('')
             ->login(CustomLogin::class)
-            //->domain('app.osberthvalle.com')
             ->profile()
             ->brandLogo(fn () => view('filament.logo'))
             ->databaseNotifications()
-            //->brandName('Osberth Valle')
             ->favicon(asset('images/logo_ovalle.png'))
             ->colors([
                 'primary' => Color::Amber,
