@@ -49,7 +49,7 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 NavigationItem::make('Panel de Usuario')
-                    ->url('app.osberthvalle.com', shouldOpenInNewTab: true)
+                    ->url('/', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-eye')
             ])
             ->middleware([
