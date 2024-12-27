@@ -83,7 +83,7 @@ class StateResource extends Resource
                             ->iconColor('danger')
                             ->color('danger')
                     )
-                    ->modalHeading('Borrar Pedidos')
+                    ->modalHeading('Borrar Estados')
                     ->modalDescription('Estas seguro que deseas eliminar los Estados seleccionados? Esta acción no se puede deshacer.')
                     ->modalSubmitActionLabel('Si, eliminar'),
                 ]),

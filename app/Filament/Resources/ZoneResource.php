@@ -97,7 +97,7 @@ class ZoneResource extends Resource
     {
         return $table
             ->heading('Zonas')
-            ->description('Gestion de zonas del sistema.')
+            ->description('Gestion de Zonas del sistema.')
             ->columns([
                 ColorColumn::make('color')->label('Color'),
                 TextColumn::make('name')->label('Nombre'),
