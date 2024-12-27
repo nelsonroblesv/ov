@@ -53,6 +53,7 @@ class OrderResource extends Resource
                     Step::make('Detalles del Pedido')
                         ->schema([
                             Forms\Components\Select::make('customer_id')
+                                ->label('Cliente')
                                 ->relationship('customer', 'name')
                                 ->disabledOn('edit')
                                 ->searchable()
@@ -60,6 +61,7 @@ class OrderResource extends Resource
                                 ->required(),
 
                             Forms\Components\TextInput::make('number')
+                                ->label('Numero de Orden')
                                 ->required()
                                 ->disabled()
                                 ->default('OR-' . random_int(100000, 9999999))
@@ -67,6 +69,7 @@ class OrderResource extends Resource
                                 ->maxLength(255),
 
                             Forms\Components\ToggleButtons::make('status')
+                                ->label('Estado del Pedido')
                                 ->required()
                                 ->inline()
                                 ->options([

@@ -21,8 +21,6 @@ class CreateOrder extends CreateRecord
 
     protected function getCreatedNotification(): ?Notification
     {
-        $recipient = auth()->user();
-
         return Notification::make()
             ->success()
             ->title('Pedido registrado')
@@ -67,7 +65,7 @@ class CreateOrder extends CreateRecord
 
     Notification::make()
         ->title('Nuevo Pedido')
-       ->body("**Se ha registrado un nuevo Pedido**")
+        ->body("**Se ha registrado un nuevo Pedido**")
         ->sendToDatabase($recipient);
         return $data;
    }
