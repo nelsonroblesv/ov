@@ -182,6 +182,7 @@ class CustomerResource extends Resource
                             TextInput::make('coordinate')
                                 ->label('Coordenadas Google Maps')
                                 ->helperText('Formato: 20.1845751, -90.1334567')
+                                ->unique()
                                 //   ->required()
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map-pin'),
