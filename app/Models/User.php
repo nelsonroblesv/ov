@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable;
     /**
@@ -58,6 +58,15 @@ class User extends Authenticatable implements FilamentUser
  
         return true;
     }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return "/".$this->avatar;
+    }
+
+
+    /************************** Relationships **************************/
+
 
     public function customers(): HasMany
     {
