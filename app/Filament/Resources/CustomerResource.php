@@ -35,6 +35,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter as FiltersFilter;
 use Filament\Tables\Table;
 use GuzzleHttp\Psr7\UploadedFile;
@@ -222,52 +223,52 @@ class CustomerResource extends Resource
                             Section::make('Cliente con facturacion')
                                 ->description('Despliega unicamente si el cliente cuenta con datos de facturacion')
                                 ->schema([
-                                TextInput::make('name_facturacion')
-                                    ->label('Nombre')
-                                    //   ->required()
-                                    ->suffixIcon('heroicon-m-user-circle'),
+                                    TextInput::make('name_facturacion')
+                                        ->label('Nombre')
+                                        //   ->required()
+                                        ->suffixIcon('heroicon-m-user-circle'),
 
-                                TextInput::make('razon_social')
-                                    ->label('Razon Social')
-                                    //   ->required()
-                                    ->suffixIcon('heroicon-m-building-library'),
+                                    TextInput::make('razon_social')
+                                        ->label('Razon Social')
+                                        //   ->required()
+                                        ->suffixIcon('heroicon-m-building-library'),
 
-                                TextInput::make('address_facturacion')
-                                    ->label('Direccion')
-                                    //   ->required()
-                                    ->suffixIcon('heroicon-m-map-pin'),
+                                    TextInput::make('address_facturacion')
+                                        ->label('Direccion')
+                                        //   ->required()
+                                        ->suffixIcon('heroicon-m-map-pin'),
 
-                                TextInput::make('postal_code_facturacion')
-                                    ->label('Codigo Postal')
-                                    ->numeric()
-                                    //   ->required()
-                                    ->suffixIcon('heroicon-m-hashtag'),
+                                    TextInput::make('postal_code_facturacion')
+                                        ->label('Codigo Postal')
+                                        ->numeric()
+                                        //   ->required()
+                                        ->suffixIcon('heroicon-m-hashtag'),
 
-                                Select::make('tipo_cfdi')
-                                    ->label('Tipo de CFDI')
-                                    ->options([
-                                        'Ingreso' => CfdiTypeEnum::INGRESO->value,
-                                        'Egreso' => CfdiTypeEnum::EGRESO->value,
-                                        'Traslado' => CfdiTypeEnum::TRASLADO->value,
-                                        'Nomina' => CfdiTypeEnum::NOMINA->value
-                                    ])
-                                    ->suffixIcon('heroicon-m-document-text'),
+                                    Select::make('tipo_cfdi')
+                                        ->label('Tipo de CFDI')
+                                        ->options([
+                                            'Ingreso' => CfdiTypeEnum::INGRESO->value,
+                                            'Egreso' => CfdiTypeEnum::EGRESO->value,
+                                            'Traslado' => CfdiTypeEnum::TRASLADO->value,
+                                            'Nomina' => CfdiTypeEnum::NOMINA->value
+                                        ])
+                                        ->suffixIcon('heroicon-m-document-text'),
 
-                                Select::make('tipo_razon_social')
-                                    ->label('Tipo de Razon Social')
-                                    ->options([
-                                        'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
-                                        'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
-                                    ])
-                                    ->suffixIcon('heroicon-m-document-text'),
+                                    Select::make('tipo_razon_social')
+                                        ->label('Tipo de Razon Social')
+                                        ->options([
+                                            'Sociedad Anonima' => SociedadTypeEnum::S_ANONIMA->value,
+                                            'Sociedad Civil' => SociedadTypeEnum::S_CIVIL->value,
+                                        ])
+                                        ->suffixIcon('heroicon-m-document-text'),
 
-                                FileUpload::make('cfdi_document')
-                                    ->columnSpanFull()
-                                    ->label('CFDI')
-                                    ->helperText('Carga un CFDI en formato PDF')
-                                    //   ->required()
-                                    ->directory('customer-cfdi')
-                            ])->collapsed()
+                                    FileUpload::make('cfdi_document')
+                                        ->columnSpanFull()
+                                        ->label('CFDI')
+                                        ->helperText('Carga un CFDI en formato PDF')
+                                        //   ->required()
+                                        ->directory('customer-cfdi')
+                                ])->collapsed()
 
                         ])->columns(2),
 
@@ -282,10 +283,14 @@ class CustomerResource extends Resource
                                         ->label('Cliente Visible')
                                         ->default(true),
 
+                                    Toggle::make('is_preferred')
+                                        ->label('Cliente Preferred')
+                                        ->default(false),
+
                                     Toggle::make('is_active')
                                         ->label('Cliente Activo')
                                         ->default(true)
-                                ])->icon('heroicon-o-adjustments-vertical')->columns(2),
+                                ])->icon('heroicon-o-adjustments-vertical')->columns(3),
 
                         ])->columns(2),
                 ])->columnSpanFull(),
@@ -306,6 +311,10 @@ class CustomerResource extends Resource
                     ->label('Nombre')
                     ->searchable(),
 
+                ToggleColumn::make('is_preferred')
+                    ->label('Preferred')
+                    ->sortable(),
+
                 TextColumn::make('user.name')
                     ->label('Registrado por:')
                     ->searchable(),
@@ -318,7 +327,8 @@ class CustomerResource extends Resource
                     ->label('Fecha de nacimiento')
                     ->date()
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('alias')
                     ->label('Alias')
@@ -415,35 +425,35 @@ class CustomerResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Cliente eliminado')
-                            ->body('El Cliente ha sido eliminado  del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Cliente')
-                    ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Cliente eliminado')
+                                ->body('El Cliente ha sido eliminado  del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Cliente')
+                        ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Clientes')
-                    ->modalDescription('Estas seguro que deseas eliminar los Clientes seleccionados? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Clientes')
+                        ->modalDescription('Estas seguro que deseas eliminar los Clientes seleccionados? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

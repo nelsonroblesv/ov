@@ -33,6 +33,8 @@ class OrdersRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('id')
+            ->heading('Pedidos')
+            ->description('Listado de pedidos del cliente')
             ->columns([
                TextColumn::make('number')
                ->label('Num. Orden')
