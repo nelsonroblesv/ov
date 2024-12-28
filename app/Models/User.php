@@ -61,7 +61,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return "storage/".$this->avatar;
+        return "https://app.osberthvalle.com/storage/".$this->avatar;
     }
 
 
