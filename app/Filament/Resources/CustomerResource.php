@@ -111,14 +111,6 @@ class CustomerResource extends Resource
                                 ->suffixIcon('heroicon-m-cake')
                                 ->required(),
 
-                            Select::make('type')
-                                ->label('Tipo')
-                                ->required()
-                                ->options([
-                                    'par' => 'Par',
-                                    'non' => 'Non'
-                                ]),
-
                             FileUpload::make('avatar')
                                 ->label('Avatar')
                                 ->image()
@@ -285,7 +277,11 @@ class CustomerResource extends Resource
 
                                     Toggle::make('is_preferred')
                                         ->label('Cliente Preferred')
-                                        ->default(false),
+                                        ->default(false)
+                                        ->onIcon('heroicon-m-star')
+                                        ->offIcon('heroicon-m-user')
+                                        ->onColor('warning')
+                                        ->offColor('gray'),
 
                                     Toggle::make('is_active')
                                         ->label('Cliente Activo')
@@ -323,6 +319,16 @@ class CustomerResource extends Resource
                     ->label('Zona')
                     ->searchable(),
 
+                TextColumn::make('zone.type')
+                    ->label('Tipo')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'par',
+                        'warning' => 'non'
+                    ]),
+
                 TextColumn::make('birthday')
                     ->label('Fecha de nacimiento')
                     ->date()
@@ -335,15 +341,6 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('type')
-                    ->label('Tipo')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->colors([
-                        'info' => 'par',
-                        'warning' => 'non',
-                    ]),
                 TextColumn::make('email')
                     ->label('Correo')
                     ->searchable(),
@@ -415,9 +412,9 @@ class CustomerResource extends Resource
                     ->label('Activos')
                     ->toggle(),
 
-                FiltersFilter::make('type')
-                    ->query(fn(Builder $query): Builder => $query->where('type', 'par'))
-                    ->label('Pares')
+                FiltersFilter::make('is_preferred')
+                    ->query(fn(Builder $query): Builder => $query->where('is_preferred', true))
+                    ->label('Clientes Preferred')
                     ->toggle()
             ])
             ->actions([

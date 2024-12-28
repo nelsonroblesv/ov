@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('color');
+            $table->enum('type' , ['par', 'non'])->default('par');
             $table->foreignId('state_id')->constrained('states')->onDelete('cascade');
             $table->timestamps();
         });

@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('front_image')->nullable();
             $table->string('inside_image')->nullable();
             $table->string('coordinate')->nullable();
-            $table->enum('type' , ['par', 'non'])->default('par');
             $table->string('extra')->nullable();
             $table->boolean('is_visible')->default(true);
             $table->boolean('is_active')->default(true);

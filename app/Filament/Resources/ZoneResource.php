@@ -43,54 +43,65 @@ class ZoneResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-           Section::make('')->schema([
-                TextInput::make('name')
-                ->label('Nombre de la Zona')
-                ->helperText('Escribe un nombre unico')
-                ->required()
-                ->maxLength(255),
+            ->schema([
+                Section::make('')->schema([
+                    TextInput::make('name')
+                        ->label('Nombre de la Zona')
+                        ->helperText('Escribe un nombre unico')
+                        ->required()
+                        ->maxLength(255),
 
-            ColorPicker::make('color'),
+                    Select::make('type')
+                        ->label('Tipo')
+                        ->placeholder('Asigna un tipo de semana')
+                        ->required()
+                        ->options([
+                            'par' => 'Par',
+                            'non' => 'Non'
+                        ]),
 
-            
-            Select::make('state_id')
-                ->label('Estado')
-                ->options(State::query()->pluck('name', 'id'))
-                ->reactive()
-                ->searchable()
-                ->preload(),
-           ])->columns(3),
+                    ColorPicker::make('color'),
 
-           
-            Repeater::make('zoneLocations')
-                ->label('Agregar Municipios')
-                ->relationship() 
-                ->schema([
-                    Select::make('municipality_id')
-                    ->label('Municipio')
-                    ->options(function (callable $get, callable $set) {
-                        $stateId = $get('../../state_id'); // Accede al valor global de state_id
 
-                        if (!$stateId) {
-                            return [];
-                        }
+                    Select::make('state_id')
+                        ->label('Estado')
+                        ->options(State::query()->pluck('name', 'id'))
+                        ->required()
+                        ->reactive()
+                        ->searchable()
+                        ->preload(),
+                ])->columns(2),
 
-                        return Municipality::where('state_id', $stateId)
-                            ->pluck('name', 'id');
-                    })
-                    ->disabled(function (callable $get) {
-                        return !$get('../../state_id'); 
-                    })
-                    ->reactive()
-                    ->searchable()
-                    ->preload()
-                    ->distinct()
-                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
-                ])
-                ->createItemButtonLabel('Agregar Municipio')
-                ->columnSpanFull(),
-        ]);
+
+                Repeater::make('zoneLocations')
+                    ->label('Agregar Municipios')
+                    ->relationship()
+                    ->schema([
+                        Select::make('municipality_id')
+                            ->label('Municipio')
+                            ->options(function (callable $get, callable $set) {
+                                $stateId = $get('../../state_id'); // Accede al valor global de state_id
+
+                                if (!$stateId) {
+                                    return [];
+                                }
+
+                                return Municipality::where('state_id', $stateId)
+                                    ->pluck('name', 'id');
+                            })
+                            ->disabled(function (callable $get) {
+                                return !$get('../../state_id');
+                            })
+                            ->reactive()
+                            ->searchable()
+                            ->preload()
+                            ->distinct()
+                            ->required()
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                    ])
+                    ->createItemButtonLabel('Agregar Municipio')
+                    ->columnSpanFull(),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -101,7 +112,15 @@ class ZoneResource extends Resource
             ->columns([
                 ColorColumn::make('color')->label('Color'),
                 TextColumn::make('name')->label('Nombre'),
-              TextColumn::make('state.name')->label('Estado'),
+                TextColumn::make('type')
+                    ->label('Tipo')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'par',
+                        'warning' => 'non']),
+                TextColumn::make('state.name')->label('Estado'),
                 TextColumn::make('zoneLocations.municipality.name')->label('Municipio(s)')
             ])
             ->filters([
@@ -112,35 +131,35 @@ class ZoneResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Zona eliminada')
-                            ->body('La Zona ha sido eliminado del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Zona')
-                    ->modalDescription('Estas seguro que deseas eliminar esta Zona? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Zona eliminada')
+                                ->body('La Zona ha sido eliminado del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Zona')
+                        ->modalDescription('Estas seguro que deseas eliminar esta Zona? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Zonas')
-                    ->modalDescription('Estas seguro que deseas eliminar las Zonas seleccionados? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Zonas')
+                        ->modalDescription('Estas seguro que deseas eliminar las Zonas seleccionados? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
