@@ -29,7 +29,7 @@ class CategoryResource extends Resource
     protected static ?string $navigationGroup = 'Avyna';
     protected static ?string $navigationLabel = 'Familias';
     protected static ?string $breadcrumb = "Familias";
-   protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
