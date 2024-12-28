@@ -31,7 +31,7 @@ class DashboardPanelProvider extends PanelProvider
             ->profile()
             ->brandLogo(fn () => view('filament.logo'))
             ->databaseNotifications()
-            ->favicon(asset('images/logo_ovalle.png'))
+            ->favicon(asset('images/favicon.png'))
             ->colors([
                 'primary' => Color::Emerald,
             ])
