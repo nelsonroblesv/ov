@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('preferred_module_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('quantity');
+            $table->decimal('price_publico');
+            $table->decimal('price_salon');
             $table->decimal('total_price_publico');
             $table->decimal('total_price_salon');
             $table->timestamps();

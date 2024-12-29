@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -33,6 +34,8 @@ class PreferredItemsRelationManager extends RelationManager
                         Select::make('product_id')
                             ->relationship('product', 'name')
                             ->label('Producto')
+                            ->searchable()
+                            ->preload()
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(fn($state, $set) => $set(
@@ -65,7 +68,8 @@ class PreferredItemsRelationManager extends RelationManager
                         TextInput::make('price_publico')
                             ->label('Precio Publico')
                             ->disabled()
-                            ->dehydrated(false),
+                            
+                            ->dehydrated(),
 
                         TextInput::make('total_price_publico')
                             ->label('Precio Total Publico')
@@ -74,14 +78,14 @@ class PreferredItemsRelationManager extends RelationManager
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
+                            
                             ->disabled()
-                            ->dehydrated(false),
+                            ->dehydrated(),
 
                         TextInput::make('total_price_salon')
                             ->label('Precio Total Salon')
                             ->disabled()
-                            ->dehydrated(),
-
+                            ->dehydrated()
 
                     ])->columns(2)
             ]);
@@ -102,11 +106,49 @@ class PreferredItemsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->label('Agregar productos')
+                ->icon('heroicon-o-shopping-cart')
+                ->modalHeading('Agregar producto al Modulo')
+                ->modalSubmitActionLabel('Agregar')
+               // ->createAnother(false)
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Producto agregado')
+                        ->body('Puedes seguir agregando productos al Modulo.')
+                        ->icon('heroicon-o-check')
+                        ->iconColor('success')
+                        ->color('success')
+                )
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Modulo actualizado')
+                            ->body('El Modulo ha sido actualizado.')
+                            ->icon('heroicon-o-check')
+                            ->iconColor('success')
+                            ->color('success')
+                    )
+                    ->modalHeading('Editar Producto')
+                    ->modalDescription('Puedes editar los detalles del producto en el Modulo'),
+
+                Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Modulo eliminado')
+                            ->body('El producto ha sido eliminado del Modulo.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Producto')
+                    ->modalDescription('Estas seguro que deseas eliminar este producto del Modulo? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

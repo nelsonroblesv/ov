@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PreferredModuleItem extends Model
 {
-    protected $fillable = ['preferred_module_id', 'product_id', 'quantity', 
+    protected $fillable = ['preferred_module_id', 'product_id', 'quantity', 'price_publico', 
+                            'price_salon', 'total_price_publico', 'total_price_salon',
                             'total_price_publico', 'total_price_salon'];
 
     public function preferredModule()

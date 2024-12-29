@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PreferredModule extends Model
 {
-    protected $fillable = ['module_name'];
+    protected $fillable = ['module_name', 'grand_total'];
 
     public function preferredItems()
     {

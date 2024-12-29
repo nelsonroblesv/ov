@@ -17,8 +17,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,16 +39,16 @@ class PreferredModuleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Section::make('Información del módulo')
-                ->schema([
-                TextInput::make('module_name')
-                ->label('Nombre')
-                ->unique()
-                ->required()
-                ->disabledOn('edit')
-            ])
-        ]);
+            ->schema([
+                Section::make('Información del módulo')
+                    ->schema([
+                        TextInput::make('module_name')
+                            ->label('Nombre')
+                            ->unique()
+                            ->required()
+                            ->disabledOn('edit')
+                    ])
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -56,18 +58,53 @@ class PreferredModuleResource extends Resource
                 TextColumn::make('module_name')
                     ->label('Nombre')
                     ->searchable()
-                    ->sortable()
+                    ->sortable(),
+
+                TextColumn::make('preferredItems.quantity')
+                    ->label('Cantidad de Productos'),
+
+                TextColumn::make('grand_total')
+                    ->label('Costo')
+
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\ActionGroup::make([
+                    //Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Modulo eliminado')
+                            ->body('El Modulo ha sido eliminado del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Modulo')
+                    ->modalDescription('Estas seguro que deseas eliminar este Modulo? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Modulos')
+                    ->modalDescription('Estas seguro que deseas eliminar los Modulos seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
@@ -75,7 +112,7 @@ class PreferredModuleResource extends Resource
     public static function getRelations(): array
     {
         return [
-          PreferredItemsRelationManager::class
+            PreferredItemsRelationManager::class
         ];
     }
 

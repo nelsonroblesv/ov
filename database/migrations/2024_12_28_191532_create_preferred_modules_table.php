@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('preferred_modules', function (Blueprint $table) {
             $table->id();
             $table->string('module_name');
+            $table->decimal('grand_total')->nullable();
             $table->timestamps();
         });
     }
