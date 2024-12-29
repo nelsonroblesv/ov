@@ -79,25 +79,7 @@ class ItemsRelationManager extends RelationManager
                             ->dehydrated()
                             ->prefixIcon('heroicon-m-currency-dollar')
                             ->prefixIconColor('success')
-                            ->extraInputAttributes(['style' => 'text-align:right']), 
-
-                        /*    
-                        Placeholder::make('grand_total')
-                            ->label('Total a pagar')
-                            ->content(function (Get $get, Set $set) {
-                                $total = 0;
-
-                                $total = intval($get('quantity')) * $get('price_publico');
-
-                                $set('grand_total', $total);
-                                return  Number::currency($total, 'MXN');
-                            })
-                            ->extraAttributes(['style' => 'text-align:center'])
-                            ->columnSpanFull(),
-
-                        Hidden::make('grand_total')
-                            ->default(0),
-                        */
+                            ->extraInputAttributes(['style' => 'text-align:right'])
                     ])->columns(3),
 
             ]);
@@ -165,7 +147,19 @@ class ItemsRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Modulos')
+                    ->modalDescription('Estas seguro que deseas eliminar los Modulos seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

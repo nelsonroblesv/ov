@@ -152,7 +152,19 @@ class PreferredItemsRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Productos')
+                    ->modalDescription('Estas seguro que deseas eliminar los Productos seleccionados del Modulo? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
