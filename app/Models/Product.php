@@ -23,4 +23,10 @@ class Product extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function preferredModuleItems()
+    {
+        return $this->hasMany(PreferredModuleItem::class);
+    }
+
 }

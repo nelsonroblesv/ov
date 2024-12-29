@@ -14,7 +14,7 @@ class CreatePreferredModule extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl('edit', ['record' => $this->record]);
     }
 
     protected function getCreatedNotification(): ?Notification
@@ -22,9 +22,9 @@ class CreatePreferredModule extends CreateRecord
         return Notification::make()
             ->success()
             ->title('Modulo registrado')
-            ->body('Se ha registrado un nuevo Modulo Preferred de forma exitosa.')
+            ->body('Se ha registrado un nuevo Modulo, ahora ya puedes agregar productos.')
             ->icon('heroicon-o-check')
-            ->iconColor('success')
-            ->color('success');
+            ->iconColor('info')
+            ->color('info');
     }
 }

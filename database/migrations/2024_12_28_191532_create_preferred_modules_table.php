@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('preferred_modules', function (Blueprint $table) {
             $table->id();
             $table->string('module_name');
-            $table->string('module_description')->nullable();
-            $table->string('module_cost')->nullable();
             $table->timestamps();
         });
     }

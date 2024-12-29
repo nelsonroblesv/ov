@@ -2,14 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\PreferredModuleResource\Pages;
 use App\Filament\Resources\PreferredModuleResource\RelationManagers;
+use App\Filament\Resources\PreferredModuleResource\RelationManagers\ItemsRelationManager as RelationManagersItemsRelationManager;
+use App\Filament\Resources\PreferredModuleResource\RelationManagers\PreferredItemsRelationManager;
 use App\Models\PreferredModule;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -30,26 +37,16 @@ class PreferredModuleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('Informacion del modulo')
-                    ->schema([
-                        TextInput::make('module_name')
-                            ->label('Nombre')
-                            ->required()
-                            ->placeholder('Nombre del modulo'),
-
-                        TextInput::make('module_cost')
-                            ->label('Costo')
-                            ->disabled(),
-                        //->required()
-                        //->placeholder('Cos del modulo'),
-
-                        MarkdownEditor::make('module_description')
-                            ->label('Descripcion')
-                            ->columnSpanFull()
-                        //->required()
-                    ])->columns(2)
-            ]);
+        ->schema([
+            Section::make('Información del módulo')
+                ->schema([
+                TextInput::make('module_name')
+                ->label('Nombre')
+                ->unique()
+                ->required()
+                ->disabledOn('edit')
+            ])
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -59,23 +56,14 @@ class PreferredModuleResource extends Resource
                 TextColumn::make('module_name')
                     ->label('Nombre')
                     ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('module_description')
-                    ->label('Descripcion')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('module_cost')
-                    ->label('Costo')
-                    ->searchable()
-                    ->sortable(),
+                    ->sortable()
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -87,7 +75,7 @@ class PreferredModuleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+          PreferredItemsRelationManager::class
         ];
     }
 
