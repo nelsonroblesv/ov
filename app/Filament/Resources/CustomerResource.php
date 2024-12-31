@@ -7,8 +7,12 @@ use App\Enums\SociedadTypeEnum;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
+use App\Models\Colonias;
 use App\Models\Customer;
+use App\Models\Estados;
 use App\Models\Municipality;
+use App\Models\Municipios;
+use App\Models\Paises;
 use App\Models\State;
 use App\Models\StatesMunicipalities;
 use Carbon\Callback;
@@ -27,6 +31,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Get;
 use Filament\Notifications\Collection;
 use Filament\Notifications\Notification;
@@ -62,7 +67,7 @@ class CustomerResource extends Resource
         return $form
             ->schema([
                 Wizard::make([
-                    Wizard\Step::make('Basicos')
+                    Step::make('Basicos')
                         ->description('Informacion Personal')
                         ->schema([
 
@@ -73,8 +78,8 @@ class CustomerResource extends Resource
 
                             Select::make('zone_id')
                                 ->relationship('zone', 'name')
-                                ->label('Zona asignada:')
-                                ->required(),
+                                ->label('Zona asignada:'),
+                                //->required(),
 
                             TextInput::make('name')
                                 ->label('Nombre completo')
@@ -120,57 +125,73 @@ class CustomerResource extends Resource
                                 ->directory('customer-avatar')
                         ])->columns(2),
 
-                    Wizard\Step::make('Negocio')
+                    Step::make('Negocio')
                         ->description('Informacion del establecimiento')
                         ->schema([
+                            Select::make('paises_id')
+                                ->label('País')
+                                ->options(Paises::pluck('nombre', 'id'))
+                                ->searchable()
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, $set) {
+                                    $set('estados_id', null);
+                                    $set('municipios_id', null);
+                                    $set('colonias_id', null);
+                                }),
+
+                            Select::make('estados_id')
+                                ->label('Estado')
+                                ->options(function ($get) {
+                                    return Estados::where('paises_id', $get('paises_id'))
+                                        ->pluck('nombre', 'id');
+                                })
+                                ->searchable()
+                                ->required()
+                                ->reactive()
+                                ->disabled(function ($get) {
+                                    return !$get('paises_id');
+                                })
+                                ->afterStateUpdated(function ($state, $set) {
+                                    $set('municipios_id', null);
+                                    $set('colonias_id', null);
+                                }),
+
+                            Select::make('municipios_id')
+                                ->label('Municipio')
+                                ->options(function ($get) {
+                                    return Municipios::where('estados_id', $get('estados_id'))
+                                        ->pluck('nombre', 'id');
+                                })
+                                ->searchable()
+                                ->required()
+                                ->reactive()
+                                ->disabled(function ($get) {
+                                    return !$get('estados_id');
+                                })
+                                ->afterStateUpdated(function ($state, $set) {
+                                    $set('colonias_id', null);
+                                }),
+
+                            Select::make('colonias_id')
+                                ->label('Colonia')
+                                ->options(function ($get) {
+                                    return Colonias::where('municipios_id', $get('municipios_id'))
+                                        ->pluck('nombre', 'id');
+                                })
+                                ->searchable()
+                                ->required()
+                                ->reactive()
+                                ->disabled(function ($get) {
+                                    return !$get('municipios_id');
+                                }),
+
                             TextInput::make('address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
-                                // ->required()
+                                ->required()
                                 ->maxLength(255)
-                                ->suffixIcon('heroicon-m-map')
-                                ->columnSpanFull(),
-
-                            Select::make('state_id')
-                                ->label('Estado')
-                                ->options(State::query()->pluck('name', 'id'))
-                                ->reactive()
-                                ->searchable()
-                                ->preload(),
-                            //->required()
-                            // ->afterStateUpdated(fn(callable $set) => $set('municipality_id', null)),
-
-                            Select::make('municipality_id')
-                                ->label('Municipio')
-                                ->options(function (callable $get) {
-                                    $stateId = $get('state_id');
-
-                                    if (!$stateId) {
-                                        return [];
-                                    }
-
-                                    return Municipality::whereHas('state', function ($query) use ($stateId) {
-                                        $query->where('state_id', $stateId);
-                                    })->pluck('name', 'id');
-                                })
-                                ->disabled(function (callable $get) {
-                                    return !$get('state_id');
-                                })
-                                ->reactive()
-                                //  ->required()
-                                ->searchable()
-                                ->preload(),
-
-                            TextInput::make('locality')
-                                //  ->required()
-                                ->label('Localidad'),
-
-                            TextInput::make('zip_code')
-                                ->label('Código Postal')
-                                //   ->required()
-                                ->numeric()
-                                ->maxLength(5)
-                                ->suffixIcon('heroicon-m-hashtag'),
+                                ->suffixIcon('heroicon-m-map'),
 
                             TextInput::make('coordinate')
                                 ->label('Coordenadas Google Maps')
@@ -181,7 +202,7 @@ class CustomerResource extends Resource
                                 ->suffixIcon('heroicon-m-map-pin'),
 
                             Section::make('Fotos del establecimiento')
-                                ->collapsible()
+                                ->collapsed()
                                 ->schema([
                                     FileUpload::make('front_image')
                                         ->label('Foto Exterior')
@@ -201,7 +222,7 @@ class CustomerResource extends Resource
                                 ])->columns(2),
 
                             Section::make('Informacion adicional')
-                                ->collapsible()
+                                ->collapsed()
                                 ->schema([
                                     MarkdownEditor::make('extra')
                                         //  ->required()
@@ -209,7 +230,7 @@ class CustomerResource extends Resource
                                 ])->icon('heroicon-o-information-circle')
                         ])->columns(2),
 
-                    Wizard\Step::make('Fiscales')
+                    Step::make('Fiscales')
                         ->description('Datos de facturacion')
                         ->schema([
                             Section::make('Cliente con facturacion')
@@ -264,7 +285,7 @@ class CustomerResource extends Resource
 
                         ])->columns(2),
 
-                    Wizard\Step::make('Control')
+                    Step::make('Control')
                         ->description('Administracion de cliente')
                         ->schema([
                             Section::make('Control')
@@ -354,23 +375,18 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('state.name')
+                TextColumn::make('estados.name')
                     ->label('Estado')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('municipality.name')
+                TextColumn::make('municipios.name')
                     ->label('Municipio')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('locality')
+                TextColumn::make('colonias.name')
                     ->label('Localidad')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('zip_code')
-                    ->label('Codigo postal')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 

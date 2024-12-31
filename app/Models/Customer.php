@@ -12,8 +12,9 @@ class Customer extends Model
     use HasFactory;
     
     protected $fillable = [
-        'alias', 'name', 'email', 'phone', 'avatar', 'address', 'state_id', 'birthday',
-        'municipality_id', 'locality', 'zip_code', 'front_image', 'inside_image', 'coordinate', 'extra', 'is_visible', 'is_active', 'is_preferred', 'name_facturacion', 'razon_social', 'address_facturacion',
+        'alias', 'name', 'email', 'phone', 'avatar', 'birthday',
+        'paises_id', 'estados_id', 'municipios_id', 'colonias_id', 'address',
+        'front_image', 'inside_image', 'coordinate', 'extra', 'is_visible', 'is_active', 'is_preferred', 'name_facturacion', 'razon_social', 'address_facturacion',
         'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id', 'zone_id'
     ];
 
@@ -22,14 +23,24 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function state(): BelongsTo
+    public function paises(): BelongsTo
     {
-        return $this->belongsTo(State::class);
+        return $this->belongsTo(Paises::class);
     }
 
-    public function municipality(): BelongsTo
+    public function estados(): BelongsTo
     {
-        return $this->belongsTo(Municipality::class);
+        return $this->belongsTo(Estados::class);
+    }
+
+    public function municipios(): BelongsTo
+    {
+        return $this->belongsTo(Municipios::class);
+    }
+
+    public function colonias(): BelongsTo
+    {
+        return $this->belongsTo(Colonias::class);
     }
 
     public function orders(): HasMany

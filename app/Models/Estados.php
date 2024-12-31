@@ -10,14 +10,16 @@ class Estados extends Model
 {
     protected $fillable = ['nombre', 'paises_id'];
 
-    public function municipios(): HasMany
-    {
-        return $this->hasMany(Municipios::class);
-    }
     public function paises(): BelongsTo
     {
         return $this->belongsTo(Paises::class);
     }
+
+    public function municipios(): HasMany
+    {
+        return $this->hasMany(Municipios::class);
+    }
+    
     // Relación con Zone: Un estado tiene muchas zonas
     public function zones(): HasMany
     {
