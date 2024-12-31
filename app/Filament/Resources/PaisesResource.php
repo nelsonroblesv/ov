@@ -7,6 +7,7 @@ use App\Filament\Resources\PaisesResource\RelationManagers;
 use App\Models\Paises;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -17,7 +18,11 @@ class PaisesResource extends Resource
 {
     protected static ?string $model = Paises::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static ?string $navigationGroup = 'Ubicaciones';
+    protected static ?string $navigationLabel = 'Paises';
+    protected static ?string $breadcrumb = "Paises";
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -49,10 +54,35 @@ class PaisesResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Pais eliminado')
+                            ->body('El Pais ha sido eliminado  del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Pais')
+                    ->modalDescription('Estas seguro que deseas eliminar este Pais? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Paises')
+                    ->modalDescription('Estas seguro que deseas eliminar los Paises seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

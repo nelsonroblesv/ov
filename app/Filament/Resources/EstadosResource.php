@@ -7,6 +7,7 @@ use App\Filament\Resources\EstadosResource\RelationManagers;
 use App\Models\Estados;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -18,7 +19,11 @@ class EstadosResource extends Resource
 {
     protected static ?string $model = Estados::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static ?string $navigationGroup = 'Ubicaciones';
+    protected static ?string $navigationLabel = 'Estados';
+    protected static ?string $breadcrumb = "Estados";
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -60,10 +65,35 @@ class EstadosResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Estado eliminado')
+                            ->body('El Estado ha sido eliminado  del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Estado')
+                    ->modalDescription('Estas seguro que deseas eliminar este Estado? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Estados')
+                    ->modalDescription('Estas seguro que deseas eliminar los Estados seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

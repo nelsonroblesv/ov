@@ -7,6 +7,7 @@ use App\Filament\Resources\ColoniasResource\RelationManagers;
 use App\Models\Colonias;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -18,7 +19,11 @@ class ColoniasResource extends Resource
 {
     protected static ?string $model = Colonias::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static ?string $navigationGroup = 'Ubicaciones';
+    protected static ?string $navigationLabel = 'Colonias';
+    protected static ?string $breadcrumb = "Colonias";
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -77,10 +82,35 @@ class ColoniasResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Colonia eliminada')
+                            ->body('La Colonia ha sido eliminado  del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Colonia')
+                    ->modalDescription('Estas seguro que deseas eliminar esta Colonia? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Colonias')
+                    ->modalDescription('Estas seguro que deseas eliminar las Colonias seleccionados? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
