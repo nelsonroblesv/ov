@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ZoneLocation extends Model
 {
-    protected $fillable = ['zone_id', 'municipality_id'];
+    protected $fillable = ['zone_id', 'municipios_id'];
 
    // Relación con Zone: Una ubicación pertenece a una zona
    public function zone(): BelongsTo
    {
        return $this->belongsTo(Zone::class);
    }
-   // Relación con Municipality: Una ubicación pertenece a un municipio
-   public function municipality(): BelongsTo
+   // Relación con Municipios: Una ubicación pertenece a un municipio
+   public function municipios(): BelongsTo
    {
-       return $this->belongsTo(Municipality::class);
+       return $this->belongsTo(Municipios::class);
    }
 
 }

@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ZoneResource\Pages;
 use App\Filament\Resources\ZoneResource\RelationManagers;
+use App\Models\Estados;
 use App\Models\Municipality;
+use App\Models\Municipios;
 use App\Models\State;
 use App\Models\Zone;
 use Filament\Forms;
@@ -63,9 +65,9 @@ class ZoneResource extends Resource
                     ColorPicker::make('color'),
 
 
-                    Select::make('state_id')
+                    Select::make('estados_id')
                         ->label('Estado')
-                        ->options(State::query()->pluck('name', 'id'))
+                        ->options(Estados::query()->pluck('nombre', 'id'))
                         ->required()
                         ->reactive()
                         ->searchable()
@@ -77,20 +79,20 @@ class ZoneResource extends Resource
                     ->label('Agregar Municipios')
                     ->relationship()
                     ->schema([
-                        Select::make('municipality_id')
+                        Select::make('municipios_id')
                             ->label('Municipio')
                             ->options(function (callable $get, callable $set) {
-                                $stateId = $get('../../state_id'); // Accede al valor global de state_id
+                                $stateId = $get('../../estados_id'); // Accede al valor global de state_id
 
                                 if (!$stateId) {
                                     return [];
                                 }
 
-                                return Municipality::where('state_id', $stateId)
-                                    ->pluck('name', 'id');
+                                return Municipios::where('estados_id', $stateId)
+                                    ->pluck('nombre', 'id');
                             })
                             ->disabled(function (callable $get) {
-                                return !$get('../../state_id');
+                                return !$get('../../estados_id');
                             })
                             ->reactive()
                             ->searchable()
@@ -120,8 +122,8 @@ class ZoneResource extends Resource
                     ->colors([
                         'info' => 'par',
                         'warning' => 'non']),
-                TextColumn::make('state.name')->label('Estado'),
-                TextColumn::make('zoneLocations.municipality.name')->label('Municipio(s)')
+                TextColumn::make('estados.nombre')->label('Estado'),
+                TextColumn::make('zoneLocations.municipios.nombre')->label('Municipio(s)')
             ])
             ->filters([
                 //
