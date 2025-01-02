@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('color');
-           // $table->enum('type' , ['par', 'non'])->default('par');
+            $table->foreignId('paises_id')->constrained()->onDelete('cascade');
             $table->foreignId('estados_id')->constrained()->onDelete('cascade');
+            $table->foreignId('municipios_id')->constrained()->onDelete('cascade');
+            $table->json('codigo_postal')->nullable();
             $table->timestamps();
         });
     }

@@ -52,18 +52,8 @@ class ZoneResource extends Resource
                         ->helperText('Escribe un nombre unico')
                         ->required()
                         ->maxLength(255),
-                    /*
-                    Select::make('type')
-                        ->label('Tipo')
-                        ->placeholder('Asigna un tipo de semana')
-                        ->required()
-                        ->options([
-                            'par' => 'Par',
-                            'non' => 'Non'
-                        ]),
-                    */
-                    ColorPicker::make('color'),
 
+                    ColorPicker::make('color'),
 
                     Select::make('paises_id')
                         ->label('País')
@@ -74,7 +64,7 @@ class ZoneResource extends Resource
                         ->afterStateUpdated(function ($state, $set) {
                             $set('estados_id', null);
                             $set('municipios_id', null);
-                            $set('colonias_id', null);
+                            $set('codigo_postal', null);
                         }),
 
                     Select::make('estados_id')
@@ -91,7 +81,7 @@ class ZoneResource extends Resource
                         })
                         ->afterStateUpdated(function ($state, $set) {
                             $set('municipios_id', null);
-                            $set('colonias_id', null);
+                            $set('codigo_postal', null);
                         }),
 
                     Select::make('municipios_id')
@@ -107,17 +97,29 @@ class ZoneResource extends Resource
                             return !$get('estados_id');
                         })
                         ->afterStateUpdated(function ($state, $set) {
-                            $set('colonias_id', null);
+                            $set('codigo_postal', null);
                         }),
+
+                    Select::make('codigo_postal')
+                        ->label('Código Postal')
+                        ->multiple() // Habilitar selección múltiple
+                        ->options(function ($get) {
+                            return Colonias::where('municipios_id', $get('municipios_id'))
+                                ->pluck('codigo_postal', 'codigo_postal'); // Mostrar valores únicos
+                        })
+                        ->required()
+                        ->reactive()
+                        ->searchable()
+                        ->disabled(fn($get) => !$get('municipios_id'))
 
                 ])->columns(2),
 
-
+                /*
                 Repeater::make('zoneLocations')
-                    ->label('Agregar Colonias')
+                    ->label('Codigo Postal')
                     ->relationship()
                     ->schema([
-                        Select::make('colonias_id')
+                        Select::make('codigo_postal')
                             ->label('Codigo Postal')
                             ->options(function ($get) {
                                 return Colonias::where('municipios_id', $get('../../municipios_id'))
@@ -128,13 +130,14 @@ class ZoneResource extends Resource
                             ->searchable()
                             ->required()
                             ->reactive()
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                             ->disabled(function ($get) {
                                 return !$get('../../municipios_id');
                             }),
                     ])
-                    ->createItemButtonLabel('Agregar Municipio')
+                    ->createItemButtonLabel('Agregar Codigo Postal')
                     ->columnSpanFull(),
-
+             */
             ]);
     }
 
@@ -146,16 +149,10 @@ class ZoneResource extends Resource
             ->columns([
                 ColorColumn::make('color')->label('Color'),
                 TextColumn::make('name')->label('Nombre'),
-                /* TextColumn::make('type')
-                    ->label('Tipo')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->colors([
-                        'info' => 'par',
-                        'warning' => 'non']),*/
+                TextColumn::make('paises.nombre')->label('Pais'),
                 TextColumn::make('estados.nombre')->label('Estado'),
-                TextColumn::make('zoneLocations.municipios.nombre')->label('Municipio(s)')
+                TextColumn::make('municipios.nombre')->label('Municipio'),
+                TextColumn::make('codigo_postal')->label('Codigo Postal'),
             ])
             ->filters([
                 //

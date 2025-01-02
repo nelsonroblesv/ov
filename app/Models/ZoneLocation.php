@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ZoneLocation extends Model
 {
-    protected $fillable = ['zone_id', 'municipios_id'];
+   protected $fillable = ['zone_id', 'codigo_postal'];
 
-    // Relación con Zone: Una ubicación pertenece a una zona
+  /*
     public function zone(): BelongsTo
     {
         return $this->belongsTo(Zone::class);
@@ -34,4 +34,5 @@ class ZoneLocation extends Model
     {
         return $this->belongsTo(Colonias::class);
     }
+        */
 }

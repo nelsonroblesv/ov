@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('zone_locations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('zone_id')->constrained()->onDelete('cascade');
-            $table->foreignId('municipios_id')->constrained()->onDelete('cascade');
+            $table->string('codigo_postal');
             $table->timestamps();
         });
     }
