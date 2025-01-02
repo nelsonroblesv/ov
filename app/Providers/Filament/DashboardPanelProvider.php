@@ -29,7 +29,7 @@ class DashboardPanelProvider extends PanelProvider
             ->path('dashboard')
             ->login(CustomLogin::class)
             ->profile()
-            ->brandLogo(fn () => view('filament.logo'))
+            ->brandLogo(fn() => view('filament.logo'))
             ->databaseNotifications()
             ->favicon(asset('images/favicon.png'))
             ->colors([
@@ -48,9 +48,21 @@ class DashboardPanelProvider extends PanelProvider
                 //Widgets\FilamentInfoWidget::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Panel de Usuario')
+                NavigationItem::make('Ver como Usuario')
                     ->url('/', shouldOpenInNewTab: true)
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-o-eye'),
+
+                NavigationItem::make('Ciudad del Carmen')
+                    ->group('Mapas & CP')
+                    ->url('https://www.google.com/maps/d/viewer?mid=1hleTCi4flnguULTyPT1Ea0JT5DHMUhrM&femb=1&ll=18.65061144033998%2C-91.79841757725212&z=14')
+                    ->icon('heroicon-o-map')
+                    ->openUrlInNewTab(),
+
+                NavigationItem::make('Campeche')
+                    ->group('Mapas & CP')
+                    ->url('https://www.google.com/maps/d/viewer?mid=1hleTCi4flnguULTyPT1Ea0JT5DHMUhrM&femb=1&ll=19.82777661056459%2C-90.52806061271251&z=13')
+                    ->icon('heroicon-o-map')
+                    ->openUrlInNewTab(),
             ])
             ->middleware([
                 EncryptCookies::class,

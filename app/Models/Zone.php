@@ -8,11 +8,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Zone extends Model
 {
-    protected $fillable = ['name', 'color', 'type', 'estados_id'];
+    protected $fillable = ['name', 'color', /*'type',*/ 'estados_id'];
+
+    public function paises(): BelongsTo
+    {
+        return $this->belongsTo(Paises::class);
+    }
 
     public function estados(): BelongsTo
     {
         return $this->belongsTo(Estados::class);
+    }
+
+    public function municipios(): BelongsTo
+    {
+        return $this->belongsTo(Municipios::class);
+    }
+
+    public function colonias(): BelongsTo
+    {
+        return $this->belongsTo(Colonias::class);
     }
    
     public function zoneLocations(): HasMany

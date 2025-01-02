@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ZoneResource\Pages;
 use App\Filament\Resources\ZoneResource\RelationManagers;
+use App\Models\Colonias;
 use App\Models\Estados;
 use App\Models\Municipios;
+use App\Models\Paises;
 use App\Models\Zone;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
@@ -50,7 +52,7 @@ class ZoneResource extends Resource
                         ->helperText('Escribe un nombre unico')
                         ->required()
                         ->maxLength(255),
-
+                    /*
                     Select::make('type')
                         ->label('Tipo')
                         ->placeholder('Asigna un tipo de semana')
@@ -59,48 +61,78 @@ class ZoneResource extends Resource
                             'par' => 'Par',
                             'non' => 'Non'
                         ]),
-
+                    */
                     ColorPicker::make('color'),
 
 
-                    Select::make('estados_id')
-                        ->label('Estado')
-                        ->options(Estados::query()->pluck('nombre', 'id'))
+                    Select::make('paises_id')
+                        ->label('País')
+                        ->options(Paises::pluck('nombre', 'id'))
+                        ->searchable()
                         ->required()
                         ->reactive()
+                        ->afterStateUpdated(function ($state, $set) {
+                            $set('estados_id', null);
+                            $set('municipios_id', null);
+                            $set('colonias_id', null);
+                        }),
+
+                    Select::make('estados_id')
+                        ->label('Estado')
+                        ->options(function ($get) {
+                            return Estados::where('paises_id', $get('paises_id'))
+                                ->pluck('nombre', 'id');
+                        })
                         ->searchable()
-                        ->preload(),
+                        ->required()
+                        ->reactive()
+                        ->disabled(function ($get) {
+                            return !$get('paises_id');
+                        })
+                        ->afterStateUpdated(function ($state, $set) {
+                            $set('municipios_id', null);
+                            $set('colonias_id', null);
+                        }),
+
+                    Select::make('municipios_id')
+                        ->label('Municipio')
+                        ->options(function ($get) {
+                            return Municipios::where('estados_id', $get('estados_id'))
+                                ->pluck('nombre', 'id');
+                        })
+                        ->searchable()
+                        ->required()
+                        ->reactive()
+                        ->disabled(function ($get) {
+                            return !$get('estados_id');
+                        })
+                        ->afterStateUpdated(function ($state, $set) {
+                            $set('colonias_id', null);
+                        }),
+
                 ])->columns(2),
 
 
                 Repeater::make('zoneLocations')
-                    ->label('Agregar Municipios')
+                    ->label('Agregar Colonias')
                     ->relationship()
                     ->schema([
-                        Select::make('municipios_id')
-                            ->label('Municipio')
-                            ->options(function (callable $get, callable $set) {
-                                $stateId = $get('../../estados_id'); // Accede al valor global de state_id
-
-                                if (!$stateId) {
-                                    return [];
-                                }
-
-                                return Municipios::where('estados_id', $stateId)
-                                    ->pluck('nombre', 'id');
+                        Select::make('colonias_id')
+                            ->label('Colonia')
+                            ->options(function ($get) {
+                                return Colonias::where('municipios_id', $get('../../municipios_id'))
+                                    ->pluck('codigo_postal', 'id');
                             })
-                            ->disabled(function (callable $get) {
-                                return !$get('../../estados_id');
-                            })
-                            ->reactive()
                             ->searchable()
-                            ->preload()
-                            ->distinct()
                             ->required()
-                            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                            ->reactive()
+                            ->disabled(function ($get) {
+                                return !$get('../../municipios_id');
+                            }),
                     ])
                     ->createItemButtonLabel('Agregar Municipio')
                     ->columnSpanFull(),
+
             ]);
     }
 
@@ -112,14 +144,14 @@ class ZoneResource extends Resource
             ->columns([
                 ColorColumn::make('color')->label('Color'),
                 TextColumn::make('name')->label('Nombre'),
-                TextColumn::make('type')
+                /* TextColumn::make('type')
                     ->label('Tipo')
                     ->searchable()
                     ->sortable()
                     ->badge()
                     ->colors([
                         'info' => 'par',
-                        'warning' => 'non']),
+                        'warning' => 'non']),*/
                 TextColumn::make('estados.nombre')->label('Estado'),
                 TextColumn::make('zoneLocations.municipios.nombre')->label('Municipio(s)')
             ])
