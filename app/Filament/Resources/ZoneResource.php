@@ -118,10 +118,12 @@ class ZoneResource extends Resource
                     ->relationship()
                     ->schema([
                         Select::make('colonias_id')
-                            ->label('Colonia')
+                            ->label('Codigo Postal')
                             ->options(function ($get) {
                                 return Colonias::where('municipios_id', $get('../../municipios_id'))
-                                    ->pluck('codigo_postal', 'id');
+                                ->select('codigo_postal')
+                                ->distinct()    
+                                ->pluck('codigo_postal', 'codigo_postal');
                             })
                             ->searchable()
                             ->required()
