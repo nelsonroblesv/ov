@@ -63,8 +63,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         if(!$this->avatar || $this->avatar == null)
         {
-            $this->avatar = "user-avatar/default.png";
-            return "https://app.osberthvalle.com/storage/".$this->avatar;
+            return "https://app.osberthvalle.com/storage/user-avatar/default.png";
         }
         return "https://app.osberthvalle.com/storage/".$this->avatar;
     }
