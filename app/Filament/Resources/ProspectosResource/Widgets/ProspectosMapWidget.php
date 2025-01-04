@@ -23,6 +23,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
@@ -145,7 +146,7 @@ class ProspectosMapWidget extends MapTableWidget
 							->send();
 					}),
 
-				DeleteAction::make()
+				ActionsDeleteAction::make('delete')
 					->successNotification(
 						Notification::make()
 							->success()
