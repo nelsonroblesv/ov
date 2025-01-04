@@ -40,6 +40,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\ValidationException;
 
+use function Laravel\Prompts\table;
+
 class ProspectosResource extends Resource
 {
     protected static ?string $model = Prospectos::class;
@@ -229,6 +231,13 @@ class ProspectosResource extends Resource
 
     public static function table(Table $table): Table
     {
+        // Hide table from Resource
+        return $table
+            ->columns([])
+            ->content(null)
+            ->paginated(false);
+
+        /*
         return $table
             ->columns([
                 TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
@@ -326,6 +335,7 @@ class ProspectosResource extends Resource
                         ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
+            */
     }
 
     public static function getRelations(): array
