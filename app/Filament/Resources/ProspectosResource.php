@@ -258,6 +258,16 @@ class ProspectosResource extends Resource
                         ->modalHeading('Transferir Prospecto')
                         ->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
                         ->action(function (Prospectos $record) {
+                            if($record->is_active == 0){
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('Solo puedes transferir Prospectos con status Activo.')
+                                    ->danger()
+                                    ->color('danger')
+                                    ->send();
+
+                                    return;
+                            }
                             if (Customer::where('email', $record->email)->exists()) {
                                 Notification::make()
                                     ->title('Error')
