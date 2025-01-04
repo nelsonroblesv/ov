@@ -333,33 +333,6 @@ class CustomerResource extends Resource
                                 ])->collapsed()
 
                         ])->columns(2),
-
-                    Step::make('Control')
-                        ->description('Administracion de cliente')
-                        ->schema([
-                            Section::make('Control')
-                                ->collapsible()
-                                ->schema([
-
-                                    Toggle::make('is_visible')
-                                        ->label('Cliente Visible')
-                                        ->default(true),
-
-                                    Toggle::make('is_preferred')
-                                        ->label('Cliente Preferred')
-                                        ->default(false)
-                                        ->onIcon('heroicon-m-star')
-                                        ->offIcon('heroicon-m-user')
-                                        ->onColor('warning')
-                                        ->offColor('gray'),
-
-                                    Toggle::make('is_active')
-                                        ->label('Cliente Activo')
-                                        ->default(true)
-                                ])->icon('heroicon-o-adjustments-vertical')->columns(3),
-
-                        ])->columns(2),
-
                 ])->columnSpanFull()
                     //->startOnStep(2)
             ]);
@@ -374,7 +347,6 @@ class CustomerResource extends Resource
 
                 ImageColumn::make('avatar')->searchable(),
                 TextColumn::make('name')->label('Nombre')->searchable(),
-                ToggleColumn::make('is_preferred')->label('Preferred')->sortable(),
                 TextColumn::make('user.name')->label('Registrado por:')->searchable(),
                 TextColumn::make('birthday')->label('Fecha de nacimiento')
                     ->date()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -387,14 +359,13 @@ class CustomerResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('municipios.nombre')->label('Municipios')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('address')->label('Direccion')->searchable()->toggleable(isToggledHiddenByDefault: true),
-
+                TextColumn::make('full_address')->label('Direccion')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('latitude')->label('Ubicacion')
                     ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
                     ->openUrlInNewTab()->alignCenter() ->icon('heroicon-o-map-pin')->searchable(),
-
-                IconColumn::make('is_visible')->label('Visible')->boolean()->toggleable(isToggledHiddenByDefault: true),
-                IconColumn::make('is_active')->label('Activo')->boolean()->toggleable(isToggledHiddenByDefault: true),
+                ToggleColumn::make('is_preferred')->label('Preferred')->sortable(),
+                ToggleColumn::make('is_visible')->label('Visible')->toggleable(isToggledHiddenByDefault: true),
+                ToggleColumn::make('is_active')->label('Activo')->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')->label('Fecha registro')->date()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
