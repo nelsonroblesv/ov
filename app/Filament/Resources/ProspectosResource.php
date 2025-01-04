@@ -243,23 +243,29 @@ class ProspectosResource extends Resource
 
                     Action::make('transfer')
                         ->label('Transferir')
+                        ->requiresConfirmation()
                         ->icon('heroicon-o-arrows-up-down')
                         ->color('info')
+                        ->modalHeading('Transferir Prospecto')
+                        ->modalDescription('Estas seguro que deseas transferir este prospecto como Cliente? Esta acción no se puede deshacer.')
                         ->action(function (Prospectos $record) {
                             if (Customer::where('email', $record->email)->exists()) {
                                 throw ValidationException::withMessages([
                                     'email' => 'Este prospecto ya ha sido transferido como cliente.',
                                 ]);
                             }
-                    
+
                             $clienteData = $record->toArray();
                             unset($clienteData['id'], $clienteData['created_at'], $clienteData['updated_at']);
                             Customer::create($clienteData);
                             $record->delete();
-                        })
-                        ->requiresConfirmation()
-                        ->modalHeading('Transferir Prospecto')
-                        ->modalDescription('Estas seguro que deseas transferir este prospecto a cliente? Esta acción no se puede deshacer.'),
+
+                            Notification::make()
+                                ->title('Prospecto transferido')
+                                ->body('El prospecto ha sido transferido como Cliente.')
+                                ->success()
+                                ->send();
+                        }),
 
                     DeleteAction::make()
                         ->successNotification(
@@ -274,7 +280,7 @@ class ProspectosResource extends Resource
                         ->modalHeading('Borrar Prospecto')
                         ->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
                         ->modalSubmitActionLabel('Si, eliminar'),
-                        ]),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
