@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
+use App\Forms\Components\GoogleMaps;
 use App\Models\Colonias;
 use App\Models\Customer;
 use App\Models\Estados;
@@ -54,7 +56,7 @@ class CustomerResource extends Resource
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
-    protected static ?string $navigationGroup = 'Administrar';
+    protected static ?string $navigationGroup = 'Clientes y Prospectos';
     protected static ?string $navigationLabel = 'Clientes';
     protected static ?string $breadcrumb = "Clientes";
 
@@ -64,6 +66,7 @@ class CustomerResource extends Resource
         return $form
             ->schema([
                 Wizard::make([
+
                     Step::make('Basicos')
                         ->description('Informacion Personal')
                         ->schema([
@@ -72,11 +75,6 @@ class CustomerResource extends Resource
                                 ->relationship('user', 'name')
                                 ->label('Registrado por:')
                                 ->required(),
-
-                            Select::make('zone_id')
-                                ->relationship('zone', 'name')
-                                ->label('Zona asignada:'),
-                                //->required(),
 
                             TextInput::make('name')
                                 ->label('Nombre completo')
@@ -183,20 +181,71 @@ class CustomerResource extends Resource
                                     return !$get('municipios_id');
                                 }),
 
-                            TextInput::make('address')
+                            TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
                                 ->required()
                                 ->maxLength(255)
-                                ->suffixIcon('heroicon-m-map'),
+                                ->suffixIcon('heroicon-m-map')
+                                ->columnSpanFull(),
 
-                            TextInput::make('coordinate')
-                                ->label('Coordenadas Google Maps')
-                                ->helperText('Formato: 20.1845751, -90.1334567')
-                                ->unique()
+
+                            Map::make('location')
+                                ->mapControls([
+                                    'mapTypeControl'    => true,
+                                    'scaleControl'      => true,
+                                    'streetViewControl' => false,
+                                    'rotateControl'     => true,
+                                    'fullscreenControl' => true,
+                                    'searchBoxControl'  => false, // creates geocomplete field inside map
+                                    'zoomControl'       => true,
+                                ])
+                                ->reverseGeocode([
+                                    'street' => '%n %S',
+                                    'city' => '%L',
+                                    'state' => '%A1',
+                                    'zip' => '%z',
+                                ])
+                                ->defaultZoom(15)
+                                ->draggable()
+                                ->autocomplete('full_address')
+                                ->autocompleteReverse(true)
+                                ->defaultLocation([20.1845751, -90.1334567])
+                                ->columnSpanFull()->reactive()
+                                ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                    $set('latitude', $state['lat']);
+                                    $set('longitude', $state['lng']);
+                                }),
+
+                            TextInput::make('latitude')
+                                ->label('Latitud')
+                                ->helperText('Formato: 20.1845751')
+                                ->unique(ignoreRecord: true)
                                 //   ->required()
-                                ->maxLength(255)
-                                ->suffixIcon('heroicon-m-map-pin'),
+                                ->maxLength(100)
+                                ->suffixIcon('heroicon-m-map-pin')
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                    $set('location', [
+                                        'lat' => floatVal($state),
+                                        'lng' => floatVal($get('longitude')),
+                                    ]);
+                                })->lazy(),
+
+                            TextInput::make('longitude')
+                                ->label('Longitud')
+                                ->helperText('Formato: 20.1845751')
+                                ->unique(ignoreRecord: true)
+                                //   ->required()
+                                ->maxLength(100)
+                                ->suffixIcon('heroicon-m-map-pin')
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                    $set('location', [
+                                        'lat' => floatval($get('latitude')),
+                                        'lng' => floatVal($state),
+                                    ]);
+                                })->lazy(),
 
                             Section::make('Fotos del establecimiento')
                                 ->collapsed()
@@ -307,7 +356,9 @@ class CustomerResource extends Resource
                                 ])->icon('heroicon-o-adjustments-vertical')->columns(3),
 
                         ])->columns(2),
-                ])->columnSpanFull(),
+
+                ])->columnSpanFull()
+                    //->startOnStep(2)
             ]);
     }
 
@@ -333,20 +384,6 @@ class CustomerResource extends Resource
                     ->label('Registrado por:')
                     ->searchable(),
 
-                TextColumn::make('zone.name')
-                    ->label('Zona')
-                    ->searchable(),
-
-                TextColumn::make('zone.type')
-                    ->label('Tipo')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->colors([
-                        'info' => 'par',
-                        'warning' => 'non'
-                    ]),
-
                 TextColumn::make('birthday')
                     ->label('Fecha de nacimiento')
                     ->date()
@@ -367,25 +404,41 @@ class CustomerResource extends Resource
                     ->label('Telefono')
                     ->searchable(),
 
+                TextColumn::make('paises.nombre')
+                    ->label('Pais')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('estados.nombre')
+                    ->label('Estado')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('municipios.nombre')
+                    ->label('Municipios')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('colonias.nombre')
+                    ->label('Colonia')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('address')
                     ->label('Direccion')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('estados.name')
-                    ->label('Estado')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('municipios.name')
-                    ->label('Municipio')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('colonias.name')
-                    ->label('Localidad')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('coordinates')
+                    ->label('Coordenadas')
+                    ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->coordinates}")
+                    ->icon('heroicon-o-map-pin')
+                    ->iconColor('danger')
+                    ->searchable(),
 
                 ImageColumn::make('front_image')
                     ->label('Exterior')
@@ -393,14 +446,6 @@ class CustomerResource extends Resource
 
                 ImageColumn::make('inside_image')
                     ->label('Interior')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('coordinate')
-                    ->label('Coordenadas')
-                    ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->coordinate}")
-                    ->icon('heroicon-o-map-pin')
-                    ->iconColor('danger')
-                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_visible')

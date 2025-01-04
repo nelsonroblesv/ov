@@ -24,11 +24,13 @@ return new class extends Migration
             $table->foreignId('estados_id')->constrained()->cascadeOnDelete();
             $table->foreignId('municipios_id')->constrained()->cascadeOnDelete();
             $table->foreignId('colonias_id')->constrained()->cascadeOnDelete();
-            $table->string('address')->nullable();
+            $table->string('full_address')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
 
             $table->string('front_image')->nullable();
             $table->string('inside_image')->nullable();
-            $table->string('coordinate')->nullable();
+           
             $table->string('extra')->nullable();
             $table->boolean('is_visible')->default(true);
             $table->boolean('is_active')->default(true);
@@ -47,7 +49,6 @@ return new class extends Migration
             $table->string('cfdi_document')->nullable();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('zone_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 

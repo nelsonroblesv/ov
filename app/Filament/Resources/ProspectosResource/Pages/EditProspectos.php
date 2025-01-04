@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Filament\Resources\CustomerResource\Pages;
+namespace App\Filament\Resources\ProspectosResource\Pages;
 
-use App\Filament\Resources\CustomerResource;
+use App\Filament\Resources\ProspectosResource;
+use Cheesegrits\FilamentGoogleMaps\Concerns\InteractsWithMaps;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
-class EditCustomer extends EditRecord
+class EditProspectos extends EditRecord
 {
-    protected static string $resource = CustomerResource::class;
+    protected static string $resource = ProspectosResource::class;
+    use InteractsWithMaps;
 
-    protected static ?string $title = 'Editar Cliente';
+    protected static ?string $title = 'Editar Prospecto';
 
     protected function getRedirectUrl(): string
     {

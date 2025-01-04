@@ -13,9 +13,9 @@ class Customer extends Model
     
     protected $fillable = [
         'alias', 'name', 'email', 'phone', 'avatar', 'birthday',
-        'paises_id', 'estados_id', 'municipios_id', 'colonias_id', 'address',
-        'front_image', 'inside_image', 'coordinate', 'extra', 'is_visible', 'is_active', 'is_preferred', 'name_facturacion', 'razon_social', 'address_facturacion',
-        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id', 'zone_id'
+        'paises_id', 'estados_id', 'municipios_id', 'colonias_id', 'full_address', 'latitude', 'longitude',
+        'front_image', 'inside_image', 'extra', 'is_visible', 'is_active', 'is_preferred', 'name_facturacion', 'razon_social', 'address_facturacion',
+        'postal_code_facturacion', 'tipo_cfdi', 'tipo_razon_social', 'cfdi_document', 'user_id'
     ];
 
    public function user(): BelongsTo

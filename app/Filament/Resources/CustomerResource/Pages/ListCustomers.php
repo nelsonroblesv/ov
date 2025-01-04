@@ -15,7 +15,7 @@ class ListCustomers extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Registrar Cliente'),
+                ->label('Registrar Cliente')
         ];
     }
 }

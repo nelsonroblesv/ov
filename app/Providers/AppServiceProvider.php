@@ -13,6 +13,7 @@ use App\Observers\OrderItemObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PreferredItemObserver;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use Filament\Forms\Components\Component;
 
 class AppServiceProvider extends ServiceProvider
 {

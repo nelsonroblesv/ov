@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\CustomerResource\Pages;
+namespace App\Filament\Resources\ProspectosResource\Pages;
 
-use App\Filament\Resources\CustomerResource;
+use App\Filament\Resources\ProspectosResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateCustomer extends CreateRecord
+class CreateProspectos extends CreateRecord
 {
-    protected static string $resource = CustomerResource::class;
-
-    protected static ?string $title = 'Registrar Cliente';
+    protected static string $resource = ProspectosResource::class;
+    protected static ?string $title = 'Registrar Prospecto';
     
 
     protected function getRedirectUrl(): string
@@ -23,10 +22,11 @@ class CreateCustomer extends CreateRecord
     {
         return Notification::make()
             ->success()
-            ->title('Cliente registrado')
-            ->body('Se ha registrado un nuevo Cliente de forma exitosa.')
+            ->title('Prospecto registrado')
+            ->body('Se ha registrado un nuevo Prospecto de forma exitosa.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');
     }
 }
+
