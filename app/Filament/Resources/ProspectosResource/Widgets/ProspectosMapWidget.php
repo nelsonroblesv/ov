@@ -2,6 +2,11 @@
 
 namespace App\Filament\Resources\ProspectosResource\Widgets;
 
+use App\Filament\Resources\ProspectosResource;
+use App\Filament\Resources\ProspectosResource\Pages\CreateProspectos;
+use App\Filament\Resources\ProspectosResource\Pages\EditProspectos;
+use App\Filament\Resources\ProspectosResource\Pages\ListProspectos;
+use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
 use App\Models\Customer;
 use App\Models\Prospectos;
 use App\Models\User;
@@ -91,9 +96,14 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		return [
 			ActionGroup::make([
-				ViewAction::make(),
-				EditAction::make(),
+				ViewAction::make('view')
+					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
+
+				EditAction::make('edit')
+					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
+				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
+
 				Action::make('transfer')
 					->label('Transferir')
 					->requiresConfirmation()
@@ -199,4 +209,15 @@ class ProspectosMapWidget extends MapTableWidget
 		//dd($data);
 		return $data;
 	}
+
+
+	public static function getPages(): array
+    {
+        return [
+            'index' => ListProspectos::route('/'),
+            'create' => CreateProspectos::route('/create'),
+            'edit' => EditProspectos::route('/{record}/edit'),
+            'view' => ViewProspectos::route('/{record}'),
+        ];
+    }
 }
