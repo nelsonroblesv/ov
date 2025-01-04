@@ -379,8 +379,8 @@ class CustomerResource extends Resource
                 TextColumn::make('birthday')->label('Fecha de nacimiento')
                     ->date()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('alias')->label('Alias')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('email')->label('Correo')->searchable(),
-                TextColumn::make('phone')->label('Telefono')->searchable(),
+                TextColumn::make('email')->label('Correo')->searchable()->badge()->color('info'),
+                TextColumn::make('phone')->label('Telefono')->searchable()->badge()->color('success'),
                 TextColumn::make('paises.nombre')->label('Pais')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()

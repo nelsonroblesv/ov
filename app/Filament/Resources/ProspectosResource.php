@@ -229,10 +229,8 @@ class ProspectosResource extends Resource
             ->columns([
                 TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
                 TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
-                TextColumn::make('email')->label('Correo')->searchable()->sortable(),
-                TextColumn::make('phone')->label('Telefono')->searchable()->sortable(),
-                TextColumn::make('notes')->label('Notas')->searchable()->sortable(),
-
+                TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
+                TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
                 TextColumn::make('paises.nombre')->label('Pais')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -240,6 +238,7 @@ class ProspectosResource extends Resource
                 IconColumn::make('latitude')->label('Ubicacion')
                 ->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
                 ->openUrlInNewTab()->alignCenter() ->icon('heroicon-o-map-pin')->searchable(),
+                TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
