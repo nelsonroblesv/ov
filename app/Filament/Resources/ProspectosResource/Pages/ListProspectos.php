@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProspectosResource\Pages;
 
 use App\Filament\Resources\ProspectosResource;
+use App\Filament\Resources\ProspectosResource\Widgets\ProspectosMapWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,6 +17,13 @@ class ListProspectos extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->label('Registrar Prospecto'),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ProspectosMapWidget::class,
         ];
     }
 }

@@ -24,8 +24,8 @@ return new class extends Migration
             $table->foreignId('municipios_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('colonias_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('full_address')->nullable()->nullable();
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
+            $table->decimal('latitude', 8,6)->nullable();
+            $table->decimal('longitude', 9, 6)->nullable();
             //Sistema
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(true);

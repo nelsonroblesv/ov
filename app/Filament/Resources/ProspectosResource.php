@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProspectosResource\Pages;
 use App\Filament\Resources\ProspectosResource\RelationManagers;
+use App\Filament\Resources\ProspectosResource\Widgets\ProspectosMapWidget;
 use App\Models\Colonias;
 use App\Models\Customer;
 use App\Models\Estados;
@@ -26,7 +27,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
@@ -178,9 +181,9 @@ class ProspectosResource extends Resource
                                 ->draggable()
                                 ->autocomplete('full_address')
                                 ->autocompleteReverse(true)
-                                
-                                ->defaultLocation(fn ($record) => [
-                                    $record->latitude ?? 20.1845751, 
+
+                                ->defaultLocation(fn($record) => [
+                                    $record->latitude ?? 20.1845751,
                                     $record->longitude ?? -90.1334567,
                                 ])
                                 ->columnSpanFull()->reactive()
@@ -220,7 +223,7 @@ class ProspectosResource extends Resource
                                 })->lazy(),
                         ])->columns(2),
                 ])->columnSpanFull()
-               //->startOnStep(2)
+                //->startOnStep(2)
             ]);
     }
 
@@ -238,8 +241,8 @@ class ProspectosResource extends Resource
                 TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('latitude')->label('Ubicacion')
-                ->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
-                ->openUrlInNewTab()->alignCenter() ->icon('heroicon-o-map-pin')->searchable(),
+                    ->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
+                    ->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),
                 TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -258,7 +261,7 @@ class ProspectosResource extends Resource
                         ->modalHeading('Transferir Prospecto')
                         ->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
                         ->action(function (Prospectos $record) {
-                            if($record->is_active == 0){
+                            if ($record->is_active == 0) {
                                 Notification::make()
                                     ->title('Error')
                                     ->body('Solo puedes transferir Prospectos con status Activo.')
@@ -266,7 +269,7 @@ class ProspectosResource extends Resource
                                     ->color('danger')
                                     ->send();
 
-                                    return;
+                                return;
                             }
                             if (Customer::where('email', $record->email)->exists()) {
                                 Notification::make()
@@ -276,7 +279,7 @@ class ProspectosResource extends Resource
                                     ->color('danger')
                                     ->send();
 
-                                    return;
+                                return;
                             }
 
                             $clienteData = $record->toArray();
@@ -307,8 +310,8 @@ class ProspectosResource extends Resource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
                         ->successNotification(
                             Notification::make()
                                 ->success()
