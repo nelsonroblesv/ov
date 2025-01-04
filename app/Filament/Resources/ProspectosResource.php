@@ -255,12 +255,17 @@ class ProspectosResource extends Resource
                         ->icon('heroicon-o-arrows-up-down')
                         ->color('info')
                         ->modalHeading('Transferir Prospecto')
-                        ->modalDescription('Estas seguro que deseas transferir este prospecto como Cliente? Esta acción no se puede deshacer.')
+                        ->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
                         ->action(function (Prospectos $record) {
                             if (Customer::where('email', $record->email)->exists()) {
-                                throw ValidationException::withMessages([
-                                    'email' => 'Este prospecto ya ha sido transferido como cliente.',
-                                ]);
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('El correo electrónico indicado esta asociado con un Cliente existente.')
+                                    ->danger()
+                                    ->color('danger')
+                                    ->send();
+
+                                    return;
                             }
 
                             $clienteData = $record->toArray();
