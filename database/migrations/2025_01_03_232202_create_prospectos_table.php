@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('longitude')->nullable();
             //Sistema
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

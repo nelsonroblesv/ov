@@ -31,6 +31,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -228,6 +229,7 @@ class ProspectosResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+                ToggleColumn::make('is_active')->label('Activo')->alignCenter()->sortable(),
                 TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
                 TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
                 TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),

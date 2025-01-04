@@ -11,7 +11,7 @@ class Prospectos extends Model
         'name', 'email', 'phone', 'notes',
         'paises_id', 'estados_id', 'municipios_id', 'colonias_id', 
         'full_address', 'latitude', 'longitude',
-        'user_id'
+        'user_id', 'is_active'
     ];
 
     public function user(): BelongsTo
