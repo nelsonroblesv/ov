@@ -158,9 +158,7 @@ class ProspectosMapWidget extends MapTableWidget
 					->modalHeading('Borrar Prospecto')
 					->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
 					->modalSubmitActionLabel('Si, eliminar'),
-					]),
-
-					
+					]),		
 		];
 	}
 
@@ -188,6 +186,17 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		$locations = $this->getRecords();
 
+		if ($locations->isEmpty() || $locations->count() == 0) {
+
+			$data[] = [
+				'location' => [
+					'lat' => 19.8386943,
+					'lng' => -90.4982317,
+				]
+			];
+			return $data;
+		}
+
 		$data = [];
 
 		foreach ($locations as $location) {
@@ -206,7 +215,6 @@ class ProspectosMapWidget extends MapTableWidget
 				],
 			];
 		}
-		//dd($data);
 		return $data;
 	}
 
