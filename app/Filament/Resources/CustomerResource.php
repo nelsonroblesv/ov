@@ -197,7 +197,7 @@ class CustomerResource extends Resource
                                     'streetViewControl' => false,
                                     'rotateControl'     => true,
                                     'fullscreenControl' => true,
-                                    'searchBoxControl'  => false, // creates geocomplete field inside map
+                                    'searchBoxControl'  => false,
                                     'zoomControl'       => true,
                                 ])
                                 ->reverseGeocode([
@@ -210,7 +210,10 @@ class CustomerResource extends Resource
                                 ->draggable()
                                 ->autocomplete('full_address')
                                 ->autocompleteReverse(true)
-                                ->defaultLocation([20.1845751, -90.1334567])
+                                ->defaultLocation(fn ($record) => [
+                                    $record->latitude ?? 20.1845751, 
+                                    $record->longitude ?? -90.1334567,
+                                ])
                                 ->columnSpanFull()->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('latitude', $state['lat']);
@@ -369,100 +372,31 @@ class CustomerResource extends Resource
             ->description('Gestion de clientes.')
             ->columns([
 
-                ImageColumn::make('avatar')
-                    ->searchable(),
-
-                TextColumn::make('name')
-                    ->label('Nombre')
-                    ->searchable(),
-
-                ToggleColumn::make('is_preferred')
-                    ->label('Preferred')
-                    ->sortable(),
-
-                TextColumn::make('user.name')
-                    ->label('Registrado por:')
-                    ->searchable(),
-
-                TextColumn::make('birthday')
-                    ->label('Fecha de nacimiento')
-                    ->date()
-                    ->searchable()
-                    ->sortable()
+                ImageColumn::make('avatar')->searchable(),
+                TextColumn::make('name')->label('Nombre')->searchable(),
+                ToggleColumn::make('is_preferred')->label('Preferred')->sortable(),
+                TextColumn::make('user.name')->label('Registrado por:')->searchable(),
+                TextColumn::make('birthday')->label('Fecha de nacimiento')
+                    ->date()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('alias')->label('Alias')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('email')->label('Correo')->searchable(),
+                TextColumn::make('phone')->label('Telefono')->searchable(),
+                TextColumn::make('paises.nombre')->label('Pais')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('alias')
-                    ->label('Alias')
-                    ->searchable()
+                TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('email')
-                    ->label('Correo')
-                    ->searchable(),
-
-                TextColumn::make('phone')
-                    ->label('Telefono')
-                    ->searchable(),
-
-                TextColumn::make('paises.nombre')
-                    ->label('Pais')
-                    ->searchable()
-                    ->sortable()
+                TextColumn::make('municipios.nombre')->label('Municipios')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('address')->label('Direccion')->searchable()->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('estados.nombre')
-                    ->label('Estado')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('municipios.nombre')
-                    ->label('Municipios')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('colonias.nombre')
-                    ->label('Colonia')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('address')
-                    ->label('Direccion')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                IconColumn::make('latitude')
-                    ->label('Ubicacion')
+                IconColumn::make('latitude')->label('Ubicacion')
                     ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
-                    ->openUrlInNewTab()
-                    ->alignCenter()
-                    ->icon('heroicon-o-map-pin')
-                    ->searchable(),
+                    ->openUrlInNewTab()->alignCenter() ->icon('heroicon-o-map-pin')->searchable(),
 
-                ImageColumn::make('front_image')
-                    ->label('Exterior')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_visible')->label('Visible')->boolean()->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_active')->label('Activo')->boolean()->toggleable(isToggledHiddenByDefault: true),
 
-                ImageColumn::make('inside_image')
-                    ->label('Interior')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                IconColumn::make('is_visible')
-                    ->label('Visible')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                IconColumn::make('is_active')
-                    ->label('Activo')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('created_at')
-                    ->label('Fecha registro')
-                    ->date()
-                    ->sortable()
+                TextColumn::make('created_at')->label('Fecha registro')->date()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([

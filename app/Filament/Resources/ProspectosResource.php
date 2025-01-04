@@ -29,6 +29,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -163,7 +164,7 @@ class ProspectosResource extends Resource
                                     'streetViewControl' => false,
                                     'rotateControl'     => true,
                                     'fullscreenControl' => true,
-                                    'searchBoxControl'  => false, // creates geocomplete field inside map
+                                    'searchBoxControl'  => false,
                                     'zoomControl'       => true,
                                 ])
                                 ->reverseGeocode([
@@ -176,7 +177,11 @@ class ProspectosResource extends Resource
                                 ->draggable()
                                 ->autocomplete('full_address')
                                 ->autocompleteReverse(true)
-                                ->defaultLocation([20.1845751, -90.1334567])
+                                
+                                ->defaultLocation(fn ($record) => [
+                                    $record->latitude ?? 20.1845751, 
+                                    $record->longitude ?? -90.1334567,
+                                ])
                                 ->columnSpanFull()->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('latitude', $state['lat']);
@@ -214,6 +219,7 @@ class ProspectosResource extends Resource
                                 })->lazy(),
                         ])->columns(2),
                 ])->columnSpanFull()
+               //->startOnStep(2)
             ]);
     }
 
@@ -231,7 +237,9 @@ class ProspectosResource extends Resource
                 TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-
+                IconColumn::make('latitude')->label('Ubicacion')
+                ->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
+                ->openUrlInNewTab()->alignCenter() ->icon('heroicon-o-map-pin')->searchable(),
             ])
             ->filters([
                 //
