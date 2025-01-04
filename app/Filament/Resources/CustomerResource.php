@@ -433,11 +433,12 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('coordinates')
-                    ->label('Coordenadas')
-                    ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->coordinates}")
+                IconColumn::make('latitude')
+                    ->label('Ubicacion')
+                    ->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
+                    ->openUrlInNewTab()
+                    ->alignCenter()
                     ->icon('heroicon-o-map-pin')
-                    ->iconColor('danger')
                     ->searchable(),
 
                 ImageColumn::make('front_image')
