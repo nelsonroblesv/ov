@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProspectosResource\Pages;
 use App\Filament\Resources\ProspectosResource\RelationManagers;
 use App\Models\Colonias;
+use App\Models\Customer;
 use App\Models\Estados;
 use App\Models\Municipios;
 use App\Models\Paises;
 use App\Models\Prospectos;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\MarkdownEditor;
@@ -22,10 +24,16 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\ValidationException;
 
 class ProspectosResource extends Resource
 {
@@ -229,10 +237,31 @@ class ProspectosResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+
+                    Action::make('transfer')
+                        ->label('Transferir')
+                        ->icon('heroicon-o-arrows-up-down')
+                        ->color('info')
+                        ->action(function (Prospectos $record) {
+                            if (Customer::where('email', $record->email)->exists()) {
+                                throw ValidationException::withMessages([
+                                    'email' => 'Este prospecto ya ha sido transferido como cliente.',
+                                ]);
+                            }
+                    
+                            $clienteData = $record->toArray();
+                            unset($clienteData['id'], $clienteData['created_at'], $clienteData['updated_at']);
+                            Customer::create($clienteData);
+                            $record->delete();
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Transferir Prospecto')
+                        ->modalDescription('Estas seguro que deseas transferir este prospecto a cliente? Esta acción no se puede deshacer.'),
+
+                    DeleteAction::make()
                         ->successNotification(
                             Notification::make()
                                 ->success()
@@ -245,7 +274,7 @@ class ProspectosResource extends Resource
                         ->modalHeading('Borrar Prospecto')
                         ->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
                         ->modalSubmitActionLabel('Si, eliminar'),
-                ])
+                        ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
