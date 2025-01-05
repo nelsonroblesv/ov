@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Form;
 use Filament\Forms\FormsComponent;
@@ -19,14 +20,22 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use PhpParser\Node\Expr\Cast\String_;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
-    protected static ?string $navigationGroup = 'Avyna';
+    protected static ?string $navigationGroup = 'Categorias';
     protected static ?string $navigationLabel = 'Familias';
     protected static ?string $breadcrumb = "Familias";
     protected static ?int $navigationSort = 0;
@@ -35,15 +44,15 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Group::make()
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Información General')
+                        Section::make('Información General')
                             ->icon('heroicon-o-information-circle')
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->required()
                                     ->label('Nombre')
-                                    ->helperText('Ingresa un nombre para la Categoría')
+                                    ->helperText('Ingresa un nombre para la Familia')
                                     ->disabledOn('edit')
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
@@ -54,7 +63,7 @@ class CategoryResource extends Resource
                                     })
                                     ->suffixIcon('heroicon-m-rectangle-stack'),
 
-                                Forms\Components\TextInput::make('slug')
+                                TextInput::make('slug')
                                     ->disabled()
                                     ->dehydrated()
                                     ->required()
@@ -62,7 +71,7 @@ class CategoryResource extends Resource
                                     ->helperText('Este campo no es editable.')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
-                                Forms\Components\MarkdownEditor::make('description')
+                                MarkdownEditor::make('description')
                                     ->columnSpan('full')
                                     ->label('Descripción')
                                     ->toolbarButtons([
@@ -80,36 +89,26 @@ class CategoryResource extends Resource
                                     ]),
                             ])->columnSpanFull()
                     ]),
-                Forms\Components\Group::make()
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Identificadores')
+                      Section::make('Identificadores')
                             ->icon('heroicon-o-key')
                             ->schema([
-                                Forms\Components\TextInput::make('url')
+                                TextInput::make('url')
                                     ->label('Ingresa una URL')
                                     ->url()
                                     ->suffixIcon('heroicon-m-globe-alt'),
-                                    Forms\Components\ColorPicker::make('primary_color')
+
+                                    ColorPicker::make('primary_color')
                                     ->label('Selecciona un color')
                                     ->required(),
-                                    Forms\Components\FileUpload::make('thumbnail')
-                                    ->label('Imagen de la Categoría')
+
+                                    FileUpload::make('thumbnail')
+                                    ->label('Imagen de la Familia')
                                     ->image()
                                     ->imageEditor()
                                     ->directory('category-images')
                             ]),
-
-                        Forms\Components\Section::make('Control')
-                            ->icon('heroicon-o-user-circle')
-                            ->schema([
-                                Forms\Components\Toggle::make('is_active')
-                                ->label('¿Categoría Activa?')
-                                ->default(true)
-                                ->onIcon('heroicon-m-check')
-                                ->offIcon('heroicon-m-x-mark')
-                                ->onColor('success')
-                                ->offColor('danger')
-                            ])->columns(1),
                     ])
             ]);
     }
@@ -120,32 +119,18 @@ class CategoryResource extends Resource
         ->heading('Familias')
         ->description('Familias de la marca.')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Categoría')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable()
-                    ->sortable()
-                    ->label('Slug')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('thumbnail')
-                    ->label('Logo'),
-                Tables\Columns\ColorColumn::make('primary_color')
-                    ->label('Color'),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean()
-                    ->label('¿Activo?'),
-                Tables\Columns\TextColumn::make('url')
-                    ->searchable()
-                    ->sortable()
-                    ->label('URL')
+                TextColumn::make('name')->label('Familia')->searchable()->sortable(),
+                TextColumn::make('slug')->searchable()->sortable()->label('Slug')->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('thumbnail')->label('Logo'),
+                ColorColumn::make('primary_color')->label('Color'),
+                ToggleColumn::make('is_active')->label('¿Activo?'),
+                TextColumn::make('url')->searchable()->sortable()->label('URL')
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
+               ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
