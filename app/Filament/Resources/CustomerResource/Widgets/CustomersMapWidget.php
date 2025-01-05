@@ -32,6 +32,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Contracts\Support\Htmlable;
@@ -60,6 +61,7 @@ class CustomersMapWidget extends MapTableWidget
 	protected function getTableColumns(): array
 	{
 		return [
+			ImageColumn::make('avatar')->label('Avatar'),
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
@@ -71,9 +73,7 @@ class CustomersMapWidget extends MapTableWidget
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			IconColumn::make('latitude')->label('Ubicacion')
 			->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
-			->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),
-			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-	
+			->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),	
 			/*MapColumn::make('location')
 				->extraImgAttributes(
 					fn ($record): array => ['title' => $record->latitude . ',' . $record->longitude]
