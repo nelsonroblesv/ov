@@ -7,8 +7,12 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
@@ -27,7 +31,7 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Avyna';
+    protected static ?string $navigationGroup = 'Categorias';
     protected static ?string $navigationLabel = 'Productos';
     protected static ?string $breadcrumb = "Productos";
     protected static ?int $navigationSort = 1;
@@ -38,7 +42,7 @@ class ProductResource extends Resource
             ->schema([
                 Section::make('Información Básica')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->label('Nombre')
@@ -52,19 +56,19 @@ class ProductResource extends Resource
                                 $set('slug', Str::slug($state));
                             }),
 
-                        Forms\Components\TextInput::make('slug')
+                        TextInput::make('slug')
                             ->disabled()
                             ->dehydrated()
                             ->required()
                             ->unique(Product::class, 'slug', ignoreRecord: true)
                             ->helperText('Este campo no es editable.'),
 
-                        Forms\Components\Select::make('category_id')
+                        Select::make('category_id')
                             ->required()
                             ->label('Familia')
                             ->relationship('category', 'name'),
 
-                        Forms\Components\FileUpload::make('thumbnail')
+                        FileUpload::make('thumbnail')
                             ->label('Imagen del Producto')
                             ->image()
                             ->imageEditor()
@@ -115,14 +119,14 @@ class ProductResource extends Resource
 
                 Section::make('Extras')
                     ->schema([
-                        Forms\Components\MarkdownEditor::make('description')
+                        MarkdownEditor::make('description')
                             ->label('Descripción e información adicional')
                             ->columnSpanFull()
                     ]),
 
                 Section::make('Control')
                     ->schema([
-                        Forms\Components\Toggle::make('visibility')
+                        Toggle::make('visibility')
                             ->label('Visible')
                             ->default(true)
                             ->onIcon('heroicon-m-eye')
@@ -130,7 +134,7 @@ class ProductResource extends Resource
                             ->onColor('success')
                             ->offColor('danger'),
 
-                        Forms\Components\Toggle::make('availability')
+                        Toggle::make('availability')
                             ->label('Disponible')
                             ->default(true)
                             ->onIcon('heroicon-m-check-circle')
@@ -138,7 +142,7 @@ class ProductResource extends Resource
                             ->onColor('success')
                             ->offColor('danger'),
 
-                        Forms\Components\Toggle::make('shipping')
+                        Toggle::make('shipping')
                             ->label('Para Envío')
                             ->default(true)
                             ->onIcon('heroicon-m-truck')
@@ -155,15 +159,9 @@ class ProductResource extends Resource
             ->heading('Productos')
             ->description('Gestion de Productos de la marca.')
             ->columns([
-                ImageColumn::make('thumbnail')
-                    ->label('Imagen'),
-                TextColumn::make('name')
-                    ->label('Producto')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('slug')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('thumbnail')->label('Imagen'),
+                TextColumn::make('name')->label('Producto')->searchable()->sortable(),
+                TextColumn::make('slug')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('category.name')
                     ->label('Familia')
                     ->searchable()
