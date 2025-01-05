@@ -180,6 +180,7 @@ class FamiliaResource extends Resource
             'index' => Pages\ListFamilias::route('/'),
             'create' => Pages\CreateFamilia::route('/create'),
             'edit' => Pages\EditFamilia::route('/{record}/edit'),
+            'view' => Pages\ViewFamilia::route('/{record}'),
         ];
     }
 }
