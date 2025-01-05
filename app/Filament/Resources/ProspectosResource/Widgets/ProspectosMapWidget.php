@@ -57,7 +57,7 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		return [
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
-			ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
+			ToggleColumn::make('is_active')->label('Posible')->alignCenter(),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
