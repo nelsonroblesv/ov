@@ -116,41 +116,53 @@ class FamiliaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Familias')
+        ->description('Familias de la marca.')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('url')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('thumbnail')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('primary_color')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('name')->label('Familia')->searchable()->sortable(),
+                TextColumn::make('slug')->searchable()->sortable()->label('Slug')->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('thumbnail')->label('Logo'),
+                ColorColumn::make('primary_color')->label('Color'),
+                TextColumn::make('url')->searchable()->sortable()->label('URL'),
+                ToggleColumn::make('is_active')->label('¿Activo?')
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+               ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Familia eliminada')
+                            ->body('La Familia ha sido eliminada del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Familia')
+                    ->modalDescription('Estas seguro que deseas eliminar esta Familia? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Familias')
+                    ->modalDescription('Estas seguro que deseas eliminar las Familias seleccionadas? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
