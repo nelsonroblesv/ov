@@ -114,7 +114,7 @@ class ProspectosMapWidget extends MapTableWidget
 						if ($record->is_active == 0) {
 							Notification::make()
 								->title('Error')
-								->body('Solo puedes transferir Prospectos con status Activo.')
+								->body('Solo puedes transferir Prospectos marcados como Posibles Clientes.')
 								->danger()
 								->color('danger')
 								->send();
