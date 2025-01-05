@@ -29,6 +29,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Get;
@@ -75,6 +76,26 @@ class CustomerResource extends Resource
                                 ->relationship('user', 'name')
                                 ->label('Registrado por:')
                                 ->required(),
+
+                            ToggleButtons::make('tipo_cliente')
+                                ->label('Tipo de Cliente')
+                                ->inline()
+                                ->options([
+                                    'Red' => 'Red',
+                                    'Black' => 'Black',
+                                    'Silver' => 'Silver',
+                                ])
+                                ->default('Red')
+                                ->colors([
+                                    'Red' => 'danger',
+                                    'Black' => 'warning',
+                                    'Silver' => 'info'
+                                ])
+                                ->icons([
+                                    'Red' => 'heroicon-o-user',
+                                    'Black' => 'heroicon-o-star',
+                                    'Silver' => 'heroicon-o-sparkles'
+                                ]),
 
                             TextInput::make('name')
                                 ->label('Nombre completo')

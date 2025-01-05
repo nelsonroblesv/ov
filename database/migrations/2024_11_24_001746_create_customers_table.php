@@ -49,6 +49,7 @@ return new class extends Migration
             $table->string('cfdi_document')->nullable();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->enum('tipo_cliente', ['Red', 'Black', 'Silver'])->default('Red');
         });
     }
 
