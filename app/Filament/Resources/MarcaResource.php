@@ -54,7 +54,7 @@ class MarcaResource extends Resource
                 TextColumn::make('name')->label('Nombre')->searchable(),
                 TextColumn::make('description')->label('Descripcion')->searchable(),
                 ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
-                TextColumn::make('created_at')->label('Registrado')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Fecha de registro')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 
             ])
             ->filters([
