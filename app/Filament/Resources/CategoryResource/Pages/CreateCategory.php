@@ -11,7 +11,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCategory extends CreateRecord
 {
     protected static string $resource = ResourcesCategoryResource::class;
-    protected static ?string $title = 'Nueva Familia de Productos';
+    protected static ?string $title = 'Nueva Categoria';
 
     protected function getRedirectUrl(): string
     {
@@ -22,8 +22,8 @@ class CreateCategory extends CreateRecord
     {
         return Notification::make()
             ->success()
-            ->title('Familia registrada')
-            ->body('Se ha registrado una nueva Familia de forma exitosa.')
+            ->title('Categoria registrada')
+            ->body('Se ha registrado una nueva Categoria de forma exitosa.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');

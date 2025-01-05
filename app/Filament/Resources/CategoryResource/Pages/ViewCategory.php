@@ -10,5 +10,5 @@ class ViewCategory extends ViewRecord
 {
     protected static string $resource = CategoryResource::class;
 
-    protected static ?string $title = 'Vista Familia de Productos';
+    protected static ?string $title = 'Vista Categoria';
 }

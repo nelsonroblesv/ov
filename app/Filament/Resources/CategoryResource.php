@@ -44,87 +44,19 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Group::make()
-                    ->schema([
-                        Section::make('Información General')
-                            ->icon('heroicon-o-information-circle')
-                            ->schema([
-                                TextInput::make('name')
-                                    ->required()
-                                    ->label('Nombre')
-                                    ->helperText('Ingresa un nombre para la Familia')
-                                    ->disabledOn('edit')
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                                        if ($operation !== 'create') {
-                                            return;
-                                        }
-                                        $set('slug', Str::slug($state));
-                                    })
-                                    ->suffixIcon('heroicon-m-rectangle-stack'),
-
-                                TextInput::make('slug')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->required()
-                                    ->unique(Category::class, 'slug', ignoreRecord: true)
-                                    ->helperText('Este campo no es editable.')
-                                    ->suffixIcon('heroicon-m-at-symbol'),
-
-                                MarkdownEditor::make('description')
-                                    ->columnSpan('full')
-                                    ->label('Descripción')
-                                    ->toolbarButtons([
-                                        'blockquote',
-                                        'bold',
-                                        'bulletList',
-                                        'codeBlock',
-                                        'heading',
-                                        'italic',
-                                        'link',
-                                        'orderedList',
-                                        'redo',
-                                        'strike',
-                                        'undo',
-                                    ]),
-                            ])->columnSpanFull()
-                    ]),
-                Group::make()
-                    ->schema([
-                      Section::make('Identificadores')
-                            ->icon('heroicon-o-key')
-                            ->schema([
-                                TextInput::make('url')
-                                    ->label('Ingresa una URL')
-                                    ->url()
-                                    ->suffixIcon('heroicon-m-globe-alt'),
-
-                                    ColorPicker::make('primary_color')
-                                    ->label('Selecciona un color')
-                                    ->required(),
-
-                                    FileUpload::make('thumbnail')
-                                    ->label('Imagen de la Familia')
-                                    ->image()
-                                    ->imageEditor()
-                                    ->directory('category-images')
-                            ]),
-                    ])
+               Section::make('Informacion de la Categoria')
+                ->schema([
+                    TextInput::make('name')->label('Nombre')
+                ])
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Familias')
-        ->description('Familias de la marca.')
+        ->heading('Categorias')
             ->columns([
-                TextColumn::make('name')->label('Familia')->searchable()->sortable(),
-                TextColumn::make('slug')->searchable()->sortable()->label('Slug')->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('thumbnail')->label('Logo'),
-                ColorColumn::make('primary_color')->label('Color'),
-                TextColumn::make('url')->searchable()->sortable()->label('URL'),
-                ToggleColumn::make('is_active')->label('¿Activo?')
+                TextColumn::make('name')->label('Familia')->searchable()->sortable()
             ])
             ->filters([
                 //
@@ -137,14 +69,14 @@ class CategoryResource extends Resource
                     ->successNotification(
                         Notification::make()
                             ->success()
-                            ->title('Familia eliminada')
-                            ->body('La Familia ha sido eliminada del sistema.')
+                            ->title('Categoria eliminada')
+                            ->body('La Categoria ha sido eliminada del sistema.')
                             ->icon('heroicon-o-trash')
                             ->iconColor('danger')
                             ->color('danger')
                     )
-                    ->modalHeading('Borrar Familia')
-                    ->modalDescription('Estas seguro que deseas eliminar esta Familia? Esta acción no se puede deshacer.')
+                    ->modalHeading('Borrar Categoria')
+                    ->modalDescription('Estas seguro que deseas eliminar esta Categoria? Esta acción no se puede deshacer.')
                     ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
@@ -160,8 +92,8 @@ class CategoryResource extends Resource
                             ->iconColor('danger')
                             ->color('danger')
                     )
-                    ->modalHeading('Borrar Familias')
-                    ->modalDescription('Estas seguro que deseas eliminar las Familias seleccionadas? Esta acción no se puede deshacer.')
+                    ->modalHeading('Borrar Categorias')
+                    ->modalDescription('Estas seguro que deseas eliminar las Categorias seleccionadas? Esta acción no se puede deshacer.')
                     ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);

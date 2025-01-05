@@ -10,7 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditCategory extends EditRecord
 {
     protected static string $resource = CategoryResource::class;
-    protected static ?string $title = 'Editar Familia de Productos';
+    protected static ?string $title = 'Editar Categoria';
 
     protected function getRedirectUrl(): string
     {
