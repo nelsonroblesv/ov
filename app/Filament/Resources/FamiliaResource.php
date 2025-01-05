@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FamiliaResource\Pages;
 use App\Filament\Resources\FamiliaResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Familia;
+use App\Models\Marca;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Group;
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use PhpParser\Node\Expr\Cast\String_;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -63,6 +66,18 @@ class FamiliaResource extends Resource
                                     })
                                     ->suffixIcon('heroicon-m-rectangle-stack'),
 
+                                Select::make('marcas_id')
+                                    ->required()
+                                    ->label('Marca')
+                                    ->options(Marca::pluck('name', 'id')),
+
+                                Select::make('categories')
+                                    ->required()
+                                    ->label('Categoria')
+                                    ->multiple()
+                                    ->preload()
+                                    ->options(Category::pluck('name', 'name')),
+
                                 TextInput::make('slug')
                                     ->disabled()
                                     ->dehydrated()
@@ -91,7 +106,7 @@ class FamiliaResource extends Resource
                     ]),
                 Group::make()
                     ->schema([
-                      Section::make('Identificadores')
+                        Section::make('Identificadores')
                             ->icon('heroicon-o-key')
                             ->schema([
                                 TextInput::make('url')
@@ -99,11 +114,11 @@ class FamiliaResource extends Resource
                                     ->url()
                                     ->suffixIcon('heroicon-m-globe-alt'),
 
-                                    ColorPicker::make('primary_color')
+                                ColorPicker::make('primary_color')
                                     ->label('Selecciona un color')
                                     ->required(),
 
-                                    FileUpload::make('thumbnail')
+                                FileUpload::make('thumbnail')
                                     ->label('Imagen de la Familia')
                                     ->image()
                                     ->imageEditor()
@@ -116,53 +131,55 @@ class FamiliaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Familias')
-        ->description('Familias de la marca.')
+            ->heading('Familias')
+            ->description('Familias de la marca.')
             ->columns([
-                TextColumn::make('name')->label('Familia')->searchable()->sortable(),
-                TextColumn::make('slug')->searchable()->sortable()->label('Slug')->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('thumbnail')->label('Logo'),
                 ColorColumn::make('primary_color')->label('Color'),
+                TextColumn::make('name')->label('Familia')->searchable()->sortable(),
+                TextColumn::make('marcas.name')->label('Marca')->searchable()->sortable(),
+                TextColumn::make('categories')->label('Categorias')->searchable()->sortable(),
+                TextColumn::make('slug')->searchable()->sortable()->label('Slug')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('url')->searchable()->sortable()->label('URL'),
-                ToggleColumn::make('is_active')->label('¿Activo?')
+                ToggleColumn::make('is_active')->label('¿Activo?')->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //
             ])
             ->actions([
-               ActionGroup::make([
+                ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Familia eliminada')
-                            ->body('La Familia ha sido eliminada del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Familia')
-                    ->modalDescription('Estas seguro que deseas eliminar esta Familia? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Familia eliminada')
+                                ->body('La Familia ha sido eliminada del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Familia')
+                        ->modalDescription('Estas seguro que deseas eliminar esta Familia? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Familias')
-                    ->modalDescription('Estas seguro que deseas eliminar las Familias seleccionadas? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Familias')
+                        ->modalDescription('Estas seguro que deseas eliminar las Familias seleccionadas? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

@@ -27,5 +27,4 @@ class CreateFamilia extends CreateRecord
             ->iconColor('success')
             ->color('success');
     }
-
 }

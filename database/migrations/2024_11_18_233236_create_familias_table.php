@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->foreignId('marcas_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->json('categories')->nullable();
             $table->string('url')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('primary_color')->nullable();

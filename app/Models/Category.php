@@ -11,4 +11,9 @@ class Category extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function familia(): BelongsTo
+    {
+        return $this->belongsTo(Familia::class);
+    }
 }

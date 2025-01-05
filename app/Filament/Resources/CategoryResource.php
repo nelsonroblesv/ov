@@ -56,7 +56,7 @@ class CategoryResource extends Resource
         return $table
         ->heading('Categorias')
             ->columns([
-                TextColumn::make('name')->label('Familia')->searchable()->sortable()
+                TextColumn::make('name')->label('Nombre')->searchable()->sortable()
             ])
             ->filters([
                 //
