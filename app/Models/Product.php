@@ -14,9 +14,14 @@ class Product extends Model
         'price_distribuidor', 'price_salon', 'price_publico', 'sku','shipping'
     ];
 
-    public function category() :BelongsTo
+    public function marca() :BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Marca::class);
+    } 
+
+    public function familia() :BelongsTo
+    {
+        return $this->belongsTo(Familia::class);
     }  
     
     public function orderItems(): HasMany

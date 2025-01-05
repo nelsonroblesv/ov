@@ -63,16 +63,22 @@ class ProductResource extends Resource
                             ->unique(Product::class, 'slug', ignoreRecord: true)
                             ->helperText('Este campo no es editable.'),
 
-                        Select::make('category_id')
+                        Select::make('marca_id')
+                            ->required()
+                            ->label('Marca')
+                            ->relationship('marca', 'name'),
+
+                        Select::make('familia_id')
                             ->required()
                             ->label('Familia')
-                            ->relationship('category', 'name'),
+                            ->relationship('familia', 'name'),
 
                         FileUpload::make('thumbnail')
                             ->label('Imagen del Producto')
                             ->image()
                             ->imageEditor()
                             ->directory('product-images')
+                            ->columnSpanFull()
                     ])->columns(2),
 
                 Section::make('Inventario')
@@ -86,14 +92,14 @@ class ProductResource extends Resource
                             ->dehydrated()
                             //->debounce(600)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, callable $set){
+                            ->afterStateUpdated(function ($state, callable $set) {
                                 $price_salon = $state * 1.7;
                                 $price_publico = $state * 2.4;
 
-                               $set('price_salon', round($price_salon,2));
-                               $set('price_publico', round($price_publico,2));
+                                $set('price_salon', round($price_salon, 2));
+                                $set('price_publico', round($price_publico, 2));
                             }),
-                            
+
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
@@ -168,7 +174,7 @@ class ProductResource extends Resource
                 TextColumn::make('price_salon')->label('Salon')->sortable(),
                 TextColumn::make('price_publico')->label('Publico')->sortable(),
                 IconColumn::make('visibility')->label('Visible')->boolean()
-                ->trueIcon('heroicon-o-eye')->falseIcon('heroicon-o-eye-slash')->toggleable(isToggledHiddenByDefault: true),
+                    ->trueIcon('heroicon-o-eye')->falseIcon('heroicon-o-eye-slash')->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('availability')->label('Disponible')->boolean()
                     ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-no-symbol')->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('shipping')->label('Envío')->boolean()
@@ -184,35 +190,35 @@ class ProductResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Producto eliminado')
-                            ->body('El Producto ha sido eliminado  del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Producto')
-                    ->modalDescription('Estas seguro que deseas eliminar este Producto? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Producto eliminado')
+                                ->body('El Producto ha sido eliminado  del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Producto')
+                        ->modalDescription('Estas seguro que deseas eliminar este Producto? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Productos')
-                    ->modalDescription('Estas seguro que deseas eliminar los Productos seleccionados? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Productos')
+                        ->modalDescription('Estas seguro que deseas eliminar los Productos seleccionados? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
