@@ -167,9 +167,9 @@ class ProductResource extends Resource
             ->columns([
                 ImageColumn::make('thumbnail')->label('Imagen'),
                 TextColumn::make('name')->label('Producto')->searchable()->sortable(),
-                TextColumn::make('slug')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('category.name')->label('Familia')->searchable()->sortable(),
-                TextColumn::make('sku')->label('SKU')->searchable(),
+                TextColumn::make('marca.name')->label('Marca')->searchable()->sortable(),
+                TextColumn::make('familia.name')->label('Familia')->searchable()->sortable(),
+                TextColumn::make('sku')->label('SKU')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('price_distribuidor')->label('Distribuidor')->sortable(),
                 TextColumn::make('price_salon')->label('Salon')->sortable(),
                 TextColumn::make('price_publico')->label('Publico')->sortable(),
@@ -179,8 +179,8 @@ class ProductResource extends Resource
                     ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-no-symbol')->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('shipping')->label('Envío')->boolean()
                     ->trueIcon('heroicon-o-truck')->falseIcon('heroicon-o-no-symbol')->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                //TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                //TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
