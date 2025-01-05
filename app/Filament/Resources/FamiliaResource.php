@@ -6,12 +6,29 @@ use App\Filament\Resources\FamiliaResource\Pages;
 use App\Filament\Resources\FamiliaResource\RelationManagers;
 use App\Models\Familia;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Form;
+use Filament\Forms\FormsComponent;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use PhpParser\Node\Expr\Cast\String_;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 
 class FamiliaResource extends Resource
 {
@@ -27,22 +44,72 @@ class FamiliaResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('url')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('thumbnail')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('primary_color')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
+                Group::make()
+                    ->schema([
+                        Section::make('Información General')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->label('Nombre')
+                                    ->helperText('Ingresa un nombre para la Familia')
+                                    ->disabledOn('edit')
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                        if ($operation !== 'create') {
+                                            return;
+                                        }
+                                        $set('slug', Str::slug($state));
+                                    })
+                                    ->suffixIcon('heroicon-m-rectangle-stack'),
+
+                                TextInput::make('slug')
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->required()
+                                    ->unique(Familia::class, 'slug', ignoreRecord: true)
+                                    ->helperText('Este campo no es editable.')
+                                    ->suffixIcon('heroicon-m-at-symbol'),
+
+                                MarkdownEditor::make('description')
+                                    ->columnSpan('full')
+                                    ->label('Descripción')
+                                    ->toolbarButtons([
+                                        'blockquote',
+                                        'bold',
+                                        'bulletList',
+                                        'codeBlock',
+                                        'heading',
+                                        'italic',
+                                        'link',
+                                        'orderedList',
+                                        'redo',
+                                        'strike',
+                                        'undo',
+                                    ]),
+                            ])->columnSpanFull()
+                    ]),
+                Group::make()
+                    ->schema([
+                      Section::make('Identificadores')
+                            ->icon('heroicon-o-key')
+                            ->schema([
+                                TextInput::make('url')
+                                    ->label('Ingresa una URL')
+                                    ->url()
+                                    ->suffixIcon('heroicon-m-globe-alt'),
+
+                                    ColorPicker::make('primary_color')
+                                    ->label('Selecciona un color')
+                                    ->required(),
+
+                                    FileUpload::make('thumbnail')
+                                    ->label('Imagen de la Familia')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->directory('category-images')
+                            ]),
+                    ])
             ]);
     }
 
