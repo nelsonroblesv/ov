@@ -340,11 +340,16 @@ class CustomerResource extends Resource
 
     public static function table(Table $table): Table
     {
+         // Hide table from Resource
+         return $table
+         ->columns([])
+         ->content(null)
+         ->paginated(false);
+        /*
         return $table
             ->heading('Clientes')
             ->description('Gestion de clientes.')
             ->columns([
-
                 ImageColumn::make('avatar')->searchable(),
                 TextColumn::make('name')->label('Nombre')->searchable(),
                 TextColumn::make('user.name')->label('Registrado por:')->searchable(),
@@ -417,6 +422,7 @@ class CustomerResource extends Resource
                         ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
+            */
     }
 
     public static function getRelations(): array

@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\ProspectosResource\Widgets;
+namespace App\Filament\Resources\CustomerResource\Widgets;
 
+use App\Filament\App\Resources\CustomerResource;
+use App\Filament\App\Resources\CustomerResource\Pages\CreateCustomer;
+use App\Filament\App\Resources\CustomerResource\Pages\EditCustomer;
+use App\Filament\App\Resources\CustomerResource\Pages\ListCustomers;
+use App\Filament\App\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Filament\Resources\ProspectosResource;
-use App\Filament\Resources\ProspectosResource\Pages\CreateProspectos;
-use App\Filament\Resources\ProspectosResource\Pages\EditProspectos;
-use App\Filament\Resources\ProspectosResource\Pages\ListProspectos;
-use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
+use App\Filament\Resources\CustomerResource\Pages\CreateProspectos;
+use App\Filament\Resources\CustomerResource\Pages\EditProspectos;
+use App\Filament\Resources\CustomerResource\Pages\ListProspectos;
+use App\Filament\Resources\CustomerResource\Pages\ViewProspectos;
 use App\Models\Customer;
-use App\Models\Prospectos;
 use App\Models\User;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Actions\RadiusAction;
@@ -34,23 +38,23 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 
-class ProspectosMapWidget extends MapTableWidget
+class CustomersMapWidget extends MapTableWidget
 {
-	protected static ?string $heading = 'Prospectos';
+	protected static ?string $heading = 'Clientes';
 	protected static ?int $sort = 1;
 	protected static ?string $pollingInterval = null;
 	protected static ?bool $clustering = true;
-	protected static ?string $mapId = 'prospectos-map';
+	protected static ?string $mapId = 'clientes-map';
 	protected int|string|array $columnSpan = 'full';
 
 	protected function getTableQuery(): Builder
 	{
-		return Prospectos::query()->latest();
+		return Customer::query()->latest();
 	}
 	
 	protected function getTableDescription(): string|Htmlable|null
 	{
-		return 'Listado de Prospectos';
+		return 'Listado de Clientes';
 	}
 
 	protected function getTableColumns(): array
@@ -66,7 +70,7 @@ class ProspectosMapWidget extends MapTableWidget
 			TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			IconColumn::make('latitude')->label('Ubicacion')
-			->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
+			->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
 			->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),
 			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 	
@@ -96,66 +100,25 @@ class ProspectosMapWidget extends MapTableWidget
 		return [
 			ActionGroup::make([
 				ViewAction::make('view')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
+					->url(fn (Customer $record): string => CustomerResource::getUrl('view', ['record' => $record])),
 
 				EditAction::make('edit')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
+					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-
-				Action::make('transfer')
-					->label('Transferir')
-					->requiresConfirmation()
-					->icon('heroicon-o-arrows-up-down')
-					->color('info')
-					->modalHeading('Transferir Prospecto')
-					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
-					->action(function (Prospectos $record) {
-						if ($record->is_active == 0) {
-							Notification::make()
-								->title('Error')
-								->body('Solo puedes transferir Prospectos con status Activo.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-						if (Customer::where('email', $record->email)->exists()) {
-							Notification::make()
-								->title('Error')
-								->body('El correo electrónico indicado esta asociado con un Cliente existente.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-
-						$clienteData = $record->toArray();
-						unset($clienteData['id'], $clienteData['created_at'], $clienteData['updated_at']);
-						Customer::create($clienteData);
-						$record->delete();
-
-						Notification::make()
-							->title('Prospecto transferido')
-							->body('El prospecto ha sido transferido como Cliente.')
-							->success()
-							->send();
-					}),
 
 				ActionsDeleteAction::make('delete')
 					->successNotification(
 						Notification::make()
 							->success()
-							->title('Prospecto eliminado')
-							->body('El Prospecto ha sido eliminado  del sistema.')
+							->title('Cliente eliminado')
+							->body('El Cliente ha sido eliminado  del sistema.')
 							->icon('heroicon-o-trash')
 							->iconColor('danger')
 							->color('danger')
 					)
-					->modalHeading('Borrar Prospecto')
-					->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
+					->modalHeading('Borrar Cliente')
+					->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
 					->modalSubmitActionLabel('Si, eliminar'),
 					]),		
 		];
@@ -175,8 +138,8 @@ class ProspectosMapWidget extends MapTableWidget
 						->iconColor('danger')
 						->color('danger')
 				)
-				->modalHeading('Borrar Prospectos')
-				->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
+				->modalHeading('Borrar Clientes')
+				->modalDescription('Estas seguro que deseas eliminar los Clientes seleccionados? Esta acción no se puede deshacer.')
 				->modalSubmitActionLabel('Si, eliminar'),
 		];
 	}
@@ -217,14 +180,13 @@ class ProspectosMapWidget extends MapTableWidget
 		return $data;
 	}
 
-
 	public static function getPages(): array
     {
         return [
-            'index' => ListProspectos::route('/'),
-            'create' => CreateProspectos::route('/create'),
-            'edit' => EditProspectos::route('/{record}/edit'),
-            'view' => ViewProspectos::route('/{record}'),
+            'index' => ListCustomers::route('/'),
+            'create' => CreateCustomer::route('/create'),
+            'edit' => EditCustomer::route('/{record}/edit'),
+            'view' => ViewCustomer::route('/{record}'),
         ];
     }
 }
