@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->longText('description')->nullable();
             $table->string('thumbnail')->nullable();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('marca_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('familia_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete();
             $table->boolean('visibility')->default(true);
             $table->boolean('availability')->default(true);
             $table->decimal('price_distribuidor', 10, 2);

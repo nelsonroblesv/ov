@@ -10,8 +10,9 @@ class Product extends Model
 {
     //
     protected $fillable = [
-        'name','slug','url','description','thumbnail','category_id', 'visibility','availability', 
-        'price_distribuidor', 'price_salon', 'price_publico', 'sku','shipping'
+        'name','slug','url','description','thumbnail','marca_id', 'familia_id', 'category_id', 
+        'visibility','availability', 'shipping',
+        'price_distribuidor', 'price_salon', 'price_publico', 'sku'
     ];
 
     public function marca() :BelongsTo
