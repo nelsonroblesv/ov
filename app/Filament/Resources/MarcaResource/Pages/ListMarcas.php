@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListMarcas extends ListRecords
 {
     protected static string $resource = MarcaResource::class;
+    protected static ?string $title = 'Marcas';
 
     protected function getHeaderActions(): array
     {
