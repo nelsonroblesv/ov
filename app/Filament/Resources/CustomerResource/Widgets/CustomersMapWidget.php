@@ -31,6 +31,7 @@ use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -63,6 +64,12 @@ class CustomersMapWidget extends MapTableWidget
 		return [
 			ImageColumn::make('avatar')->label('Avatar'),
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+			BadgeColumn::make('tipo_cliente')->label('Tipo')->searchable()->sortable()
+				->colors([
+					'danger' => 'Red',
+					'warning' => 'Black',
+					'info' => 'Silver'
+				]),
 			ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),

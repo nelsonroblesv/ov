@@ -57,7 +57,7 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		return [
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
-			ToggleColumn::make('is_active')->label('Posible Cliente')->alignCenter(),
+			ToggleColumn::make('is_possible')->label('Posible Cliente')->alignCenter(),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
@@ -111,7 +111,7 @@ class ProspectosMapWidget extends MapTableWidget
 					->modalHeading('Transferir Prospecto')
 					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
 					->action(function (Prospectos $record) {
-						if ($record->is_active == 0) {
+						if ($record->is_possible == 0) {
 							Notification::make()
 								->title('Error')
 								->body('Solo puedes transferir Prospectos marcados como Posibles Clientes.')

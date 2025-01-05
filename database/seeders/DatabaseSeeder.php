@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $user->save();
 
         $user = new User();
-        $user->name = 'Osberh Valle';
+        $user->name = 'Osberth Valle';
         $user->username = 'OValle';
         $user->email = 'admin@osberthvalle.com';
         $user->phone = '9811603253';
@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
         $user->save();
 
 
-        User::factory(6)->create();
+       // User::factory(6)->create();
        // Customer::factory(10)->create();
     }
 }
