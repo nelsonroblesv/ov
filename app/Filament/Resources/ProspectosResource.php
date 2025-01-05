@@ -75,7 +75,7 @@ class ProspectosResource extends Resource
                             TextInput::make('email')
                                 ->label('Correo electrónico')
                                 ->email()
-                                ->required()
+                                //->required()
                                 ->unique(ignoreRecord: true)
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-at-symbol'),

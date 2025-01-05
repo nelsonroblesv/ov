@@ -121,10 +121,10 @@ class ProspectosMapWidget extends MapTableWidget
 
 							return;
 						}
-						if (Customer::where('email', $record->email)->exists()) {
+						if (Customer::where('phone', $record->phone)->exists()) {
 							Notification::make()
 								->title('Error')
-								->body('El correo electrónico indicado esta asociado con un Cliente existente.')
+								->body('El numero de telefono indicado ya esta asociado con un Cliente existente.')
 								->danger()
 								->color('danger')
 								->send();
