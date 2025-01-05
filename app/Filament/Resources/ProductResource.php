@@ -83,8 +83,9 @@ class ProductResource extends Resource
 
                 Section::make('Inventario')
                     ->schema([
-                        TextInput::make('price_distribuidor')
-                            ->label('Precio Distribuidor')
+
+                        TextInput::make('price_publico')
+                            ->label('Precio Publico')
                             ->required()
                             ->numeric()
                             ->prefix('$')
@@ -94,12 +95,19 @@ class ProductResource extends Resource
                             ->live(onBlur: true)
                             ->afterStateUpdated(function ($state, callable $set) {
                                 $price_salon = $state * 1.7;
-                                $price_publico = $state * 2.4;
+                                $price_distribuidor = $state * 2.4;
 
                                 $set('price_salon', round($price_salon, 2));
-                                $set('price_publico', round($price_publico, 2));
+                                $set('price_distribuidor', round($price_distribuidor, 2));
                             }),
 
+                        TextInput::make('price_distribuidor')
+                            ->label('Precio Distribuidor')
+                            ->required()
+                            ->numeric()
+                            ->prefix('$')
+                            ->disabled()
+                            ->dehydrated(),
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
@@ -109,16 +117,8 @@ class ProductResource extends Resource
                             ->disabled()
                             ->dehydrated(),
 
-                        TextInput::make('price_publico')
-                            ->label('Precio Publico')
-                            ->required()
-                            ->numeric()
-                            ->prefix('$')
-                            ->disabled()
-                            ->dehydrated(),
-
                         TextInput::make('sku')
-                            ->required()
+                            //->required()
                             ->label('SKU')
                             ->maxLength(255),
                     ])->columns(2),
