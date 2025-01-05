@@ -34,7 +34,7 @@ class FamiliaResource extends Resource
 {
     protected static ?string $model = Familia::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-bookmark';
     protected static ?string $navigationGroup = 'Catalogo';
     protected static ?string $navigationLabel = 'Familias';
     protected static ?string $breadcrumb = "Familias";

@@ -26,7 +26,7 @@ class MarcaResource extends Resource
 {
     protected static ?string $model = Marca::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-star';
     protected static ?string $navigationGroup = 'Catalogo';
     protected static ?string $navigationLabel = 'Marcas';
     protected static ?string $breadcrumb = "Marcas";
