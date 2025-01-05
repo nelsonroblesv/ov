@@ -67,8 +67,13 @@ class CustomersMapWidget extends MapTableWidget
 			BadgeColumn::make('tipo_cliente')->label('Tipo')->searchable()->sortable()
 				->colors([
 					'danger' => 'Red',
-					'black' => 'Black',
-					'grey' => 'Silver'
+					'info' => 'Black',
+					'warning' => 'Silver'
+				])
+				->icons([
+					'heroicon-o-user'=> 'Red',
+					'heroicon-o-star' => 'Black',
+					'heroicon-o-sparkles' => 'Silver'
 				]),
 			ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),

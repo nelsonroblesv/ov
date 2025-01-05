@@ -88,8 +88,8 @@ class CustomerResource extends Resource
                                 ->default('Red')
                                 ->colors([
                                     'Red' => 'danger',
-                                    'Black' => 'warning',
-                                    'Silver' => 'info'
+                                    'Black' => 'info',
+                                    'Silver' => 'warning'
                                 ])
                                 ->icons([
                                     'Red' => 'heroicon-o-user',

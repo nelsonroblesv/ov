@@ -39,6 +39,16 @@ class DatabaseSeeder extends Seeder
         $user->password = Hash::make('avyna');
         $user->save();
 
+        $user = new User();
+        $user->name = 'Oswaldo Arrocha';
+        $user->username = 'OArrocha';
+        $user->email = 'oswaldoarrocha@gmail.com';
+        $user->phone = '9811382720';
+        $user->role = 'Gerente';
+        $user->email_verified_at = now();
+        $user->password = Hash::make('2025avyna');
+        $user->save();
+
 
        // User::factory(6)->create();
        // Customer::factory(10)->create();
