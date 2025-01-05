@@ -9,4 +9,5 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewMarca extends ViewRecord
 {
     protected static string $resource = MarcaResource::class;
+    protected static ?string $title = 'Vista de Marca';
 }

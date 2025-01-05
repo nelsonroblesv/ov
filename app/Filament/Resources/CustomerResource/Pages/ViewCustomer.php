@@ -9,6 +9,5 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewCustomer extends ViewRecord
 {
     protected static string $resource = CustomerResource::class;
-
-    protected static ?string $title = 'Vista Cliente';
+    protected static ?string $title = 'Vista de Cliente';
 }

@@ -9,4 +9,5 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewFamilia extends ViewRecord
 {
     protected static string $resource = FamiliaResource::class;
+    protected static ?string $title = 'Vista de Familia';
 }
