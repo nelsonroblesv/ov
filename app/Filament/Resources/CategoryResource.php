@@ -123,8 +123,8 @@ class CategoryResource extends Resource
                 TextColumn::make('slug')->searchable()->sortable()->label('Slug')->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('thumbnail')->label('Logo'),
                 ColorColumn::make('primary_color')->label('Color'),
-                ToggleColumn::make('is_active')->label('¿Activo?'),
-                TextColumn::make('url')->searchable()->sortable()->label('URL')
+                TextColumn::make('url')->searchable()->sortable()->label('URL'),
+                ToggleColumn::make('is_active')->label('¿Activo?')
             ])
             ->filters([
                 //
