@@ -28,7 +28,7 @@ return new class extends Migration
             $table->decimal('longitude', 9, 6)->nullable();
             //Sistema
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->boolean('is_possible')->default(true);
+            $table->enum('tipo_prospecto', ['Prospecto', 'Posible'])->default('Prospecto');
             $table->timestamps();
         });
     }

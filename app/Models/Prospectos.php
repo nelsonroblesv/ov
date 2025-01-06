@@ -20,7 +20,7 @@ class Prospectos extends Model
         'latitude',
         'longitude',
         'user_id',
-        'is_possible',
+        'tipo_prospecto',
         'location',
     ];
 

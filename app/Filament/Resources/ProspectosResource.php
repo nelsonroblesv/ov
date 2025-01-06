@@ -19,6 +19,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
@@ -65,12 +66,30 @@ class ProspectosResource extends Resource
                                 ->label('Registrado por:')
                                 ->required(),
 
+                            ToggleButtons::make('tipo_prospecto')
+                                ->label('Tipo de Registro')
+                                ->inline()
+                                ->options([
+                                    'Prospecto' => 'Prospecto',
+                                    'Posible' => 'Posible',
+                                ])
+                                ->default('Prospecto')
+                                ->colors([
+                                    'Prospecto' => 'info',
+                                    'Posible' => 'success'
+                                ])
+                                ->icons([
+                                    'Prospecto' => 'heroicon-o-user',
+                                    'Posible' => 'heroicon-o-star'
+                                ]),
+
                             TextInput::make('name')
                                 ->label('Nombre completo')
                                 ->required()
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
-                                ->suffixIcon('heroicon-m-user'),
+                                ->suffixIcon('heroicon-m-user')
+                                ->columnSpanFull(),
 
                             TextInput::make('email')
                                 ->label('Correo electrónico')
