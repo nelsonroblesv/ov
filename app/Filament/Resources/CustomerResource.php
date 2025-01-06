@@ -81,20 +81,23 @@ class CustomerResource extends Resource
                                 ->label('Tipo de Cliente')
                                 ->inline()
                                 ->options([
-                                    'Red' => 'Red',
-                                    'Black' => 'Black',
-                                    'Silver' => 'Silver',
+                                    'PV' => 'Punto de Venta',
+                                    'RD' => 'Red',
+                                    'BK' => 'Black',
+                                    'SL' => 'Silver',
                                 ])
-                                ->default('Red')
+                                ->default('PV')
                                 ->colors([
-                                    'Red' => 'danger',
-                                    'Black' => 'info',
-                                    'Silver' => 'warning'
+                                    'PV' => 'primary',
+                                    'RD' => 'danger',
+                                    'BK' => 'info',
+                                    'SL' => 'warning'
                                 ])
                                 ->icons([
-                                    'Red' => 'heroicon-o-user',
-                                    'Black' => 'heroicon-o-star',
-                                    'Silver' => 'heroicon-o-sparkles'
+                                    'PV' => 'heroicon-o-building-storefront',
+                                    'RD' => 'heroicon-o-user',
+                                    'BK' => 'heroicon-o-star',
+                                    'SL' => 'heroicon-o-sparkles'
                                 ]),
 
                             TextInput::make('name')
