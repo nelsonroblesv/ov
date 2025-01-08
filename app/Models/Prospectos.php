@@ -12,13 +12,16 @@ class Prospectos extends Model
         'email',
         'phone',
         'notes',
+        /*
         'paises_id',
         'estados_id',
         'municipios_id',
         'colonias_id',
+        */
         'full_address',
         'latitude',
         'longitude',
+        'fachada',
         'user_id',
         'tipo_prospecto',
         'location',

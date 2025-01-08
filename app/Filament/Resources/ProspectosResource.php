@@ -15,6 +15,7 @@ use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -37,6 +38,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\ValidationException;
@@ -49,8 +51,8 @@ class ProspectosResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
     protected static ?string $navigationGroup = 'Clientes y Prospectos';
-    protected static ?string $navigationLabel = 'Prospectos';
-    protected static ?string $breadcrumb = "Prospectos";
+    protected static ?string $navigationLabel = 'Prospeccion';
+    protected static ?string $breadcrumb = "Prospeccion";
 
     public static function form(Form $form): Form
     {
@@ -58,125 +60,43 @@ class ProspectosResource extends Resource
             ->schema([
                 Wizard::make([
 
-                    Step::make('Basicos')
-                        ->description('Informacion Personal')
+                    Step::make('Ubicacion')
+                        ->description('Informacion Basica')
                         ->schema([
                             Select::make('user_id')
+                                ->required()
                                 ->relationship('user', 'name')
-                                ->label('Registrado por:')
-                                ->required(),
+                                ->label('Registrado por:'),
 
                             ToggleButtons::make('tipo_prospecto')
                                 ->label('Tipo de Registro')
+                                ->required()
                                 ->inline()
                                 ->options([
-                                    'Prospecto' => 'Prospecto',
                                     'Posible' => 'Posible',
+                                    'Prospecto' => 'Prospecto',
                                 ])
-                                ->default('Prospecto')
+                                ->default('Posible')
                                 ->colors([
-                                    'Prospecto' => 'info',
-                                    'Posible' => 'success'
+                                    'Posible' => 'info',
+                                    'Prospecto' => 'warning'
                                 ])
                                 ->icons([
-                                    'Prospecto' => 'heroicon-o-user',
-                                    'Posible' => 'heroicon-o-star'
+                                    'Posible' => 'heroicon-o-map',
+                                    'Prospecto' => 'heroicon-o-star'
                                 ]),
 
                             TextInput::make('name')
-                                ->label('Nombre completo')
+                                ->label('Nombre del lugar o identificador')
                                 ->required()
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user')
                                 ->columnSpanFull(),
 
-                            TextInput::make('email')
-                                ->label('Correo electrónico')
-                                ->email()
-                                //->required()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(255)
-                                ->suffixIcon('heroicon-m-at-symbol'),
-
-                            TextInput::make('phone')
-                                ->label('Teléfono')
-                                ->tel()
-                                ->required()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(50)
-                                ->suffixIcon('heroicon-m-phone'),
-
-                            MarkdownEditor::make('notes')
-                                ->label('Notas')
-                                ->nullable()
-                                ->columnSpanFull()
-                        ])->columns(2),
-
-                    Step::make('Ubicacion')
-                        ->description('Informacion del establecimiento')
-                        ->schema([
-                            Select::make('paises_id')
-                                ->label('País')
-                                ->options(Paises::pluck('nombre', 'id'))
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, $set) {
-                                    $set('estados_id', null);
-                                    $set('municipios_id', null);
-                                    $set('colonias_id', null);
-                                }),
-
-                            Select::make('estados_id')
-                                ->label('Estado')
-                                ->options(function ($get) {
-                                    return Estados::where('paises_id', $get('paises_id'))
-                                        ->pluck('nombre', 'id');
-                                })
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->disabled(function ($get) {
-                                    return !$get('paises_id');
-                                })
-                                ->afterStateUpdated(function ($state, $set) {
-                                    $set('municipios_id', null);
-                                    $set('colonias_id', null);
-                                }),
-
-                            Select::make('municipios_id')
-                                ->label('Municipio')
-                                ->options(function ($get) {
-                                    return Municipios::where('estados_id', $get('estados_id'))
-                                        ->pluck('nombre', 'id');
-                                })
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->disabled(function ($get) {
-                                    return !$get('estados_id');
-                                })
-                                ->afterStateUpdated(function ($state, $set) {
-                                    $set('colonias_id', null);
-                                }),
-
-                            Select::make('colonias_id')
-                                ->label('Colonia')
-                                ->options(function ($get) {
-                                    return Colonias::where('municipios_id', $get('municipios_id'))
-                                        ->pluck('nombre', 'id');
-                                })
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->disabled(function ($get) {
-                                    return !$get('municipios_id');
-                                }),
-
                             TextInput::make('full_address')
                                 ->label('Dirección')
-                                ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
+                                ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, CP, Municipio, Estado, Pais')
                                 ->required()
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map')
@@ -217,7 +137,6 @@ class ProspectosResource extends Resource
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
                                 ->unique(ignoreRecord: true)
-                                //   ->required()
                                 ->maxLength(100)
                                 ->suffixIcon('heroicon-m-map-pin')
                                 ->reactive()
@@ -232,7 +151,6 @@ class ProspectosResource extends Resource
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
                                 ->unique(ignoreRecord: true)
-                                //   ->required()
                                 ->maxLength(100)
                                 ->suffixIcon('heroicon-m-map-pin')
                                 ->reactive()
@@ -242,6 +160,42 @@ class ProspectosResource extends Resource
                                         'lng' => floatVal($state),
                                     ]);
                                 })->lazy(),
+
+                            Section::make('Notas')
+                                ->description('Despliega para agregar notas adicionales')
+                                ->collapsed()
+                                ->schema([
+                                    MarkdownEditor::make('notes')
+                                        ->label('Extra')
+                                        ->nullable()
+                                        ->columnSpanFull()
+                                ])
+                        ])->columns(2),
+
+                    Step::make('Contacto')
+                        ->description('Informacion adicional')
+                        ->schema([
+                            TextInput::make('email')
+                                ->label('Correo electrónico')
+                                ->email()
+                                ->unique(ignoreRecord: true)
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-at-symbol'),
+
+                            TextInput::make('phone')
+                                ->label('Teléfono')
+                                ->tel()
+                                ->unique(ignoreRecord: true)
+                                ->maxLength(50)
+                                ->suffixIcon('heroicon-m-phone'),
+
+                            FileUpload::make('fachada')
+                                ->label('Foto de fachada')
+                                ->image()
+                                ->imageEditor()
+                                ->directory('prospectos-images')
+                                ->columnSpanFull()
+
                         ])->columns(2),
                 ])->columnSpanFull()
                 //->startOnStep(2)
