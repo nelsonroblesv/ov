@@ -73,7 +73,7 @@ class ProspectosMapWidget extends MapTableWidget
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('created_at')->label('Registro')->date()->searchable()->sortable()
+			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()
 		];
 	}
 
