@@ -27,6 +27,7 @@ use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -57,18 +58,21 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		return [
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
-			ToggleColumn::make('is_possible')->label('Posible Cliente')->alignCenter(),
-			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
-			TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
-			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
-			TextColumn::make('paises.nombre')->label('Pais')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			IconColumn::make('latitude')->label('Ubicacion')
-			->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
-			->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),
+			BadgeColumn::make('tipo_prospecto')->label('Tipo')
+				->colors([
+					'danger' => 'Posible',
+					'warning' => 'Prospecto'
+				])
+				->icons([
+					'heroicon-o-map' => 'Posible',
+                    'heroicon-o-star' => 'Prospecto'
+				]),
+			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
+			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+			TextColumn::make('created_at')->label('Registro')->date()->searchable()->sortable(),
 	
 			/*MapColumn::make('location')
 				->extraImgAttributes(

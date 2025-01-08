@@ -78,7 +78,7 @@ class ProspectosResource extends Resource
                                 ])
                                 ->default('Posible')
                                 ->colors([
-                                    'Posible' => 'info',
+                                    'Posible' => 'danger',
                                     'Prospecto' => 'warning'
                                 ])
                                 ->icons([
