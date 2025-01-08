@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('phone')->unique()->nullable();
             $table->timestamp('birthday')->nullable();
             $table->string('avatar')->nullable();
-
+            /*
             $table->foreignId('paises_id')->constrained()->cascadeOnDelete();
             $table->foreignId('estados_id')->constrained()->cascadeOnDelete();
             $table->foreignId('municipios_id')->constrained()->cascadeOnDelete();
             $table->foreignId('colonias_id')->constrained()->cascadeOnDelete();
+            */
             $table->string('full_address')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();

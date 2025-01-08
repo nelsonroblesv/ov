@@ -79,21 +79,7 @@ class CustomersMapWidget extends MapTableWidget
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
-			TextColumn::make('paises.nombre')->label('Pais')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			IconColumn::make('latitude')->label('Ubicacion')
-			->url(fn(Customer $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
-			->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),	
-			/*MapColumn::make('location')
-				->extraImgAttributes(
-					fn ($record): array => ['title' => $record->latitude . ',' . $record->longitude]
-				)
-				->height('150')
-				->width('250')
-				->type('hybrid')
-				->zoom(15),*/
+			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true)	
 		];
 	}
 

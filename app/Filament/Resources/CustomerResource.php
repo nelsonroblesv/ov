@@ -147,6 +147,7 @@ class CustomerResource extends Resource
                     Step::make('Negocio')
                         ->description('Informacion del establecimiento')
                         ->schema([
+                            /*
                             Select::make('paises_id')
                                 ->label('País')
                                 ->options(Paises::pluck('nombre', 'id'))
@@ -204,7 +205,7 @@ class CustomerResource extends Resource
                                 ->disabled(function ($get) {
                                     return !$get('municipios_id');
                                 }),
-
+                        */
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')

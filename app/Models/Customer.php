@@ -18,10 +18,12 @@ class Customer extends Model
         'phone',
         'avatar',
         'birthday',
+        /*
         'paises_id',
         'estados_id',
         'municipios_id',
         'colonias_id',
+        */
         'full_address',
         'latitude',
         'longitude',

@@ -108,7 +108,7 @@ class ProspectosMapWidget extends MapTableWidget
 					->modalHeading('Transferir Prospecto')
 					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
 					->action(function (Prospectos $record) {
-					if ($record->phone == 0 || $record->email == 0 ) {
+					if (!$record->phone) {
 							Notification::make()
 								->title('Error')
 								->body('Solo puedes transferir Prospectos que cuenten con informacion de contacto.')
