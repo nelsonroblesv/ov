@@ -236,8 +236,8 @@ class CustomerResource extends Resource
                                 ->autocomplete('full_address')
                                 ->autocompleteReverse(true)
                                 ->defaultLocation(fn ($record) => [
-                                    $record->latitude ?? 20.1845751, 
-                                    $record->longitude ?? -90.1334567,
+                                    $record->latitude ?? 19.8386943,
+                                    $record->longitude ?? -90.4982317,
                                 ])
                                 ->columnSpanFull()->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
