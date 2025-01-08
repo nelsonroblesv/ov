@@ -31,13 +31,14 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProspectosMapWidget extends MapTableWidget
 {
-	protected static ?string $heading = 'Prospectos';
+	protected static ?string $heading = 'Prospeccion';
 	protected static ?int $sort = 1;
 	protected static ?string $pollingInterval = null;
 	protected static ?bool $clustering = true;
@@ -72,26 +73,18 @@ class ProspectosMapWidget extends MapTableWidget
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('created_at')->label('Registro')->date()->searchable()->sortable(),
-	
-			/*MapColumn::make('location')
-				->extraImgAttributes(
-					fn ($record): array => ['title' => $record->latitude . ',' . $record->longitude]
-				)
-				->height('150')
-				->width('250')
-				->type('hybrid')
-				->zoom(15),*/
+			TextColumn::make('created_at')->label('Registro')->date()->searchable()->sortable()
 		];
 	}
 
 	protected function getTableFilters(): array
 	{
 		return [
-			RadiusFilter::make('location')
-				->section('Radius Filter')
-				->selectUnit(),
-			MapIsFilter::make('map'),
+			SelectFilter::make('tipo_prospecto')
+                ->options([
+                    'Posible' => 'Posible',
+                    'Prospecto' => 'Prospecto'
+                ]),	
 		];
 	}
 
@@ -115,16 +108,17 @@ class ProspectosMapWidget extends MapTableWidget
 					->modalHeading('Transferir Prospecto')
 					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
 					->action(function (Prospectos $record) {
-					/*	if ($record->is_possible == 0) {
+					if ($record->phone == 0 || $record->email == 0 ) {
 							Notification::make()
 								->title('Error')
-								->body('Solo puedes transferir Prospectos marcados como Posibles Clientes.')
+								->body('Solo puedes transferir Prospectos que cuenten con informacion de contacto.')
 								->danger()
 								->color('danger')
 								->send();
 
 							return;
-						}*/
+						}
+
 						if (Customer::where('phone', $record->phone)->exists()) {
 							Notification::make()
 								->title('Error')
