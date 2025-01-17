@@ -81,7 +81,7 @@ class CustomerResource extends Resource
                                 ->label('Tipo de Cliente')
                                 ->inline()
                                 ->options([
-                                    'PV' => 'Punto de Venta',
+                                    'PV' => 'Punto Venta',
                                     'RD' => 'Red',
                                     'BK' => 'Black',
                                     'SL' => 'Silver',
@@ -293,7 +293,7 @@ class CustomerResource extends Resource
                                         //   ->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
-                                ])->columns(2),
+                                ])->columns(2)->icon('heroicon-o-information-circle'),
 
                             Section::make('Informacion adicional')
                                 ->collapsed()

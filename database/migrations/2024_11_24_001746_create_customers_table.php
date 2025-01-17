@@ -50,7 +50,7 @@ return new class extends Migration
             $table->string('cfdi_document')->nullable();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->enum('tipo_cliente', ['Punto Venta', 'Red', 'Black', 'Silver'])->default('Punto Venta');
+            $table->enum('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])->default('PV');
         });
     }
 
