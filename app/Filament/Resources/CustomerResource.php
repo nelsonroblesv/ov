@@ -153,14 +153,6 @@ class CustomerResource extends Resource
                                     ->inline(false),
 
                             ])->columns(2)
-                            
-
-                            
-                           
-
-                          
-
-                           
                         ])->columns(2),
 
                     Step::make('Negocio')
