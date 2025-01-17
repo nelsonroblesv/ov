@@ -293,7 +293,7 @@ class CustomerResource extends Resource
                                         //   ->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
-                                ])->columns(2)->icon('heroicon-o-information-circle'),
+                                ])->columns(2)->icon('heroicon-o-camera'),
 
                             Section::make('Informacion adicional')
                                 ->collapsed()
