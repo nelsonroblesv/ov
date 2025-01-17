@@ -54,8 +54,8 @@ class NamesRelationManager extends RelationManager
                 ->successNotification(
                     Notification::make()
                         ->success()
-                        ->title('Producto agregado')
-                        ->body('Puedes seguir agregando productos al Pedido.')
+                        ->title('Registro agregado')
+                        ->body('Se ha creado un nuevo registro en la Bitacora.')
                         ->icon('heroicon-o-check')
                         ->iconColor('success')
                         ->color('success')
