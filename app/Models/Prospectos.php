@@ -137,4 +137,9 @@ class Prospectos extends Model
     {
         return $this->belongsTo(Colonias::class);
     }
+
+    public function names(){
+        return $this->hasMany(BitacoraProspeccion::class);
+    }
+    
 }

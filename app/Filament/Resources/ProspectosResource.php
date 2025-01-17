@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProspectosResource\Pages;
 use App\Filament\Resources\ProspectosResource\RelationManagers;
+use App\Filament\Resources\ProspectosResource\RelationManagers\NamesRelationManager;
 use App\Filament\Resources\ProspectosResource\Widgets\ProspectosMapWidget;
 use App\Models\Colonias;
 use App\Models\Customer;
@@ -161,7 +162,7 @@ class ProspectosResource extends Resource
                                     ]);
                                 })->lazy(),
 
-                            Section::make('Notas')
+                            Section::make('Notas Generales')
                                 ->description('Despliega para agregar notas adicionales')
                                 ->collapsed()
                                 ->schema([
@@ -314,7 +315,7 @@ class ProspectosResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            NamesRelationManager::class
         ];
     }
 
