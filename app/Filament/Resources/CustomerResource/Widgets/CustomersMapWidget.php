@@ -64,16 +64,18 @@ class CustomersMapWidget extends MapTableWidget
 		return [
 			ImageColumn::make('avatar')->label('Avatar'),
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
-			BadgeColumn::make('tipo_cliente')->label('Tipo')->searchable()->sortable()
+			TextColumn::make('tipo_cliente')->label('Tipo')->searchable()->sortable()->badge()
 				->colors([
-					'danger' => 'Red',
-					'info' => 'Black',
-					'warning' => 'Silver'
+					'primary' => 'PV',
+					'danger' => 'RD',
+					'info' => 'BK',
+					'warning' => 'SL'
 				])
 				->icons([
-					'heroicon-o-user'=> 'Red',
-					'heroicon-o-star' => 'Black',
-					'heroicon-o-sparkles' => 'Silver'
+					'heroicon-o-building-storefront' => 'PV',
+					'heroicon-o-user'=> 'RD',
+					'heroicon-o-star' => 'BK',
+					'heroicon-o-sparkles' => 'SL'
 				]),
 			ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
