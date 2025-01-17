@@ -71,13 +71,58 @@ class CustomerResource extends Resource
                     Step::make('Basicos')
                         ->description('Informacion Personal')
                         ->schema([
+                            Section::make('Datos personales')->schema([
+                                Select::make('user_id')
+                                    ->relationship('user', 'name')
+                                    ->label('Registrado por:')
+                                    ->required(),
 
-                            Select::make('user_id')
-                                ->relationship('user', 'name')
-                                ->label('Registrado por:')
-                                ->required(),
+                                TextInput::make('name')
+                                    ->label('Nombre completo')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true)
+                                    ->suffixIcon('heroicon-m-user'),
+    
+                                TextInput::make('alias')
+                                    ->label('Alias')
+                                    //->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true)
+                                    ->suffixIcon('heroicon-m-user-circle'),
+    
+                                TextInput::make('email')
+                                    ->label('Correo electrónico')
+                                    ->email()
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255)
+                                    ->suffixIcon('heroicon-m-at-symbol'),
+    
+                                TextInput::make('phone')
+                                    ->label('Teléfono')
+                                    ->tel()
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(50)
+                                    ->suffixIcon('heroicon-m-phone'),
+    
+                                DatePicker::make('birthday')
+                                    ->label('Fecha de nacimiento')
+                                    ->suffixIcon('heroicon-m-cake')
+                                    ->required(),
 
-                            ToggleButtons::make('tipo_cliente')
+                                FileUpload::make('avatar')
+                                    ->label('Avatar')
+                                    ->image()
+                                    ->avatar()
+                                    ->imageEditor()
+                                    ->circleCropper()
+                                    ->directory('customer-avatar')
+                            ])->columns(2),
+
+                            Section::make('Sistema')->schema([
+                                ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Cliente')
                                 ->inline()
                                 ->options([
@@ -100,48 +145,22 @@ class CustomerResource extends Resource
                                     'SL' => 'heroicon-o-sparkles'
                                 ]),
 
-                            TextInput::make('name')
-                                ->label('Nombre completo')
-                                ->required()
-                                ->maxLength(255)
-                                ->unique(ignoreRecord: true)
-                                ->suffixIcon('heroicon-m-user'),
+                                Toggle::make('reventa')->label('Maneja Reventa?')->default(false)
+                                    ->onIcon('heroicon-m-check')
+                                    ->offIcon('heroicon-m-x-mark')
+                                    ->onColor('success')
+                                    ->offColor('danger')
+                                    ->inline(false),
 
-                            TextInput::make('alias')
-                                ->label('Alias')
-                                //->required()
-                                ->maxLength(255)
-                                ->unique(ignoreRecord: true)
-                                ->suffixIcon('heroicon-m-user-circle'),
+                            ])->columns(2)
+                            
 
-                            TextInput::make('email')
-                                ->label('Correo electrónico')
-                                ->email()
-                                ->required()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(255)
-                                ->suffixIcon('heroicon-m-at-symbol'),
+                            
+                           
 
-                            TextInput::make('phone')
-                                ->label('Teléfono')
-                                ->tel()
-                                ->required()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(50)
-                                ->suffixIcon('heroicon-m-phone'),
+                          
 
-                            DatePicker::make('birthday')
-                                ->label('Fecha de nacimiento')
-                                ->suffixIcon('heroicon-m-cake')
-                                ->required(),
-
-                            FileUpload::make('avatar')
-                                ->label('Avatar')
-                                ->image()
-                                ->avatar()
-                                ->imageEditor()
-                                ->circleCropper()
-                                ->directory('customer-avatar')
+                           
                         ])->columns(2),
 
                     Step::make('Negocio')
