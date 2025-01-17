@@ -18,6 +18,7 @@ class Customer extends Model
         'phone',
         'avatar',
         'birthday',
+        'reventa',
         /*
         'paises_id',
         'estados_id',

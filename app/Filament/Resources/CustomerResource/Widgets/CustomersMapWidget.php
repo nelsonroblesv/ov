@@ -77,7 +77,8 @@ class CustomersMapWidget extends MapTableWidget
 					'heroicon-o-star' => 'BK',
 					'heroicon-o-sparkles' => 'SL'
 				]),
-			ToggleColumn::make('is_active')->label('Activo')->alignCenter(),
+			ToggleColumn::make('reventa')->label('Reventa')->alignCenter()->toggleable(isToggledHiddenByDefault: true),
+			ToggleColumn::make('is_active')->label('Activo')->alignCenter()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
