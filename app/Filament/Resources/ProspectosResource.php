@@ -90,6 +90,7 @@ class ProspectosResource extends Resource
                             TextInput::make('name')
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
+                                ->disabledOn('edit')
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user')
