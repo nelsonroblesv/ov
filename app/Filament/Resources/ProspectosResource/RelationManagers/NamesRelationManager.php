@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProspectosResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -26,6 +27,10 @@ class NamesRelationManager extends RelationManager
                Section::make('Registro de actividad')
                     ->schema([
                         MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
+                        Section::make('Testigos')->schema([
+                            FileUpload::make('testigo_1')->label('Foto 1')->nullable(),
+                            FileUpload::make('testigo_1')->label('Foto 2')->nullable()
+                        ])->columns(2)
                     ])
             ]);
     }
@@ -39,7 +44,7 @@ class NamesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('prospectos.name')->label('Identificador'),
                 TextColumn::make('created_at') ->label('Registro'),
-                TextColumn::make('notas') ->label('Notas'),
+                TextColumn::make('notas') ->label('Notas')
             ])
             ->filters([
                 //
