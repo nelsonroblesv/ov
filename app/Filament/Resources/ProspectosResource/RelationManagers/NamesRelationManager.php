@@ -28,8 +28,10 @@ class NamesRelationManager extends RelationManager
                     ->schema([
                         MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
                         Section::make('Testigos')->schema([
-                            FileUpload::make('testigo_1')->label('Foto 1')->nullable(),
+                            FileUpload::make('testigo_1')->label('Foto 1')->nullable()
+                            ->directory('bitacora-testigos'),
                             FileUpload::make('testigo_1')->label('Foto 2')->nullable()
+                            ->directory('bitacora-testigos')
                         ])->columns(2)
                     ])
             ]);
