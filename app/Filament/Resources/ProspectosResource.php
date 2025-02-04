@@ -114,16 +114,22 @@ class ProspectosResource extends Resource
                                     'searchBoxControl'  => false,
                                     'zoomControl'       => true,
                                 ])
+                                ->defaultZoom(8)
+                                ->autocomplete('full_address')
+                                ->autocompleteReverse(true)
                                 ->reverseGeocode([
                                     'street' => '%n %S',
                                     'city' => '%L',
                                     'state' => '%A1',
                                     'zip' => '%z',
                                 ])
-                                ->defaultZoom(15)
+
+                                ->debug()
                                 ->draggable()
-                                ->autocomplete('full_address')
-                                ->autocompleteReverse(true)
+
+                                ->geolocate() 
+                                ->geolocateLabel('Obtener mi Ubicacion') 
+                                ->geolocateOnLoad(true, false) 
 
                                 ->defaultLocation(fn($record) => [
                                     $record->latitude ?? 19.8386943,
