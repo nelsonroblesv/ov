@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('prospectos_id')->constrained()->cascadeOnDelete();
             $table->string('notas')->nullable();
+            $table->boolean('show_video')->default(false);
             $table->string('testigo_1')->nullable();
             $table->string('testigo_2')->nullable();
             $table->timestamps();

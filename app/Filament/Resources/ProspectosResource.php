@@ -178,6 +178,8 @@ class ProspectosResource extends Resource
                                         ->nullable()
                                         ->columnSpanFull()
                                 ])
+                            ->columnSpanFull()
+
                         ])->columns(2),
 
                     Step::make('Contacto')
