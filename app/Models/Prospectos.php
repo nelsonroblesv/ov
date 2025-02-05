@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Prospectos extends Model
 {
@@ -12,12 +14,7 @@ class Prospectos extends Model
         'email',
         'phone',
         'notes',
-        /*
-        'paises_id',
-        'estados_id',
-        'municipios_id',
-        'colonias_id',
-        */
+        'services',
         'full_address',
         'latitude',
         'longitude',
@@ -25,6 +22,10 @@ class Prospectos extends Model
         'user_id',
         'tipo_prospecto',
         'location',
+    ];
+
+    protected $casts = [
+        'services' => 'array',
     ];
 
     protected $appends = [
@@ -141,5 +142,5 @@ class Prospectos extends Model
     public function names(){
         return $this->hasMany(BitacoraProspeccion::class);
     }
-    
+
 }

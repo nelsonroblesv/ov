@@ -96,15 +96,17 @@ class ProspectosResource extends Resource
                                 ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user'),
 
-                            Select::make('services_id')
-                                ->label('Servicios que ofrece')
-                                ->options(Services::all()->pluck('name', 'id'))
-                                ->searchable()
+                                Select::make('services')
+                                ->label('Servicios')
                                 ->multiple()
-                                ->createOptionForm([
-                                    TextInput::make('name')
-                                        ->required()]),
-
+                                ->preload()
+                                //->relationship('servicios', 'name')
+                               // ->createOptionForm([
+                               //     TextInput::make('name')
+                                //        ->required()
+                                //        ->label('Nombre del Servicio'),
+                               // ]),
+                                ,
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, CP, Municipio, Estado, Pais')
