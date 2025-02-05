@@ -12,6 +12,7 @@ use App\Models\Estados;
 use App\Models\Municipios;
 use App\Models\Paises;
 use App\Models\Prospectos;
+use App\Models\Services;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Actions\DeleteAction;
 use Filament\Forms;
@@ -93,8 +94,16 @@ class ProspectosResource extends Resource
                                // ->disabledOn('edit')
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
-                                ->suffixIcon('heroicon-m-user')
-                                ->columnSpanFull(),
+                                ->suffixIcon('heroicon-m-user'),
+
+                            Select::make('services_id')
+                                ->label('Servicios que ofrece')
+                                ->options(Services::all()->pluck('name', 'id'))
+                                ->searchable()
+                                ->multiple()
+                                ->createOptionForm([
+                                    TextInput::make('name')
+                                        ->required()]),
 
                             TextInput::make('full_address')
                                 ->label('Dirección')
