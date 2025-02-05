@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListServices extends ListRecords
 {
     protected static string $resource = ServicesResource::class;
+    protected static ?string $title = 'Servicios';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Nuevo Servicio'),
         ];
     }
 }
