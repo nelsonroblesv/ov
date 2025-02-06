@@ -143,16 +143,8 @@ class CustomerResource extends Resource
                                     'RD' => 'heroicon-o-user',
                                     'BK' => 'heroicon-o-star',
                                     'SL' => 'heroicon-o-sparkles'
-                                ]),
-
-                                Toggle::make('reventa')->label('Maneja Reventa?')->default(false)
-                                    ->onIcon('heroicon-m-check')
-                                    ->offIcon('heroicon-m-x-mark')
-                                    ->onColor('success')
-                                    ->offColor('danger')
-                                    ->inline(false),
-
-                            ])->columns(2)
+                                ])
+                            ])
                         ])->columns(2),
 
                     Step::make('Negocio')

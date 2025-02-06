@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('phone')->unique()->nullable();
             $table->timestamp('birthday')->nullable();
-            $table->boolean('reventa')->default(false);
             $table->string('avatar')->nullable();
             /*
             $table->foreignId('paises_id')->constrained()->cascadeOnDelete();

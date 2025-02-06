@@ -22,6 +22,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
@@ -94,17 +95,24 @@ class ProspectosResource extends Resource
                                 // ->disabledOn('edit')
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
-                                ->suffixIcon('heroicon-m-user'),
+                                ->suffixIcon('heroicon-m-map-pin'),
 
                             Select::make('services')
-                                ->required()
                                 ->label('Servicios')
                                 ->placeholder('Selecciona uno o mas servicios')
                                 ->multiple()
                                 ->preload()
                                 ->searchable()
                                 //->relationship('services', 'name'),
-                               ->options(Services::pluck('name', 'name')),
+                                ->options(Services::pluck('name', 'name'))
+                                ->suffixIcon('heroicon-m-sparkles'),
+
+                            Toggle::make('reventa')->label('Ya maneja Reventa')->default(false)
+                                ->onIcon('heroicon-m-check')
+                                ->offIcon('heroicon-m-x-mark')
+                                ->onColor('success')
+                                ->offColor('danger')
+                                ->inline(true),
 
                             TextInput::make('full_address')
                                 ->label('Dirección')

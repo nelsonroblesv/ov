@@ -15,6 +15,7 @@ class Prospectos extends Model
         'phone',
         'notes',
         'services',
+        'reventa',
         'full_address',
         'latitude',
         'longitude',

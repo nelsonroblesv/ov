@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('fachada')->nullable();
 
             $table->json('services')->nullable();
+            $table->boolean('reventa')->default(false);
 
             //Sistema
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
