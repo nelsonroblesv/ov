@@ -99,9 +99,12 @@ class ProspectosResource extends Resource
                             Select::make('services')
                                 ->required()
                                 ->label('Servicios')
+                                ->placeholder('Selecciona uno o mas servicios')
                                 ->multiple()
                                 ->preload()
-                                ->options(Services::pluck('name', 'name')),
+                                ->searchable()
+                                //->relationship('services', 'name'),
+                               ->options(Services::pluck('name', 'name')),
 
                             TextInput::make('full_address')
                                 ->label('Dirección')

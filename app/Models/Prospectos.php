@@ -145,7 +145,7 @@ class Prospectos extends Model
 
     public function services(): HasMany
     {
-        return $this->hasMany(Prospectos::class);
+        return $this->hasMany(Services::class);
     }
 
 }
