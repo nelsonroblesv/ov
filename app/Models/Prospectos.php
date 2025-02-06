@@ -143,4 +143,9 @@ class Prospectos extends Model
         return $this->hasMany(BitacoraProspeccion::class);
     }
 
+    public function services(): HasMany
+    {
+        return $this->hasMany(Prospectos::class);
+    }
+
 }

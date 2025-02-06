@@ -10,4 +10,9 @@ class Services extends Model
 {
     protected $fillable = ['name'];
 
+    public function prospectos(): BelongsTo
+    {
+        return $this->belongsTo(Prospectos::class);
+    }
+
 }

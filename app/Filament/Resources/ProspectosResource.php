@@ -91,22 +91,18 @@ class ProspectosResource extends Resource
                             TextInput::make('name')
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
-                               // ->disabledOn('edit')
+                                // ->disabledOn('edit')
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-user'),
 
-                                Select::make('services')
+                            Select::make('services')
+                                ->required()
                                 ->label('Servicios')
                                 ->multiple()
                                 ->preload()
-                                //->relationship('servicios', 'name')
-                               // ->createOptionForm([
-                               //     TextInput::make('name')
-                                //        ->required()
-                                //        ->label('Nombre del Servicio'),
-                               // ]),
-                                ,
+                                ->options(Services::pluck('name', 'name')),
+
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, CP, Municipio, Estado, Pais')
@@ -125,7 +121,7 @@ class ProspectosResource extends Resource
                                     'searchBoxControl'  => false,
                                     'zoomControl'       => true,
                                 ])
-                                ->defaultZoom(8)
+                                ->defaultZoom(15)
                                 ->autocomplete('full_address')
                                 ->autocompleteReverse(true)
                                 ->reverseGeocode([
@@ -138,9 +134,9 @@ class ProspectosResource extends Resource
                                 ->debug()
                                 ->draggable()
 
-                                ->geolocate() 
-                                ->geolocateLabel('Obtener mi Ubicacion') 
-                                ->geolocateOnLoad(true, false) 
+                                ->geolocate()
+                                ->geolocateLabel('Obtener mi Ubicacion')
+                                ->geolocateOnLoad(true, false)
 
                                 ->defaultLocation(fn($record) => [
                                     $record->latitude ?? 19.8386943,
@@ -189,7 +185,7 @@ class ProspectosResource extends Resource
                                         ->nullable()
                                         ->columnSpanFull()
                                 ])
-                            ->columnSpanFull()
+                                ->columnSpanFull()
 
                         ])->columns(2),
 

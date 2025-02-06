@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -52,6 +53,7 @@ class NamesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->heading('Registros')
             ->description('Informacion de visitas realizadas')
             ->recordTitleAttribute('id')
@@ -59,8 +61,12 @@ class NamesRelationManager extends RelationManager
                 TextColumn::make('prospectos.name')->label('Identificador'),
                 TextColumn::make('created_at')->label('Registro'),
                 TextColumn::make('notas')->label('Notas'),
-                ToggleColumn::make('show_video')->label('Video Testimonio')
-            ])
+                IconColumn::make('show_video')->label('Video Testimonio')
+                ->boolean()
+                ->trueIcon('heroicon-o-play-circle')
+                ->falseIcon('heroicon-o-clock')
+                ->alignCenter()
+             ]) ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
