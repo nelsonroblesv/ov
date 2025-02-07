@@ -143,7 +143,7 @@ class ProspectosResource extends Resource
                                 ])
 
                                 ->layers([
-                                   // 'https://app.osberthvalle.com/storage/maps/zonas.kml',
+                                    'https://app.osberthvalle.com/storage/maps/zonas.kml',
                                 ])
                                 //->geoJson('zonas.geojson') // GeoJSON file, URL or JSON
                                 //->geoJsonContainsField('geojson') // field to capture GeoJSON polygon(s) which contain the map marker
