@@ -10,6 +10,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Markdown;
 use Filament\Tables;
@@ -42,7 +43,7 @@ class RegionesResource extends Resource
                         ->label('Descripción')
                         ->placeholder('Descripción de la región')
 
-                ])
+                ])->columnSpanFull()
             ]);
     }
 
@@ -53,27 +54,55 @@ class RegionesResource extends Resource
             ->description('Gestion de las Regiones de Prospeccion y Clientes.')
             ->columns([
                 TextColumn::make('name')->label('Nombre de la Region'),
-                TextColumn::make('description')->label('Descripción')
+                TextColumn::make('description')->label('Descripcion')
                 ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Región eliminada')
+                                ->body('La Región ha sido eliminada  del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Región')
+                        ->modalDescription('Estas seguro que deseas eliminar esta Región? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Regiones')
+                        ->modalDescription('Estas seguro que deseas eliminar Regiones seleccionadas? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+    
+        public static function getRelations(): array
+        {
+            return [
+                //
+            ];
+        }
 
     public static function getPages(): array
     {
