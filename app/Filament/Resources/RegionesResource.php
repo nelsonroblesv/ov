@@ -38,10 +38,10 @@ class RegionesResource extends Resource
                         ->placeholder('Nombre de la región')
                         ->required(),
 
-                MarkdownEditor::make('description')
-                    ->label('Descripción')
-                    ->placeholder('Descripción de la región')
-                    
+                    MarkdownEditor::make('description')
+                        ->label('Descripción')
+                        ->placeholder('Descripción de la región')
+
                 ])
             ]);
     }
@@ -49,17 +49,12 @@ class RegionesResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->heading('Regiones')
+            ->description('Gestion de las Regiones de Prospeccion y Clientes.')
             ->columns([
-                TextColumn::make('name')
-                    ->label('Nombre')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('description')
-                    ->label('Descripción')
-                    ->searchable()
-                    ->sortable(),
-            ])
+                TextColumn::make('name')->label('Nombre de la Region'),
+                TextColumn::make('description')->label('Descripción')
+                ])
             ->filters([
                 //
             ])
