@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListRegiones extends ListRecords
 {
     protected static string $resource = RegionesResource::class;
+    protected static ?string $title = 'Regiones';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Nueva Región'),
         ];
     }
 }
