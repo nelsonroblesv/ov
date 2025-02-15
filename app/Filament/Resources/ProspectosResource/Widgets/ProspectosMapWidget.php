@@ -59,6 +59,8 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		return [
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
+			TextColumn::make('zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
 			TextColumn::make('tipo_prospecto')->label('Tipo')->badge()
 				->colors([
 					'danger' => 'Posible',
