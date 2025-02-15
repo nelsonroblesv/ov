@@ -12,7 +12,9 @@ use App\Models\Estados;
 use App\Models\Municipios;
 use App\Models\Paises;
 use App\Models\Prospectos;
+use App\Models\Regiones;
 use App\Models\Services;
+use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Actions\DeleteAction;
 use Filament\Forms;
@@ -147,7 +149,7 @@ class ProspectosResource extends Resource
                                 ])
                                 //->geoJson('zonas.geojson') // GeoJSON file, URL or JSON
                                 //->geoJsonContainsField('geojson') // field to capture GeoJSON polygon(s) which contain the map marker
-                            
+
 
                                 ->debug()
                                 ->draggable()
@@ -167,6 +169,7 @@ class ProspectosResource extends Resource
                                 }),
 
                             TextInput::make('latitude')
+                                ->hidden()
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
                                 ->unique(ignoreRecord: true)
@@ -181,6 +184,7 @@ class ProspectosResource extends Resource
                                 })->lazy(),
 
                             TextInput::make('longitude')
+                                ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
                                 ->unique(ignoreRecord: true)
@@ -193,6 +197,25 @@ class ProspectosResource extends Resource
                                         'lng' => floatVal($state),
                                     ]);
                                 })->lazy(),
+
+                                Select::make('regiones_id')
+                                    ->label('Region')
+                                    ->options(Regiones::pluck('name', 'id'))
+                                    ->required()
+                                    ->reactive(),
+                                    
+                                Select::make('zonas_id')
+                                    ->label('Zona')
+                                    ->required() ->options(function (callable $get) {
+                                        $regionId = $get('regiones_id'); 
+                                        if (!$regionId) {
+                                            return [];
+                                        }
+                                        return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
+                                    })
+                                    ->reactive() 
+                                    ->disabled(fn (callable $get) => empty($get('regiones_id'))),
+                            
 
                             Section::make('Notas Generales')
                                 ->description('Despliega para agregar notas adicionales')

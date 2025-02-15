@@ -23,6 +23,8 @@ class Prospectos extends Model
         'user_id',
         'tipo_prospecto',
         'location',
+        'regiones_id',
+        'zonas_id'
     ];
 
     protected $casts = [
@@ -119,26 +121,6 @@ class Prospectos extends Model
     {
          return $this->belongsTo(User::class);
      }
-
-     public function paises(): BelongsTo
-    {
-        return $this->belongsTo(Paises::class);
-    }
-
-    public function estados(): BelongsTo
-    {
-        return $this->belongsTo(Estados::class);
-    }
-
-    public function municipios(): BelongsTo
-    {
-        return $this->belongsTo(Municipios::class);
-    }
-
-    public function colonias(): BelongsTo
-    {
-        return $this->belongsTo(Colonias::class);
-    }
 
     public function names(){
         return $this->hasMany(BitacoraProspeccion::class);

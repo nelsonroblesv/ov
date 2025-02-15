@@ -24,6 +24,9 @@ return new class extends Migration
             $table->decimal('longitude', 9, 6)->nullable();
             $table->string('fachada')->nullable();
 
+            $table->foreignId('regiones_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('zonas_id')->constrained()->cascadeOnDelete();
+
             $table->json('services')->nullable();
             $table->boolean('reventa')->default(false);
 
