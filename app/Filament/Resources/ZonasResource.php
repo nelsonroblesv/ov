@@ -6,6 +6,7 @@ use App\Filament\Resources\ZonasResource\Pages;
 use App\Filament\Resources\ZonasResource\RelationManagers;
 use App\Models\Regiones;
 use App\Models\Zonas;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Repeater;
@@ -13,8 +14,10 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -72,11 +75,39 @@ class ZonasResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Zona eliminada')
+                            ->body('La Zona ha sido eliminada del sistema.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Zona')
+                    ->modalDescription('Estas seguro que deseas eliminar esta Zona? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Registros eliminados')
+                            ->body('Los registros seleccionados han sido eliminados.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Zonas')
+                    ->modalDescription('Estas seguro que deseas eliminar las Zonas seleccionadas? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
