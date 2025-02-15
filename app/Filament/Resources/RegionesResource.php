@@ -37,6 +37,7 @@ class RegionesResource extends Resource
                     TextInput::make('name')
                         ->label('Nombre')
                         ->placeholder('Nombre de la región')
+                        ->unique()
                         ->required(),
 
                     MarkdownEditor::make('description')
