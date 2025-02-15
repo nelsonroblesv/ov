@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('zonas', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('color')->nullable();
+            $table->string('nombre_zona')->nullable();
             $table->foreignId('regiones_id')->constrained();
+            $table->string('color_zona')->nullable();
+            
             $table->timestamps();
         });
     }

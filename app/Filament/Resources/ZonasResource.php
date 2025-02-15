@@ -15,6 +15,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -40,25 +42,21 @@ class ZonasResource extends Resource
                         ->options(
                             Regiones::all()->pluck('name', 'id')
                         )
-                        ->required(),
+                        ->required()
+                        ->preload(),
                 ]),
 
-                Repeater::make('zonas')
-                    ->label('Zonas')
-                    ->schema([
-                        Section::make('')->schema([
-                            TextInput::make('name')
-                                ->label('Nombre')
-                                ->placeholder('Nombre de la zona')
-                                ->required()
-                                ->columns(),
+                Section::make('')->schema([
+                    TextInput::make('nombre_zona')
+                        ->label('Nombre')
+                        ->placeholder('Nombre de la zona')
+                        ->required(),
 
-                            ColorPicker::make('color')
-                                ->label('Color')
-                                ->placeholder('Color de la zona')
-                                ->required(),
-                        ])->columns(2)
-                    ])->columnSpanFull()
+                    ColorPicker::make('color_zona')
+                        ->label('Color')
+                        ->placeholder('Color de la zona')
+                        ->required(),
+                ])->columns(2)
             ]);
     }
 
@@ -66,7 +64,9 @@ class ZonasResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('nombre_zona') ->label('Nombre')->searchable()->sortable(),
+                ColorColumn::make('color_zona') ->label('Color')->searchable()->sortable(),
+                TextColumn::make('regiones.name') ->label('Región')->searchable()->sortable(),
             ])
             ->filters([
                 //

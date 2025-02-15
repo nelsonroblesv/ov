@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListZonas extends ListRecords
 {
     protected static string $resource = ZonasResource::class;
+    protected static ?string $title = 'Zonas';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Nueva Zona'),
         ];
     }
 }
