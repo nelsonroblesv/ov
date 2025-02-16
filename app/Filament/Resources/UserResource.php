@@ -153,27 +153,9 @@ class UserResource extends Resource
                                 ->offIcon('heroicon-m-user-minus')
                                 ->onColor('success')
                                 ->offColor('danger')
-                                ->default(true),
-
-                            Section::make('')->schema([
-                                Repeater::make('zoneUser')
-                                    ->label('Asignar Zona(s) a Usuario')
-                                    ->relationship()
-                                    ->schema([
-                                        Select::make('zone_id')
-                                            ->label('Zonas disponibles')
-                                            ->placeholder('Selecciona una zona')
-                                            ->options(Zone::query()->pluck('name', 'id'))
-                                            ->reactive()
-                                            ->searchable()
-                                            ->preload()
-                                            ->distinct()
-                                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                    ])
-                                    ->createItemButtonLabel('Agregar Zona')
-                                    ->columnSpanFull(),
-                            ])
+                                ->default(true)
                         ])->columns(2),
+                        
                     Wizard\Step::make('Expediente')
                         ->schema([
                             TextInput::make('rfc')

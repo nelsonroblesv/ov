@@ -36,7 +36,7 @@ class BitacoraProspeccionResource extends Resource
                 Section::make('Registro de actividad')
                 ->schema([
                     Select::make('prospectos_id')->label('Idenficador')
-                        ->options(Prospectos::all()->pluck('name', 'id'))
+                        ->options(Prospectos::query()->where('user_id', auth()->user()->id)->pluck('name', 'id'))
                         ->required()
                         ->preload()
                         ->searchable(),
@@ -60,6 +60,13 @@ class BitacoraProspeccionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->whereHas('prospectos', function (Builder $query) {
+                    $query->where('user_id', auth()->user()->id);
+                });
+            })
+            ->defaultSort('created_at', 'desc')
+            
             ->columns([
                 TextColumn::make('prospectos.user.name')->label('Registrado')->searchable()->sortable(),
                 TextColumn::make('prospectos.name')->label('Identificador')->searchable()->sortable(),

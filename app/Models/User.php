@@ -76,9 +76,4 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return $this->hasMany(Customer::class);
     }
-
-    public function zoneUser(): HasMany
-    {
-        return $this->hasMany(ZoneUser::class);
-    }
 }
