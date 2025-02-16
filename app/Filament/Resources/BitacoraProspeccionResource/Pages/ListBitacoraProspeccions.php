@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListBitacoraProspeccions extends ListRecords
 {
     protected static string $resource = BitacoraProspeccionResource::class;
+    protected static ?string $title = 'Registros de Bitacora';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Crear registro en Bitacora'),
         ];
     }
 }
