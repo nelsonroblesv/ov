@@ -141,4 +141,9 @@ class Prospectos extends Model
         return $this->belongsTo(Zonas::class, 'zonas_id');
     }
 
+    public function bitacora()
+    {
+        return $this->hasMany(BitacoraProspeccion::class);
+    }
+
 }
