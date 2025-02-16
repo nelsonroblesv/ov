@@ -27,7 +27,11 @@ class BitacoraProspeccionResource extends Resource
 {
     protected static ?string $model = BitacoraProspeccion::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationGroup = 'Clientes y Prospectos';
+    protected static ?string $navigationLabel = 'Bitacora de Prospección';
+    protected static ?string $breadcrumb = 'Bitacora de Prospección';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
