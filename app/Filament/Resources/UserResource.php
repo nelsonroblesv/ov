@@ -7,7 +7,6 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\OrdersRelationManager;
 use App\Models\User;
-use App\Models\Zone;
 use Directory;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
@@ -155,7 +154,7 @@ class UserResource extends Resource
                                 ->offColor('danger')
                                 ->default(true)
                         ])->columns(2),
-                        
+
                     Wizard\Step::make('Expediente')
                         ->schema([
                             TextInput::make('rfc')
