@@ -241,6 +241,10 @@ class ProspectosResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->columns([])
+            ->content(null)
+            ->paginated(false);
+        /*
             ->columns([
                 TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
                 TextColumn::make('tipo_prospecto'),
@@ -265,6 +269,7 @@ class ProspectosResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+            */
     }
 
     public static function getRelations(): array
