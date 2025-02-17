@@ -5,9 +5,7 @@ namespace App\Filament\App\Resources;
 use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\App\Resources\CustomerResource\Pages;
-use App\Filament\App\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
-use App\Models\Municipality;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -17,7 +15,6 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,8 +25,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter as FiltersFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 
 class CustomerResource extends Resource
 {
