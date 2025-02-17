@@ -39,7 +39,7 @@ class MapProspeccionWidget extends MapTableWidget
 
 	protected function getTableQuery(): Builder
 	{
-		return Prospectos::query()->latest();
+		return Prospectos::query()->where('user_id', auth()->id())->orderBy('created_at', 'desc');
 	}
 
 	protected function getTableDescription(): string|Htmlable|null
@@ -93,7 +93,7 @@ class MapProspeccionWidget extends MapTableWidget
 					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-
+				/*
 				Action::make('transfer')
 					->label('Transferir')
 					->requiresConfirmation()
@@ -135,7 +135,7 @@ class MapProspeccionWidget extends MapTableWidget
 							->success()
 							->send();
 					}),
-
+*/
 				ActionsDeleteAction::make('delete')
 					->successNotification(
 						Notification::make()
