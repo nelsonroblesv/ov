@@ -24,6 +24,8 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -174,24 +176,24 @@ class ProspectosResource extends Resource
                                     ]);
                                 })->lazy(),
 
-                                Select::make('regiones_id')
-                                    ->label('Region')
-                                    ->options(Regiones::pluck('name', 'id'))
-                                    ->required()
-                                    ->reactive(),
-                                    
-                                Select::make('zonas_id')
-                                    ->label('Zona')
-                                    ->required() ->options(function (callable $get) {
-                                        $regionId = $get('regiones_id'); 
-                                        if (!$regionId) {
-                                            return [];
-                                        }
-                                        return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
-                                    })
-                                    ->reactive() 
-                                    ->disabled(fn (callable $get) => empty($get('regiones_id'))),
-                            
+                            Select::make('regiones_id')
+                                ->label('Region')
+                                ->options(Regiones::pluck('name', 'id'))
+                                ->required()
+                                ->reactive(),
+
+                            Select::make('zonas_id')
+                                ->label('Zona')
+                                ->required()->options(function (callable $get) {
+                                    $regionId = $get('regiones_id');
+                                    if (!$regionId) {
+                                        return [];
+                                    }
+                                    return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
+                                })
+                                ->reactive()
+                                ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+
 
                             Section::make('Notas Generales')
                                 ->description('Despliega para agregar notas adicionales')
@@ -240,43 +242,16 @@ class ProspectosResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('notes')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('full_address')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('latitude')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('fachada')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('regiones.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('zonas.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('reventa')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('tipo_prospecto'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
+                TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('tipo_prospecto'),
+                TextColumn::make('regiones.name')->label('Region')->sortable()->searchable(),
+                TextColumn::make('zonas.nombre_zona')->label('Zona')->sortable()->searchable(),
+                TextColumn::make('notes')->label('Notas'),
+                TextColumn::make('full_address')->label('Ubicacion')->searchable(),
+
+                IconColumn::make('reventa')->boolean(),TextColumn::make('user.name')->sortable(),
+                
+                TextColumn::make('created_at')->label('Fecha registro')->dateTime()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -294,9 +269,7 @@ class ProspectosResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            NamesRelationManager::class
-        ];
+        return [];
     }
 
     public static function getPages(): array
