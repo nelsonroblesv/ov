@@ -20,7 +20,7 @@ class ServicesResource extends Resource
 {
     protected static ?string $model = Services::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $navigationGroup = 'Ajustes';
     protected static ?string $navigationLabel = 'Servicios';
     protected static ?string $breadcrumb = "Servicios";
