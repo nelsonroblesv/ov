@@ -23,7 +23,7 @@ class RegionesResource extends Resource
 {
     protected static ?string $model = Regiones::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-map';
     protected static ?string $navigationGroup = 'Ajustes';
     protected static ?string $navigationLabel = 'Regiones';
     protected static ?string $breadcrumb = "Regiones";
