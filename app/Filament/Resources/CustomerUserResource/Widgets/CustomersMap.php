@@ -60,7 +60,13 @@ class CustomersMap extends MapTableWidget
 					'heroicon-o-user' => 'RD',
 					'heroicon-o-star' => 'BK',
 					'heroicon-o-sparkles' => 'SL'
-				]),
+				])
+				->formatStateUsing(fn (string $state): string => [
+					'PV' => 'Punto Venta',
+					'RD' => 'Red',
+					'BK' => 'Black',
+					'SL' => 'Silver',
+				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
