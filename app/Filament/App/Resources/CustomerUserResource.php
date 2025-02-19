@@ -198,24 +198,36 @@ class CustomerUserResource extends Resource
                                 })->lazy(),
 
 
-                            Select::make('regiones_id')
-                                ->label('Region')
-                                ->options(Regiones::pluck('name', 'id'))
+                                Select::make('regiones_id')
+                                ->label('Región')
                                 ->required()
-                                ->reactive(),
-
-                            Select::make('zonas_id')
-                                ->label('Zona')
-                                ->placeholder('Selecciona una zona')
-                                ->required()->options(function (callable $get) {
-                                    $regionId = $get('regiones_id');
-                                    if (!$regionId) {
-                                        return [];
-                                    }
-                                    return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
-                                })
-                                ->reactive()
-                                ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+                                ->options(fn () => 
+                                    Regiones::whereIn('id', function ($query) {
+                                        $query->select('regiones_id')
+                                              ->from('zonas')
+                                              ->where('user_id', auth()->id());
+                                    })->pluck('name', 'id')
+                                )
+                                ->reactive(), 
+    
+                                Select::make('zonas_id')
+                                    ->label('Zona')
+                                    ->placeholder('Selecciona una zona')
+                                    ->required()
+                                    ->searchable()
+                                    ->options(
+                                        fn(callable $get) =>
+                                        Zonas::where('regiones_id', $get('regiones_id'))
+                                            ->whereIn('id', function ($query) {
+                                                $query->select('id')
+                                                    ->from('zonas')
+                                                    ->where('user_id', auth()->id()); 
+                                            })
+                                            ->pluck('nombre_zona', 'id')
+                                    )
+                                    
+                                    ->reactive()
+                                    ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
                             Section::make('Fotos del establecimiento')
                                 ->collapsed()
