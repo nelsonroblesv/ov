@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\App\Resources\BitacoraProspeccionUserResource\Pages;
+namespace App\Filament\App\Resources\BitacoraCustomersResource\Pages;
 
-use App\Filament\App\Resources\BitacoraProspeccionUserResource;
+use App\Filament\App\Resources\BitacoraCustomersResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
-class EditBitacoraProspeccionUser extends EditRecord
+class EditBitacoraCustomers extends EditRecord
 {
-    protected static string $resource = BitacoraProspeccionUserResource::class;
+    protected static string $resource = BitacoraCustomersResource::class;
     protected static ?string $title = 'Editar Registro de Bitácora';
 
     protected function getRedirectUrl(): string

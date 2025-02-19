@@ -2,9 +2,11 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Filament\App\Resources\BitacoraProspeccionUserResource\Pages;
-use App\Models\BitacoraProspeccion;
-use App\Models\Prospectos;
+use App\Filament\App\Resources\BitacoraCustomersResource\Pages;
+use App\Filament\App\Resources\BitacoraCustomersResource\RelationManagers;
+use App\Models\BitacoraCustomers;
+use App\Models\Customer;
+use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
@@ -18,16 +20,17 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class BitacoraProspeccionUserResource extends Resource
+class BitacoraCustomersResource extends Resource
 {
-    protected static ?string $model = BitacoraProspeccion::class;
+    protected static ?string $model = BitacoraCustomers::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?string $navigationGroup = 'Clientes y Prospectos';
-    protected static ?string $navigationLabel = 'Bitacora de Prospeccion';
-    protected static ?string $breadcrumb = "Bitacora";
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Bitacora';
+    protected static ?string $navigationLabel = 'Registros de Actividad';
+    protected static ?string $breadcrumb = 'Bitacora';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -35,8 +38,8 @@ class BitacoraProspeccionUserResource extends Resource
             ->schema([
                 Section::make('Registro de actividad')
                 ->schema([
-                    Select::make('prospectos_id')->label('Idenficador')
-                        ->options(Prospectos::query()->where('user_id', auth()->user()->id)->pluck('name', 'id'))
+                    Select::make('customers_id')->label('Idenficador')
+                        ->options(Customer::query()->where('user_id', auth()->user()->id)->pluck('name', 'id'))
                         ->required()
                         ->preload()
                         ->searchable(),
@@ -60,16 +63,16 @@ class BitacoraProspeccionUserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                $query->whereHas('prospectos', function (Builder $query) {
-                    $query->where('user_id', auth()->user()->id);
-                });
-            })
-            ->defaultSort('created_at', 'desc')
-            
+        ->modifyQueryUsing(function (Builder $query) {
+            $query->whereHas('customers', function (Builder $query) {
+                $query->where('user_id', auth()->user()->id);
+            });
+        })
+        ->defaultSort('created_at', 'desc')
+
             ->columns([
-                TextColumn::make('prospectos.user.name')->label('Registrado')->searchable()->sortable(),
-                TextColumn::make('prospectos.name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
+                TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
                 TextColumn::make('notas')->label('Notas')->searchable(),
                 ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
@@ -80,11 +83,11 @@ class BitacoraProspeccionUserResource extends Resource
                 //
             ])
             ->actions([
-                //Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                   // Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -99,9 +102,9 @@ class BitacoraProspeccionUserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListBitacoraProspeccionUsers::route('/'),
-            'create' => Pages\CreateBitacoraProspeccionUser::route('/create'),
-            'edit' => Pages\EditBitacoraProspeccionUser::route('/{record}/edit'),
+            'index' => Pages\ListBitacoraCustomers::route('/'),
+            'create' => Pages\CreateBitacoraCustomers::route('/create'),
+            'edit' => Pages\EditBitacoraCustomers::route('/{record}/edit'),
         ];
     }
 }

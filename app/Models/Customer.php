@@ -165,4 +165,8 @@ class Customer extends Model
         return $this->hasMany(BitacoraProspeccion::class);
     }
 
+    public function names(){
+        return $this->hasMany(BitacoraCustomers::class);
+    }
+
 }

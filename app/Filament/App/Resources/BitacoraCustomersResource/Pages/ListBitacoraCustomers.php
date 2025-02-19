@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\App\Resources\BitacoraProspeccionUserResource\Pages;
+namespace App\Filament\App\Resources\BitacoraCustomersResource\Pages;
 
-use App\Filament\App\Resources\BitacoraProspeccionUserResource;
+use App\Filament\App\Resources\BitacoraCustomersResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListBitacoraProspeccionUsers extends ListRecords
+class ListBitacoraCustomers extends ListRecords
 {
-    protected static string $resource = BitacoraProspeccionUserResource::class;
+    protected static string $resource = BitacoraCustomersResource::class;
     protected static ?string $title = 'Registros de Bitacora';
 
     protected function getHeaderActions(): array
