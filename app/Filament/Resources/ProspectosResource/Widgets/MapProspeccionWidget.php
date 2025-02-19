@@ -2,16 +2,14 @@
 
 namespace App\Filament\Resources\ProspectosResource\Widgets;
 
-use App\Filament\App\Resources\ProspectosResource;
 use App\Filament\App\Resources\ProspectosResource\Pages\CreateProspectos;
 use App\Filament\App\Resources\ProspectosResource\Pages\EditProspectos;
 use App\Filament\App\Resources\ProspectosResource\Pages\ListProspectos;
-use App\Models\Prospectos;
+use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
+use App\Models\Customer;
 use App\Models\User;
-use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -31,7 +29,7 @@ class MapProspeccionWidget extends MapTableWidget
 
 	protected function getTableQuery(): Builder
 	{
-		return Prospectos::query()->where('user_id', auth()->id())->orderBy('created_at', 'desc');
+		return Customer::query()->where('user_id', auth()->id())->orderBy('created_at', 'desc');
 	}
 
 	protected function getTableDescription(): string|Htmlable|null
@@ -45,14 +43,14 @@ class MapProspeccionWidget extends MapTableWidget
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
 			TextColumn::make('zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
-			TextColumn::make('tipo_prospecto')->label('Tipo')->badge()
+			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
-					'danger' => 'Posible',
-					'warning' => 'Prospecto'
+					'danger' => 'PO',
+					'warning' => 'PR'
 				])
 				->icons([
-					'heroicon-o-map' => 'Posible',
-                    'heroicon-o-star' => 'Prospecto'
+					'heroicon-o-map' => 'PO',
+                    'heroicon-o-star' => 'PR'
 				]),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
@@ -80,9 +78,9 @@ class MapProspeccionWidget extends MapTableWidget
 			ActionGroup::make([
 				/*ViewAction::make('view')
 					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
-*/
+*//*
 				EditAction::make('edit')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
+					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
 				/*
@@ -204,9 +202,10 @@ class MapProspeccionWidget extends MapTableWidget
 	public static function getPages(): array
     {
         return [
-            'index' => ListProspectos::route('/'),
+			'index' => ListProspectos::route('/'),
             'create' => CreateProspectos::route('/create'),
             'edit' => EditProspectos::route('/{record}/edit'),
+            'view' => ViewProspectos::route('/{record}'),
         ];
     }
 }

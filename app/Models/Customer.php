@@ -12,23 +12,20 @@ class Customer extends Model
     use HasFactory;
     
     protected $fillable = [
-        'alias',
         'name',
         'email',
         'phone',
         'avatar',
         'birthday',
-        /*
-        'paises_id',
-        'estados_id',
-        'municipios_id',
-        'colonias_id',
-        */
         'full_address',
         'latitude',
         'longitude',
         'front_image',
         'inside_image',
+        'regiones_id',
+        'zonas_id',
+        'services',
+        'reventa',
         'extra',
         'is_visible',
         'is_active',
@@ -41,12 +38,15 @@ class Customer extends Model
         'tipo_razon_social',
         'cfdi_document',
         'user_id',
-        'tipo_cliente',
-        'location',
+        'tipo_cliente'
     ];
 
     protected $appends = [
         'location',
+    ];
+
+    protected $casts = [
+        'services' => 'array',
     ];
 
      /**
@@ -136,26 +136,6 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function paises(): BelongsTo
-    {
-        return $this->belongsTo(Paises::class);
-    }
-
-    public function estados(): BelongsTo
-    {
-        return $this->belongsTo(Estados::class);
-    }
-
-    public function municipios(): BelongsTo
-    {
-        return $this->belongsTo(Municipios::class);
-    }
-
-    public function colonias(): BelongsTo
-    {
-        return $this->belongsTo(Colonias::class);
-    }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -166,8 +146,23 @@ class Customer extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function zone()
+    public function services(): HasMany
     {
-        return $this->belongsTo(Zone::class);
+        return $this->hasMany(Services::class);
     }
+    public function regiones(): BelongsTo
+    {
+        return $this->belongsTo(Regiones::class, 'regiones_id');
+    }
+
+    public function zonas(): BelongsTo
+    {
+        return $this->belongsTo(Zonas::class, 'zonas_id');
+    }
+
+    public function bitacora()
+    {
+        return $this->hasMany(BitacoraProspeccion::class);
+    }
+
 }

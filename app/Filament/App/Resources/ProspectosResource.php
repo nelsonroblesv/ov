@@ -2,15 +2,19 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Filament\App\Resources\ProspectosResource\Pages;
-use App\Filament\App\Resources\ProspectosResource\RelationManagers;
-use App\Filament\Resources\ProspectosResource\RelationManagers\NamesRelationManager;
-use App\Models\Prospectos;
+use App\Filament\App\Resources\ProspectosResource\Pages\CreateProspectos;
+use App\Filament\App\Resources\ProspectosResource\Pages\EditProspectos;
+use App\Filament\App\Resources\ProspectosResource\Pages\ListProspectos;
+use App\Filament\Resources\CustomerResource\Pages\CreateCustomer;
+use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
+use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
+use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
+use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
+use App\Models\Customer;
 use App\Models\Regiones;
 use App\Models\Services;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -23,16 +27,11 @@ use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProspectosResource extends Resource
 {
-    protected static ?string $model = Prospectos::class;
+    protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
     protected static ?string $navigationGroup = 'Clientes y Prospectos';
@@ -51,28 +50,27 @@ class ProspectosResource extends Resource
                         ->schema([
                             Hidden::make('user_id')->default(fn() => auth()->id()),
 
-                            ToggleButtons::make('tipo_prospecto')
+                            ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Registro')
                                 ->required()
                                 ->inline()
                                 ->options([
-                                    'Posible' => 'Posible',
-                                    'Prospecto' => 'Prospecto',
+                                    'PO' => 'Posible',
+                                    'PR' => 'Prospecto',
                                 ])
-                                ->default('Posible')
+                                ->default('PO')
                                 ->colors([
-                                    'Posible' => 'danger',
-                                    'Prospecto' => 'warning'
+                                    'PO' => 'danger',
+                                    'PR' => 'warning'
                                 ])
                                 ->icons([
-                                    'Posible' => 'heroicon-o-map',
-                                    'Prospecto' => 'heroicon-o-star'
+                                    'PO' => 'heroicon-o-map',
+                                    'PR' => 'heroicon-o-star'
                                 ]),
 
                             TextInput::make('name')
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
-                                // ->disabledOn('edit')
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-map-pin'),
@@ -83,7 +81,6 @@ class ProspectosResource extends Resource
                                 ->multiple()
                                 ->preload()
                                 ->searchable()
-                                //->relationship('services', 'name'),
                                 ->options(Services::pluck('name', 'name'))
                                 ->suffixIcon('heroicon-m-sparkles'),
 
@@ -125,9 +122,6 @@ class ProspectosResource extends Resource
                                 ->layers([
                                     'https://app.osberthvalle.com/storage/maps/zonas_ovalle.kml',
                                 ])
-                                //->geoJson('zonas.geojson') // GeoJSON file, URL or JSON
-                                //->geoJsonContainsField('geojson') // field to capture GeoJSON polygon(s) which contain the map marker
-
 
                                 ->debug()
                                 ->draggable()
@@ -184,6 +178,7 @@ class ProspectosResource extends Resource
 
                             Select::make('zonas_id')
                                 ->label('Zona')
+                                ->placeholder('Selecciona una zona')
                                 ->required()->options(function (callable $get) {
                                     $regionId = $get('regiones_id');
                                     if (!$regionId) {
@@ -199,7 +194,7 @@ class ProspectosResource extends Resource
                                 ->description('Despliega para agregar notas adicionales')
                                 ->collapsed()
                                 ->schema([
-                                    MarkdownEditor::make('notes')
+                                    MarkdownEditor::make('extra')
                                         ->label('Extra')
                                         ->nullable()
                                         ->columnSpanFull()
@@ -234,7 +229,6 @@ class ProspectosResource extends Resource
 
                         ])->columns(2),
                 ])->columnSpanFull()
-                //->startOnStep(2)
             ]);
     }
 
@@ -244,32 +238,6 @@ class ProspectosResource extends Resource
             ->columns([])
             ->content(null)
             ->paginated(false);
-        /*
-            ->columns([
-                TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
-                TextColumn::make('tipo_prospecto'),
-                TextColumn::make('regiones.name')->label('Region')->sortable()->searchable(),
-                TextColumn::make('zonas.nombre_zona')->label('Zona')->sortable()->searchable(),
-                TextColumn::make('notes')->label('Notas'),
-                TextColumn::make('full_address')->label('Ubicacion')->searchable(),
-
-                IconColumn::make('reventa')->boolean(),TextColumn::make('user.name')->sortable(),
-                
-                TextColumn::make('created_at')->label('Fecha registro')->dateTime()->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-            */
     }
 
     public static function getRelations(): array
@@ -280,9 +248,10 @@ class ProspectosResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProspectos::route('/'),
-            'create' => Pages\CreateProspectos::route('/create'),
-            'edit' => Pages\EditProspectos::route('/{record}/edit'),
+            'index' => ListProspectos::route('/'),
+            'create' => CreateProspectos::route('/create'),
+            'edit' => EditProspectos::route('/{record}/edit'),
+            'view' => ViewProspectos::route('/{record}'),
         ];
     }
 }

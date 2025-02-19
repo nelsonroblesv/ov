@@ -13,29 +13,31 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('alias')->nullable();
+
             $table->string('name')->unique();
             $table->string('email')->unique()->nullable();
             $table->string('phone')->unique()->nullable();
             $table->timestamp('birthday')->nullable();
             $table->string('avatar')->nullable();
-            /*
-            $table->foreignId('paises_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('estados_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('municipios_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('colonias_id')->constrained()->cascadeOnDelete();
-            */
+            
             $table->string('full_address')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
 
             $table->string('front_image')->nullable();
             $table->string('inside_image')->nullable();
-           
+
+            $table->foreignId('regiones_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('zonas_id')->constrained()->cascadeOnDelete();
+
+            $table->json('services')->nullable();
+            $table->boolean('reventa')->default(false);
+            $table->boolean('is_preferred')->default(false);
+
             $table->string('extra')->nullable();
+
             $table->boolean('is_visible')->default(true);
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_preferred')->default(false);
             $table->timestamps();
 
             //Facturacion
@@ -50,7 +52,9 @@ return new class extends Migration
             $table->string('cfdi_document')->nullable();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->enum('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])->default('PV');
+
+            $table->enum('tipo_cliente', ['PV', 'RD', 'BK', 'SL', 'PR', 'PO'])->default('PV');
+
         });
     }
 

@@ -3,7 +3,6 @@
 namespace App\Filament\App\Resources\ProspectosResource\Pages;
 
 use App\Filament\App\Resources\ProspectosResource;
-use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
