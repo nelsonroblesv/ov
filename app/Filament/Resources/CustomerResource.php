@@ -6,20 +6,11 @@ use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
-use App\Forms\Components\GoogleMaps;
-use App\Models\Colonias;
 use App\Models\Customer;
-use App\Models\Estados;
-use App\Models\Municipios;
-use App\Models\Paises;
-use Carbon\Callback;
-use DeepCopy\Filter\Filter;
-use Filament\Forms;
+use App\Models\Regiones;
+use App\Models\Zonas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
@@ -73,10 +64,11 @@ class CustomerResource extends Resource
                         ->description('Informacion Personal')
                         ->schema([
                             Section::make('Datos personales')->schema([
+
                                 Select::make('user_id')
+                                    ->required()
                                     ->relationship('user', 'name')
-                                    ->label('Registrado por:')
-                                    ->required(),
+                                    ->label('Registrado por:'),
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')
@@ -84,14 +76,7 @@ class CustomerResource extends Resource
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true)
                                     ->suffixIcon('heroicon-m-user'),
-    
-                                TextInput::make('alias')
-                                    ->label('Alias')
-                                    //->required()
-                                    ->maxLength(255)
-                                    ->unique(ignoreRecord: true)
-                                    ->suffixIcon('heroicon-m-user-circle'),
-    
+
                                 TextInput::make('email')
                                     ->label('Correo electrónico')
                                     ->email()
@@ -99,7 +84,7 @@ class CustomerResource extends Resource
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(255)
                                     ->suffixIcon('heroicon-m-at-symbol'),
-    
+
                                 TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
@@ -107,7 +92,7 @@ class CustomerResource extends Resource
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
-    
+
                                 DatePicker::make('birthday')
                                     ->label('Fecha de nacimiento')
                                     ->suffixIcon('heroicon-m-cake')
@@ -124,92 +109,33 @@ class CustomerResource extends Resource
 
                             Section::make('Sistema')->schema([
                                 ToggleButtons::make('tipo_cliente')
-                                ->label('Tipo de Cliente')
-                                ->inline()
-                                ->options([
-                                    'PV' => 'Punto Venta',
-                                    'RD' => 'Red',
-                                    'BK' => 'Black',
-                                    'SL' => 'Silver',
-                                ])
-                                ->default('PV')
-                                ->colors([
-                                    'PV' => 'primary',
-                                    'RD' => 'danger',
-                                    'BK' => 'info',
-                                    'SL' => 'warning'
-                                ])
-                                ->icons([
-                                    'PV' => 'heroicon-o-building-storefront',
-                                    'RD' => 'heroicon-o-user',
-                                    'BK' => 'heroicon-o-star',
-                                    'SL' => 'heroicon-o-sparkles'
-                                ])
+                                    ->label('Tipo de Cliente')
+                                    ->inline()
+                                    ->options([
+                                        'PV' => 'Punto Venta',
+                                        'RD' => 'Red',
+                                        'BK' => 'Black',
+                                        'SL' => 'Silver',
+                                    ])
+                                    ->default('PV')
+                                    ->colors([
+                                        'PV' => 'success',
+                                        'RD' => 'danger',
+                                        'BK' => 'info',
+                                        'SL' => 'warning'
+                                    ])
+                                    ->icons([
+                                        'PV' => 'heroicon-o-building-storefront',
+                                        'RD' => 'heroicon-o-user',
+                                        'BK' => 'heroicon-o-star',
+                                        'SL' => 'heroicon-o-sparkles'
+                                    ])
                             ])
                         ])->columns(2),
 
                     Step::make('Negocio')
                         ->description('Informacion del establecimiento')
                         ->schema([
-                            /*
-                            Select::make('paises_id')
-                                ->label('País')
-                                ->options(Paises::pluck('nombre', 'id'))
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, $set) {
-                                    $set('estados_id', null);
-                                    $set('municipios_id', null);
-                                    $set('colonias_id', null);
-                                }),
-
-                            Select::make('estados_id')
-                                ->label('Estado')
-                                ->options(function ($get) {
-                                    return Estados::where('paises_id', $get('paises_id'))
-                                        ->pluck('nombre', 'id');
-                                })
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->disabled(function ($get) {
-                                    return !$get('paises_id');
-                                })
-                                ->afterStateUpdated(function ($state, $set) {
-                                    $set('municipios_id', null);
-                                    $set('colonias_id', null);
-                                }),
-
-                            Select::make('municipios_id')
-                                ->label('Municipio')
-                                ->options(function ($get) {
-                                    return Municipios::where('estados_id', $get('estados_id'))
-                                        ->pluck('nombre', 'id');
-                                })
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->disabled(function ($get) {
-                                    return !$get('estados_id');
-                                })
-                                ->afterStateUpdated(function ($state, $set) {
-                                    $set('colonias_id', null);
-                                }),
-
-                            Select::make('colonias_id')
-                                ->label('Colonia')
-                                ->options(function ($get) {
-                                    return Colonias::where('municipios_id', $get('municipios_id'))
-                                        ->pluck('nombre', 'id');
-                                })
-                                ->searchable()
-                                ->required()
-                                ->reactive()
-                                ->disabled(function ($get) {
-                                    return !$get('municipios_id');
-                                }),
-                        */
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
@@ -229,17 +155,28 @@ class CustomerResource extends Resource
                                     'searchBoxControl'  => false,
                                     'zoomControl'       => true,
                                 ])
+                                ->defaultZoom(15)
+                                ->autocomplete('full_address')
+                                ->autocompleteReverse(true)
                                 ->reverseGeocode([
                                     'street' => '%n %S',
                                     'city' => '%L',
                                     'state' => '%A1',
                                     'zip' => '%z',
                                 ])
-                                ->defaultZoom(15)
+
+                                ->layers([
+                                    'https://app.osberthvalle.com/storage/maps/zonas_ovalle.kml',
+                                ])
+
+                                ->debug()
                                 ->draggable()
-                                ->autocomplete('full_address')
-                                ->autocompleteReverse(true)
-                                ->defaultLocation(fn ($record) => [
+
+                                ->geolocate()
+                                ->geolocateLabel('Obtener mi Ubicacion')
+                                ->geolocateOnLoad(true, false)
+
+                                ->defaultLocation(fn($record) => [
                                     $record->latitude ?? 19.8386943,
                                     $record->longitude ?? -90.4982317,
                                 ])
@@ -250,10 +187,10 @@ class CustomerResource extends Resource
                                 }),
 
                             TextInput::make('latitude')
+                                ->hidden()
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
                                 ->unique(ignoreRecord: true)
-                                //   ->required()
                                 ->maxLength(100)
                                 ->suffixIcon('heroicon-m-map-pin')
                                 ->reactive()
@@ -265,10 +202,10 @@ class CustomerResource extends Resource
                                 })->lazy(),
 
                             TextInput::make('longitude')
+                                ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
                                 ->unique(ignoreRecord: true)
-                                //   ->required()
                                 ->maxLength(100)
                                 ->suffixIcon('heroicon-m-map-pin')
                                 ->reactive()
@@ -278,6 +215,39 @@ class CustomerResource extends Resource
                                         'lng' => floatVal($state),
                                     ]);
                                 })->lazy(),
+
+
+                            Select::make('regiones_id')
+                                ->label('Región')
+                                ->required()
+                                ->options(
+                                    fn() =>
+                                    Regiones::whereIn('id', function ($query) {
+                                        $query->select('regiones_id')
+                                            ->from('zonas')
+                                            ->where('user_id', auth()->id());
+                                    })->pluck('name', 'id')
+                                )
+                                ->reactive(),
+
+                            Select::make('zonas_id')
+                                ->label('Zona')
+                                ->placeholder('Selecciona una zona')
+                                ->required()
+                                ->searchable()
+                                ->options(
+                                    fn(callable $get) =>
+                                    Zonas::where('regiones_id', $get('regiones_id'))
+                                        ->whereIn('id', function ($query) {
+                                            $query->select('id')
+                                                ->from('zonas')
+                                                ->where('user_id', auth()->id());
+                                        })
+                                        ->pluck('nombre_zona', 'id')
+                                )
+
+                                ->reactive()
+                                ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
                             Section::make('Fotos del establecimiento')
                                 ->collapsed()
@@ -363,14 +333,14 @@ class CustomerResource extends Resource
 
                         ])->columns(2),
                 ])->columnSpanFull()
-                    //->startOnStep(2)
+                //->startOnStep(2)
             ]);
     }
 
     public static function table(Table $table): Table
     {
-         // Hide table from Resource
-         return $table
+        // Hide table from Resource
+        return $table
             ->columns([])
             ->content(null)
             ->paginated(false);
@@ -379,10 +349,9 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            OrdersRelationManager::class
+            //
         ];
     }
-
     public static function getPages(): array
     {
         return [

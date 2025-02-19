@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
+use App\Filament\Resources\CustomerResource\Widgets\CustomersMap;
 use App\Filament\Resources\CustomerResource\Widgets\CustomersMapWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -23,7 +24,7 @@ class ListCustomers extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            CustomersMapWidget::class,
+            CustomersMap::class,
         ];
     }
 }

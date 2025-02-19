@@ -1,8 +1,8 @@
 <?php
 
-// to USERS
+// TO ADMIN
 
-namespace App\Filament\Resources\CustomerUserResource\Widgets;
+namespace App\Filament\Resources\CustomerResource\Widgets;
 
 use App\Filament\Resources\CustomerResource\Pages\CreateCustomer;
 use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
@@ -10,11 +10,10 @@ use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
 use App\Models\User;
+use Cheesegrits\FilamentGoogleMaps\Filters\RadiusFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
-use Filament\Notifications\Notification;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
@@ -26,12 +25,12 @@ class CustomersMap extends MapTableWidget
 	protected static ?int $sort = 1;
 	protected static ?string $pollingInterval = null;
 	protected static ?bool $clustering = true;
-	protected static ?string $mapId = 'user-customers-map';
+	protected static ?string $mapId = 'customers-map';
 	protected int|string|array $columnSpan = 'full';
 
 	protected function getTableQuery(): Builder
 	{
-		return Customer::query()->where('user_id', auth()->id())
+		return Customer::query()
 					->where('tipo_cliente', 'PV')
 					->orWhere('tipo_cliente', 'BK')
 					->orWhere('tipo_cliente', 'RD')
@@ -69,7 +68,7 @@ class CustomersMap extends MapTableWidget
 					'BK' => 'Black',
 					'SL' => 'Silver',
 				][$state] ?? 'Otro'),
-			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+			TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
