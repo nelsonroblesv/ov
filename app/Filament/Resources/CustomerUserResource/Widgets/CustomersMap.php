@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\ProspectosResource\Widgets;
+namespace App\Filament\Resources\CustomerUserResource\Widgets;
 
-use App\Filament\App\Resources\ProspectosResource\Pages\CreateProspectos;
-use App\Filament\App\Resources\ProspectosResource\Pages\EditProspectos;
-use App\Filament\App\Resources\ProspectosResource\Pages\ListProspectos;
-use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
+use App\Filament\Resources\CustomerResource\Pages\CreateCustomer;
+use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
+use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
+use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
 use App\Models\User;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
@@ -18,20 +18,22 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 
-class MapProspeccionWidget extends MapTableWidget
+class CustomersMap extends MapTableWidget
 {
-	protected static ?string $heading = 'Prospeccion';
+	protected static ?string $heading = 'Clientes';
 	protected static ?int $sort = 1;
 	protected static ?string $pollingInterval = null;
 	protected static ?bool $clustering = true;
-	protected static ?string $mapId = 'user-prospectos-map';
+	protected static ?string $mapId = 'user-customers-map';
 	protected int|string|array $columnSpan = 'full';
 
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()->where('user_id', auth()->id())
-					->where('tipo_cliente', 'PO')
-					->orWhere('tipo_cliente', 'PR')
+					->where('tipo_cliente', 'PV')
+					->orWhere('tipo_cliente', 'BK')
+					->orWhere('tipo_cliente', 'RD')
+					->orWhere('tipo_cliente', 'SL')
 					->orderBy('created_at', 'desc');
 	}
 
@@ -48,12 +50,16 @@ class MapProspeccionWidget extends MapTableWidget
 			TextColumn::make('zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
 			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
-					'danger' => 'PO',
-					'warning' => 'PR'
+					'success' => 'PV',
+					'danger' => 'RD',
+					'info' => 'BK',
+					'warning' => 'SL'
 				])
 				->icons([
-					'heroicon-o-map' => 'PO',
-                    'heroicon-o-star' => 'PR'
+					'heroicon-o-building-storefront' => 'PV',
+					'heroicon-o-user' => 'RD',
+					'heroicon-o-star' => 'BK',
+					'heroicon-o-sparkles' => 'SL'
 				]),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
@@ -77,11 +83,12 @@ class MapProspeccionWidget extends MapTableWidget
 
 	protected function getTableActions(): array
 	{
-		return [
+		return [];
+/*	return [
 			ActionGroup::make([
 				/*ViewAction::make('view')
 					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
-*//*
+
 				EditAction::make('edit')
 					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
@@ -128,7 +135,7 @@ class MapProspeccionWidget extends MapTableWidget
 							->success()
 							->send();
 					}),
-*/
+
 				ActionsDeleteAction::make('delete')
 					->successNotification(
 						Notification::make()
@@ -144,6 +151,7 @@ class MapProspeccionWidget extends MapTableWidget
 					->modalSubmitActionLabel('Si, eliminar'),
 					]),		
 		];
+		*/
 	}
 
 	protected function getTableBulkActions(): array
@@ -205,10 +213,10 @@ class MapProspeccionWidget extends MapTableWidget
 	public static function getPages(): array
     {
         return [
-			'index' => ListProspectos::route('/'),
-            'create' => CreateProspectos::route('/create'),
-            'edit' => EditProspectos::route('/{record}/edit'),
-            'view' => ViewProspectos::route('/{record}'),
+            'index' => ListCustomers::route('/'),
+            'create' => CreateCustomer::route('/create'),
+            'edit' => EditCustomer::route('/{record}/edit'),
+            'view' => ViewCustomer::route('/{record}'),
         ];
     }
 }
