@@ -6,6 +6,7 @@ use App\Filament\Resources\ProspectosResource\Pages;
 use App\Filament\Resources\ProspectosResource\RelationManagers;
 use App\Filament\Resources\ProspectosResource\RelationManagers\NamesRelationManager;
 use App\Filament\Resources\ProspectosResource\Widgets\ProspectosMapWidget;
+use App\Models\Customer;
 use App\Models\Prospectos;
 use App\Models\Regiones;
 use App\Models\Services;
@@ -47,7 +48,7 @@ use function Laravel\Prompts\table;
 
 class ProspectosResource extends Resource
 {
-    protected static ?string $model = Prospectos::class;
+    protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
     protected static ?string $navigationGroup = 'Clientes y Prospectos';
@@ -70,28 +71,27 @@ class ProspectosResource extends Resource
                                 ->relationship('user', 'name')
                                 ->label('Registrado por:'),
 
-                            ToggleButtons::make('tipo_prospecto')
+                            ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Registro')
                                 ->required()
                                 ->inline()
                                 ->options([
-                                    'Posible' => 'Posible',
-                                    'Prospecto' => 'Prospecto',
+                                    'PO' => 'Posible',
+                                    'PR' => 'Prospecto',
                                 ])
-                                ->default('Posible')
+                                ->default('PO')
                                 ->colors([
-                                    'Posible' => 'danger',
-                                    'Prospecto' => 'warning'
+                                    'PO' => 'danger',
+                                    'PR' => 'warning'
                                 ])
                                 ->icons([
-                                    'Posible' => 'heroicon-o-map',
-                                    'Prospecto' => 'heroicon-o-star'
+                                    'PO' => 'heroicon-o-map',
+                                    'PR' => 'heroicon-o-star'
                                 ]),
 
                             TextInput::make('name')
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
-                                // ->disabledOn('edit')
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true)
                                 ->suffixIcon('heroicon-m-map-pin'),
@@ -102,7 +102,6 @@ class ProspectosResource extends Resource
                                 ->multiple()
                                 ->preload()
                                 ->searchable()
-                                //->relationship('services', 'name'),
                                 ->options(Services::pluck('name', 'name'))
                                 ->suffixIcon('heroicon-m-sparkles'),
 
@@ -144,9 +143,6 @@ class ProspectosResource extends Resource
                                 ->layers([
                                     'https://app.osberthvalle.com/storage/maps/zonas_ovalle.kml',
                                 ])
-                                //->geoJson('zonas.geojson') // GeoJSON file, URL or JSON
-                                //->geoJsonContainsField('geojson') // field to capture GeoJSON polygon(s) which contain the map marker
-
 
                                 ->debug()
                                 ->draggable()
@@ -195,30 +191,34 @@ class ProspectosResource extends Resource
                                     ]);
                                 })->lazy(),
 
-                                Select::make('regiones_id')
-                                    ->label('Region')
-                                    ->options(Regiones::pluck('name', 'id'))
-                                    ->required()
-                                    ->reactive(),
-                                    
-                                Select::make('zonas_id')
-                                    ->label('Zona')
-                                    ->required() ->options(function (callable $get) {
-                                        $regionId = $get('regiones_id'); 
-                                        if (!$regionId) {
-                                            return [];
-                                        }
-                                        return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
-                                    })
-                                    ->reactive() 
-                                    ->disabled(fn (callable $get) => empty($get('regiones_id'))),
-                            
+                            Select::make('regiones_id')
+                                ->label('Región')
+                                ->required()
+                                ->searchable()
+                                ->options(Regiones::pluck('name', 'id'))
+                                ->reactive(),
+
+                            Select::make('zonas_id')
+                                ->label('Zona')
+                                ->placeholder('Selecciona una zona')
+                                ->required()
+                                ->searchable()
+                                ->options(function (callable $get) {
+                                    $regionId = $get('regiones_id'); 
+                                    if (!$regionId) {
+                                        return []; 
+                                    }
+                                    return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
+                                })
+                                ->reactive() // Hace que el campo se actualice dinámicamente
+                                ->disabled(fn (callable $get) => empty($get('regiones_id'))), // Deshabilita si no hay región seleccionada
+
 
                             Section::make('Notas Generales')
                                 ->description('Despliega para agregar notas adicionales')
                                 ->collapsed()
                                 ->schema([
-                                    MarkdownEditor::make('notes')
+                                    MarkdownEditor::make('extra')
                                         ->label('Extra')
                                         ->nullable()
                                         ->columnSpanFull()
@@ -253,117 +253,14 @@ class ProspectosResource extends Resource
 
                         ])->columns(2),
                 ])->columnSpanFull()
-                //->startOnStep(2)
             ]);
     }
-
     public static function table(Table $table): Table
     {
-        // Hide table from Resource
         return $table
             ->columns([])
             ->content(null)
             ->paginated(false);
-
-        /*
-        return $table
-            ->columns([
-                TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
-                ToggleColumn::make('is_active')->label('Activo')->alignCenter()->sortable(),
-                TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
-                TextColumn::make('email')->label('Correo')->searchable()->sortable()->badge()->color('warning'),
-                TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->badge()->color('success'),
-                TextColumn::make('paises.nombre')->label('Pais')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('estados.nombre')->label('Estado')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('municipios.nombre')->label('Municipio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-                IconColumn::make('latitude')->label('Ubicacion')
-                    ->url(fn(Prospectos $record): string => "http://maps.google.com/maps?q=loc: {$record->latitude},{$record->longitude}")
-                    ->openUrlInNewTab()->alignCenter()->icon('heroicon-o-map-pin')->searchable(),
-                TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                ActionGroup::make([
-                    ViewAction::make(),
-                    EditAction::make(),
-
-                    Action::make('transfer')
-                        ->label('Transferir')
-                        ->requiresConfirmation()
-                        ->icon('heroicon-o-arrows-up-down')
-                        ->color('info')
-                        ->modalHeading('Transferir Prospecto')
-                        ->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
-                        ->action(function (Prospectos $record) {
-                            if ($record->is_active == 0) {
-                                Notification::make()
-                                    ->title('Error')
-                                    ->body('Solo puedes transferir Prospectos con status Activo.')
-                                    ->danger()
-                                    ->color('danger')
-                                    ->send();
-
-                                return;
-                            }
-                            if (Customer::where('email', $record->email)->exists()) {
-                                Notification::make()
-                                    ->title('Error')
-                                    ->body('El correo electrónico indicado esta asociado con un Cliente existente.')
-                                    ->danger()
-                                    ->color('danger')
-                                    ->send();
-
-                                return;
-                            }
-
-                            $clienteData = $record->toArray();
-                            unset($clienteData['id'], $clienteData['created_at'], $clienteData['updated_at']);
-                            Customer::create($clienteData);
-                            $record->delete();
-
-                            Notification::make()
-                                ->title('Prospecto transferido')
-                                ->body('El prospecto ha sido transferido como Cliente.')
-                                ->success()
-                                ->send();
-                        }),
-
-                    DeleteAction::make()
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Prospecto eliminado')
-                                ->body('El Prospecto ha sido eliminado  del sistema.')
-                                ->icon('heroicon-o-trash')
-                                ->iconColor('danger')
-                                ->color('danger')
-                        )
-                        ->modalHeading('Borrar Prospecto')
-                        ->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
-                        ->modalSubmitActionLabel('Si, eliminar'),
-                ]),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Registros eliminados')
-                                ->body('Los registros seleccionados han sido eliminados.')
-                                ->icon('heroicon-o-trash')
-                                ->iconColor('danger')
-                                ->color('danger')
-                        )
-                        ->modalHeading('Borrar Prospectos')
-                        ->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
-                        ->modalSubmitActionLabel('Si, eliminar'),
-                ]),
-            ]);
-            */
     }
 
     public static function getRelations(): array

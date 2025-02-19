@@ -42,14 +42,17 @@ class ProspectosMapWidget extends MapTableWidget
 	protected static ?int $sort = 1;
 	protected static ?string $pollingInterval = null;
 	protected static ?bool $clustering = true;
-	protected static ?string $mapId = 'prospectos-map';
+	protected static ?string $mapId = 'user-prospectos-map';
 	protected int|string|array $columnSpan = 'full';
 
 	protected function getTableQuery(): Builder
 	{
-		return Prospectos::query()->latest();
+		return Customer::query()
+					->where('tipo_cliente', 'PO')
+					->orWhere('tipo_cliente', 'PR')
+					->orderBy('created_at', 'desc');
 	}
-	
+
 	protected function getTableDescription(): string|Htmlable|null
 	{
 		return 'Listado de Prospectos';
@@ -61,15 +64,19 @@ class ProspectosMapWidget extends MapTableWidget
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
 			TextColumn::make('zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
-			TextColumn::make('tipo_prospecto')->label('Tipo')->badge()
+			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
-					'danger' => 'Posible',
-					'warning' => 'Prospecto'
+					'danger' => 'PO',
+					'warning' => 'PR'
 				])
 				->icons([
-					'heroicon-o-map' => 'Posible',
-                    'heroicon-o-star' => 'Prospecto'
-				]),
+					'heroicon-o-map' => 'PO',
+                    'heroicon-o-star' => 'PR'
+				])
+				->formatStateUsing(fn (string $state): string => [
+					'PO' => 'Posible',
+					'PR' => 'Prospecto',
+				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -92,16 +99,18 @@ class ProspectosMapWidget extends MapTableWidget
 
 	protected function getTableActions(): array
 	{
+		return [];
+/*
 		return [
 			ActionGroup::make([
-				ViewAction::make('view')
+				/*ViewAction::make('view')
 					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
 
 				EditAction::make('edit')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
+					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-
+				/*
 				Action::make('transfer')
 					->label('Transferir')
 					->requiresConfirmation()
@@ -159,12 +168,13 @@ class ProspectosMapWidget extends MapTableWidget
 					->modalSubmitActionLabel('Si, eliminar'),
 					]),		
 		];
+*/	
 	}
 
 	protected function getTableBulkActions(): array
 	{
 		return [
-		
+		/*
 			DeleteBulkAction::make()
 				->successNotification(
 					Notification::make()
@@ -178,6 +188,7 @@ class ProspectosMapWidget extends MapTableWidget
 				->modalHeading('Borrar Prospectos')
 				->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
 				->modalSubmitActionLabel('Si, eliminar'),
+				*/
 		];
 	}
 
@@ -221,7 +232,7 @@ class ProspectosMapWidget extends MapTableWidget
 	public static function getPages(): array
     {
         return [
-            'index' => ListProspectos::route('/'),
+            'index' =>ListProspectos::route('/'),
             'create' => CreateProspectos::route('/create'),
             'edit' => EditProspectos::route('/{record}/edit'),
             'view' => ViewProspectos::route('/{record}'),
