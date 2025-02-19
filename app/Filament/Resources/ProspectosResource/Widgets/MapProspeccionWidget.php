@@ -156,7 +156,7 @@ class MapProspeccionWidget extends MapTableWidget
 	protected function getTableBulkActions(): array
 	{
 		return [
-		
+		/*
 			DeleteBulkAction::make()
 				->successNotification(
 					Notification::make()
@@ -170,6 +170,7 @@ class MapProspeccionWidget extends MapTableWidget
 				->modalHeading('Borrar Prospectos')
 				->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
 				->modalSubmitActionLabel('Si, eliminar'),
+				*/
 		];
 	}
 
