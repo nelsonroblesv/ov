@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre_zona')->nullable();
             $table->foreignId('regiones_id')->constrained();
             $table->string('color_zona')->nullable();
+            $table->enum('dia_zona', ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'])->default('SUN');
             
             $table->timestamps();
         });

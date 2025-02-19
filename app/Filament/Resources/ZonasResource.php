@@ -47,18 +47,29 @@ class ZonasResource extends Resource
                         )
                         ->required()
                         ->preload(),
-                ]),
-
-                Section::make('')->schema([
                     TextInput::make('nombre_zona')
                         ->label('Nombre')
-                        ->placeholder('Nombre de la zona')
+                        ->placeholder('Asigna un nombre a la zona')
                         ->required(),
 
                     ColorPicker::make('color_zona')
                         ->label('Color')
                         ->placeholder('Color de la zona')
                         ->required(),
+
+                    Select::make('dia_zona')
+                        ->label('Día')
+                        ->placeholder('Seleccione un día')
+                        ->options([
+                            'SUN' => 'Domingo',
+                            'MON' => 'Lunes',
+                            'TUE' => 'Martes',
+                            'WED' => 'Miércoles',
+                            'THU' => 'Jueves',
+                            'FRI' => 'Viernes',
+                            'SAT' => 'Sábado',
+                        ])
+                        ->required(),      
                 ])->columns(2)
             ]);
     }
@@ -70,6 +81,17 @@ class ZonasResource extends Resource
                 TextColumn::make('nombre_zona') ->label('Nombre')->searchable()->sortable(),
                 ColorColumn::make('color_zona') ->label('Color')->searchable()->sortable(),
                 TextColumn::make('regiones.name') ->label('Región')->searchable()->sortable(),
+                TextColumn::make('dia_zona') ->label('Día Asignado')
+                    ->searchable()->sortable()->alignCenter()
+                    ->formatStateUsing(fn (string $state): string => [
+                        'MON' => 'Lunes',
+                        'TUE' => 'Martes',
+                        'WED' => 'Miércoles',
+                        'THU' => 'Jueves',
+                        'FRI' => 'Viernes',
+                        'SAT' => 'Sábado',
+                        'SUN' => 'Domingo',
+                    ][$state] ?? 'Otro'),
             ])
             ->filters([
                 //

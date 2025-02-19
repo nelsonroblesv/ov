@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Zonas extends Model
 {
-    protected $fillable = ['regiones_id', 'nombre_zona', 'color_zona'];
+    protected $fillable = ['regiones_id', 'nombre_zona', 'color_zona', 'dia_zona'];
 
     public function regiones(): BelongsTo
     {
