@@ -54,7 +54,11 @@ class MapProspeccionWidget extends MapTableWidget
 				->icons([
 					'heroicon-o-map' => 'PO',
                     'heroicon-o-star' => 'PR'
-				]),
+				])
+				->formatStateUsing(fn (string $state): string => [
+					'PO' => 'Posible',
+					'PR' => 'Prospecto',
+				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -77,11 +81,13 @@ class MapProspeccionWidget extends MapTableWidget
 
 	protected function getTableActions(): array
 	{
+		return [];
+/*
 		return [
 			ActionGroup::make([
 				/*ViewAction::make('view')
 					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
-*//*
+
 				EditAction::make('edit')
 					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
@@ -128,7 +134,7 @@ class MapProspeccionWidget extends MapTableWidget
 							->success()
 							->send();
 					}),
-*/
+
 				ActionsDeleteAction::make('delete')
 					->successNotification(
 						Notification::make()
@@ -144,6 +150,7 @@ class MapProspeccionWidget extends MapTableWidget
 					->modalSubmitActionLabel('Si, eliminar'),
 					]),		
 		];
+*/	
 	}
 
 	protected function getTableBulkActions(): array
