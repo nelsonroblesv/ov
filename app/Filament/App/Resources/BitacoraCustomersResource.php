@@ -38,7 +38,7 @@ class BitacoraCustomersResource extends Resource
             ->schema([
                 Section::make('Registro de actividad')
                 ->schema([
-                    Select::make('customers_id')->label('Idenficador')
+                    Select::make('customers_id')->label('Nombre de Cliente o Identificador')
                         ->options(Customer::query()->where('user_id', auth()->user()->id)->pluck('name', 'id'))
                         ->required()
                         ->preload()
