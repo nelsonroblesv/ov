@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Zonas extends Model
 {
-    protected $fillable = ['regiones_id', 'nombre_zona', 'color_zona', 'dia_zona'];
+    protected $fillable = ['regiones_id', 'nombre_zona', 'color_zona', 'dia_zona', 'user_id'];
 
     public function regiones(): BelongsTo
     {
         return $this->belongsTo(Regiones::class, 'regiones_id'); 
+    }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id'); 
     }
 }

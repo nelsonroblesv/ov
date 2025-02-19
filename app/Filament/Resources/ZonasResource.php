@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ZonasResource\Pages;
 use App\Filament\Resources\ZonasResource\RelationManagers;
 use App\Models\Regiones;
+use App\Models\User;
 use App\Models\Zonas;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms;
@@ -32,7 +33,7 @@ class ZonasResource extends Resource
     protected static ?string $navigationGroup = 'Ajustes';
     protected static ?string $navigationLabel = 'Zonas';
     protected static ?string $breadcrumb = "Zonas";
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -47,6 +48,7 @@ class ZonasResource extends Resource
                         )
                         ->required()
                         ->preload(),
+
                     TextInput::make('nombre_zona')
                         ->label('Nombre')
                         ->placeholder('Asigna un nombre a la zona')
@@ -69,7 +71,17 @@ class ZonasResource extends Resource
                             'FRI' => 'Viernes',
                             'SAT' => 'Sábado',
                         ])
-                        ->required(),      
+                        ->required(),
+
+                    Select::make('user_id')
+                        ->label('Asignar a:')
+                        ->placeholder('Seleccione un Usuario')
+                        ->options(
+                            User::all()->pluck('name', 'id')
+                        )
+                        ->required()
+                        ->preload()
+                        ->columnSpanFull(),
                 ])->columns(2)
             ]);
     }
@@ -78,12 +90,12 @@ class ZonasResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nombre_zona') ->label('Nombre')->searchable()->sortable(),
-                ColorColumn::make('color_zona') ->label('Color')->searchable()->sortable(),
-                TextColumn::make('regiones.name') ->label('Región')->searchable()->sortable(),
-                TextColumn::make('dia_zona') ->label('Día Asignado')
+                TextColumn::make('nombre_zona')->label('Nombre')->searchable()->sortable(),
+                ColorColumn::make('color_zona')->label('Color')->searchable()->sortable(),
+                TextColumn::make('regiones.name')->label('Región')->searchable()->sortable(),
+                TextColumn::make('dia_zona')->label('Día Asignado')
                     ->searchable()->sortable()->alignCenter()
-                    ->formatStateUsing(fn (string $state): string => [
+                    ->formatStateUsing(fn(string $state): string => [
                         'MON' => 'Lunes',
                         'TUE' => 'Martes',
                         'WED' => 'Miércoles',
@@ -92,6 +104,7 @@ class ZonasResource extends Resource
                         'SAT' => 'Sábado',
                         'SUN' => 'Domingo',
                     ][$state] ?? 'Otro'),
+                TextColumn::make('user.name')->label('Asignado a')->searchable()->sortable(),
             ])
             ->filters([
                 //
@@ -101,35 +114,35 @@ class ZonasResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Zona eliminada')
-                            ->body('La Zona ha sido eliminada del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Zona')
-                    ->modalDescription('Estas seguro que deseas eliminar esta Zona? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Zona eliminada')
+                                ->body('La Zona ha sido eliminada del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Zona')
+                        ->modalDescription('Estas seguro que deseas eliminar esta Zona? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Zonas')
-                    ->modalDescription('Estas seguro que deseas eliminar las Zonas seleccionadas? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Zonas')
+                        ->modalDescription('Estas seguro que deseas eliminar las Zonas seleccionadas? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
