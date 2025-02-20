@@ -63,13 +63,13 @@ class ZonasResource extends Resource
                         ->label('Día')
                         ->placeholder('Seleccione un día')
                         ->options([
-                            'SUN' => 'Domingo',
-                            'MON' => 'Lunes',
-                            'TUE' => 'Martes',
-                            'WED' => 'Miércoles',
-                            'THU' => 'Jueves',
-                            'FRI' => 'Viernes',
-                            'SAT' => 'Sábado',
+                            'Dom' => 'Domingo',
+                            'Lun' => 'Lunes',
+                            'Mar' => 'Martes',
+                            'Mie' => 'Miércoles',
+                            'Jue' => 'Jueves',
+                            'Vie' => 'Viernes',
+                            'Sab' => 'Sábado',
                         ])
                         ->required(),
 
@@ -96,13 +96,13 @@ class ZonasResource extends Resource
                 TextColumn::make('dia_zona')->label('Día Asignado')
                     ->searchable()->sortable()->alignCenter()
                     ->formatStateUsing(fn(string $state): string => [
-                        'MON' => 'Lunes',
-                        'TUE' => 'Martes',
-                        'WED' => 'Miércoles',
-                        'THU' => 'Jueves',
-                        'FRI' => 'Viernes',
-                        'SAT' => 'Sábado',
-                        'SUN' => 'Domingo',
+                        'Lun' => 'Lunes',
+                        'Mar' => 'Martes',
+                        'Mie' => 'Miércoles',
+                        'Jue' => 'Jueves',
+                        'Vie' => 'Viernes',
+                        'Sab' => 'Sábado',
+                        'Dom' => 'Domingo',
                     ][$state] ?? 'Otro'),
                 TextColumn::make('user.name')->label('Asignado a')->searchable()->sortable(),
             ])

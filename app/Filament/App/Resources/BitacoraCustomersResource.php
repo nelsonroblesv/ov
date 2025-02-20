@@ -6,6 +6,7 @@ use App\Filament\App\Resources\BitacoraCustomersResource\Pages;
 use App\Filament\App\Resources\BitacoraCustomersResource\RelationManagers;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -39,10 +40,34 @@ class BitacoraCustomersResource extends Resource
                 Section::make('Registro de actividad')
                 ->schema([
                     Select::make('customers_id')->label('Nombre de Cliente o Identificador')
-                        ->options(Customer::query()->where('user_id', auth()->user()->id)->pluck('name', 'id'))
+                        ->placeholder('Visitas para hoy:')
                         ->required()
                         ->preload()
-                        ->searchable(),
+                        ->searchable()
+                        ->options(function()
+                        {
+                            $hoy = strtoupper(Carbon::now()->format('D'));
+                            $dias = [
+                                'MON' => 'Lun',
+                                'TUE' => 'Mar',
+                                'WED' => 'Mie',
+                                'THU' => 'Jue',
+                                'FRI' => 'Vie',
+                                'SAT' => 'Sab',
+                                'SUN' => 'Dom',
+                            ];
+                            $visita = $dias[$hoy];
+
+                            $user = auth()->id();
+                           
+                            return Customer::whereIn('zonas_id', function ($query) use ($visita, $user) {
+                                $query->select('id')
+                                      ->from('zonas')
+                                      ->where('dia_zona', $visita) 
+                                      ->where('user_id', $user);
+                            })->pluck('name', 'id');
+                        }),
+
                     Toggle::make('show_video')->label('Se presentó Video Testimonio')
                         ->onIcon('heroicon-m-play')
                         ->offIcon('heroicon-m-x-mark')
