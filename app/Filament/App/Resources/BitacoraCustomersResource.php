@@ -94,7 +94,8 @@ class BitacoraCustomersResource extends Resource
             });
         })
         ->defaultSort('created_at', 'desc')
-
+        ->heading('Registros de Actividad')
+        ->description('Listado de registros de visitas realizados a Clientes y Prospección')
             ->columns([
                 TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
                 TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
@@ -117,6 +118,7 @@ class BitacoraCustomersResource extends Resource
                 ]),
                 */
             ]);
+            
     }
 
     public static function getRelations(): array
