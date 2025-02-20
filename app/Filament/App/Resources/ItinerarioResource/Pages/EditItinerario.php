@@ -9,11 +9,4 @@ use Filament\Resources\Pages\EditRecord;
 class EditItinerario extends EditRecord
 {
     protected static string $resource = ItinerarioResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 }

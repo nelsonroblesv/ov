@@ -9,11 +9,5 @@ use Filament\Resources\Pages\ListRecords;
 class ListItinerarios extends ListRecords
 {
     protected static string $resource = ItinerarioResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-          //  Actions\CreateAction::make(),
-        ];
-    }
+    protected static ?string $title = 'Itinerarios';
 }
