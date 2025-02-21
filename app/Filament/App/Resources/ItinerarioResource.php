@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,6 +38,7 @@ class ItinerarioResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->modifyQueryUsing(function ($query) {
                 $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                 $dias = [
@@ -69,6 +71,11 @@ class ItinerarioResource extends Resource
                 TextColumn::make('regiones.name')->label('Región'),
                 TextColumn::make('zonas.nombre_zona')->label('Zona'),
                 ColorColumn::make('zonas.color_zona')->label('Color de Zona')->alignCenter(),
+                IconColumn::make('full_address')->label('Ubicación')->alignCenter()
+                            ->icon('heroicon-o-map-pin')
+                            ->color('danger')
+                            ->url(fn ($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode($record->full_address), true)
+                            ->openUrlInNewTab(),
                 TextColumn::make('tipo_cliente')->label('Tipo de Visita')->badge()->alignCenter()
                     ->colors([
                         'danger' => 'PO',
