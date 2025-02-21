@@ -38,7 +38,7 @@ class ItinerarioResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function ($query) {
-                $hoy = strtoupper(Carbon::now()->format('D'));
+                $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                 $dias = [
                     'MON' => 'Lun',
                     'TUE' => 'Mar',
@@ -56,19 +56,44 @@ class ItinerarioResource extends Resource
                     $subQuery->select('id')
                         ->from('zonas')
                         ->where('dia_zona', $diaActual)
-                        ->where('user_id', $user); // Filtra las zonas del día actual
-                });
+                        ->where('user_id', $user);
+                })->orderBy('regiones_id', 'asc');
             })
-            ->defaultSort('created_at', 'desc')
-            ->heading('Itinerario de visitas hoy')
-            ->description('')
+            //->defaultSort('created_at', 'desc')
+            ->heading('Itinerario de visitas')
+            ->description('Lista de visitas programadas para hoy')
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
                 TextColumn::make('user.name')->label('Vendedor'),
+                TextColumn::make('zonas.dia_zona')->label('Dia'),
                 TextColumn::make('regiones.name')->label('Región'),
                 TextColumn::make('zonas.nombre_zona')->label('Zona'),
                 ColorColumn::make('zonas.color_zona')->label('Color de Zona')->alignCenter(),
-                TextColumn::make('tipo_cliente')->label('Tipo de Cliente')->alignCenter()
+                TextColumn::make('tipo_cliente')->label('Tipo de Visita')->badge()->alignCenter()
+                    ->colors([
+                        'danger' => 'PO',
+                        'warning' => 'PR',
+                        'success' => 'PV',
+                        'danger' => 'RD',
+                        'info' => 'BK',
+                        'warning' => 'SL'
+                    ])
+                    ->icons([
+                        'heroicon-o-map' => 'PO',
+                        'heroicon-o-magnifying-glass' => 'PR',
+                        'heroicon-o-building-storefront' => 'PV',
+                        'heroicon-o-user' => 'RD',
+                        'heroicon-o-star' => 'BK',
+                        'heroicon-o-sparkles' => 'SL'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PO' => 'Posible',
+                        'PR' => 'Prospecto',
+                        'PV' => 'Punto Venta',
+                        'RD' => 'Red',
+                        'BK' => 'Black',
+                        'SL' => 'Silver',
+                    ][$state] ?? 'Otro'),
             ])
             ->filters([
                 //

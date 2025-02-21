@@ -46,7 +46,7 @@ class BitacoraCustomersResource extends Resource
                         ->searchable()
                         ->options(function()
                         {
-                            $hoy = strtoupper(Carbon::now()->format('D'));
+                            $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                             $dias = [
                                 'MON' => 'Lun',
                                 'TUE' => 'Mar',
@@ -56,14 +56,13 @@ class BitacoraCustomersResource extends Resource
                                 'SAT' => 'Sab',
                                 'SUN' => 'Dom',
                             ];
-                            $visita = $dias[$hoy];
-
+                            $diaActual = $dias[$hoy];
                             $user = auth()->id();
                            
-                            return Customer::whereIn('zonas_id', function ($query) use ($visita, $user) {
+                            return Customer::whereIn('zonas_id', function ($query) use ($diaActual, $user) {
                                 $query->select('id')
                                       ->from('zonas')
-                                      ->where('dia_zona', $visita) 
+                                      ->where('dia_zona', $diaActual) 
                                       ->where('user_id', $user);
                             })->pluck('name', 'id');
                         }),
