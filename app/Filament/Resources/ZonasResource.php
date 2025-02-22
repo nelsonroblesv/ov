@@ -14,6 +14,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -54,9 +55,22 @@ class ZonasResource extends Resource
                         ->placeholder('Asigna un nombre a la zona')
                         ->required(),
 
-                    ColorPicker::make('color_zona')
-                        ->label('Color')
-                        ->placeholder('Color de la zona')
+                    ToggleButtons::make('tipo_semana')
+                        ->label('Tipo de semana')
+                        ->inline()
+                        ->options([
+                            'PAR' => 'PAR',
+                            'NON' => 'NON',
+                        ])
+                        ->colors([
+                            'PAR' => 'success',
+                            'NON' => 'danger',
+                        ])
+                        ->icons([
+                            'PAR' => 'heroicon-o-arrow-long-down',
+                            'NON' => 'heroicon-o-arrow-long-up',
+                        ])
+                        ->default('PAR')
                         ->required(),
 
                     Select::make('dia_zona')
@@ -73,6 +87,11 @@ class ZonasResource extends Resource
                         ])
                         ->required(),
 
+                    ColorPicker::make('color_zona')
+                        ->label('Color')
+                        ->placeholder('Color de la zona')
+                        ->required(),
+
                     Select::make('user_id')
                         ->label('Asignar a:')
                         ->placeholder('Seleccione un Usuario')
@@ -81,7 +100,6 @@ class ZonasResource extends Resource
                         )
                         ->required()
                         ->preload()
-                        ->columnSpanFull(),
                 ])->columns(2)
             ]);
     }
@@ -93,6 +111,15 @@ class ZonasResource extends Resource
                 TextColumn::make('nombre_zona')->label('Nombre')->searchable()->sortable(),
                 ColorColumn::make('color_zona')->label('Color')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Región')->searchable()->sortable(),
+                TextColumn::make('tipo_semana')->label('Tipo de Semana')->alignCenter()->badge()
+                ->colors([
+                    'success' => 'PAR',
+                    'danger' => 'NON',
+                ])
+                ->icons([
+                    'heroicon-o-arrow-long-down' => 'PAR',
+                    'heroicon-o-arrow-long-up' => 'NON',
+                ]),
                 TextColumn::make('dia_zona')->label('Día Asignado')
                     ->searchable()->sortable()->alignCenter()
                     ->formatStateUsing(fn(string $state): string => [
