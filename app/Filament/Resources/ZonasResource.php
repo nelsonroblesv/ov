@@ -111,7 +111,7 @@ class ZonasResource extends Resource
                 TextColumn::make('nombre_zona')->label('Nombre')->searchable()->sortable(),
                 ColorColumn::make('user.color')->label('Color')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Región')->searchable()->sortable(),
-                TextColumn::make('tipo_semana')->label('Tipo de Semana')->alignCenter()->badge()
+                TextColumn::make('tipo_semana')->label('Semana')->alignCenter()->badge()
                 ->colors([
                     'success' => 'PAR',
                     'danger' => 'NON',
@@ -120,7 +120,7 @@ class ZonasResource extends Resource
                     'heroicon-o-arrow-long-down' => 'PAR',
                     'heroicon-o-arrow-long-up' => 'NON',
                 ]),
-                TextColumn::make('dia_zona')->label('Día Asignado')
+                TextColumn::make('dia_zona')->label('Día')
                     ->searchable()->sortable()->alignCenter()
                     ->formatStateUsing(fn(string $state): string => [
                         'Lun' => 'Lunes',
