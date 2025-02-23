@@ -108,9 +108,10 @@ class ZonasResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nombre_zona')->label('Nombre')->searchable()->sortable(),
-                ColorColumn::make('user.color')->label('Color')->searchable()->sortable(),
+                TextColumn::make('nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Región')->searchable()->sortable(),
+                ColorColumn::make('user.color')->label('Color')->searchable()->sortable(),
+                TextColumn::make('user.name')->label('Asignado a')->searchable()->sortable(),
                 TextColumn::make('tipo_semana')->label('Semana')->alignCenter()->badge()
                 ->colors([
                     'success' => 'PAR',
@@ -131,7 +132,6 @@ class ZonasResource extends Resource
                         'Sab' => 'Sábado',
                         'Dom' => 'Domingo',
                     ][$state] ?? 'Otro'),
-                TextColumn::make('user.name')->label('Asignado a')->searchable()->sortable(),
             ])
             ->filters([
                 //
