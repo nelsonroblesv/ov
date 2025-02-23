@@ -109,7 +109,7 @@ class ZonasResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nombre_zona')->label('Nombre')->searchable()->sortable(),
-                ColorColumn::make('color_zona')->label('Color')->searchable()->sortable(),
+                ColorColumn::make('user.color')->label('Color')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Región')->searchable()->sortable(),
                 TextColumn::make('tipo_semana')->label('Tipo de Semana')->alignCenter()->badge()
                 ->colors([
