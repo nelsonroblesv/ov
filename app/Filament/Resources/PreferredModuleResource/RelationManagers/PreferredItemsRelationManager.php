@@ -45,6 +45,14 @@ class PreferredItemsRelationManager extends RelationManager
                             ->afterStateUpdated(fn($state, $set) => $set(
                                 'price_salon',
                                 Product::find($state)?->price_salon ?? 0
+                            ))
+                            ->afterStateUpdated(fn($state, $set, $get) => $set(
+                                'total_price_publico',
+                                round($state * $get('price_publico'), 2)
+                            ))
+                            ->afterStateUpdated(fn($state, $set, $get) => $set(
+                                'total_price_salon',
+                                round($state * $get('price_salon'), 2)
                             )),
 
                         TextInput::make('quantity')
@@ -68,22 +76,24 @@ class PreferredItemsRelationManager extends RelationManager
                         TextInput::make('price_publico')
                             ->label('Precio Publico')
                             ->disabled()
-                            
+                            ->reactive()
                             ->dehydrated(),
 
                         TextInput::make('total_price_publico')
                             ->label('Precio Total Publico')
                             ->disabled()
+                            ->reactive()
                             ->dehydrated(),
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
-                            
+                            ->reactive()
                             ->disabled()
                             ->dehydrated(),
 
                         TextInput::make('total_price_salon')
                             ->label('Precio Total Salon')
+                            ->reactive()
                             ->disabled()
                             ->dehydrated()
 
