@@ -57,7 +57,7 @@ class DashboardPanelProvider extends PanelProvider
                 'Clientes & Prospectos',
                 'Pedidos & Pagos',
                 'Catalogo',
-                'Bitacota',
+                'Bitacora',
                 'Administrar'
             ])
             ->middleware([
