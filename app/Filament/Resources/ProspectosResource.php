@@ -51,10 +51,10 @@ class ProspectosResource extends Resource
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
-    protected static ?string $navigationGroup = 'Clientes y Prospectos';
+    protected static ?string $navigationGroup = 'Clientes & Prospectos';
     protected static ?string $navigationLabel = 'Prospeccion';
     protected static ?string $breadcrumb = "Prospeccion";
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
 
     public static function form(Form $form): Form

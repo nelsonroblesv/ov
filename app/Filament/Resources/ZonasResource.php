@@ -31,10 +31,10 @@ class ZonasResource extends Resource
     protected static ?string $model = Zonas::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
-    protected static ?string $navigationGroup = 'Ajustes';
+    protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Zonas';
     protected static ?string $breadcrumb = "Zonas";
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

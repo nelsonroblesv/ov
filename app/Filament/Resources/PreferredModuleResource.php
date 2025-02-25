@@ -31,10 +31,10 @@ class PreferredModuleResource extends Resource
     protected static ?string $model = PreferredModule::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $navigationGroup = 'Preferred';
-    protected static ?string $navigationLabel = 'Modulos';
-    protected static ?string $breadcrumb = "Modulos";
-    protected static ?int $navigationSort = 0;
+    protected static ?string $navigationGroup = 'Catalogo';
+    protected static ?string $navigationLabel = 'Modulos Preferred';
+    protected static ?string $breadcrumb = "Modulos Preferred";
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
