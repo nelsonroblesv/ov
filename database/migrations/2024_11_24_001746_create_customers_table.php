@@ -27,8 +27,11 @@ return new class extends Migration
             $table->string('front_image')->nullable();
             $table->string('inside_image')->nullable();
 
-            $table->foreignId('regiones_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('zonas_id')->constrained()->cascadeOnDelete();
+            //$table->foreignId('regiones_id')->constrained()->cascadeOnDelete();
+            //$table->foreignId('zonas_id')->constrained()->cascadeOnDelete();
+
+             $table->string('regiones_id')->nullable();
+            $table->string('zonas_id')->nullable();
 
             $table->json('services')->nullable();
             $table->boolean('reventa')->default(false);

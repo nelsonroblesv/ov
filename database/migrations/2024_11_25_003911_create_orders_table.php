@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->string('number')->unique();
-            $table->enum('status', ['pending', 'completed', 'processing', 'declined'])->default('pending');
+            $table->enum('status', ['pending', 'completed', 'processing', 'declined', 'cancelled', 'partial'])->default('pending');
             $table->longText('notes')->nullable();
             $table->decimal('grand_total', 10, 2)->nullable();
             $table->timestamps();

@@ -4,10 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\HistorialPedidosResource\Pages;
-use App\Filament\Resources\HistorialPedidosResource\RelationManagers;
-use App\Models\HistorialPedidos;
 use App\Models\Order;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -20,14 +17,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class HistorialPedidosResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Historial de Pedidos';
     protected static ?string $breadcrumb = "Historial de Pedidos";
@@ -61,25 +56,32 @@ class HistorialPedidosResource extends Resource
                         ->options([
                             'pending' => OrderStatusEnum::PENDING->value,
                             'completed' => OrderStatusEnum::COMPLETED->value,
+                            'declined' => OrderStatusEnum::DECLINED->value,
+                            'cancelled' => OrderStatusEnum::CANCELLED->value,
+                            'partial' => OrderStatusEnum::PARTIAL->value
                         ])
                         ->colors([
                             'pending' => 'info',
                             'processing' => 'warning',
                             'completed' => 'success',
-                            'declined' => 'danger',
+                            'declined' => 'gray',
+                            'cancelled' => 'danger',
+                            'partial' => 'warning',
                         ])
                         ->icons([
                             'pending' => 'heroicon-o-exclamation-circle',
                             'processing' => 'heroicon-o-arrow-path',
                             'completed' => 'heroicon-o-check',
-                            'declined' => 'heroicon-o-x-mark'
+                            'declined' => 'heroicon-o-x-mark',
+                            'cancelled' => 'heroicon-o-x-circle',
+                            'partial' => 'heroicon-o-arrow-uturn-left'
                         ])
-                        ->default('completed'),
+                        ->default('pending'),
 
                     TextInput::make('notes')
                         ->label('Notas')
                         ->nullable(),
-                    
+
                     DatePicker::make('created_at')
                         ->label('Fecha')
                         ->required()
@@ -98,6 +100,7 @@ class HistorialPedidosResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->heading('Pedidos')
             ->description('Historial de Pedidos.')
             ->columns([
@@ -124,15 +127,24 @@ class HistorialPedidosResource extends Resource
                         'primary',
                         'info' => 'pending',
                         'success' => 'completed',
+                        'gray' => 'declined',
+                        'danger' => 'cancelled',
+                        'warning' => 'partial',
                     ])
                     ->icons([
-                        'heroicon-o-x',
                         'heroicon-o-clock' => 'pending',
-                        'heroicon-o-check' => 'completed'
+                        'heroicon-o-check' => 'completed',
+                        'heroicon-o-x-mark' => 'declined',
+                        'heroicon-o-x-circle' => 'cancelled',
+                        'heroicon-o-arrow-uturn-left' => 'partial',
+
                     ])
                     ->formatStateUsing(fn(string $state): string => [
                         'pending' => 'Pendiente',
                         'completed' => 'Completado',
+                        'declined' => 'Rechazado',
+                        'cancelled' => 'Cancelado',
+                        'partial' => 'Devuelta Parcial',
                     ][$state] ?? 'Otro'),
 
                 TextColumn::make('notes')
@@ -141,6 +153,7 @@ class HistorialPedidosResource extends Resource
 
                 TextColumn::make('grand_total')
                     ->label('Total')
+                    ->prefix('$')
             ])
             ->filters([
                 //
