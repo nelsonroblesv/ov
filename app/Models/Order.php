@@ -15,7 +15,7 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'customer_id', 'number', 'status', 'notes', 'grand_total'
+        'customer_id', 'number', 'status', 'notes', 'grand_total', 'created_at'
     ];
 
     public function customer() :BelongsTo

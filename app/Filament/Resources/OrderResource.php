@@ -29,6 +29,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
@@ -53,7 +54,7 @@ class OrderResource extends Resource
                 Wizard::make([
                     Step::make('Detalles del Pedido')
                         ->schema([
-                            Forms\Components\Select::make('customer_id')
+                            Select::make('customer_id')
                                 ->label('Cliente')
                                 ->relationship('customer', 'name')
                                 ->disabledOn('edit')
@@ -61,7 +62,7 @@ class OrderResource extends Resource
                                 ->preload()
                                 ->required(),
 
-                            Forms\Components\TextInput::make('number')
+                            TextInput::make('number')
                                 ->label('Numero de Orden')
                                 ->required()
                                 ->disabled()
@@ -69,7 +70,7 @@ class OrderResource extends Resource
                                 ->dehydrated()
                                 ->maxLength(255),
 
-                            Forms\Components\ToggleButtons::make('status')
+                            ToggleButtons::make('status')
                                 ->label('Estado del Pedido')
                                 ->required()
                                 ->inline()
