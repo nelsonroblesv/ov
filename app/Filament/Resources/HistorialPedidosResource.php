@@ -14,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -122,17 +123,18 @@ class HistorialPedidosResource extends Resource
                     ->colors([
                         'primary',
                         'info' => 'pending',
-                        'warning' => 'processing',
                         'success' => 'completed',
-                        'danger' => 'declined',
                     ])
                     ->icons([
                         'heroicon-o-x',
                         'heroicon-o-clock' => 'pending',
-                        'heroicon-o-x-mark' => 'declined',
-                        'heroicon-o-check' => 'completed',
-                        'heroicon-o-arrow-path' => 'processing'
-                    ]),
+                        'heroicon-o-check' => 'completed'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'pending' => 'Pendiente',
+                        'completed' => 'Completado',
+                    ][$state] ?? 'Otro'),
+
                 TextColumn::make('notes')
                     ->label('Notas')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -145,13 +147,38 @@ class HistorialPedidosResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Pedido eliminado')
+                                ->body('El Pedido ha sido eliminada del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Pedido')
+                        ->modalDescription('Estas seguro que deseas eliminar este Pedido? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Pedidos')
+                        ->modalDescription('Estas seguro que deseas eliminar los Pedidos seleccionadas? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
