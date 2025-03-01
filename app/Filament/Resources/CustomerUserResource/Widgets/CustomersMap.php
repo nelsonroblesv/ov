@@ -4,13 +4,17 @@
 
 namespace App\Filament\Resources\CustomerUserResource\Widgets;
 
+use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\CustomerResource\Pages\CreateCustomer;
 use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
 use App\Models\User;
+use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Notifications\Notification;
@@ -92,16 +96,18 @@ class CustomersMap extends MapTableWidget
 	protected function getTableActions(): array
 	{
 		return [];
-/*	return [
+		/*
+return [
 			ActionGroup::make([
-				/*ViewAction::make('view')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
+				ViewAction::make('view')
+					->url(fn (Customer $record): string => CustomerResource::getUrl('view', ['record' => $record])),
 
 				EditAction::make('edit')
 					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-				/*
+			])
+];				/*
 				Action::make('transfer')
 					->label('Transferir')
 					->requiresConfirmation()
