@@ -39,7 +39,8 @@ class ItinerarioResource extends Resource
     {
         return $table
             ->recordUrl(null)
-            ->modifyQueryUsing(function ($query) {
+
+            ->modifyQueryUsing(function (Builder $query) {
                 $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                 $dias = [
                     'MON' => 'Lun',
@@ -51,35 +52,37 @@ class ItinerarioResource extends Resource
                     'SUN' => 'Dom',
                 ];
                 $diaActual = $dias[$hoy];
-
                 $user = auth()->id();
 
-                $query
-                ->select('*')
-                ->from('zonas')
-                ->where('user_id', $user)
-                ->where('dia_zona', $diaActual)
-                ->where('tipo_semana', 'PAR')
-                ->orderBy('regiones_id', 'asc');
+                $query->where('user_id', $user) 
+                    ->whereHas('zonas', function ($q) use ($diaActual, $user) {
+                        $q->where('dia_zona', $diaActual) 
+                            ->where('user_id', $user)
+                            ->where('tipo_semana', 'PAR'); 
+                    });
             })
-            //->defaultSort('created_at', 'desc')
+            ->defaultSort('created_at', 'desc')
+
+
             ->heading('Itinerario de visitas')
             ->description('Lista de visitas programadas para hoy')
             ->columns([
-                TextColumn::make('nombre_zona')->label('Cliente o Identificador'),
+                TextColumn::make('name')->label('Cliente o Identificador'),
                 TextColumn::make('user.name')->label('Vendedor'),
+                TextColumn::make('tipo_cliente')->label('tipo'),
                 TextColumn::make('zonas.dia_zona')->label('Dia'),
                 TextColumn::make('regiones.name')->label('Región'),
                 TextColumn::make('zonas.nombre_zona')->label('Zona'),
-                ColorColumn::make('zonas.color_zona')->label('Color de Zona')->alignCenter(),
+                ColorColumn::make('user.color')->label('Color de Zona')->alignCenter(),
+                TextColumn::make('zonas.tipo_semana')->label('Dia'),
                 IconColumn::make('full_address')->label('Ubicación')->alignCenter()
-                            ->icon('heroicon-o-map-pin')
-                            ->color('danger')
-                            ->url(fn ($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode($record->full_address), true)
-                            ->openUrlInNewTab(),
-                TextColumn::make('tipo_cliente')->label('Tipo de Visita')->badge()->alignCenter()
+                    ->icon('heroicon-o-map-pin')
+                    ->color('danger')
+                    ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode($record->full_address), true)
+                    ->openUrlInNewTab(),
+                TextColumn::make('tipo_cliente')->label('Tipo')->badge()->alignCenter()
                     ->colors([
-                        'danger' => 'PO',
+                        'gray' => 'PO',
                         'warning' => 'PR',
                         'success' => 'PV',
                         'danger' => 'RD',
