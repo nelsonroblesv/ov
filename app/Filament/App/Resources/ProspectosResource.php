@@ -230,6 +230,7 @@ class ProspectosResource extends Resource
 
                             FileUpload::make('fachada')
                                 ->label('Foto de fachada')
+                                ->placeholder('Tomar foto o cargar desde galeria')
                                 ->image()
                                 ->imageEditor()
                                 ->directory('prospectos-images')
