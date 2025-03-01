@@ -57,8 +57,8 @@ class ItinerarioResource extends Resource
                 $query->where('user_id', $user) 
                     ->whereHas('zonas', function ($q) use ($diaActual, $user) {
                         $q->where('dia_zona', $diaActual) 
-                            ->where('user_id', $user)
-                            ->where('tipo_semana', 'PAR'); 
+                            ->where('user_id', $user);
+                           // ->where('tipo_semana', 'PAR'); 
                     });
             })
             ->defaultSort('created_at', 'desc')
