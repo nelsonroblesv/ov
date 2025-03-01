@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('quantity');
             $table->decimal('price_publico');
             $table->decimal('total_price');
-            $table->json('notas_venta')->nullable();
             $table->timestamps();
         });
     }

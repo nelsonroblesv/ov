@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'completed', 'processing', 'declined', 'cancelled', 'partial'])->default('pending');
             $table->longText('notes')->nullable();
             $table->decimal('grand_total', 10, 2)->nullable();
+            $table->json('notas_venta')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

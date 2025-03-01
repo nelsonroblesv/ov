@@ -94,13 +94,12 @@ class HistorialPedidosResource extends Resource
                         ->required()
                         ->numeric()
                         ->default(0),
-                    
-                        FileUpload::make('notas_venta')
-                            ->label('Notas de Venta')
-                            ->placeholder('Haz clic o arrastra los archivos aquí')
-                            ->multiple()
-                            ->directory('notas_venta')
 
+                    FileUpload::make('notas_venta')
+                        ->label('Notas de Venta')
+                        ->placeholder('Haz clic o arrastra los archivos aquí')
+                        ->multiple()
+                        ->directory('notas_venta')
                 ])->columns(2),
 
             ]);

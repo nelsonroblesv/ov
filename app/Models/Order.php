@@ -15,7 +15,11 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'customer_id', 'number', 'status', 'notes', 'grand_total', 'created_at'
+        'customer_id', 'number', 'status', 'notes', 'grand_total', 'created_at', 'notas_venta'
+    ];
+
+    protected $casts = [
+        'notas_venta' => 'array'
     ];
 
     public function customer() :BelongsTo

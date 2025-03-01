@@ -38,8 +38,7 @@ class Customer extends Model
         'tipo_razon_social',
         'cfdi_document',
         'user_id',
-        'tipo_cliente',
-        'notas_venta'
+        'tipo_cliente'
     ];
 
     protected $appends = [
@@ -47,8 +46,7 @@ class Customer extends Model
     ];
 
     protected $casts = [
-        'services' => 'array',
-        'notas_venta' => 'array'
+        'services' => 'array'
     ];
 
      /**
