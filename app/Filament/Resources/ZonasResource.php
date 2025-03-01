@@ -34,7 +34,7 @@ class ZonasResource extends Resource
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Zonas';
     protected static ?string $breadcrumb = "Zonas";
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
@@ -85,11 +85,6 @@ class ZonasResource extends Resource
                             'Vie' => 'Viernes',
                             'Sab' => 'Sábado',
                         ])
-                        ->required(),
-
-                    ColorPicker::make('color_zona')
-                        ->label('Color')
-                        ->placeholder('Color de la zona')
                         ->required(),
 
                     Select::make('user_id')

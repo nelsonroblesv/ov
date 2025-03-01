@@ -6,6 +6,7 @@ use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\HistorialPedidosResource\Pages;
 use App\Models\Order;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -76,7 +77,8 @@ class HistorialPedidosResource extends Resource
                             'cancelled' => 'heroicon-o-x-circle',
                             'partial' => 'heroicon-o-arrow-uturn-left'
                         ])
-                        ->default('pending'),
+                        ->default('pending')
+                        ->columnSpanFull(),
 
                     TextInput::make('notes')
                         ->label('Notas')
@@ -91,7 +93,14 @@ class HistorialPedidosResource extends Resource
                         ->label('Total')
                         ->required()
                         ->numeric()
-                        ->default(0)
+                        ->default(0),
+                    
+                        FileUpload::make('notas_venta')
+                            ->label('Notas de Venta')
+                            ->placeholder('Haz clic o arrastra los archivos aquí')
+                            ->multiple()
+                            ->directory('notas_venta')
+
                 ])->columns(2),
 
             ]);

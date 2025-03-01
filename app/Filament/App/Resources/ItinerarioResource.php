@@ -54,18 +54,19 @@ class ItinerarioResource extends Resource
 
                 $user = auth()->id();
 
-                $query->whereIn('zonas_id', function ($subQuery) use ($diaActual, $user) {
-                    $subQuery->select('id')
-                        ->from('zonas')
-                        ->where('dia_zona', $diaActual)
-                        ->where('user_id', $user);
-                })->orderBy('regiones_id', 'asc');
+                $query
+                ->select('*')
+                ->from('zonas')
+                ->where('user_id', $user)
+                ->where('dia_zona', $diaActual)
+                ->where('tipo_semana', 'PAR')
+                ->orderBy('regiones_id', 'asc');
             })
             //->defaultSort('created_at', 'desc')
             ->heading('Itinerario de visitas')
             ->description('Lista de visitas programadas para hoy')
             ->columns([
-                TextColumn::make('name')->label('Cliente o Identificador'),
+                TextColumn::make('nombre_zona')->label('Cliente o Identificador'),
                 TextColumn::make('user.name')->label('Vendedor'),
                 TextColumn::make('zonas.dia_zona')->label('Dia'),
                 TextColumn::make('regiones.name')->label('Región'),

@@ -24,7 +24,7 @@ class ServicesResource extends Resource
     protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Servicios';
     protected static ?string $breadcrumb = "Servicios";
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {
