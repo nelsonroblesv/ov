@@ -84,11 +84,6 @@ class HistorialPedidosResource extends Resource
                         ->default('pending')
                         ->columnSpanFull(),
 
-                    TextInput::make('notes')
-                        ->label('Notas adicionales del Pedido')
-                        ->nullable()
-                        ->columnSpanFull(),
-
                     DatePicker::make('created_at')
                         ->label('Fecha')
                         ->required()
@@ -98,6 +93,10 @@ class HistorialPedidosResource extends Resource
                         ->label('Fecha de liquidación')
                         ->required()
                         ->native(),
+
+                    TextInput::make('notes')
+                        ->label('Notas adicionales del Pedido')
+                        ->nullable(),
 
                     TextInput::make('grand_total')
                         ->label('Total')
