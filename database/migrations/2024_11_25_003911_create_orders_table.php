@@ -19,6 +19,7 @@ return new class extends Migration
             $table->longText('notes')->nullable();
             $table->decimal('grand_total', 10, 2)->nullable();
             $table->json('notas_venta')->nullable();
+            $table->date('fecha_liquidacion')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

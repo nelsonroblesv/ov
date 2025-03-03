@@ -3,27 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BitacoraProspeccionResource\Pages;
-use App\Filament\Resources\BitacoraProspeccionResource\RelationManagers;
 use App\Models\BitacoraCustomers;
-use App\Models\BitacoraProspeccion;
 use App\Models\Customer;
-use App\Models\Prospectos;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BitacoraProspeccionResource extends Resource
 {

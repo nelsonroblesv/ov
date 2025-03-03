@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\HistorialPedidosResource\Pages;
+use App\Models\Customer;
 use App\Models\Order;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -44,11 +45,14 @@ class HistorialPedidosResource extends Resource
 
                     Select::make('customer_id')
                         ->label('Cliente')
-                        ->relationship('customer', 'name')
                         ->disabledOn('edit')
                         ->searchable()
                         ->preload()
-                        ->required(),
+                        ->required()
+                        ->options(Customer::query()
+                            ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                            ->pluck('name', 'id')),
+
 
                     ToggleButtons::make('status')
                         ->label('Estado del Pedido')
@@ -81,25 +85,31 @@ class HistorialPedidosResource extends Resource
                         ->columnSpanFull(),
 
                     TextInput::make('notes')
-                        ->label('Notas')
-                        ->nullable(),
+                        ->label('Notas adicionales del Pedido')
+                        ->nullable()
+                        ->columnSpanFull(),
 
                     DatePicker::make('created_at')
                         ->label('Fecha')
                         ->required()
                         ->native(),
 
+                    DatePicker::make('fecha_liquidacion')
+                        ->label('Fecha de liquidación')
+                        ->required()
+                        ->native(),
+
                     TextInput::make('grand_total')
                         ->label('Total')
                         ->required()
-                        ->numeric()
-                        ->default(0),
+                        ->numeric(),
 
                     FileUpload::make('notas_venta')
                         ->label('Notas de Venta')
-                        ->placeholder('Haz clic o arrastra los archivos aquí')
+                        ->placeholder('Haz click para cargar la(s) nota(s) de venta')
                         ->multiple()
                         ->directory('notas_venta')
+                        ->columnSpanFull()
                 ])->columns(2),
 
             ]);
@@ -124,6 +134,11 @@ class HistorialPedidosResource extends Resource
 
                 TextColumn::make('created_at')
                     ->label('Fecha')
+                    ->date()
+                    ->sortable(),
+
+                TextColumn::make('fecha_liquidacion')
+                    ->label('Liquidadción')
                     ->date()
                     ->sortable(),
 
