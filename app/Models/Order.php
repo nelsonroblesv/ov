@@ -15,7 +15,8 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'customer_id', 'number', 'status', 'notes', 'grand_total', 'created_at', 'notas_venta', 'fecha_liquidacion'
+        'customer_id', 'number', 'status', 'notes', 'grand_total', 'created_at', 'notas_venta', 
+        'fecha_liquidacion', 'tipo_nota', 'tipo_semana_nota', 'dia_nota'
     ];
 
     protected $casts = [

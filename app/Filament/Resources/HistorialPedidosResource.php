@@ -17,7 +17,9 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class HistorialPedidosResource extends Resource
@@ -36,13 +38,12 @@ class HistorialPedidosResource extends Resource
                 Section::make('Detalles del Pedido')->schema([
 
                     TextInput::make('number')
-                        ->label('Numero de Orden')
+                        ->label('Numero de Pedido')
                         ->required()
-                        ->disabled()
-                        ->default('OR-' . random_int(100000, 9999999))
-                        ->dehydrated()
                         ->maxLength(255)
-                        ->suffixIcon('heroicon-m-hashtag'),
+                        ->suffixIcon('heroicon-m-hashtag')
+                        ->unique(ignoreRecord: true)
+                        ->disabledOn('edit'),
 
                     Select::make('customer_id')
                         ->label('Cliente')
@@ -55,36 +56,55 @@ class HistorialPedidosResource extends Resource
                             ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                             ->pluck('name', 'id')),
 
-
-                    ToggleButtons::make('status')
-                        ->label('Estado del Pedido')
+                    ToggleButtons::make('tipo_nota')
+                        ->label('Tipo de Nota')
                         ->required()
-                        ->inline()
                         ->options([
-                            'pending' => OrderStatusEnum::PENDING->value,
-                            'completed' => OrderStatusEnum::COMPLETED->value,
-                            'declined' => OrderStatusEnum::DECLINED->value,
-                            'cancelled' => OrderStatusEnum::CANCELLED->value,
-                            'partial' => OrderStatusEnum::PARTIAL->value
+                            'Sistema' => 'Sistema',
+                            'Remisión' => 'Remisión',
                         ])
+                        ->inline()
+                        ->default('Sistema')
                         ->colors([
-                            'pending' => 'info',
-                            'processing' => 'warning',
-                            'completed' => 'success',
-                            'declined' => 'gray',
-                            'cancelled' => 'danger',
-                            'partial' => 'warning',
+                            'Sistema' => 'success',
+                            'Remisión' => 'warning',
                         ])
                         ->icons([
-                            'pending' => 'heroicon-o-exclamation-circle',
-                            'processing' => 'heroicon-o-arrow-path',
-                            'completed' => 'heroicon-o-check',
-                            'declined' => 'heroicon-o-x-mark',
-                            'cancelled' => 'heroicon-o-x-circle',
-                            'partial' => 'heroicon-o-arrow-uturn-left'
+                            'Sistema' => 'heroicon-o-arrow-left-end-on-rectangle',
+                            'Remisión' => 'heroicon-o-arrow-right-end-on-rectangle',
                         ])
-                        ->default('pending')
-                        ->columnSpanFull(),
+                        ->default('Sistema'),
+
+                    Select::make('tipo_semana_nota')
+                        ->label('Semana de la Nota')
+                        ->required()
+                        ->options([
+                            'PAR' => 'PAR',
+                            'NON' => 'NON',
+                        ]),
+
+                    Select::make('dia_nota')
+                        ->label('Día de la Nota')
+                        ->required()
+                        ->options([
+                            'Lunes' => 'Lunes',
+                            'Martes' => 'Martes',
+                            'Miercoles' => 'Miercoles',
+                            'Jueves' => 'Jueves',
+                            'Viernes' => 'Viernes',
+                        ]),
+
+                    Select::make('status')
+                        ->label('Estado del Pedido')
+                        ->required()
+                        ->options([
+                            'Pendiente' => 'Pendiente',
+                            'Completado' => 'Completado',
+                            'Rechazado' => 'Rechazado',
+                            'Reubicar' => 'Reubicar',
+                            'Devuelta Parcial' => 'Devuelta Parcial',
+                            'Siguiente Visita' => 'Siguiente Visita'
+                        ]),
 
                     DatePicker::make('created_at')
                         ->label('Fecha')
@@ -102,7 +122,7 @@ class HistorialPedidosResource extends Resource
                         ->suffixIcon('heroicon-m-pencil-square'),
 
                     TextInput::make('grand_total')
-                        ->label('Total')
+                        ->label('Monto')
                         ->required()
                         ->numeric()
                         ->placeholder('0.00')
@@ -129,7 +149,7 @@ class HistorialPedidosResource extends Resource
             ->description('Historial de Pedidos.')
             ->columns([
                 TextColumn::make('number')
-                    ->label('Num. Orden')
+                    ->label('# Pedido')
                     ->searchable()
                     ->sortable(),
 
@@ -144,37 +164,50 @@ class HistorialPedidosResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('fecha_liquidacion')
-                    ->label('Liquidadción')
+                    ->label('Liquidación')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('tipo_semana_nota')
+                    ->label('Semana')
+                    ->badge()
+                    ->sortable()
+                    ->searchable()
+                    ->colors([
+                        'info' => 'PAR',
+                        'danger' => 'NON',
+                    ])
+                    ->icons([
+                        'heroicon-o-calendar-days'
+                    ]),
+
+                TextColumn::make('dia_nota')
+                    ->label('Dia')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('status')
                     ->searchable()
                     ->sortable()
                     ->badge()
                     ->colors([
-                        'primary',
-                        'info' => 'pending',
-                        'success' => 'completed',
-                        'gray' => 'declined',
-                        'danger' => 'cancelled',
-                        'warning' => 'partial',
+                        'info' => 'Pendiente',
+                        'success' => 'Completado',
+                        'gray' => 'Rechazado',
+                        'warning' => 'Reubicar',
+                        'danger' => 'Devuelta Parcial',
+                        'info' => 'Siguiente Visita'
                     ])
                     ->icons([
-                        'heroicon-o-clock' => 'pending',
-                        'heroicon-o-check' => 'completed',
-                        'heroicon-o-x-mark' => 'declined',
-                        'heroicon-o-x-circle' => 'cancelled',
-                        'heroicon-o-arrow-uturn-left' => 'partial',
+                        'heroicon-o-clock' => 'Pendiente',
+                        'heroicon-o-check' => 'Completado',
+                        'heroicon-o-x-mark' => 'Rechazado',
+                        'heroicon-o-megaphone' => 'Reubicar',
+                        'heroicon-o-arrow-uturn-left' => 'Devuelta Parcial',
+                        'heroicon-o-calendar-date-range' => 'Siguiente Visita'
 
-                    ])
-                    ->formatStateUsing(fn(string $state): string => [
-                        'pending' => 'Pendiente',
-                        'completed' => 'Completado',
-                        'declined' => 'Rechazado',
-                        'cancelled' => 'Cancelado',
-                        'partial' => 'Devuelta Parcial',
-                    ][$state] ?? 'Otro'),
+                    ]),
 
                 TextColumn::make('notes')
                     ->label('Notas')
@@ -182,10 +215,34 @@ class HistorialPedidosResource extends Resource
 
                 TextColumn::make('grand_total')
                     ->label('Total')
+                    ->numeric()
+                    ->summarize(Sum::make()->label('Total'))
                     ->prefix('$')
             ])
             ->filters([
-                //
+                SelectFilter::make('tipo_semana_nota')
+                    ->label('Tipo de Semana')
+                    ->options([
+                        'PAR' => 'PAR',
+                        'NON' => 'NON',
+                    ]),
+                SelectFilter::make('tipo_nota')
+                    ->label('Tipo de Nota')
+                    ->options([
+                        'Sistema' => 'Sistema',
+                        'Remisión' => 'Remisión',
+                    ]),
+
+                SelectFilter::make('dia_nota')
+                    ->label('Dia')
+                    ->multiple()
+                    ->options([
+                        'Lunes' => 'Lunes',
+                        'Martes' => 'Martes',
+                        'Miercoles' => 'Miercoles',
+                        'Jueves' => 'Jueves',
+                        'Viernes' => 'Viernes',
+                    ])
             ])
             ->actions([
                 ActionGroup::make([
