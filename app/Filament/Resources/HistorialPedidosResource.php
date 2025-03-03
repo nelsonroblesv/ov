@@ -41,7 +41,8 @@ class HistorialPedidosResource extends Resource
                         ->disabled()
                         ->default('OR-' . random_int(100000, 9999999))
                         ->dehydrated()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->suffixIcon('heroicon-m-hashtag'),
 
                     Select::make('customer_id')
                         ->label('Cliente')
@@ -49,6 +50,7 @@ class HistorialPedidosResource extends Resource
                         ->searchable()
                         ->preload()
                         ->required()
+                        ->suffixIcon('heroicon-m-user')
                         ->options(Customer::query()
                             ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                             ->pluck('name', 'id')),
@@ -96,18 +98,23 @@ class HistorialPedidosResource extends Resource
 
                     TextInput::make('notes')
                         ->label('Notas adicionales del Pedido')
-                        ->nullable(),
+                        ->nullable()
+                        ->suffixIcon('heroicon-m-pencil-square'),
 
                     TextInput::make('grand_total')
                         ->label('Total')
                         ->required()
-                        ->numeric(),
+                        ->numeric()
+                        ->placeholder('0.00')
+                        ->suffixIcon('heroicon-m-currency-dollar'),
 
                     FileUpload::make('notas_venta')
                         ->label('Notas de Venta')
                         ->placeholder('Haz click para cargar la(s) nota(s) de venta')
                         ->multiple()
                         ->directory('notas_venta')
+                        ->openable()
+                        ->downloadable()
                         ->columnSpanFull()
                 ])->columns(2),
 
