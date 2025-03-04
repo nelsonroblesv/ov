@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ItinerarioResource\Pages;
 use App\Filament\App\Resources\ItinerarioResource\RelationManagers;
+use App\Models\AsignarTipoSemana;
 use App\Models\Customer;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -13,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -54,15 +56,22 @@ class ItinerarioResource extends Resource
                 $diaActual = $dias[$hoy];
                 $user = auth()->id();
 
+                $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
+                $valores = [
+                    '0' => 'PAR',
+                    '1' => 'NON',
+                ];
+                $semana = $valores[$tipoSemanaSeleccionado];
+               
                 $query->where('user_id', $user) 
-                    ->whereHas('zonas', function ($q) use ($diaActual, $user) {
+                    ->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
                         $q->where('dia_zona', $diaActual) 
+                            ->where('tipo_semana', $semana)
                             ->where('user_id', $user);
                            // ->where('tipo_semana', 'PAR'); 
                     });
             })
             ->defaultSort('created_at', 'desc')
-
 
             ->heading('Itinerario de visitas')
             ->description('Lista de visitas programadas para hoy')
@@ -74,7 +83,11 @@ class ItinerarioResource extends Resource
                 TextColumn::make('regiones.name')->label('Región'),
                 TextColumn::make('zonas.nombre_zona')->label('Zona'),
                 ColorColumn::make('user.color')->label('Color de Zona')->alignCenter(),
-                TextColumn::make('zonas.tipo_semana')->label('Dia'),
+                TextColumn::make('zonas.tipo_semana')->label('Semana')->badge()->alignCenter()
+                    ->colors([
+                        'success' => 'PAR',
+                        'danger' => 'NON',
+                    ]),
                 IconColumn::make('full_address')->label('Ubicación')->alignCenter()
                     ->icon('heroicon-o-map-pin')
                     ->color('danger')
@@ -107,7 +120,7 @@ class ItinerarioResource extends Resource
                     ][$state] ?? 'Otro'),
             ])
             ->filters([
-                //
+                
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre_zona')->nullable();
             $table->foreignId('regiones_id')->constrained();
             $table->enum('tipo_semana', ['PAR', 'NON'])->default('PAR');
-            $table->enum('dia_zona', ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'])->default('Dom');
+            $table->enum('dia_zona', ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'])->default('Lun');
             $table->foreignId('user_id')->nullable()->constrained();
             $table->timestamps();
         });
