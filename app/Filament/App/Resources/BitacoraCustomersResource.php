@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\BitacoraCustomersResource\Pages;
 use App\Filament\App\Resources\BitacoraCustomersResource\RelationManagers;
+use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
 use Carbon\Carbon;
@@ -58,11 +59,18 @@ class BitacoraCustomersResource extends Resource
                             ];
                             $diaActual = $dias[$hoy];
                             $user = auth()->id();
+                            $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
+                            $valores = [
+                                '0' => 'PAR',
+                                '1' => 'NON',
+                            ];
+                            $semana = $valores[$tipoSemanaSeleccionado];
                            
-                            return Customer::whereIn('zonas_id', function ($query) use ($diaActual, $user) {
+                            return Customer::whereIn('zonas_id', function ($query) use ($diaActual, $user, $semana) {
                                 $query->select('id')
                                       ->from('zonas')
                                       ->where('dia_zona', $diaActual) 
+                                      ->where('tipo_semana', $semana)
                                       ->where('user_id', $user);
                             })->pluck('name', 'id');
                         }),
@@ -76,8 +84,10 @@ class BitacoraCustomersResource extends Resource
                     MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
                     Section::make('Testigos')->schema([
                         FileUpload::make('testigo_1')->label('Foto 1')->nullable()
+                            ->placeholder('Tomar o cargar Foto')
                             ->directory('bitacora-testigos'),
                         FileUpload::make('testigo_1')->label('Foto 2')->nullable()
+                            ->placeholder('Tomar o cargar Foto')
                             ->directory('bitacora-testigos')
                     ])->columns(2)
                 ])
