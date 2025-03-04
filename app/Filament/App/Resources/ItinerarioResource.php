@@ -5,12 +5,20 @@ namespace App\Filament\App\Resources;
 use App\Filament\App\Resources\ItinerarioResource\Pages;
 use App\Filament\App\Resources\ItinerarioResource\RelationManagers;
 use App\Models\AsignarTipoSemana;
+use App\Models\BitacoraCustomers;
 use App\Models\Customer;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -55,20 +63,19 @@ class ItinerarioResource extends Resource
                 ];
                 $diaActual = $dias[$hoy];
                 $user = auth()->id();
-
                 $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
                 $valores = [
                     '0' => 'PAR',
                     '1' => 'NON',
                 ];
                 $semana = $valores[$tipoSemanaSeleccionado];
-               
-                $query->where('user_id', $user) 
+
+                $query->where('user_id', $user)
                     ->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
-                        $q->where('dia_zona', $diaActual) 
+                        $q->where('dia_zona', $diaActual)
                             ->where('tipo_semana', $semana)
                             ->where('user_id', $user);
-                           // ->where('tipo_semana', 'PAR'); 
+                        // ->where('tipo_semana', 'PAR'); 
                     });
             })
             ->defaultSort('created_at', 'desc')
@@ -77,7 +84,7 @@ class ItinerarioResource extends Resource
             ->description('Lista de visitas programadas para hoy')
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
-                TextColumn::make('user.name')->label('Vendedor'),
+               // TextColumn::make('user.name')->label('Vendedor'),
                 TextColumn::make('tipo_cliente')->label('tipo'),
                 TextColumn::make('zonas.dia_zona')->label('Dia'),
                 TextColumn::make('regiones.name')->label('Región'),
@@ -119,11 +126,47 @@ class ItinerarioResource extends Resource
                         'SL' => 'Silver',
                     ][$state] ?? 'Otro'),
             ])
-            ->filters([
-                
-            ])
+            ->filters([])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Action::make('Registrar Visita')
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('info')
+                    ->form([
+                        Section::make('Registro en Bitácora')->schema([
+                            Toggle::make('show_video')->label('Se presentó Video Testimonio')
+                                ->onIcon('heroicon-m-play')
+                                ->offIcon('heroicon-m-x-mark')
+                                ->onColor('success')
+                                ->offColor('danger'),
+
+                            TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
+
+                            Section::make('Testigos')->schema([
+                                FileUpload::make('testigo_1')->label('Foto 1')->nullable()
+                                    ->placeholder('Tomar o cargar Foto')
+                                    ->directory('bitacora-testigos'),
+                                FileUpload::make('testigo_1')->label('Foto 2')->nullable()
+                                    ->placeholder('Tomar o cargar Foto')
+                                    ->directory('bitacora-testigos')
+                            ])->columns(2)
+                        ])
+                    ])
+                    ->action(function ($record, array $data) {
+                        BitacoraCustomers::create([
+                            'customers_id' => $record->id,
+                            'user_id' => auth()->id(),
+                            'show_video' => $data['show_video'],
+                            'notas' => $data['notas'],
+                            'testigo_1' => $data['testigo_1'],
+                            'testigo_1' => $data['testigo_1'],
+                            'created_at' => Carbon::now()->setTimezone('America/Merida')
+                        ]);
+
+                        Notification::make()
+                            ->title('Registro guardado en la Bitácora')
+                            ->success()
+                            ->send();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
