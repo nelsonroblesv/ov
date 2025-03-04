@@ -32,7 +32,7 @@ class EditBitacoraCustomers extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-                ->label('Borrar'),
+              //  ->label('Borrar'),
         ];
     }
 

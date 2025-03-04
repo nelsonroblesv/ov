@@ -82,7 +82,7 @@ class ItinerarioResource extends Resource
             ->defaultSort('created_at', 'desc')
 
             ->heading('Itinerario de visitas')
-            ->description('Lista de visitas programadas para hoy')
+            ->description('Lista de visitas asignadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y'))
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
                 TextColumn::make('tipo_cliente')->label('tipo'),
@@ -123,7 +123,7 @@ class ItinerarioResource extends Resource
             ->filters([])
             ->actions([
                 Action::make('Agregar a Ruta')
-                    ->icon('heroicon-o-map-pin')
+                    ->icon('heroicon-o-map')
                     ->color('warning')
                     ->requiresConfirmation()
                     ->hidden(function ($record) {

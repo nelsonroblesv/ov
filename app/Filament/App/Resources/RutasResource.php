@@ -46,7 +46,8 @@ class RutasResource extends Resource
         return $table
             ->recordUrl(null)
             ->heading('Mis Rutas')
-            ->description('Estas son las Rutas programadas para el dia de hoy')
+            ->description('Estas son las Rutas programadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y'))
+
             ->reorderable('sort')
             ->modifyQueryUsing(function (Builder $query) {
                 $user = auth()->id();
@@ -105,7 +106,7 @@ class RutasResource extends Resource
             ])
             ->actions([
                 Action::make('Registrar Visita')
-                    ->icon('heroicon-o-pencil-square')
+                    ->icon('heroicon-o-clipboard-document-check')
                     ->color('warning')
                     ->form([
                         Section::make('Registro en Bitácora')->schema([
@@ -127,8 +128,13 @@ class RutasResource extends Resource
                             ])->columns(2)
                         ])
                     ])
+                    ->hidden(function ($record) {
+                        return BitacoraCustomers::where('user_id', auth()->id())
+                            ->where('customers_id', $record->customer_id)
+                            ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString()) // Mismo día
+                            ->exists();
+                    })
                     ->action(function ($record, array $data) {
-                        // dd($record);
                         BitacoraCustomers::create([
                             'customers_id' => $record->customer_id,
                             'user_id' => auth()->id(),

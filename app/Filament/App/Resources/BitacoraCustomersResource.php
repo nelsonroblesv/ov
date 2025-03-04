@@ -3,6 +3,7 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\BitacoraCustomersResource\Pages;
+use App\Filament\App\Resources\BitacoraCustomersResource\Pages\ViewBitacoraCustomers;
 use App\Filament\App\Resources\BitacoraCustomersResource\RelationManagers;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
@@ -112,7 +113,7 @@ class BitacoraCustomersResource extends Resource
                 ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')->label('Registro')->dateTime()->sortable(),
-                IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
+               // IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
             ])
             ->filters([
                 //
@@ -144,6 +145,7 @@ class BitacoraCustomersResource extends Resource
             'index' => Pages\ListBitacoraCustomers::route('/'),
             'create' => Pages\CreateBitacoraCustomers::route('/create'),
             'edit' => Pages\EditBitacoraCustomers::route('/{record}/edit'),
+            'view' => ViewBitacoraCustomers::route('/{record}/edit')
         ];
     }
 }
