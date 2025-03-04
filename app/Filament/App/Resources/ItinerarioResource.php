@@ -7,6 +7,7 @@ use App\Filament\App\Resources\ItinerarioResource\RelationManagers;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
+use App\Models\Rutas;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -31,8 +32,8 @@ class ItinerarioResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?string $navigationGroup = 'Clientes y Prospectos';
+    protected static ?string $navigationIcon = 'heroicon-o-numbered-list';
+    protected static ?string $navigationGroup = 'Bitacora';
     protected static ?string $navigationLabel = 'Itinerario';
     protected static ?string $breadcrumb = "Itinerario";
     protected static ?int $navigationSort = 1;
@@ -84,22 +85,15 @@ class ItinerarioResource extends Resource
             ->description('Lista de visitas programadas para hoy')
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
-               // TextColumn::make('user.name')->label('Vendedor'),
                 TextColumn::make('tipo_cliente')->label('tipo'),
-                TextColumn::make('zonas.dia_zona')->label('Dia'),
                 TextColumn::make('regiones.name')->label('Región'),
                 TextColumn::make('zonas.nombre_zona')->label('Zona'),
-                ColorColumn::make('user.color')->label('Color de Zona')->alignCenter(),
                 TextColumn::make('zonas.tipo_semana')->label('Semana')->badge()->alignCenter()
                     ->colors([
                         'success' => 'PAR',
                         'danger' => 'NON',
                     ]),
-                IconColumn::make('full_address')->label('Ubicación')->alignCenter()
-                    ->icon('heroicon-o-map-pin')
-                    ->color('danger')
-                    ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode($record->full_address), true)
-                    ->openUrlInNewTab(),
+                TextColumn::make('full_address')->label('Direccion'),
                 TextColumn::make('tipo_cliente')->label('Tipo')->badge()->alignCenter()
                     ->colors([
                         'gray' => 'PO',
@@ -128,42 +122,30 @@ class ItinerarioResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Action::make('Registrar Visita')
-                    ->icon('heroicon-o-pencil-square')
-                    ->color('info')
-                    ->form([
-                        Section::make('Registro en Bitácora')->schema([
-                            Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                                ->onIcon('heroicon-m-play')
-                                ->offIcon('heroicon-m-x-mark')
-                                ->onColor('success')
-                                ->offColor('danger'),
-
-                            TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
-
-                            Section::make('Testigos')->schema([
-                                FileUpload::make('testigo_1')->label('Foto 1')->nullable()
-                                    ->placeholder('Tomar o cargar Foto')
-                                    ->directory('bitacora-testigos'),
-                                FileUpload::make('testigo_1')->label('Foto 2')->nullable()
-                                    ->placeholder('Tomar o cargar Foto')
-                                    ->directory('bitacora-testigos')
-                            ])->columns(2)
-                        ])
-                    ])
+                Action::make('Agregar a Ruta')
+                    ->icon('heroicon-o-map-pin')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->hidden(function ($record) {
+                        return Rutas::where('user_id', auth()->id())
+                            ->where('customer_id', $record->id)
+                            ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString()) // Mismo día
+                            ->exists();
+                    })
                     ->action(function ($record, array $data) {
-                        BitacoraCustomers::create([
-                            'customers_id' => $record->id,
-                            'user_id' => auth()->id(),
-                            'show_video' => $data['show_video'],
-                            'notas' => $data['notas'],
-                            'testigo_1' => $data['testigo_1'],
-                            'testigo_1' => $data['testigo_1'],
-                            'created_at' => Carbon::now()->setTimezone('America/Merida')
+                        Rutas::create([
+                            'user_id'  => auth()->id(),
+                            'customer_id' => $record->id,
+                            'regiones_id' => $record->regiones_id,
+                            'zonas_id' => $record->zonas_id,
+                            'tipo_semana' => $record['zonas']['tipo_semana'],
+                            'tipo_cliente' => $record->tipo_cliente,
+                            'full_address' => $record->full_address,
+                            'visited' => 0
                         ]);
 
                         Notification::make()
-                            ->title('Registro guardado en la Bitácora')
+                            ->title('Registro agregado a la Ruta actual')
                             ->success()
                             ->send();
                     })

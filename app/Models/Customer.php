@@ -169,4 +169,9 @@ class Customer extends Model
         return $this->hasMany(BitacoraCustomers::class);
     }
 
+    public function rutas(): BelongsTo
+    {
+        return $this->belongsTo(Rutas::class, 'zonas_id');
+    }
+
 }

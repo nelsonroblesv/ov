@@ -18,4 +18,8 @@ class Zonas extends Model
     {
         return $this->belongsTo(User::class, 'user_id'); 
     }
+    public function rutas(): HasMany
+    {
+        return $this->hasMany(Rutas::class);
+    }
 }

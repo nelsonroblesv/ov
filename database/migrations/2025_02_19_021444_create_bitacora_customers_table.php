@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('bitacora_customers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customers_id')->constrained()->cascadeOnDelete();
+            $table->string('notas')->nullable();
             $table->string('notas')->nullable();
             $table->boolean('show_video')->default(false);
             $table->string('testigo_1')->nullable();

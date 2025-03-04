@@ -13,4 +13,9 @@ class Regiones extends Model
     {
         return $this->hasMany(Zonas::class, 'regiones_id');
     }
+
+    public function rutas(): HasMany
+    {
+        return $this->hasMany(Rutas::class);
+    }
 }

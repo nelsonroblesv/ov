@@ -32,7 +32,7 @@ class BitacoraCustomersResource extends Resource
     protected static ?string $navigationGroup = 'Bitacora';
     protected static ?string $navigationLabel = 'Registros de Actividad';
     protected static ?string $breadcrumb = 'Bitacora';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -119,6 +119,7 @@ class BitacoraCustomersResource extends Resource
             ])
             ->actions([
              //   Tables\Actions\EditAction::make(),
+             Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 /*
