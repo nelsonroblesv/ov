@@ -41,7 +41,7 @@ class CustomersMap extends MapTableWidget
 
 	protected function getTableDescription(): string|Htmlable|null
 	{
-		return 'Listado de Prospectos';
+		return 'Listado de Clientes';
 	}
 
 	protected function getTableColumns(): array

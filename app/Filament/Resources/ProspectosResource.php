@@ -16,6 +16,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -161,13 +162,11 @@ class ProspectosResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                            TextInput::make('latitude')
+                            Hidden::make('latitude')
                                 ->hidden()
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(100)
-                                ->suffixIcon('heroicon-m-map-pin')
+                                //->unique(ignoreRecord: true)
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
@@ -176,13 +175,11 @@ class ProspectosResource extends Resource
                                     ]);
                                 })->lazy(),
 
-                            TextInput::make('longitude')
+                            Hidden::make('longitude')
                                 ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(100)
-                                ->suffixIcon('heroicon-m-map-pin')
+                               // ->unique(ignoreRecord: true)
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [

@@ -167,13 +167,11 @@ class CustomerUserResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                            TextInput::make('latitude')
-                                ->hidden()
+                            Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(100)
-                                ->suffixIcon('heroicon-m-map-pin')
+                                //->unique(ignoreRecord: true)
+                                ->dehydrated()
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
@@ -182,13 +180,12 @@ class CustomerUserResource extends Resource
                                     ]);
                                 })->lazy(),
 
-                            TextInput::make('longitude')
+                            Hidden::make('longitude')
                                 ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(100)
-                                ->suffixIcon('heroicon-m-map-pin')
+                                //->unique(ignoreRecord: true)
+                                ->dehydrated()
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
