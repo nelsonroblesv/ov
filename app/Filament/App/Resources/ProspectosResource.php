@@ -136,13 +136,12 @@ class ProspectosResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                            TextInput::make('latitude')
+                            Hidden::make('latitude')
                                 ->hidden()
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(100)
-                                ->suffixIcon('heroicon-m-map-pin')
+                               // ->unique(ignoreRecord: true)
+                                ->dehydrated()
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
@@ -151,13 +150,12 @@ class ProspectosResource extends Resource
                                     ]);
                                 })->lazy(),
 
-                            TextInput::make('longitude')
+                            Hidden::make('longitude')
                                 ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(100)
-                                ->suffixIcon('heroicon-m-map-pin')
+                               //->unique(ignoreRecord: true)
+                               ->dehydrated()
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
