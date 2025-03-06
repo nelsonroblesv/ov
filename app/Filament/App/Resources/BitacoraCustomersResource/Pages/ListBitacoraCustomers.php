@@ -14,8 +14,7 @@ class ListBitacoraCustomers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Crear registro en Bitacora'),
+          //  Actions\CreateAction::make()->label('Crear registro en Bitacora'),
         ];
     }
 }
