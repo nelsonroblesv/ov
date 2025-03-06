@@ -82,7 +82,8 @@ class ItinerarioResource extends Resource
             ->defaultSort('created_at', 'desc')
 
             ->heading('Itinerario de visitas')
-            ->description('Lista de visitas asignadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y'))
+            ->description('Esta es la lista de visitas asignadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y'). 
+                            ' Recuerda agregar cada una para crear tu Ruta.')
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
                 TextColumn::make('tipo_cliente')->label('tipo'),

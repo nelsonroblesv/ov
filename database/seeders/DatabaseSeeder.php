@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AsignarTipoSemana;
 use App\Models\Customer;
 use App\Models\User;
 use Database\Factories\UserFactory;
@@ -48,6 +49,10 @@ class DatabaseSeeder extends Seeder
         $user->email_verified_at = now();
         $user->password = Hash::make('2025avyna');
         $user->save();
+
+        // Establecer un SEED para inicar la semana como PAR
+        $semana = new AsignarTipoSemana();
+        $semana->tipo_semana = 0;
 
 
        // User::factory(6)->create();
