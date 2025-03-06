@@ -32,11 +32,11 @@ class CustomersMap extends MapTableWidget
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()
-					->where('tipo_cliente', 'PV')
-					->orWhere('tipo_cliente', 'BK')
-					->orWhere('tipo_cliente', 'RD')
-					->orWhere('tipo_cliente', 'SL')
-					->orderBy('created_at', 'desc');
+			->where('tipo_cliente', 'PV')
+			->orWhere('tipo_cliente', 'BK')
+			->orWhere('tipo_cliente', 'RD')
+			->orWhere('tipo_cliente', 'SL')
+			->orderBy('created_at', 'desc');
 	}
 
 	protected function getTableDescription(): string|Htmlable|null
@@ -63,7 +63,7 @@ class CustomersMap extends MapTableWidget
 					'heroicon-o-star' => 'BK',
 					'heroicon-o-sparkles' => 'SL'
 				])
-				->formatStateUsing(fn (string $state): string => [
+				->formatStateUsing(fn(string $state): string => [
 					'PV' => 'Punto Venta',
 					'RD' => 'Red',
 					'BK' => 'Black',
@@ -82,27 +82,27 @@ class CustomersMap extends MapTableWidget
 	{
 		return [
 			SelectFilter::make('tipo_prospecto')
-                ->options([
-                    'Posible' => 'Posible',
-                    'Prospecto' => 'Prospecto'
-                ]),	
+				->options([
+					'Posible' => 'Posible',
+					'Prospecto' => 'Prospecto'
+				]),
 		];
 	}
 
 	protected function getTableActions(): array
 	{
-	//	return [];
-	return [
+		//	return [];
+		return [
 			ActionGroup::make([
 				ViewAction::make('view')
-					->url(fn (Customer $record): string => CustomerResource::getUrl('view', ['record' => $record])),
+					->url(fn(Customer $record): string => CustomerResource::getUrl('view', ['record' => $record])),
 
 				EditAction::make('edit')
-					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
+					->url(fn(Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 			])
-			];				
-				//GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-				/*
+		];
+		//GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
+		/*
 				Action::make('transfer')
 					->label('Transferir')
 					->requiresConfirmation()
@@ -166,7 +166,7 @@ class CustomersMap extends MapTableWidget
 	protected function getTableBulkActions(): array
 	{
 		return [
-		/*
+			/*
 			DeleteBulkAction::make()
 				->successNotification(
 					Notification::make()
@@ -180,8 +180,7 @@ class CustomersMap extends MapTableWidget
 				->modalHeading('Borrar Prospectos')
 				->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
 				->modalSubmitActionLabel('Si, eliminar'),
-		*/
-				];
+		*/];
 	}
 
 	protected function getData(): array
@@ -221,12 +220,12 @@ class CustomersMap extends MapTableWidget
 	}
 
 	public static function getPages(): array
-    {
-        return [
-            'index' => ListCustomers::route('/'),
-            'create' => CreateCustomer::route('/create'),
-            'edit' => EditCustomer::route('/{record}/edit'),
-            'view' => ViewCustomer::route('/{record}'),
-        ];
-    }
+	{
+		return [
+			'index' => ListCustomers::route('/'),
+			'create' => CreateCustomer::route('/create'),
+			'edit' => EditCustomer::route('/{record}/edit'),
+			'view' => ViewCustomer::route('/{record}'),
+		];
+	}
 }

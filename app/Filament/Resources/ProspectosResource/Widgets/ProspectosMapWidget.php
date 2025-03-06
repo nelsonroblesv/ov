@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProspectosResource\Widgets;
 
+use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\ProspectosResource;
 use App\Filament\Resources\ProspectosResource\Pages\CreateProspectos;
 use App\Filament\Resources\ProspectosResource\Pages\EditProspectos;
@@ -99,15 +100,22 @@ class ProspectosMapWidget extends MapTableWidget
 
 	protected function getTableActions(): array
 	{
-		return [];
+		return [
+			ActionGroup::make([
+				ViewAction::make('view')
+					->url(fn(Customer $record): string => CustomerResource::getUrl('view', ['record' => $record])),
+
+				EditAction::make('edit')
+					->url(fn(Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
+			])
+		];
 /*
 		return [
 			ActionGroup::make([
 				/*ViewAction::make('view')
 					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
 
-				EditAction::make('edit')
-					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
+				
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
 				/*
