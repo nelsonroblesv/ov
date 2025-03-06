@@ -136,13 +136,12 @@ class ProspectosResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                            Hidden::make('latitude')
-                                ->hidden()
+                                Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
                                // ->unique(ignoreRecord: true)
-                                ->dehydrated()
                                 ->reactive()
+                                ->dehydrated()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
                                         'lat' => floatVal($state),
@@ -151,11 +150,10 @@ class ProspectosResource extends Resource
                                 })->lazy(),
 
                             Hidden::make('longitude')
-                                ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
-                               //->unique(ignoreRecord: true)
-                               ->dehydrated()
+                                //->unique(ignoreRecord: true)
+                                ->dehydrated()
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [

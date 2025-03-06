@@ -167,12 +167,12 @@ class CustomerUserResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                            Hidden::make('latitude')
+                                Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                                //->unique(ignoreRecord: true)
-                                ->dehydrated()
+                               // ->unique(ignoreRecord: true)
                                 ->reactive()
+                                ->dehydrated()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
                                     $set('location', [
                                         'lat' => floatVal($state),
@@ -181,7 +181,6 @@ class CustomerUserResource extends Resource
                                 })->lazy(),
 
                             Hidden::make('longitude')
-                                ->hidden()
                                 ->label('Longitud')
                                 ->helperText('Formato: 20.1845751')
                                 //->unique(ignoreRecord: true)
