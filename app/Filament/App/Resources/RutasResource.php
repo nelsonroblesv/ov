@@ -52,7 +52,8 @@ class RutasResource extends Resource
             ->reorderable('sort')
             ->modifyQueryUsing(function (Builder $query) {
                 $user = auth()->id();
-                $query->where('user_id', $user);
+                $query->where('user_id', $user)
+                        ->where('visited', '0');
             })
             ->defaultSort('sort', 'desc')
 
