@@ -128,6 +128,7 @@ class ItinerarioResource extends Resource
                     ->color('warning')
                     ->requiresConfirmation()
                     ->hidden(function ($record) {
+                        //dd(Carbon::now()->setTimezone('America/Merida')->toDateString());
                         return Rutas::where('user_id', auth()->id())
                             ->where('customer_id', $record->id)
                             ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString()) // Mismo día
@@ -142,6 +143,7 @@ class ItinerarioResource extends Resource
                             'tipo_semana' => $record['zonas']['tipo_semana'],
                             'tipo_cliente' => $record->tipo_cliente,
                             'full_address' => $record->full_address,
+                            'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
                             'visited' => 0
                         ]);
 

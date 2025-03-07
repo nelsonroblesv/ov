@@ -10,6 +10,7 @@ class Rutas extends Model
     protected $fillable = [
         'user_id',
         'customer_id',
+        'created_at',
         'regiones_id',
         'zonas_id',
         'tipo_semana',
