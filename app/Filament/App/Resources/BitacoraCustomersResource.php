@@ -87,7 +87,7 @@ class BitacoraCustomersResource extends Resource
                         FileUpload::make('testigo_1')->label('Foto 1')->nullable()
                             ->placeholder('Tomar o cargar Foto')
                             ->directory('bitacora-testigos'),
-                        FileUpload::make('testigo_1')->label('Foto 2')->nullable()
+                        FileUpload::make('testigo_2')->label('Foto 2')->nullable()
                             ->placeholder('Tomar o cargar Foto')
                             ->directory('bitacora-testigos')
                     ])->columns(2)
