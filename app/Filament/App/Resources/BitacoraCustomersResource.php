@@ -120,7 +120,7 @@ class BitacoraCustomersResource extends Resource
             ])
             ->actions([
              //   Tables\Actions\EditAction::make(),
-             Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 /*
