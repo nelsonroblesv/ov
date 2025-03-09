@@ -77,13 +77,11 @@ class ZonasResource extends Resource
                         ->label('Día')
                         ->placeholder('Seleccione un día')
                         ->options([
-                            'Dom' => 'Domingo',
                             'Lun' => 'Lunes',
                             'Mar' => 'Martes',
                             'Mie' => 'Miércoles',
                             'Jue' => 'Jueves',
-                            'Vie' => 'Viernes',
-                            'Sab' => 'Sábado',
+                            'Vie' => 'Viernes'
                         ])
                         ->required(),
 
@@ -124,8 +122,6 @@ class ZonasResource extends Resource
                         'Mie' => 'Miércoles',
                         'Jue' => 'Jueves',
                         'Vie' => 'Viernes',
-                        'Sab' => 'Sábado',
-                        'Dom' => 'Domingo',
                     ][$state] ?? 'Otro'),
             ])
             ->filters([
