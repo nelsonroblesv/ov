@@ -6,6 +6,9 @@ use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\HistorialPedidosResource\Pages;
 use App\Models\Customer;
 use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
@@ -17,10 +20,14 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+
+use Illuminate\Http\Response;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HistorialPedidosResource extends Resource
 {
@@ -147,6 +154,7 @@ class HistorialPedidosResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->heading('Pedidos')
             ->description('Historial de Pedidos.')
+            
             ->columns([
                 TextColumn::make('number')
                     ->label('# Pedido')
@@ -248,6 +256,13 @@ class HistorialPedidosResource extends Resource
                 ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
+
+                    Action::make('Reporte Individual')
+                        ->label('Reporte PDF')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->url(fn(Order $record) => route('ReporteIndividual', $record))
+                        ->openUrlInNewTab(),
+
                     Tables\Actions\DeleteAction::make()
                         ->successNotification(
                             Notification::make()

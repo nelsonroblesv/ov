@@ -12,6 +12,7 @@ use App\Models\PreferredModuleItem;
 use App\Observers\OrderItemObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PreferredItemObserver;
+use Barryvdh\DomPDF\ServiceProvider as DomPDFServiceProvider;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Filament\Forms\Components\Component;
 
