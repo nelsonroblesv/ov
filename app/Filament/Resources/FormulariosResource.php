@@ -21,6 +21,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\HeaderActions\Action;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -56,8 +57,8 @@ class FormulariosResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('eventos_id')->label('Evento')->alignCenter(),
-                TextColumn::make('fecha_registro')->date(),
+                ColorColumn::make('eventos.color')->label('Evento')->alignCenter(),
+                TextColumn::make('fecha_registro')->date()->toggleable(isToggledHiddenByDefault:true),
                 TextColumn::make('nombre')->searchable(),
                 TextColumn::make('ciudad')->searchable(),
                 TextColumn::make('email')->searchable(),
