@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('formularios', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_registro');
+            $table->string('fecha_registro');
             $table->string('nombre');
             $table->string('ciudad');
             $table->string('email');
             $table->string('telefono');
-            $table->foreignId('eventos_id');
+            $table->foreignId('eventos_id')->nullable();
             $table->timestamps();
         });
     }

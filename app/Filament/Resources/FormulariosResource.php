@@ -56,67 +56,60 @@ class FormulariosResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('fecha_registro')->date(),
-                Tables\Columns\TextColumn::make('nombre')->searchable(),
-                Tables\Columns\TextColumn::make('ciudad')->searchable(),
-                Tables\Columns\TextColumn::make('email')->searchable(),
-                Tables\Columns\TextColumn::make('telefono')->searchable(),
+                TextColumn::make('fecha_registro')->date(),
+                TextColumn::make('nombre')->searchable(),
+                TextColumn::make('ciudad')->searchable(),
+                TextColumn::make('email')->searchable(),
+                TextColumn::make('telefono')->searchable(),
             ])
             ->headerActions([
-                ActionsAction::make('Cargar CSV')
-                    ->icon('heroicon-o-document')
+                ActionsAction::make('load_csv')
+                    ->label('Cargar archivo CSV')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('info')
                     ->form([
                         FileUpload::make('csv_file')
-                            ->label('Selecciona un archivo CSV')
-                            ->acceptedFileTypes(['text/csv'])
+                            ->label('Subir Archivo CSV')
                             ->directory('uploads')
+                            ->acceptedFileTypes(['text/csv']) 
+                            ->maxSize(2048)
                             ->required(),
                     ])
                     ->action(function (array $data) {
-                        // Obtener la ruta del archivo
-                        $filePath = public_path("uploads/{$data['csv_file']}");
-                        //dd($filePath);
-                        //dd(Storage::disk('local')->exists($data['csv_file']), storage_path("app/public/{$data['csv_file']}"));
-
+                        Storage::delete('public/uploads/01JP1972VDWKNH2CZ9QF6RJCQ9.csv');
+                       
+                        $filePath = Storage::disk('public')->path($data['csv_file']);
+                        
                         if (!file_exists($filePath)) {
                             Notification::make()
-                                ->title('Error al procesar el archivo')
+                                ->title('Error')
+                                ->body('El archivo no se encontró.')
                                 ->danger()
                                 ->send();
                             return;
                         }
-
-                        // Leer el archivo CSV
+                       
                         $csv = Reader::createFromPath($filePath, 'r');
-                        $csv->setHeaderOffset(0);
+                        $csv->setHeaderOffset(0); 
 
+                        $registrosImportados = 0;
                         foreach ($csv as $record) {
-                            $validated = Validator::make($record, [
-                                'fecha_registro' => 'required|date',
-                                'nombre'         => 'required|string|max:255',
-                                'ciudad'         => 'nullable|string|max:255',
-                                'email'          => 'nullable|email|max:255',
-                                'telefono'       => 'nullable|string|max:20',
-                            ])->validate();
-
-                            Formularios::firstOrCreate(
-                                [
-                                    'email'    => $validated['email'],
-                                    'telefono' => $validated['telefono'],
-                                ],
-                                [
-                                    'fecha_registro' => $validated['fecha_registro'],
-                                    'nombre'         => $validated['nombre'],
-                                    'ciudad'         => $validated['ciudad'],
-                                ]
-                            );
+                           
+                            if (!Formularios::where('email', $record['email'])->orWhere('telefono', $record['telefono'])->exists()) {
+                                Formularios::create([
+                                    'fecha_registro' =>  str_replace('@', '', $record['fecha_registro']),
+                                    'nombre' => $record['nombre'],
+                                    'ciudad' => $record['ciudad'],
+                                    'email' => $record['email'],
+                                    'telefono' => $record['telefono'],
+                                ]);
+                                $registrosImportados++;
+                            }
                         }
 
-                        // Eliminar archivo después de procesarlo
-                        Storage::disk('public')->delete($data['csv_file']);
-
                         Notification::make()
-                            ->title('Importación exitosa')
+                            ->title('Importación Completa')
+                            ->body("Se importaron {$registrosImportados} registros.")
                             ->success()
                             ->send();
                     }),
