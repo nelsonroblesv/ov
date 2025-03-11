@@ -56,6 +56,7 @@ class FormulariosResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('eventos_id')->label('Evento')->alignCenter(),
                 TextColumn::make('fecha_registro')->date(),
                 TextColumn::make('nombre')->searchable(),
                 TextColumn::make('ciudad')->searchable(),
