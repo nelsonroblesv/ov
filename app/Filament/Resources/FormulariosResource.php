@@ -58,7 +58,9 @@ class FormulariosResource extends Resource
         return $table
             ->columns([
                 ColorColumn::make('eventos.color')->label('Evento')->alignCenter(),
-                TextColumn::make('fecha_registro')->date()->toggleable(isToggledHiddenByDefault:true),
+                TextColumn::make('fecha_registro')->date()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault:true),
                 TextColumn::make('nombre')->searchable(),
                 TextColumn::make('ciudad')->searchable(),
                 TextColumn::make('email')->searchable(),
