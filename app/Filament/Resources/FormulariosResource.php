@@ -148,4 +148,11 @@ class FormulariosResource extends Resource
             'edit' => Pages\EditFormularios::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    protected static ?string $navigationBadgeTooltip = 'Personas registradas';
 }
