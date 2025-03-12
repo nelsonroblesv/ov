@@ -56,6 +56,8 @@ class FormulariosResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultSort('created_at', 'asc')
+            ->description('Lista de personas registradas por evento.')
             ->columns([
                 ColorColumn::make('eventos.color')->label('Evento')->alignCenter(),
                 TextColumn::make('fecha_registro')->date()
