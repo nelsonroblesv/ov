@@ -27,4 +27,15 @@ class CreateFormularios extends CreateRecord
             ->iconColor('success')
             ->color('success');
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+   {
+    $recipient = auth()->user();
+
+    Notification::make()
+        ->title('Nuevo Registro')
+        ->body("**Se ha creado un nuevo registro**")
+        ->sendToDatabase($recipient);
+        return $data;
+   }
 }
