@@ -58,8 +58,8 @@ class CustomersMap extends MapTableWidget
 				->colors([
 					'success' => 'PV',
 					'danger' => 'RD',
-					'info' => 'BK',
-					'warning' => 'SL'
+					'custom_black' => 'BK',
+					'custom_gray' => 'SL'
 				])
 				->icons([
 					'heroicon-o-building-storefront' => 'PV',
@@ -76,14 +76,14 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
-				'black'
-					/*'success' => 'SB',
+				'black',
+					'custom' => 'SB',
 					'success' => 'BB', 
 					'success' => 'UN', 
 					'success' => 'OS', 
 					'success' => 'CR', 
 					'success' => 'UB', 
-					'success' => 'NC'*/
+					'success' => 'NC'
 				])
 				->icons([
 					'heroicon-o-scissors' => 'SB',

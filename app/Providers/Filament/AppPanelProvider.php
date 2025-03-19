@@ -66,7 +66,11 @@ class AppPanelProvider extends PanelProvider
     public function boot(): void
     {
         FilamentColor::register([
-            'custom' => '#ff5733', // Nombre y código de color
+            'custom-black' => [
+                'light' => 'bg-black text-white',
+                'dark' => 'bg-gray-900 text-white',
+            ],
+            'custom_gray' => '#757275'
         ]);
     }
 }
