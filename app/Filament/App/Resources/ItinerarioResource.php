@@ -97,12 +97,12 @@ class ItinerarioResource extends Resource
                 TextColumn::make('full_address')->label('Direccion'),
                 TextColumn::make('tipo_cliente')->label('Tipo')->badge()->alignCenter()
                     ->colors([
-                        'gray' => 'PO',
-                        'warning' => 'PR',
+                        'warning' => 'PO',
+                        'info' => 'PR',
                         'success' => 'PV',
                         'danger' => 'RD',
-                        'info' => 'BK',
-                        'warning' => 'SL'
+                        'custom_black' => 'BK',
+                        'custom_gray' => 'SL'
                     ])
                     ->icons([
                         'heroicon-o-map' => 'PO',
