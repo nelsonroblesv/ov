@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ItinerarioResource\Pages;
 use App\Filament\App\Resources\ItinerarioResource\RelationManagers;
+use App\Filament\App\Resources\RutasResource\Pages\ListRutas;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
@@ -144,15 +145,17 @@ class ItinerarioResource extends Resource
                         }
 
                         Notification::make()
-                            ->title('Registros guardados con éxito')
+                            ->title('Iniciemos el recorrido. Adelante!')
                             ->success()
                             ->send();
+
+                            return redirect(RutasResource::getUrl());
                     })
-                    ->color('success')
+                    
                     ->requiresConfirmation()
-                    ->disabled(fn () => Rutas::where('user_id', auth()->id())
+                    ->disabled(fn() => Rutas::where('user_id', auth()->id())
                         ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString())
-                        ->exists()),
+                        ->exists())
             ])
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
