@@ -9,7 +9,9 @@ use App\Models\Rutas;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -56,15 +58,60 @@ class RutasResource extends Resource
             })
             ->defaultSort('sort', 'desc')
             ->headerActions([
+                // NUEVO CLIENTE
                 Action::make('Registrar Cliente')
                     ->label('Nuevo Cliente')
                     ->icon('heroicon-m-user-plus')
-                    ->color('success'),
+                    ->color('success')
+                    ->form([
+                        Section::make('Datos personales')->schema([
 
+                            Hidden::make('user_id')->default(fn() => auth()->id()),
+
+                            TextInput::make('name')
+                                ->label('Nombre completo')
+                                ->required()
+                                ->maxLength(255)
+                                ->unique(ignoreRecord: true)
+                                ->suffixIcon('heroicon-m-user'),
+
+
+                            TextInput::make('email')
+                                ->label('Correo electrónico')
+                                ->email()
+                                ->required()
+                                ->unique(ignoreRecord: true)
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-at-symbol'),
+                        ])
+                    ]),
+                     // NUEVO PRSPECTO/POSIBLE
                 Action::make('Registrar Prospecto/Posible')
                     ->label('Nuevo Prospecto/Posible')
                     ->icon('heroicon-m-sparkles')
                     ->color('warning')
+                    ->form([
+                        Section::make('Datos personales')->schema([
+
+                            Hidden::make('user_id')->default(fn() => auth()->id()),
+
+                            TextInput::make('name')
+                                ->label('Nombre completo')
+                                ->required()
+                                ->maxLength(255)
+                                ->unique(ignoreRecord: true)
+                                ->suffixIcon('heroicon-m-user'),
+
+
+                            TextInput::make('email')
+                                ->label('Correo electrónico')
+                                ->email()
+                                ->required()
+                                ->unique(ignoreRecord: true)
+                                ->maxLength(255)
+                                ->suffixIcon('heroicon-m-at-symbol'),
+                        ])
+                    ]),
             ])
             ->columns([
                 TextColumn::make('sort')->label('#')->sortable(),
