@@ -93,6 +93,18 @@ class CustomerResource extends Resource
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
 
+                                Select::make('simbologia')
+                                    ->label('Simbologia')
+                                    ->options([
+                                        'SB' => 'Salón de Belleza',
+                                        'BB' => 'Barbería',
+                                        'UN' => 'Salón de Uñas',
+                                        'OS' => 'OSBERTH',
+                                        'CR' => 'Cliente Pedido Rechazado',
+                                        'UB' => 'Ubicación en Grupo',
+                                        'NC' => 'Ya no compran'
+                                    ]),
+
                                 DatePicker::make('birthday')
                                     ->label('Fecha de nacimiento')
                                     //->required()
@@ -139,7 +151,7 @@ class CustomerResource extends Resource
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
-                               // ->required()
+                                // ->required()
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map')
                                 ->columnSpanFull(),
@@ -189,7 +201,7 @@ class CustomerResource extends Resource
                             Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                               // ->unique(ignoreRecord: true)
+                                // ->unique(ignoreRecord: true)
                                 ->reactive()
                                 ->dehydrated()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
@@ -215,7 +227,7 @@ class CustomerResource extends Resource
 
                             Select::make('regiones_id')
                                 ->label('Región')
-                              //  ->required()
+                                //  ->required()
                                 ->options(
                                     fn() =>
                                     Regiones::whereIn('id', function ($query) {
@@ -229,7 +241,7 @@ class CustomerResource extends Resource
                             Select::make('zonas_id')
                                 ->label('Zona')
                                 ->placeholder('Selecciona una zona')
-                               // ->required()
+                                // ->required()
                                 ->searchable()
                                 ->options(
                                     fn(callable $get) =>

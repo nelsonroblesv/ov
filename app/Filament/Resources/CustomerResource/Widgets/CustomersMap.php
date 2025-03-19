@@ -54,8 +54,8 @@ class CustomersMap extends MapTableWidget
 				->colors([
 					'success' => 'PV',
 					'danger' => 'RD',
-					'info' => 'BK',
-					'warning' => 'SL'
+					'custom_black' => 'BK',
+					'custom_gray' => 'SL'
 				])
 				->icons([
 					'heroicon-o-building-storefront' => 'PV',
@@ -70,6 +70,35 @@ class CustomersMap extends MapTableWidget
 					'SL' => 'Silver',
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
+			TextColumn::make('simbolo')->label('Simbolo')->badge()
+				->colors([
+				'black',
+					'custom' => 'SB',
+					'success' => 'BB', 
+					'success' => 'UN', 
+					'success' => 'OS', 
+					'success' => 'CR', 
+					'success' => 'UB', 
+					'success' => 'NC'
+				])
+				->icons([
+					'heroicon-o-scissors' => 'SB',
+					'heroicon-o-building-storefront' => 'BB', 
+					'heroicon-o-hand-raised' => 'UN', 
+					'heroicon-o-rocket-launch' => 'OS', 
+					'heroicon-o-x-mark' => 'CR', 
+					'heroicon-o-map-pin' => 'UB', 
+					'heroicon-o-exclamation-triangle' => 'NC'
+				])
+				->formatStateUsing(fn(string $state): string => [
+					'SB' => 'Salón de Belleza',
+					'BB' => 'Barbería', 
+					'UN' => 'Salón de Uñas', 
+					'OS' => 'OSBERTH', 
+					'CR' => 'Cliente Pedido Rechazado', 
+					'UB' => 'Ubicación en Grupo', 
+					'NC' => 'Ya no compran'
+				][$state] ?? 'Otro'),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
