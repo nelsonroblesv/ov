@@ -83,7 +83,7 @@ class ItinerarioResource extends Resource
 
             ->heading('Itinerario de visitas')
             ->description('Esta es la lista de visitas asignadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y') .
-                '. Recuerda agregar cada una para crear tu Ruta.')
+                '. Estas listo para comenzar?')
 
             ->headerActions([
                 Action::make('Guardar en Rutas')
