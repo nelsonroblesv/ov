@@ -38,7 +38,8 @@ class Customer extends Model
         'tipo_razon_social',
         'cfdi_document',
         'user_id',
-        'tipo_cliente'
+        'tipo_cliente',
+        'simbologia'
     ];
 
     protected $appends = [

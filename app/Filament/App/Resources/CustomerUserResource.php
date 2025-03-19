@@ -74,6 +74,18 @@ class CustomerUserResource extends Resource
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
 
+                                Select::make('simbologia')
+                                    ->label('Simbologia')
+                                    ->options([
+                                        'SB' => 'Salón de Belleza',
+                                        'BB' => 'Barbería', 
+                                        'UN' => 'Salón de Uñas', 
+                                        'OS' => 'OSBERTH', 
+                                        'CR' => 'Cliente Pedido Rechazado', 
+                                        'UB' => 'Ubicación en Grupo', 
+                                        'NC' => 'Ya no compran'
+                                    ]),
+
                                 DatePicker::make('birthday')
                                     ->label('Fecha de nacimiento')
                                     ->suffixIcon('heroicon-m-cake')

@@ -36,11 +36,11 @@ class CustomersMap extends MapTableWidget
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()->where('user_id', auth()->id())
-					->where('tipo_cliente', 'PV')
-					->orWhere('tipo_cliente', 'BK')
-					->orWhere('tipo_cliente', 'RD')
-					->orWhere('tipo_cliente', 'SL')
-					->orderBy('created_at', 'desc');
+			->where('tipo_cliente', 'PV')
+			->orWhere('tipo_cliente', 'BK')
+			->orWhere('tipo_cliente', 'RD')
+			->orWhere('tipo_cliente', 'SL')
+			->orderBy('created_at', 'desc');
 	}
 
 	protected function getTableDescription(): string|Htmlable|null
@@ -67,13 +67,42 @@ class CustomersMap extends MapTableWidget
 					'heroicon-o-star' => 'BK',
 					'heroicon-o-sparkles' => 'SL'
 				])
-				->formatStateUsing(fn (string $state): string => [
+				->formatStateUsing(fn(string $state): string => [
 					'PV' => 'Punto Venta',
 					'RD' => 'Red',
 					'BK' => 'Black',
 					'SL' => 'Silver',
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+			TextColumn::make('simbolo')->label('Simbolo')->badge()
+				->colors([
+				'black'
+					/*'success' => 'SB',
+					'success' => 'BB', 
+					'success' => 'UN', 
+					'success' => 'OS', 
+					'success' => 'CR', 
+					'success' => 'UB', 
+					'success' => 'NC'*/
+				])
+				->icons([
+					'heroicon-o-scissors' => 'SB',
+					'heroicon-o-building-storefront' => 'BB', 
+					'heroicon-o-hand-raised' => 'UN', 
+					'heroicon-o-rocket-launch' => 'OS', 
+					'heroicon-o-x-mark' => 'CR', 
+					'heroicon-o-map-pin' => 'UB', 
+					'heroicon-o-exclamation-triangle' => 'NC'
+				])
+				->formatStateUsing(fn(string $state): string => [
+					'SB' => 'Salón de Belleza',
+					'BB' => 'Barbería', 
+					'UN' => 'Salón de Uñas', 
+					'OS' => 'OSBERTH', 
+					'CR' => 'Cliente Pedido Rechazado', 
+					'UB' => 'Ubicación en Grupo', 
+					'NC' => 'Ya no compran'
+				][$state] ?? 'Otro'),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -86,10 +115,10 @@ class CustomersMap extends MapTableWidget
 	{
 		return [
 			SelectFilter::make('tipo_prospecto')
-                ->options([
-                    'Posible' => 'Posible',
-                    'Prospecto' => 'Prospecto'
-                ]),	
+				->options([
+					'Posible' => 'Posible',
+					'Prospecto' => 'Prospecto'
+				]),
 		];
 	}
 
@@ -171,7 +200,7 @@ return [
 	protected function getTableBulkActions(): array
 	{
 		return [
-		/*
+			/*
 			DeleteBulkAction::make()
 				->successNotification(
 					Notification::make()
@@ -185,8 +214,7 @@ return [
 				->modalHeading('Borrar Prospectos')
 				->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
 				->modalSubmitActionLabel('Si, eliminar'),
-		*/
-				];
+		*/];
 	}
 
 	protected function getData(): array
@@ -226,12 +254,12 @@ return [
 	}
 
 	public static function getPages(): array
-    {
-        return [
-            'index' => ListCustomers::route('/'),
-            'create' => CreateCustomer::route('/create'),
-            'edit' => EditCustomer::route('/{record}/edit'),
-            'view' => ViewCustomer::route('/{record}'),
-        ];
-    }
+	{
+		return [
+			'index' => ListCustomers::route('/'),
+			'create' => CreateCustomer::route('/create'),
+			'edit' => EditCustomer::route('/{record}/edit'),
+			'view' => ViewCustomer::route('/{record}'),
+		];
+	}
 }
