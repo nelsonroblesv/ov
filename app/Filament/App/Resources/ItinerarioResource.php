@@ -9,6 +9,7 @@ use App\Models\BitacoraCustomers;
 use App\Models\Customer;
 use App\Models\Rutas;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -50,7 +51,6 @@ class ItinerarioResource extends Resource
     {
         return $table
             ->recordUrl(null)
-
             ->modifyQueryUsing(function (Builder $query) {
                 $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                 $dias = [
@@ -76,14 +76,84 @@ class ItinerarioResource extends Resource
                         $q->where('dia_zona', $diaActual)
                             ->where('tipo_semana', $semana)
                             ->where('user_id', $user);
-                        // ->where('tipo_semana', 'PAR'); 
                     });
             })
             ->defaultSort('created_at', 'desc')
 
             ->heading('Itinerario de visitas')
-            ->description('Esta es la lista de visitas asignadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y'). 
-                            '. Recuerda agregar cada una para crear tu Ruta.')
+            ->description('Esta es la lista de visitas asignadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y') .
+                '. Recuerda agregar cada una para crear tu Ruta.')
+
+            ->headerActions([
+                Action::make('Guardar en Rutas')
+                    ->label('Iniciar Ruta')
+                    ->icon('heroicon-m-play')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(function () {
+                        $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
+                        $dias = [
+                            'MON' => 'Lun',
+                            'TUE' => 'Mar',
+                            'WED' => 'Mie',
+                            'THU' => 'Jue',
+                            'FRI' => 'Vie',
+                            'SAT' => 'Sab',
+                            'SUN' => 'Dom',
+                        ];
+
+                        $diaActual = $dias[$hoy];
+                        $user = auth()->id();
+                        $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
+                        $valores = [
+                            '0' => 'PAR',
+                            '1' => 'NON',
+                        ];
+                        $semana = $valores[$tipoSemanaSeleccionado];
+
+                        // Obtener los registros que se están mostrando en la tabla
+                        $clientes = Customer::where('user_id', $user)
+                            ->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
+                                $q->where('dia_zona', $diaActual)
+                                    ->where('tipo_semana', $semana)
+                                    ->where('user_id', $user);
+                            })
+                            ->get();
+
+                        // Verificar si hay registros
+                        if ($clientes->isEmpty()) {
+                            Notification::make()
+                                ->title('No hay registros para guardar')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
+
+                        foreach ($clientes as $cliente) {
+                            Rutas::create([
+                                'user_id'  => auth()->id(),
+                                'customer_id' => $cliente->id,
+                                'regiones_id' => $cliente->regiones_id,
+                                'zonas_id' => $cliente->zonas_id,
+                                'tipo_semana' => $cliente['zonas']['tipo_semana'],
+                                'tipo_cliente' => $cliente->tipo_cliente,
+                                'full_address' => $cliente->full_address,
+                                'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
+                                'visited' => 0
+                            ]);
+                        }
+
+                        Notification::make()
+                            ->title('Registros guardados con éxito')
+                            ->success()
+                            ->send();
+                    })
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->disabled(fn () => Rutas::where('user_id', auth()->id())
+                        ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString())
+                        ->exists()),
+            ])
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
                 TextColumn::make('tipo_cliente')->label('tipo'),
