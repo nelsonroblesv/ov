@@ -22,6 +22,8 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -106,14 +108,14 @@ class ZonasResource extends Resource
                 ColorColumn::make('user.color')->label('Color')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('Asignado a')->searchable()->sortable(),
                 TextColumn::make('tipo_semana')->label('Semana')->alignCenter()->badge()
-                ->colors([
-                    'success' => 'PAR',
-                    'danger' => 'NON',
-                ])
-                ->icons([
-                    'heroicon-o-arrow-long-down' => 'PAR',
-                    'heroicon-o-arrow-long-up' => 'NON',
-                ]),
+                    ->colors([
+                        'success' => 'PAR',
+                        'danger' => 'NON',
+                    ])
+                    ->icons([
+                        'heroicon-o-arrow-long-down' => 'PAR',
+                        'heroicon-o-arrow-long-up' => 'NON',
+                    ]),
                 TextColumn::make('dia_zona')->label('Día')
                     ->searchable()->sortable()->alignCenter()
                     ->formatStateUsing(fn(string $state): string => [
@@ -125,7 +127,20 @@ class ZonasResource extends Resource
                     ][$state] ?? 'Otro'),
             ])
             ->filters([
-                //
+                SelectFilter::make('tipo_semana')
+                    ->options([
+                        'PAR' => 'PAR',
+                        'NON' => 'NON'
+                    ]),
+                SelectFilter::make('dia_zona')
+                    ->multiple()
+                    ->options([
+                        'Lun' => 'Lunes',
+                        'Mar' => 'Martes',
+                        'Mie' => 'Miércoles',
+                        'Jue' => 'Jueves',
+                        'Vie' => 'Viernes',
+                    ])
             ])
             ->actions([
                 ActionGroup::make([
