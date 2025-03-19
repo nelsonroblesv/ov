@@ -152,7 +152,6 @@ class ItinerarioResource extends Resource
                             return redirect(RutasResource::getUrl());
                     })
                     
-                    ->requiresConfirmation()
                     ->disabled(fn() => Rutas::where('user_id', auth()->id())
                         ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString())
                         ->exists())

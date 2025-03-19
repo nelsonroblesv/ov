@@ -46,17 +46,26 @@ class RutasResource extends Resource
         return $table
             ->recordUrl(null)
             ->heading('Mis Rutas')
-            ->description('Estas son tus Rutas programadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y'). 
-            '. No olvides agregar un registro en la Bitacora en cada visita.')
-
+            ->description('Estas son tus Rutas programadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y') .
+                '. No olvides agregar un registro en la Bitacora durante cada visita.')
             ->reorderable('sort')
             ->modifyQueryUsing(function (Builder $query) {
                 $user = auth()->id();
                 $query->where('user_id', $user)
-                        ->where('visited', '0');
+                    ->where('visited', '0');
             })
             ->defaultSort('sort', 'desc')
+            ->headerActions([
+                Action::make('Registrar Cliente')
+                    ->label('Nuevo Cliente')
+                    ->icon('heroicon-m-user-plus')
+                    ->color('success'),
 
+                Action::make('Registrar Prospecto/Posible')
+                    ->label('Nuevo Prospecto/Posible')
+                    ->icon('heroicon-m-sparkles')
+                    ->color('warning')
+            ])
             ->columns([
                 TextColumn::make('sort')->label('#')->sortable(),
                 TextColumn::make('customer.name')->label('Cliente o Identificador'),
