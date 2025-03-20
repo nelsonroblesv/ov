@@ -72,14 +72,14 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
-				'black',
+				'black',/*
 					'custom' => 'SB',
 					'success' => 'BB', 
 					'success' => 'UN', 
 					'success' => 'OS', 
 					'success' => 'CR', 
 					'success' => 'UB', 
-					'success' => 'NC'
+					'success' => 'NC'*/
 				])
 				->icons([
 					'heroicon-o-scissors' => 'SB',
