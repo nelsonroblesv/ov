@@ -94,7 +94,7 @@ class CustomerResource extends Resource
                                     ->suffixIcon('heroicon-m-phone'),
 
                                 Select::make('simbolo')
-                                    ->label('Simbologia')
+                                    ->label('Simbologia de')
                                     ->options([
                                         'SB' => 'Salón de Belleza',
                                         'BB' => 'Barbería',
