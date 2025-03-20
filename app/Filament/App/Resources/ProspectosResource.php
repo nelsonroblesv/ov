@@ -80,6 +80,19 @@ class ProspectosResource extends Resource
                                 ->options(Services::pluck('name', 'name'))
                                 ->suffixIcon('heroicon-m-sparkles'),
 
+                            Select::make('simbolo')
+                                ->label('Simbologia')
+                                ->options([
+                                    'SB' => 'Salón de Belleza',
+                                    'BB' => 'Barbería',
+                                    'UN' => 'Salón de Uñas',
+                                    'OS' => 'OSBERTH',
+                                    'CR' => 'Cliente Pedido Rechazado',
+                                    'UB' => 'Ubicación en Grupo',
+                                    'NC' => 'Ya no compran'
+                                ]),
+
+
                             Toggle::make('reventa')->label('Ya maneja Reventa')->default(false)
                                 ->onIcon('heroicon-m-check')
                                 ->offIcon('heroicon-m-x-mark')
@@ -136,10 +149,10 @@ class ProspectosResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                                Hidden::make('latitude')
+                            Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                               // ->unique(ignoreRecord: true)
+                                // ->unique(ignoreRecord: true)
                                 ->reactive()
                                 ->dehydrated()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
@@ -163,16 +176,17 @@ class ProspectosResource extends Resource
                                 })->lazy(),
 
                             Select::make('regiones_id')
-                            ->label('Región')
-                            ->required()
-                            ->options(fn () => 
-                                Regiones::whereIn('id', function ($query) {
-                                    $query->select('regiones_id')
-                                          ->from('zonas')
-                                          ->where('user_id', auth()->id());
-                                })->pluck('name', 'id')
-                            )
-                            ->reactive(), 
+                                ->label('Región')
+                                ->required()
+                                ->options(
+                                    fn() =>
+                                    Regiones::whereIn('id', function ($query) {
+                                        $query->select('regiones_id')
+                                            ->from('zonas')
+                                            ->where('user_id', auth()->id());
+                                    })->pluck('name', 'id')
+                                )
+                                ->reactive(),
 
                             Select::make('zonas_id')
                                 ->label('Zona')
@@ -185,11 +199,11 @@ class ProspectosResource extends Resource
                                         ->whereIn('id', function ($query) {
                                             $query->select('id')
                                                 ->from('zonas')
-                                                ->where('user_id', auth()->id()); 
+                                                ->where('user_id', auth()->id());
                                         })
                                         ->pluck('nombre_zona', 'id')
                                 )
-                                
+
                                 ->reactive()
                                 ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
