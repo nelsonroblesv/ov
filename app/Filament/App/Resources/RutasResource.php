@@ -274,9 +274,9 @@ class RutasResource extends Resource
 
 
                 // NUEVO PRSPECTO/POSIBLE
-                Action::make('Registrar Prospecto/Posible')
-                    ->label('Nuevo Prospecto/Posible')
-                    ->icon('heroicon-m-sparkles')
+                Action::make('Registrar Prospección')
+                    ->label('Nueva Prospección')
+                    ->icon('heroicon-m-magnifying-glass')
                     ->color('warning')
                     ->form([
                         Section::make('Datos personales')->schema([
