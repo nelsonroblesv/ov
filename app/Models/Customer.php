@@ -39,7 +39,8 @@ class Customer extends Model
         'cfdi_document',
         'user_id',
         'tipo_cliente',
-        'simbologia'
+        'simbolo',
+        'created_at'
     ];
 
     protected $appends = [

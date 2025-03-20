@@ -2,18 +2,29 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Enums\CfdiTypeEnum;
+use App\Enums\SociedadTypeEnum;
 use App\Filament\App\Resources\RutasResource\Pages;
 use App\Filament\App\Resources\RutasResource\RelationManagers;
 use App\Models\BitacoraCustomers;
+use App\Models\Customer;
+use App\Models\Regiones;
 use App\Models\Rutas;
+use App\Models\Zonas;
 use Carbon\Carbon;
+use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -58,34 +69,211 @@ class RutasResource extends Resource
             })
             ->defaultSort('sort', 'desc')
             ->headerActions([
-                // NUEVO CLIENTE
+
+                /************ NUEVO CLIENTE  ****************/
                 Action::make('Registrar Cliente')
                     ->label('Nuevo Cliente')
                     ->icon('heroicon-m-user-plus')
                     ->color('success')
                     ->form([
-                        Section::make('Datos personales')->schema([
+                        Section::make('Información Personal')
+                            ->description('Completa los campos con la información del nuevo cliente.')
+                            ->schema([
 
-                            Hidden::make('user_id')->default(fn() => auth()->id()),
+                                Hidden::make('user_id')->default(fn() => auth()->id()),
 
-                            TextInput::make('name')
-                                ->label('Nombre completo')
-                                ->required()
-                                ->maxLength(255)
-                                ->unique(ignoreRecord: true)
-                                ->suffixIcon('heroicon-m-user'),
+                                TextInput::make('name')
+                                    ->label('Nombre completo')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(table: Customer::class, column: 'name')
+                                    ->suffixIcon('heroicon-m-user'),
+
+                                TextInput::make('email')
+                                    ->label('Correo electrónico')
+                                    ->email()
+                                    ->required()
+                                    ->unique(table: Customer::class, column: 'email')
+                                    ->maxLength(255)
+                                    ->suffixIcon('heroicon-m-at-symbol'),
+
+                                TextInput::make('phone')
+                                    ->label('Teléfono')
+                                    ->tel()
+                                    ->required()
+                                    ->unique(table: Customer::class, column: 'phone')
+                                    ->maxLength(50)
+                                    ->suffixIcon('heroicon-m-phone'),
+
+                                Select::make('simbolo')
+                                    ->label('Simbologia')
+                                    ->options([
+                                        'SB' => 'Salón de Belleza',
+                                        'BB' => 'Barbería',
+                                        'UN' => 'Salón de Uñas',
+                                        'OS' => 'OSBERTH',
+                                        'CR' => 'Cliente Pedido Rechazado',
+                                        'UB' => 'Ubicación en Grupo',
+                                        'NC' => 'Ya no compran'
+                                    ]),
+
+                                DatePicker::make('birthday')
+                                    ->label('Fecha de nacimiento')
+                                    ->suffixIcon('heroicon-m-cake')
+                                    ->required(),
+
+                            ])->columns(2),
+
+                        Section::make('Sistema')
+                            ->description('Selecciona el tipo de cliente')
+                            ->schema([
+                                ToggleButtons::make('tipo_cliente')
+                                    ->label('Tipo de Cliente')
+                                    ->inline()
+                                    ->options([
+                                        'PV' => 'Punto Venta',
+                                        'RD' => 'Red',
+                                        'BK' => 'Black',
+                                        'SL' => 'Silver',
+                                    ])
+                                    ->default('PV')
+                                    ->colors([
+                                        'PV' => 'success',
+                                        'RD' => 'danger',
+                                        'BK' => 'info',
+                                        'SL' => 'warning'
+                                    ])
+                                    ->icons([
+                                        'PV' => 'heroicon-o-building-storefront',
+                                        'RD' => 'heroicon-o-user',
+                                        'BK' => 'heroicon-o-star',
+                                        'SL' => 'heroicon-o-sparkles'
+                                    ])
+                            ]),
+
+                        Section::make('Ubicación')
+                            ->description('Ingresa la ubicación del cliente')
+                            ->schema([
+                                TextInput::make('full_address')
+                                    ->label('Dirección')
+                                    ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->suffixIcon('heroicon-m-map')
+                                    ->columnSpanFull(),
+
+                                Map::make('location')
+                                    ->mapControls([
+                                        'mapTypeControl'    => true,
+                                        'scaleControl'      => true,
+                                        'streetViewControl' => false,
+                                        'rotateControl'     => true,
+                                        'fullscreenControl' => true,
+                                        'searchBoxControl'  => false,
+                                        'zoomControl'       => true,
+                                    ])
+                                    ->defaultZoom(15)
+                                    ->autocomplete('full_address')
+                                    ->autocompleteReverse(true)
+                                    ->reverseGeocode([
+                                        'street' => '%n %S',
+                                        'city' => '%L',
+                                        'state' => '%A1',
+                                        'zip' => '%z',
+                                    ])
+
+                                    ->layers([
+                                        'https://app.osberthvalle.com/storage/maps/zonas_ovalle.kml',
+                                    ])
+
+                                    ->debug()
+                                    ->draggable()
+
+                                    ->geolocate()
+                                    ->geolocateLabel('Obtener mi Ubicacion')
+                                    ->geolocateOnLoad(true, false)
+
+                                    ->defaultLocation(fn($record) => [
+                                        $record->latitude ?? 19.8386943,
+                                        $record->longitude ?? -90.4982317,
+                                    ])
+                                    ->columnSpanFull()->reactive()
+                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                        $set('latitude', $state['lat']);
+                                        $set('longitude', $state['lng']);
+                                    }),
+
+                                Hidden::make('latitude')
+                                    ->label('Latitud')
+                                    ->helperText('Formato: 20.1845751')
+                                    // ->unique(ignoreRecord: true)
+                                    ->reactive()
+                                    ->dehydrated()
+                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                        $set('location', [
+                                            'lat' => floatVal($state),
+                                            'lng' => floatVal($get('longitude')),
+                                        ]);
+                                    })->lazy(),
+
+                                Hidden::make('longitude')
+                                    ->label('Longitud')
+                                    ->helperText('Formato: 20.1845751')
+                                    //->unique(ignoreRecord: true)
+                                    ->dehydrated()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                        $set('location', [
+                                            'lat' => floatval($get('latitude')),
+                                            'lng' => floatVal($state),
+                                        ]);
+                                    })->lazy(),
 
 
-                            TextInput::make('email')
-                                ->label('Correo electrónico')
-                                ->email()
-                                ->required()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(255)
-                                ->suffixIcon('heroicon-m-at-symbol'),
-                        ])
-                    ]),
-                     // NUEVO PRSPECTO/POSIBLE
+                                Select::make('regiones_id')
+                                    ->label('Región')
+                                    ->required()
+                                    ->options(
+                                        fn() =>
+                                        Regiones::whereIn('id', function ($query) {
+                                            $query->select('regiones_id')
+                                                ->from('zonas')
+                                                ->where('user_id', auth()->id());
+                                        })->pluck('name', 'id')
+                                    )
+                                    ->reactive(),
+
+                                Select::make('zonas_id')
+                                    ->label('Zona')
+                                    ->placeholder('Selecciona una zona')
+                                    ->required()
+                                    ->searchable()
+                                    ->options(
+                                        fn(callable $get) =>
+                                        Zonas::where('regiones_id', $get('regiones_id'))
+                                            ->whereIn('id', function ($query) {
+                                                $query->select('id')
+                                                    ->from('zonas')
+                                                    ->where('user_id', auth()->id());
+                                            })
+                                            ->pluck('nombre_zona', 'id')
+                                    )
+                                    ->reactive()
+                                    ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+                            ])->columns(2)
+                    ])
+                    ->action(function (array $data) {
+                        $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
+                        Customer::create($data);
+
+                        Notification::make()
+                            ->title('Cliente registrado')
+                            ->success()
+                            ->send();
+                    }),
+
+
+                // NUEVO PRSPECTO/POSIBLE
                 Action::make('Registrar Prospecto/Posible')
                     ->label('Nuevo Prospecto/Posible')
                     ->icon('heroicon-m-sparkles')

@@ -74,7 +74,7 @@ class CustomerUserResource extends Resource
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
 
-                                Select::make('simbologia')
+                                Select::make('simbolo')
                                     ->label('Simbologia')
                                     ->options([
                                         'SB' => 'Salón de Belleza',
