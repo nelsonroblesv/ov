@@ -30,9 +30,9 @@ class MapProspeccionWidget extends MapTableWidget
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()->where('user_id', auth()->id())
-					->where('tipo_cliente', 'PO')
-					->orWhere('tipo_cliente', 'PR')
-					->orderBy('created_at', 'desc');
+			->where('tipo_cliente', 'PO')
+			->orWhere('tipo_cliente', 'PR')
+			->orderBy('created_at', 'desc');
 	}
 
 	protected function getTableDescription(): string|Htmlable|null
@@ -53,11 +53,40 @@ class MapProspeccionWidget extends MapTableWidget
 				])
 				->icons([
 					'heroicon-o-map' => 'PO',
-                    'heroicon-o-star' => 'PR'
+					'heroicon-o-star' => 'PR'
 				])
-				->formatStateUsing(fn (string $state): string => [
+				->formatStateUsing(fn(string $state): string => [
 					'PO' => 'Posible',
 					'PR' => 'Prospecto',
+				][$state] ?? 'Otro'),
+			TextColumn::make('simbolo')->label('Simbolo')->badge()
+				->colors([
+					'black',/*
+					'custom' => 'SB',
+					'success' => 'BB',
+					'success' => 'UN',
+					'success' => 'OS',
+					'success' => 'CR',
+					'success' => 'UB',
+					'success' => 'NC'*/
+				])
+				->icons([
+					'heroicon-o-scissors' => 'SB',
+					'heroicon-o-building-storefront' => 'BB',
+					'heroicon-o-hand-raised' => 'UN',
+					'heroicon-o-rocket-launch' => 'OS',
+					'heroicon-o-x-mark' => 'CR',
+					'heroicon-o-map-pin' => 'UB',
+					'heroicon-o-exclamation-triangle' => 'NC'
+				])
+				->formatStateUsing(fn(string $state): string => [
+					'SB' => 'Salón de Belleza',
+					'BB' => 'Barbería',
+					'UN' => 'Salón de Uñas',
+					'OS' => 'OSBERTH',
+					'CR' => 'Cliente Pedido Rechazado',
+					'UB' => 'Ubicación en Grupo',
+					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
@@ -72,17 +101,17 @@ class MapProspeccionWidget extends MapTableWidget
 	{
 		return [
 			SelectFilter::make('tipo_prospecto')
-                ->options([
-                    'Posible' => 'Posible',
-                    'Prospecto' => 'Prospecto'
-                ]),	
+				->options([
+					'Posible' => 'Posible',
+					'Prospecto' => 'Prospecto'
+				]),
 		];
 	}
 
 	protected function getTableActions(): array
 	{
 		return [];
-/*
+		/*
 		return [
 			ActionGroup::make([
 				/*ViewAction::make('view')
@@ -150,13 +179,13 @@ class MapProspeccionWidget extends MapTableWidget
 					->modalSubmitActionLabel('Si, eliminar'),
 					]),		
 		];
-*/	
+*/
 	}
 
 	protected function getTableBulkActions(): array
 	{
 		return [
-		/*
+			/*
 			DeleteBulkAction::make()
 				->successNotification(
 					Notification::make()
@@ -170,8 +199,7 @@ class MapProspeccionWidget extends MapTableWidget
 				->modalHeading('Borrar Prospectos')
 				->modalDescription('Estas seguro que deseas eliminar los Prospectos seleccionados? Esta acción no se puede deshacer.')
 				->modalSubmitActionLabel('Si, eliminar'),
-				*/
-		];
+				*/];
 	}
 
 	protected function getData(): array
@@ -211,12 +239,12 @@ class MapProspeccionWidget extends MapTableWidget
 	}
 
 	public static function getPages(): array
-    {
-        return [
+	{
+		return [
 			'index' => ListProspectos::route('/'),
-            'create' => CreateProspectos::route('/create'),
-            'edit' => EditProspectos::route('/{record}/edit'),
-            'view' => ViewProspectos::route('/{record}'),
-        ];
-    }
+			'create' => CreateProspectos::route('/create'),
+			'edit' => EditProspectos::route('/{record}/edit'),
+			'view' => ViewProspectos::route('/{record}'),
+		];
+	}
 }
