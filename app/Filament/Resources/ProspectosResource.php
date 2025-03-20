@@ -106,6 +106,19 @@ class ProspectosResource extends Resource
                                 ->options(Services::pluck('name', 'name'))
                                 ->suffixIcon('heroicon-m-sparkles'),
 
+                            Select::make('simbolo')
+                                ->label('Simbologia')
+                                ->options([
+                                    'SB' => 'Salón de Belleza',
+                                    'BB' => 'Barbería',
+                                    'UN' => 'Salón de Uñas',
+                                    'OS' => 'OSBERTH',
+                                    'CR' => 'Cliente Pedido Rechazado',
+                                    'UB' => 'Ubicación en Grupo',
+                                    'NC' => 'Ya no compran'
+                                ]),
+
+
                             Toggle::make('reventa')->label('Ya maneja Reventa')->default(false)
                                 ->onIcon('heroicon-m-check')
                                 ->offIcon('heroicon-m-x-mark')
@@ -162,10 +175,10 @@ class ProspectosResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                                Hidden::make('latitude')
+                            Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                               // ->unique(ignoreRecord: true)
+                                // ->unique(ignoreRecord: true)
                                 ->reactive()
                                 ->dehydrated()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
@@ -201,14 +214,14 @@ class ProspectosResource extends Resource
                                 ->required()
                                 ->searchable()
                                 ->options(function (callable $get) {
-                                    $regionId = $get('regiones_id'); 
+                                    $regionId = $get('regiones_id');
                                     if (!$regionId) {
-                                        return []; 
+                                        return [];
                                     }
                                     return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
                                 })
                                 ->reactive() // Hace que el campo se actualice dinámicamente
-                                ->disabled(fn (callable $get) => empty($get('regiones_id'))), // Deshabilita si no hay región seleccionada
+                                ->disabled(fn(callable $get) => empty($get('regiones_id'))), // Deshabilita si no hay región seleccionada
 
 
                             Section::make('Notas Generales')
