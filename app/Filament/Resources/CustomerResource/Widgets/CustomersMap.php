@@ -11,6 +11,7 @@ use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
 use App\Models\User;
+use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Actions\EditAction;
@@ -32,10 +33,7 @@ class CustomersMap extends MapTableWidget
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()
-			->where('tipo_cliente', 'PV')
-			->orWhere('tipo_cliente', 'BK')
-			->orWhere('tipo_cliente', 'RD')
-			->orWhere('tipo_cliente', 'SL')
+			->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
 			->orderBy('created_at', 'desc');
 	}
 
@@ -72,7 +70,7 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
-				'black',/*
+					'black',/*
 					'custom' => 'SB',
 					'success' => 'BB', 
 					'success' => 'UN', 
@@ -83,20 +81,20 @@ class CustomersMap extends MapTableWidget
 				])
 				->icons([
 					'heroicon-o-scissors' => 'SB',
-					'heroicon-o-building-storefront' => 'BB', 
-					'heroicon-o-hand-raised' => 'UN', 
-					'heroicon-o-rocket-launch' => 'OS', 
-					'heroicon-o-x-mark' => 'CR', 
-					'heroicon-o-map-pin' => 'UB', 
+					'heroicon-o-building-storefront' => 'BB',
+					'heroicon-o-hand-raised' => 'UN',
+					'heroicon-o-rocket-launch' => 'OS',
+					'heroicon-o-x-mark' => 'CR',
+					'heroicon-o-map-pin' => 'UB',
 					'heroicon-o-exclamation-triangle' => 'NC'
 				])
 				->formatStateUsing(fn(string $state): string => [
 					'SB' => 'Salón de Belleza',
-					'BB' => 'Barbería', 
-					'UN' => 'Salón de Uñas', 
-					'OS' => 'OSBERTH', 
-					'CR' => 'Cliente Pedido Rechazado', 
-					'UB' => 'Ubicación en Grupo', 
+					'BB' => 'Barbería',
+					'UN' => 'Salón de Uñas',
+					'OS' => 'OSBERTH',
+					'CR' => 'Cliente Pedido Rechazado',
+					'UB' => 'Ubicación en Grupo',
 					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
@@ -110,11 +108,16 @@ class CustomersMap extends MapTableWidget
 	protected function getTableFilters(): array
 	{
 		return [
-			SelectFilter::make('tipo_prospecto')
+			SelectFilter::make('tipo_cliente')
+				->label('Tipo de Cliente')
+				->multiple()
 				->options([
-					'Posible' => 'Posible',
-					'Prospecto' => 'Prospecto'
+					'PV' => 'Punto de Venta',
+					'RD' => 'Red',
+					'BK' => 'Black',
+					'SL' => 'Silver'
 				]),
+				MapIsFilter::make('map'),
 		];
 	}
 

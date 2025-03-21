@@ -49,8 +49,7 @@ class ProspectosMapWidget extends MapTableWidget
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()
-			->where('tipo_cliente', 'PO')
-			->orWhere('tipo_cliente', 'PR')
+			->whereIn('tipo_cliente', ['PO', 'PR'])
 			->orderBy('created_at', 'desc');
 	}
 
@@ -119,10 +118,11 @@ class ProspectosMapWidget extends MapTableWidget
 	protected function getTableFilters(): array
 	{
 		return [
-			SelectFilter::make('tipo_prospecto')
+			SelectFilter::make('tipo_cliente')
+				->label('Tipo')
 				->options([
-					'Posible' => 'Posible',
-					'Prospecto' => 'Prospecto'
+					'PR' => 'Prospecto',
+					'PO' => 'Posible'
 				]),
 		];
 	}
