@@ -29,13 +29,13 @@ class CreateFormularios extends CreateRecord
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array
-   {
-    $recipient = auth()->user();
+    {
+        $recipient = auth()->user();
 
-    Notification::make()
-        ->title('Nuevo Registro')
-        ->body("**Se ha creado un nuevo registro**")
-        ->sendToDatabase($recipient);
+        Notification::make()
+            ->title('Nuevo Registro')
+            ->body("**Se ha creado un nuevo registro**")
+            ->sendToDatabase($recipient);
         return $data;
-   }
+    }
 }
