@@ -265,11 +265,25 @@ class RutasResource extends Resource
                     ])
                     ->action(function (array $data) {
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
-                        Customer::create($data);
+                        $customer = Customer::create($data);
+
+                        Rutas::create([
+                            'user_id'  => auth()->id(),
+                            'customer_id' => $customer->id,
+                            'regiones_id' => $data['regiones_id'],
+                            'zonas_id' => $data['zonas_id'],
+                            'tipo_semana' => Zonas::find($data['zonas_id'])->tipo_semana,
+                            'tipo_cliente' => $data['tipo_cliente'],
+                            'full_address' => $data['full_address'],
+                            'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
+                            'visited' => 0
+                        ]);
+
 
                         Notification::make()
                             ->title('Cliente registrado')
-                            ->body('El cliente ha sido registrado con éxito. Recuerda completar la información adicional en otro momento.')
+                            ->body('El Cliente ha sido registrado con éxito. Se agregó a la Ruta actual. 
+                                        Recuerda completar la información adicional posteriormente.')
                             ->icon('heroicon-o-user-plus')
                             ->color('success')
                             ->send();
@@ -493,11 +507,24 @@ class RutasResource extends Resource
                     ])
                     ->action(function (array $data) {
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
-                        Customer::create($data);
+                        $customer = Customer::create($data);
+
+                        Rutas::create([
+                            'user_id'  => auth()->id(),
+                            'customer_id' => $customer->id,
+                            'regiones_id' => $data['regiones_id'],
+                            'zonas_id' => $data['zonas_id'],
+                            'tipo_semana' => Zonas::find($data['zonas_id'])->tipo_semana,
+                            'tipo_cliente' => $data['tipo_cliente'],
+                            'full_address' => $data['full_address'],
+                            'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
+                            'visited' => 0
+                        ]);
 
                         Notification::make()
                             ->title('Prospección registrada')
-                            ->body('Se ha registrado la Prospección con éxito. Recuerda completar la información adicional en otro momento.')
+                            ->body('Se ha registrado la Prospección con éxito y se agregó a la Ruta actual. 
+                                    Recuerda completar la información adicional posteriormente.')
                             ->icon('heroicon-o-magnifying-glass')
                             ->color('success')
                             ->send();
@@ -506,6 +533,35 @@ class RutasResource extends Resource
             ->columns([
                 TextColumn::make('sort')->label('#')->sortable(),
                 TextColumn::make('customer.name')->label('Cliente o Identificador'),
+                TextColumn::make('customer.simbolo')->label('Simbolo')->badge()
+				->colors([
+				'black',/*
+					'custom' => 'SB',
+					'success' => 'BB', 
+					'success' => 'UN', 
+					'success' => 'OS', 
+					'success' => 'CR', 
+					'success' => 'UB', 
+					'success' => 'NC'*/
+				])
+				->icons([
+					'heroicon-o-scissors' => 'SB',
+					'heroicon-o-building-storefront' => 'BB', 
+					'heroicon-o-hand-raised' => 'UN', 
+					'heroicon-o-rocket-launch' => 'OS', 
+					'heroicon-o-x-mark' => 'CR', 
+					'heroicon-o-map-pin' => 'UB', 
+					'heroicon-o-exclamation-triangle' => 'NC'
+				])
+				->formatStateUsing(fn(string $state): string => [
+					'SB' => 'Salón de Belleza',
+					'BB' => 'Barbería', 
+					'UN' => 'Salón de Uñas', 
+					'OS' => 'OSBERTH', 
+					'CR' => 'Cliente Pedido Rechazado', 
+					'UB' => 'Ubicación en Grupo', 
+					'NC' => 'Ya no compran'
+				][$state] ?? 'Otro'),
                 TextColumn::make('tipo_cliente')->label('Tipo')->badge()->alignCenter()
                     ->colors([
                         'gray' => 'PO',

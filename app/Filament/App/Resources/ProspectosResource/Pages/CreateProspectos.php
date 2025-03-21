@@ -45,7 +45,7 @@ class CreateProspectos extends CreateRecord
 
         Notification::make()
             ->title('Nuevo Cliente Registrado')
-            ->body("El vendedor ". $username." ha registrado a {$data['name']} como {$cliente}.")
+            ->body("El usuario ". $username." ha registrado a {$data['name']} como {$cliente}.")
             ->icon('heroicon-o-information-circle')
             ->iconColor('info')
             ->color('info')
