@@ -11,7 +11,7 @@ class CreateCustomer extends CreateRecord
 {
     protected static string $resource = CustomerResource::class;
 
-    protected static ?string $title = 'Registrar Cliente';
+    protected static ?string $title = 'Registrar nuevo Cliente';
     
 
     protected function getRedirectUrl(): string
