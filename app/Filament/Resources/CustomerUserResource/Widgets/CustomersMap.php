@@ -37,10 +37,7 @@ class CustomersMap extends MapTableWidget
 	protected function getTableQuery(): Builder
 	{
 		return Customer::query()->where('user_id', auth()->id())
-			->where('tipo_cliente', 'PV')
-			->orWhere('tipo_cliente', 'BK')
-			->orWhere('tipo_cliente', 'RD')
-			->orWhere('tipo_cliente', 'SL')
+			->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
 			->orderBy('created_at', 'desc');
 	}
 
@@ -115,12 +112,14 @@ class CustomersMap extends MapTableWidget
 	protected function getTableFilters(): array
 	{
 		return [
-			SelectFilter::make('simbolo')
+			SelectFilter::make('tipo_cliente')
 				->label('Tipo de Cliente')
 				->multiple()
 				->options([
-					'OS' => 'OS',
-					'UNAS' => 'NAS',
+					'PV' => 'Punto de Venta',
+					'RD' => 'Red',
+					'BK' => 'Black',
+					'SL' => 'Silver'
 				]),
 				MapIsFilter::make('map'),
 		];
