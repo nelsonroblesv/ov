@@ -16,7 +16,9 @@ class ListProspectos extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Registrar Prospecto'),
+                ->label('Nueva Prospección')
+                ->icon('heroicon-o-magnifying-glass-plus')
+                ->color('warning'),
         ];
     }
 
