@@ -149,15 +149,44 @@ class ItinerarioResource extends Resource
                             ->success()
                             ->send();
 
-                            return redirect(RutasResource::getUrl());
+                        return redirect(RutasResource::getUrl());
                     })
-                    
+
                     ->disabled(fn() => Rutas::where('user_id', auth()->id())
                         ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString())
                         ->exists())
             ])
             ->columns([
                 TextColumn::make('name')->label('Cliente o Identificador'),
+                TextColumn::make('simbolo')->label('Simbolo')->badge()
+                    ->colors([
+                        'black',/*
+					'custom' => 'SB',
+					'success' => 'BB', 
+					'success' => 'UN', 
+					'success' => 'OS', 
+					'success' => 'CR', 
+					'success' => 'UB', 
+					'success' => 'NC'*/
+                    ])
+                    ->icons([
+                        'heroicon-o-scissors' => 'SB',
+                        'heroicon-o-building-storefront' => 'BB',
+                        'heroicon-o-hand-raised' => 'UN',
+                        'heroicon-o-rocket-launch' => 'OS',
+                        'heroicon-o-x-mark' => 'CR',
+                        'heroicon-o-map-pin' => 'UB',
+                        'heroicon-o-exclamation-triangle' => 'NC'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'SB' => 'Salón de Belleza',
+                        'BB' => 'Barbería',
+                        'UN' => 'Salón de Uñas',
+                        'OS' => 'OSBERTH',
+                        'CR' => 'Cliente Pedido Rechazado',
+                        'UB' => 'Ubicación en Grupo',
+                        'NC' => 'Ya no compran'
+                    ][$state] ?? 'Otro'),
                 TextColumn::make('tipo_cliente')->label('tipo'),
                 TextColumn::make('regiones.name')->label('Región'),
                 TextColumn::make('zonas.nombre_zona')->label('Zona'),
