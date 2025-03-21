@@ -12,6 +12,7 @@ use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
 use App\Models\User;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
+use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -114,11 +115,14 @@ class CustomersMap extends MapTableWidget
 	protected function getTableFilters(): array
 	{
 		return [
-			SelectFilter::make('tipo_prospecto')
+			SelectFilter::make('simbolo')
+				->label('Tipo de Cliente')
+				->multiple()
 				->options([
-					'Posible' => 'Posible',
-					'Prospecto' => 'Prospecto'
+					'OS' => 'OS',
+					'UNAS' => 'NAS',
 				]),
+				MapIsFilter::make('map'),
 		];
 	}
 
