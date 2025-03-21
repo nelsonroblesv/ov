@@ -30,7 +30,7 @@ class CreateProspectos extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $recipient = auth()->user();
+        $recipient = User::where('role', 'Administrador')->get();
         $username =  User::find($data['user_id'])->name;
         $tipo_cliente = $data['tipo_cliente'];
         $tipos = [
@@ -46,9 +46,9 @@ class CreateProspectos extends CreateRecord
         Notification::make()
             ->title('Nuevo Cliente Registrado')
             ->body("El vendedor ". $username." ha registrado a {$data['name']} como {$cliente}.")
-            ->icon('heroicon-o-check')
-            ->iconColor('success')
-            ->color('success')
+            ->icon('heroicon-o-information-circle')
+            ->iconColor('info')
+            ->color('info')
             ->sendToDatabase($recipient);
         return $data;
     }
