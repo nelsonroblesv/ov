@@ -21,7 +21,6 @@ class CreateCustomerUser extends CreateRecord
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
-            ->success()
             ->title('Cliente registrado')
             ->body('Se ha registrado un nuevo Cliente de forma exitosa.')
             ->icon('heroicon-o-check')

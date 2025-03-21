@@ -23,10 +23,9 @@ class EditProspectos extends EditRecord
     protected function getSavedNotification(): ?Notification
     {
         return Notification::make()
-            ->success()
             ->title('Cambios realizados')
             ->body('Se ha actualizado el registro correctamente.')
-            ->icon('heroicon-o-check')
+            ->icon('heroicon-o-arrow-path')
             ->iconColor('success')
             ->color('success');
     }
@@ -35,7 +34,7 @@ class EditProspectos extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-                ->label('Borrar'),
+               // ->label('Borrar'),
         ];
     }
 }

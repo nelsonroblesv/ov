@@ -20,9 +20,8 @@ class CreateProspectos extends CreateRecord
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
-            ->success()
-            ->title('Prospecto registrado')
-            ->body('Se ha registrado un nuevo Prospecto de forma exitosa.')
+            ->title('Prospeccion registrada')
+            ->body('Se ha registrado una nueva Prospeccion de forma exitosa.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');
