@@ -407,9 +407,10 @@ class RutasResource extends Resource
 
                         Section::make('Fachada del establecimiento')
                             ->schema([
-                                FileUpload::make('fachada')
+                                FileUpload::make('front_image')
                                     ->label('Foto de fachada')
-                                    ->placeholder('Tomar foto o cargar desde galeria')
+                                    ->placeholder('Tomar fotos o cargar desde galeria')
+                                    ->multiple()
                                     ->image()
                                     ->imageEditor()
                                     ->directory('prospectos-images')
