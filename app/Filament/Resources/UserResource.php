@@ -200,6 +200,9 @@ class UserResource extends Resource
 
                             FileUpload::make('licencia_image')
                                 ->label('Licencia de conducir')
+                                ->multiple()
+                                ->openable()
+                                ->downloadable()
                                 ->helperText('En formato de imagen')
                                 ->image()
                                 ->directory('licencia-user'),
