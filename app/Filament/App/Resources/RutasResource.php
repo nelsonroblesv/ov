@@ -124,7 +124,7 @@ class RutasResource extends Resource
                                     ->suffixIcon('heroicon-m-cake')
                                     ->required(),
 
-                            ])->columns(2),
+                            ])->columns(2)->icon('heroicon-o-information-circle'),
 
                         Section::make('Sistema')
                             ->description('Selecciona el tipo de cliente')
@@ -151,7 +151,7 @@ class RutasResource extends Resource
                                         'BK' => 'heroicon-o-star',
                                         'SL' => 'heroicon-o-sparkles'
                                     ])
-                            ]),
+                            ])->icon('heroicon-o-computer-desktop'),
 
                         Section::make('Ubicación')
                             ->description('Ingresa la ubicación del cliente')
@@ -262,7 +262,27 @@ class RutasResource extends Resource
                                     )
                                     ->reactive()
                                     ->disabled(fn(callable $get) => empty($get('regiones_id'))),
-                            ])->columns(2)
+                            ])->columns(2)->icon('heroicon-o-map-pin'),
+
+                        Section::make('Fotos del establecimiento')
+                            ->collapsed()
+                            ->schema([
+                                FileUpload::make('front_image')
+                                    ->label('Foto Exterior')
+                                    ->placeholder('Tomar foto o cargar desde galeria')
+                                    ->image()
+                                    //  ->required()
+                                    ->imageEditor()
+                                    ->directory('customer-images'),
+
+                                FileUpload::make('inside_image')
+                                    ->label('Foto Interior')
+                                    ->placeholder('Tomar foto o cargar desde galeria')
+                                    ->image()
+                                    //   ->required()
+                                    ->imageEditor()
+                                    ->directory('customer-images'),
+                            ])->columns(2)->icon('heroicon-o-camera'),
                     ])
                     ->action(function (array $data) {
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
@@ -291,13 +311,13 @@ class RutasResource extends Resource
                     }),
 
 
-                // NUEVO PRSPECTO/POSIBLE
+                /**************** NUEVO PRSPECTO/POSIBLE  *************/
                 Action::make('Registrar Prospección')
                     ->label('Nueva Prospección')
                     ->icon('heroicon-m-magnifying-glass-plus')
                     ->color('warning')
                     ->form([
-                        Section::make('Información Personal')
+                        Section::make('Información del establecimiento')
                             ->description('Completa los campos con la información requerida.')
                             ->schema([
 
@@ -356,7 +376,7 @@ class RutasResource extends Resource
                                     ->offColor('danger')
                                     ->inline(true),
 
-                            ])->columns(2),
+                            ])->columns(2)->icon('heroicon-o-information-circle'),
 
                         Section::make('Datos de contacto')
                             ->description('Ingresa la información de contacto.')
@@ -373,8 +393,11 @@ class RutasResource extends Resource
                                     ->tel()
                                     ->unique(table: Customer::class, column: 'phone')
                                     ->maxLength(50)
-                                    ->suffixIcon('heroicon-m-phone'),
+                                    ->suffixIcon('heroicon-m-phone')
+                            ])->columns(2)->icon('heroicon-o-identification'),
 
+                        Section::make('Fachada del establecimiento')
+                            ->schema([
                                 FileUpload::make('fachada')
                                     ->label('Foto de fachada')
                                     ->placeholder('Tomar foto o cargar desde galeria')
@@ -382,7 +405,7 @@ class RutasResource extends Resource
                                     ->imageEditor()
                                     ->directory('prospectos-images')
                                     ->columnSpanFull()
-                            ])->columns(2),
+                            ])->icon('heroicon-o-camera'),
 
                         Section::make('Ubicación')
                             ->description('Ingresa la ubicación del cliente')
@@ -493,9 +516,9 @@ class RutasResource extends Resource
                                     )
                                     ->reactive()
                                     ->disabled(fn(callable $get) => empty($get('regiones_id'))),
-                            ])->columns(2),
+                            ])->columns(2)->icon('heroicon-o-map-pin'),
 
-                        Section::make('Notas Generales')
+                        Section::make('Notas')
                             ->description('Despliega para agregar notas adicionales')
                             ->collapsed()
                             ->schema([
@@ -503,8 +526,7 @@ class RutasResource extends Resource
                                     ->label('Extra')
                                     ->nullable()
                                     ->columnSpanFull()
-                            ])
-                            ->columnSpanFull(),
+                            ])->columnSpanFull()->icon('heroicon-o-pencil-square')
                     ])
                     ->action(function (array $data) {
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
@@ -535,8 +557,8 @@ class RutasResource extends Resource
                 TextColumn::make('sort')->label('#')->sortable(),
                 TextColumn::make('customer.name')->label('Cliente o Identificador'),
                 TextColumn::make('customer.simbolo')->label('Simbolo')->badge()
-				->colors([
-				'black',/*
+                    ->colors([
+                        'black',/*
 					'custom' => 'SB',
 					'success' => 'BB', 
 					'success' => 'UN', 
@@ -544,25 +566,25 @@ class RutasResource extends Resource
 					'success' => 'CR', 
 					'success' => 'UB', 
 					'success' => 'NC'*/
-				])
-				->icons([
-					'heroicon-o-scissors' => 'SB',
-					'heroicon-o-building-storefront' => 'BB', 
-					'heroicon-o-hand-raised' => 'UN', 
-					'heroicon-o-rocket-launch' => 'OS', 
-					'heroicon-o-x-mark' => 'CR', 
-					'heroicon-o-map-pin' => 'UB', 
-					'heroicon-o-exclamation-triangle' => 'NC'
-				])
-				->formatStateUsing(fn(string $state): string => [
-					'SB' => 'Salón de Belleza',
-					'BB' => 'Barbería', 
-					'UN' => 'Salón de Uñas', 
-					'OS' => 'OSBERTH', 
-					'CR' => 'Cliente Pedido Rechazado', 
-					'UB' => 'Ubicación en Grupo', 
-					'NC' => 'Ya no compran'
-				][$state] ?? 'Otro'),
+                    ])
+                    ->icons([
+                        'heroicon-o-scissors' => 'SB',
+                        'heroicon-o-building-storefront' => 'BB',
+                        'heroicon-o-hand-raised' => 'UN',
+                        'heroicon-o-rocket-launch' => 'OS',
+                        'heroicon-o-x-mark' => 'CR',
+                        'heroicon-o-map-pin' => 'UB',
+                        'heroicon-o-exclamation-triangle' => 'NC'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'SB' => 'Salón de Belleza',
+                        'BB' => 'Barbería',
+                        'UN' => 'Salón de Uñas',
+                        'OS' => 'OSBERTH',
+                        'CR' => 'Cliente Pedido Rechazado',
+                        'UB' => 'Ubicación en Grupo',
+                        'NC' => 'Ya no compran'
+                    ][$state] ?? 'Otro'),
                 TextColumn::make('tipo_cliente')->label('Tipo')->badge()->alignCenter()
                     ->colors([
                         'gray' => 'PO',
@@ -657,7 +679,7 @@ class RutasResource extends Resource
                             ->success()
                             ->send();
                     })
-                ], position: ActionsPosition::BeforeCells)
+            ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
