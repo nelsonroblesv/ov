@@ -232,8 +232,7 @@ class CustomerResource extends Resource
                                     fn() =>
                                     Regiones::whereIn('id', function ($query) {
                                         $query->select('regiones_id')
-                                            ->from('zonas')
-                                            ->where('user_id', auth()->id());
+                                            ->from('zonas');
                                     })->pluck('name', 'id')
                                 )
                                 ->reactive(),
@@ -248,8 +247,7 @@ class CustomerResource extends Resource
                                     Zonas::where('regiones_id', $get('regiones_id'))
                                         ->whereIn('id', function ($query) {
                                             $query->select('id')
-                                                ->from('zonas')
-                                                ->where('user_id', auth()->id());
+                                                ->from('zonas');
                                         })
                                         ->pluck('nombre_zona', 'id')
                                 )
