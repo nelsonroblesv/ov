@@ -286,7 +286,7 @@ class RutasResource extends Resource
                                     ->columnSpanFull(),
 
                                 FileUpload::make('inside_image')
-                                    ->label('Foto de Exterior')
+                                    ->label('Foto de Interior')
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->multiple()
                                     ->image()
