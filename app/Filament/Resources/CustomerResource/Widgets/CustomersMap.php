@@ -13,9 +13,12 @@ use App\Models\Customer;
 use App\Models\User;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
@@ -117,7 +120,7 @@ class CustomersMap extends MapTableWidget
 					'BK' => 'Black',
 					'SL' => 'Silver'
 				]),
-				MapIsFilter::make('map'),
+			MapIsFilter::make('map'),
 		];
 	}
 
@@ -131,7 +134,22 @@ class CustomersMap extends MapTableWidget
 
 				EditAction::make('edit')
 					->url(fn(Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
-			])
+/*
+					ActionsDeleteAction::make()
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Cliente borrado')
+                                ->body('El Cliente ha sido eliminado del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Cliente')
+                        ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
+		*/	])
+						
 		];
 		//GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
 		/*
