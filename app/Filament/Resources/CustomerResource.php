@@ -369,4 +369,10 @@ class CustomerResource extends Resource
             'view' => Pages\ViewCustomer::route('/{record}'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
 }
