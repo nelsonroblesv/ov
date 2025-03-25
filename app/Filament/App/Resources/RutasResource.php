@@ -6,6 +6,7 @@ use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\App\Resources\RutasResource\Pages;
 use App\Filament\App\Resources\RutasResource\RelationManagers;
+use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
 use App\Models\Regiones;
@@ -66,8 +67,16 @@ class RutasResource extends Resource
             ->reorderable('sort')
             ->modifyQueryUsing(function (Builder $query) {
                 $user = auth()->id();
+                
+                $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
+                $valores = [
+                    '0' => 'PAR',
+                    '1' => 'NON',
+                ];
+                $semana = $valores[$tipoSemanaSeleccionado];
                 $query->where('user_id', $user)
-                    ->where('visited', '0');
+                    ->where('visited', '0')
+                    ->where('tipo_semana', $semana);
             })
             ->defaultSort('sort', 'desc')
             ->headerActions([
