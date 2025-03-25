@@ -54,7 +54,7 @@ return new class extends Migration
                         ->default('Ninguna')->nullable();
             $table->string('cfdi_document')->nullable();
 
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained();
 
             $table->enum('tipo_cliente', ['PV', 'RD', 'BK', 'SL', 'PR', 'PO'])->default('PV');
             $table->enum('simbolo', ['SB','BB', 'UN', 'OS', 'CR', 'UB', 'NC'])->nullable();
