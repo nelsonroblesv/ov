@@ -7,4 +7,5 @@ enum UserRoleEnum : string
     case GERENTE = 'Gerente';
     case VENDEDOR = 'Vendedor';
     case REPARTIDOR = 'Repartidor';
+    case OFICINA = 'Oficina';
 }

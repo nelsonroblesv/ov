@@ -41,7 +41,7 @@ return new class extends Migration
             $table->string('licencia_image')->nullable();
             $table->string('ine_image')->nullable();
             $table->string('color')->nullable();
-            $table->enum('role', ['Vendedor', 'Administrador', 'Gerente', 'Repartidor'])->default('Vendedor');
+            $table->enum('role', ['Vendedor', 'Administrador', 'Gerente', 'Repartidor', 'Oficina'])->default('Vendedor');
             $table->boolean('is_active')->default(true);
 
             $table->timestamp('email_verified_at')->nullable();
