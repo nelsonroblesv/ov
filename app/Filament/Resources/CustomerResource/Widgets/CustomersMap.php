@@ -103,7 +103,7 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+			TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()
 		];
 	}
