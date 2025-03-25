@@ -78,11 +78,11 @@ class CustomerUserResource extends Resource
                                     ->label('Simbologia')
                                     ->options([
                                         'SB' => 'Salón de Belleza',
-                                        'BB' => 'Barbería', 
-                                        'UN' => 'Salón de Uñas', 
-                                        'OS' => 'OSBERTH', 
-                                        'CR' => 'Cliente Pedido Rechazado', 
-                                        'UB' => 'Ubicación en Grupo', 
+                                        'BB' => 'Barbería',
+                                        'UN' => 'Salón de Uñas',
+                                        'OS' => 'OSBERTH',
+                                        'CR' => 'Cliente Pedido Rechazado',
+                                        'UB' => 'Ubicación en Grupo',
                                         'NC' => 'Ya no compran'
                                     ]),
 
@@ -179,10 +179,10 @@ class CustomerUserResource extends Resource
                                     $set('longitude', $state['lng']);
                                 }),
 
-                                Hidden::make('latitude')
+                            Hidden::make('latitude')
                                 ->label('Latitud')
                                 ->helperText('Formato: 20.1845751')
-                               // ->unique(ignoreRecord: true)
+                                // ->unique(ignoreRecord: true)
                                 ->reactive()
                                 ->dehydrated()
                                 ->afterStateUpdated(function ($state, callable $get, callable $set) {
@@ -206,55 +206,58 @@ class CustomerUserResource extends Resource
                                 })->lazy(),
 
 
-                                Select::make('regiones_id')
+                            Select::make('regiones_id')
                                 ->label('Región')
                                 ->required()
-                                ->options(fn () => 
+                                ->options(
+                                    fn() =>
                                     Regiones::whereIn('id', function ($query) {
                                         $query->select('regiones_id')
-                                              ->from('zonas')
-                                              ->where('user_id', auth()->id());
+                                            ->from('zonas')
+                                            ->where('user_id', auth()->id());
                                     })->pluck('name', 'id')
                                 )
-                                ->reactive(), 
-    
-                                Select::make('zonas_id')
-                                    ->label('Zona')
-                                    ->placeholder('Selecciona una zona')
-                                    ->required()
-                                    ->searchable()
-                                    ->options(
-                                        fn(callable $get) =>
-                                        Zonas::where('regiones_id', $get('regiones_id'))
-                                            ->whereIn('id', function ($query) {
-                                                $query->select('id')
-                                                    ->from('zonas')
-                                                    ->where('user_id', auth()->id()); 
-                                            })
-                                            ->pluck('nombre_zona', 'id')
-                                    )
-                                    
-                                    ->reactive()
-                                    ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+                                ->reactive(),
+
+                            Select::make('zonas_id')
+                                ->label('Zona')
+                                ->placeholder('Selecciona una zona')
+                                ->required()
+                                ->searchable()
+                                ->options(
+                                    fn(callable $get) =>
+                                    Zonas::where('regiones_id', $get('regiones_id'))
+                                        ->whereIn('id', function ($query) {
+                                            $query->select('id')
+                                                ->from('zonas')
+                                                ->where('user_id', auth()->id());
+                                        })
+                                        ->pluck('nombre_zona', 'id')
+                                )
+
+                                ->reactive()
+                                ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
                             Section::make('Fotos del establecimiento')
                                 ->collapsed()
                                 ->schema([
                                     FileUpload::make('front_image')
-                                        ->label('Foto Exterior')
-                                        ->helperText('Carga una foto del exterior del establecimiento')
+                                        ->label('Foto de Exterior')
+                                        ->placeholder('Tomar fotos o cargar desde galeria')
+                                        ->multiple()
                                         ->image()
-                                        //  ->required()
                                         ->imageEditor()
-                                        ->directory('customer-images'),
+                                        ->directory('customer-images')
+                                        ->columnSpanFull(),
 
                                     FileUpload::make('inside_image')
-                                        ->label('Foto Interior')
-                                        ->helperText('Carga una foto del interior del establecimiento')
+                                        ->label('Foto de Interior')
+                                        ->placeholder('Tomar fotos o cargar desde galeria')
+                                        ->multiple()
                                         ->image()
-                                        //   ->required()
                                         ->imageEditor()
-                                        ->directory('customer-images'),
+                                        ->directory('customer-images')
+                                        ->columnSpanFull()
                                 ])->columns(2)->icon('heroicon-o-camera'),
 
                             Section::make('Informacion adicional')
@@ -327,8 +330,8 @@ class CustomerUserResource extends Resource
 
     public static function table(Table $table): Table
     {
-         // Hide table from Resource
-         return $table
+        // Hide table from Resource
+        return $table
             ->columns([])
             ->content(null)
             ->paginated(false);

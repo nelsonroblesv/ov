@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
 
-            $table->string('front_image')->nullable();
-            $table->string('inside_image')->nullable();
+            $table->json('front_image')->nullable();
+            $table->json('inside_image')->nullable();
 
             //$table->foreignId('regiones_id')->constrained()->cascadeOnDelete();
             //$table->foreignId('zonas_id')->constrained()->cascadeOnDelete();

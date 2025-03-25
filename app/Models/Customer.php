@@ -50,6 +50,7 @@ class Customer extends Model
     protected $casts = [
         'services' => 'array',
         'front_image' => 'array',
+        'inside_image' => 'array',
     ];
 
      /**
