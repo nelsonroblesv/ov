@@ -330,4 +330,9 @@ class UserResource extends Resource
             'view' => Pages\ViewUser::route('/{record}')
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

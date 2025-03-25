@@ -154,5 +154,10 @@ class FormulariosResource extends Resource
         return static::getModel()::count();
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
+
     protected static ?string $navigationBadgeTooltip = 'Personas registradas';
 }

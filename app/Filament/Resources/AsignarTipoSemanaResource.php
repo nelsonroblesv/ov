@@ -71,4 +71,9 @@ class AsignarTipoSemanaResource extends Resource
             'edit' => Pages\EditAsignarTipoSemana::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

@@ -223,4 +223,9 @@ class PaymentResource extends Resource
             'view' => Pages\ViewPayment::route('/{record}')
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

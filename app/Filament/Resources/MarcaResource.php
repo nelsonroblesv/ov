@@ -115,4 +115,9 @@ class MarcaResource extends Resource
             'view' => Pages\ViewMarca::route('/{record}'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

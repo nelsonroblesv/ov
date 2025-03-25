@@ -96,4 +96,9 @@ class ServicesResource extends Resource
             'edit' => Pages\EditServices::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

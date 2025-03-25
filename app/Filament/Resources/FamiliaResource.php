@@ -200,4 +200,9 @@ class FamiliaResource extends Resource
             'view' => Pages\ViewFamilia::route('/{record}'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

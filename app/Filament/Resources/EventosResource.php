@@ -82,4 +82,9 @@ class EventosResource extends Resource
             'edit' => Pages\EditEventos::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

@@ -115,4 +115,9 @@ class CategoryResource extends Resource
             'view' => Pages\ViewCategory::route('/{record}'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

@@ -124,4 +124,9 @@ class PreferredModuleResource extends Resource
             'edit' => Pages\EditPreferredModule::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
 }

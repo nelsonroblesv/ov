@@ -154,7 +154,7 @@ class HistorialPedidosResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->heading('Pedidos')
             ->description('Historial de Pedidos.')
-            
+
             ->columns([
                 TextColumn::make('number')
                     ->label('# Pedido')
@@ -311,5 +311,10 @@ class HistorialPedidosResource extends Resource
             'create' => Pages\CreateHistorialPedidos::route('/create'),
             'edit' => Pages\EditHistorialPedidos::route('/{record}/edit'),
         ];
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
     }
 }

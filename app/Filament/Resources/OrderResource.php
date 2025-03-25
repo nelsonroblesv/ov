@@ -230,5 +230,10 @@ class OrderResource extends Resource
         return static::getModel()::where('status', '-', 'pending')->count() > 1 ? 'success' : 'info';
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->role === 'Administrador';
+    }
+
     protected static ?string $navigationBadgeTooltip = 'Pedidos Pendientes';
 }
