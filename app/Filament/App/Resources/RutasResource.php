@@ -277,20 +277,22 @@ class RutasResource extends Resource
                             ->collapsed()
                             ->schema([
                                 FileUpload::make('front_image')
-                                    ->label('Foto Exterior')
-                                    ->placeholder('Tomar foto o cargar desde galeria')
+                                    ->label('Foto de Exterior')
+                                    ->placeholder('Tomar fotos o cargar desde galeria')
+                                    ->multiple()
                                     ->image()
-                                    //  ->required()
                                     ->imageEditor()
-                                    ->directory('customer-images'),
+                                    ->directory('customer-images')
+                                    ->columnSpanFull(),
 
                                 FileUpload::make('inside_image')
-                                    ->label('Foto Interior')
-                                    ->placeholder('Tomar foto o cargar desde galeria')
+                                    ->label('Foto de Exterior')
+                                    ->placeholder('Tomar fotos o cargar desde galeria')
+                                    ->multiple()
                                     ->image()
-                                    //   ->required()
                                     ->imageEditor()
-                                    ->directory('customer-images'),
+                                    ->directory('customer-images')
+                                    ->columnSpanFull(),
                             ])->columns(2)->icon('heroicon-o-camera'),
                     ])
                     ->action(function (array $data) {
