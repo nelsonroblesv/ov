@@ -6,9 +6,11 @@ use App\Filament\Resources\BitacoraProspeccionResource\Pages;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +18,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Symfony\Component\HtmlSanitizer\Visitor\Node\TextNode;
 
 class BitacoraProspeccionResource extends Resource
 {
@@ -33,6 +36,11 @@ class BitacoraProspeccionResource extends Resource
             ->schema([
                 Section::make('Registro de actividad')
                 ->schema([
+                   Hidden::make('user_id')->label('Registrado por')
+                        ->disabled()
+                        ->dehydrated()
+                        ->default(auth()->user()->id),
+
                     Select::make('customers_id')->label('Nombre de Cliente o Identificador')
                         ->options(Customer::pluck('name', 'id'))
                         ->required()
@@ -48,7 +56,7 @@ class BitacoraProspeccionResource extends Resource
                     Section::make('Testigos')->schema([
                         FileUpload::make('testigo_1')->label('Foto 1')->nullable()
                             ->directory('bitacora-testigos'),
-                        FileUpload::make('testigo_1')->label('Foto 2')->nullable()
+                        FileUpload::make('testigo_2')->label('Foto 2')->nullable()
                             ->directory('bitacora-testigos')
                     ])->columns(2)
                 ])
