@@ -633,9 +633,6 @@ class RutasResource extends Resource
                     ->alignCenter()
                     ->colors(['warning']),
                 TextColumn::make('full_address')->label('Direccion'),
-                IconColumn::make('visited')->boolean()->label('Visitado')
-                    ->trueIcon('heroicon-o-check-badge')
-                    ->falseIcon('heroicon-o-x-mark'),
                 IconColumn::make('full_address')->label('Ubicación')->alignCenter()
                     ->icon('heroicon-o-map-pin')
                     ->color('danger')
