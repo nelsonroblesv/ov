@@ -117,10 +117,10 @@ class ProductResource extends Resource
                             ->disabled()
                             ->dehydrated(),
 
-                        TextInput::make('sku')
+                        /*TextInput::make('sku')
                             //->required()
                             ->label('SKU')
-                            ->maxLength(255),
+                            ->maxLength(255),*/
                     ])->columns(2),
 
                 Section::make('Extras')
