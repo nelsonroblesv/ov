@@ -34,7 +34,7 @@ class BitacoraProspeccionResource extends Resource
                 Section::make('Registro de actividad')
                 ->schema([
                     Select::make('customers_id')->label('Nombre de Cliente o Identificador')
-                        ->options(Customer::query()->where('user_id', auth()->user()->id)->pluck('name', 'id'))
+                        ->options(Customer::pluck('name', 'id'))
                         ->required()
                         ->preload()
                         ->searchable(),
