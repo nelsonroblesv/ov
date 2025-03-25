@@ -282,4 +282,10 @@ class ProspectosResource extends Resource
             'view' => Pages\ViewProspectos::route('/{record}'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::whereIn('tipo_cliente', ['PO', 'PR'])->count();
+    }
+
 }
