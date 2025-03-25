@@ -11,6 +11,7 @@ use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
 use App\Models\Customer;
 use App\Models\Prospectos;
 use App\Models\User;
+use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Actions\RadiusAction;
 use Cheesegrits\FilamentGoogleMaps\Filters\RadiusFilter;
@@ -119,11 +120,22 @@ class ProspectosMapWidget extends MapTableWidget
 	{
 		return [
 			SelectFilter::make('tipo_cliente')
-				->label('Tipo')
+				->label('Tipo de Cliente')
+				->multiple()
 				->options([
 					'PR' => 'Prospecto',
 					'PO' => 'Posible'
 				]),
+			SelectFilter::make('user_id')
+				->label('Vendedor')
+				->multiple()
+				->options(User::pluck('name', 'id')->toArray()),
+
+			SelectFilter::make('zonas_id')
+				->label('Zonas')
+				->multiple()
+				->options(Zonas::pluck('nombre_zona', 'id')->toArray()),
+			MapIsFilter::make('map'),
 		];
 	}
 
