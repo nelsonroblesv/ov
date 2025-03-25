@@ -239,7 +239,7 @@ class ProspectosResource extends Resource
                                 ->suffixIcon('heroicon-m-phone'),
 
                             FileUpload::make('front_image')
-                                ->label('Foto de fachada')
+                                ->label('Fotos del establecimiento')
                                 ->placeholder('Tomar fotos o cargar desde galeria')
                                 ->multiple()
                                 ->image()
