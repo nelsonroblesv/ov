@@ -203,7 +203,7 @@ class UserResource extends Resource
                                 ->multiple()
                                 ->openable()
                                 ->downloadable()
-                                ->helperText('En formato de imagen')
+                                ->placeholder('Carga los archivos en formato de imagen')
                                 ->image()
                                 ->directory('licencia-user'),
 
@@ -212,7 +212,7 @@ class UserResource extends Resource
                                 ->multiple()
                                 ->openable()
                                 ->downloadable()
-                                ->helperText('En formato de imagen')
+                                ->helperText('Carga los archivos en formato de imagen')
                                 ->image()
                                 ->directory('ine-user')
                         ])->columns(2),
