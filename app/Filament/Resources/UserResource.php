@@ -206,6 +206,9 @@ class UserResource extends Resource
 
                             FileUpload::make('ine_image')
                                 ->label('INE')
+                                ->multiple()
+                                ->openable()
+                                ->downloadable()
                                 ->helperText('En formato de imagen')
                                 ->image()
                                 ->directory('ine-user')
@@ -215,6 +218,8 @@ class UserResource extends Resource
                         ->schema([
                             TextInput::make('banco')
                                 ->label('Nombre del banco'),
+                            TextInput::make('tarjeta')
+                                ->label('Numero de tarjeta'),
                             //        ->required(),
                             TextInput::make('cuenta')
                                 ->label('Numero de cuenta'),
@@ -281,35 +286,35 @@ class UserResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Usuario eliminado')
-                            ->body('El Usuario ha sido eliminado del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Usuario')
-                    ->modalDescription('Estas seguro que deseas eliminar este Usuario? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Usuario eliminado')
+                                ->body('El Usuario ha sido eliminado del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Usuario')
+                        ->modalDescription('Estas seguro que deseas eliminar este Usuario? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Usuarios')
-                    ->modalDescription('Estas seguro que deseas eliminar los Usuarios seleccionados? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Usuarios')
+                        ->modalDescription('Estas seguro que deseas eliminar los Usuarios seleccionados? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }

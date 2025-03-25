@@ -23,8 +23,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     protected $fillable = [
         'name', 'username', 'birthday','email','email_empresa','phone','phone_empresa', 'password',
         'avatar', 'rfc', 'rfc_doc', 'curp', 'curp_doc', 'imss', 'imss_doc', 'comprobante_domicilio_doc',
-        'banco', 'cuenta', 'clabe', 'fecha_inicio', 'fecha_fin',
+        'banco', 'tarjeta', 'cuenta', 'clabe', 'fecha_inicio', 'fecha_fin',
         'licencia_image', 'ine_image', 'color', 'role', 'is_active'
+    ];
+
+    protected $casts = [
+        'ine_image' => 'array',
+         'licencia_image' => 'array'
     ];
 
     /**

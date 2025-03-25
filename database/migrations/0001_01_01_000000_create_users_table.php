@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('comprobante_domicilio_doc')->nullable();
             $table->string('banco')->nullable();
             $table->string('cuenta')->nullable();
+            $table->string('tarjeta')->nullable();
             $table->string('clabe')->nullable();
 
             // Empresa
@@ -38,8 +39,8 @@ return new class extends Migration
             $table->string('phone_empresa')->nullable();
             $table->timestamp('fecha_inicio')->nullable();
             $table->timestamp('fecha_fin')->nullable();
-            $table->string('licencia_image')->nullable();
-            $table->string('ine_image')->nullable();
+            $table->json('licencia_image')->nullable();
+            $table->json('ine_image')->nullable();
             $table->string('color')->nullable();
             $table->enum('role', ['Vendedor', 'Administrador', 'Gerente', 'Repartidor', 'Oficina'])->default('Vendedor');
             $table->boolean('is_active')->default(true);
