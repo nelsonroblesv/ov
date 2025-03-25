@@ -254,7 +254,7 @@ class ProspectosResource extends Resource
                                 ->maxLength(50)
                                 ->suffixIcon('heroicon-m-phone'),
 
-                            FileUpload::make('fachada')
+                            FileUpload::make('front_image')
                                 ->label('Foto de fachada')
                                 ->image()
                                 ->imageEditor()
@@ -271,13 +271,6 @@ class ProspectosResource extends Resource
             ->columns([])
             ->content(null)
             ->paginated(false);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            NamesRelationManager::class
-        ];
     }
 
     public static function getPages(): array

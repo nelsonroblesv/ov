@@ -2,21 +2,28 @@
 
 namespace App\Filament\Resources\ProspectosResource\Widgets;
 
+use App\Filament\App\Resources\CustomerUserResource;
+use App\Filament\App\Resources\ProspectosResource;
 use App\Filament\App\Resources\ProspectosResource\Pages\CreateProspectos;
 use App\Filament\App\Resources\ProspectosResource\Pages\EditProspectos;
 use App\Filament\App\Resources\ProspectosResource\Pages\ListProspectos;
+use App\Filament\Resources\CustomerResource;
+use App\Filament\Resources\ProspectosResource as ResourcesProspectosResource;
 use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
 use App\Models\Customer;
 use App\Models\User;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\App;
 
 class MapProspeccionWidget extends MapTableWidget
 {
@@ -110,18 +117,17 @@ class MapProspeccionWidget extends MapTableWidget
 
 	protected function getTableActions(): array
 	{
-		return [];
-		/*
+		
 		return [
 			ActionGroup::make([
-				/*ViewAction::make('view')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
+/*				ViewAction::make('view')
+					->url(fn (Customer $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
 
 				EditAction::make('edit')
 					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
 				
 				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-				/*
+				
 				Action::make('transfer')
 					->label('Transferir')
 					->requiresConfirmation()
@@ -129,7 +135,7 @@ class MapProspeccionWidget extends MapTableWidget
 					->color('info')
 					->modalHeading('Transferir Prospecto')
 					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
-					->action(function (Prospectos $record) {
+					->action(function (Customer $record) {
 					if (!$record->phone) {
 							Notification::make()
 								->title('Error')
@@ -177,9 +183,12 @@ class MapProspeccionWidget extends MapTableWidget
 					->modalHeading('Borrar Prospecto')
 					->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
 					->modalSubmitActionLabel('Si, eliminar'),
+
+					*/
 					]),		
+					
 		];
-*/
+
 	}
 
 	protected function getTableBulkActions(): array
