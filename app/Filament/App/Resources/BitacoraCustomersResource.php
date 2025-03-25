@@ -84,13 +84,14 @@ class BitacoraCustomersResource extends Resource
 
                     MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
                     Section::make('Testigos')->schema([
-                        FileUpload::make('testigo_1')->label('Foto 1')->nullable()
-                            ->placeholder('Tomar o cargar Foto')
+                        FileUpload::make('testigo_1')->label('Evidencias')->nullable()
+                            ->placeholder('Tomar o cargar fotos')
+                            ->multiple()
                             ->directory('bitacora-testigos'),
-                        FileUpload::make('testigo_2')->label('Foto 2')->nullable()
+                       /* FileUpload::make('testigo_2')->label('Foto 2')->nullable()
                             ->placeholder('Tomar o cargar Foto')
-                            ->directory('bitacora-testigos')
-                    ])->columns(2)
+                            ->directory('bitacora-testigos')*/
+                    ])->columnSpanFull()
                 ])
             ]);
     }

@@ -659,14 +659,16 @@ class RutasResource extends Resource
 
                             TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
 
-                            Section::make('Testigos')->schema([
-                                FileUpload::make('testigo_1')->label('Foto 1')->nullable()
-                                    ->placeholder('Tomar o cargar Foto')
+                            Section::make('Evidencias')->schema([
+                                FileUpload::make('testigo_1')->label('')->nullable()
+                                    ->placeholder('Tomar o cargar Fotos')
+                                    ->multiple()
                                     ->directory('bitacora-testigos'),
-                                FileUpload::make('testigo_2')->label('Foto 2')->nullable()
+                                /*FileUpload::make('testigo_2')->label('Foto 2')->nullable()
                                     ->placeholder('Tomar o cargar Foto')
-                                    ->directory('bitacora-testigos')
-                            ])->columns(2)
+                                    ->multiple()
+                                    ->directory('bitacora-testigos')*/
+                            ])->columnSpanFull()
                         ])
                     ])
                     ->hidden(function ($record) {
@@ -682,7 +684,7 @@ class RutasResource extends Resource
                             'show_video' => $data['show_video'],
                             'notas' => $data['notas'],
                             'testigo_1' => $data['testigo_1'],
-                            'testigo_2' => $data['testigo_2'],
+                            /*'testigo_2' => $data['testigo_2'],*/
                             'created_at' => Carbon::now()->setTimezone('America/Merida')
                         ]);
 

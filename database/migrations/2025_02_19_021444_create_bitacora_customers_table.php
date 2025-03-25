@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('customers_id')->constrained()->cascadeOnDelete();
             $table->string('notas')->nullable();
             $table->boolean('show_video')->default(false);
-            $table->string('testigo_1')->nullable();
-            $table->string('testigo_2')->nullable();
+            $table->json('testigo_1')->nullable();
+           /* $table->json('testigo_2')->nullable();*/
             $table->timestamps();
         });
     }
