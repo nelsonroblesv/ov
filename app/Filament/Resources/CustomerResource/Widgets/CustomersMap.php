@@ -11,6 +11,7 @@ use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
 use App\Models\User;
+use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Filament\Actions\DeleteAction;
@@ -124,6 +125,11 @@ class CustomersMap extends MapTableWidget
 				->label('Vendedor')
 				->multiple()
 				->options(User::pluck('name', 'id')->toArray()),
+
+			SelectFilter::make('zonas_id')
+				->label('Zonas')
+				->multiple()
+				->options(Zonas::pluck('nombre_zona', 'id')->toArray()),
 			MapIsFilter::make('map'),
 		];
 	}
