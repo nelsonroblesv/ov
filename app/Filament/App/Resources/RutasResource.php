@@ -277,7 +277,7 @@ class RutasResource extends Resource
                             ->collapsed()
                             ->schema([
                                 FileUpload::make('front_image')
-                                    ->label('Foto de Exterior')
+                                    ->label('Fotos de Exterior')
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->multiple()
                                     ->image()
@@ -286,7 +286,7 @@ class RutasResource extends Resource
                                     ->columnSpanFull(),
 
                                 FileUpload::make('inside_image')
-                                    ->label('Foto de Interior')
+                                    ->label('Fotos de Interior')
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->multiple()
                                     ->image()
@@ -410,7 +410,7 @@ class RutasResource extends Resource
                         Section::make('Fachada del establecimiento')
                             ->schema([
                                 FileUpload::make('front_image')
-                                    ->label('Foto de fachada')
+                                    ->label('Fotos del establecimiento')
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->multiple()
                                     ->image()
