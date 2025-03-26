@@ -148,6 +148,48 @@ class ProspectosMapWidget extends MapTableWidget
 
 				EditAction::make('edit')
 					->url(fn(Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
+
+				Action::make('transfer')
+					->label('Transferir')
+					->requiresConfirmation()
+					->icon('heroicon-o-arrows-up-down')
+					->color('info')
+					->modalHeading('Transferir a Cliente')
+					->modalDescription('Estas seguro que deseas transferir como Cliente? Esta acción no se puede deshacer.')
+					->action(function (Customer $record) {
+
+						if (!$record->phone) {
+							Notification::make()
+								->title('Error')
+								->body('Solo puedes transferir Prospectos que cuenten con informacion de contacto. Por lo menos el numero de telefono.')
+								->danger()
+								->color('danger')
+								->send();
+
+							return;
+						}
+						if (Customer::where('phone', $record->phone)
+							->where('id', '!=', $record->id)
+							->exists()
+						) {
+							Notification::make()
+								->title('Error')
+								->body('El número de teléfono indicado ya está asociado con un Cliente existente.')
+								->danger()
+								->color('danger')
+								->send();
+							return;
+						}
+
+						$record->update(['tipo_cliente' => 'PV']);
+
+						Notification::make()
+							->title('Prospecto transferido')
+							->body('El prospecto ha sido transferido como Cliente Punto de Venta.')
+							->success()
+							->send();
+					})
+
 			])
 		];
 		/*
