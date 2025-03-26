@@ -12,6 +12,7 @@ use App\Models\Customer;
 use App\Models\Regiones;
 use App\Models\Rutas;
 use App\Models\Services;
+use App\Models\User;
 use App\Models\Zonas;
 use Carbon\Carbon;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
@@ -694,11 +695,43 @@ class RutasResource extends Resource
                             ->title('Registro guardado en la Bitácora')
                             ->success()
                             ->send();
+                    }),
+                Action::make('transferir')
+                    ->label('Transferir')
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-arrows-up-down')
+                    ->color('info')
+                    ->modalHeading('Transferir a Cliente')
+                    ->modalDescription('Estas seguro que deseas transferir como Cliente? 
+                                        Esta acción no se puede deshacer.')
+                    ->action(function ($record, array $data) {
+                        $record->update(['tipo_cliente' => 'PV']);
+                        Customer::where('id', $record->customer_id)->update(['tipo_cliente' => 'PV']);
+                        Notification::make()
+                            ->title('Prospecto Transferido')
+                            ->body('El Prospecto ha sido transferido a la lista de Clientes.')
+                            ->icon('heroicon-o-information-circle')
+                            ->color('info')
+                            ->send();
+
+                        $recipient = User::where('role', 'Administrador')->get();
+                        $username =  User::find($record['user_id'])->name;
+
+                        Notification::make()
+                            ->title('Prospecto transferido')
+                            ->body('El vendedor ' . $username . ' ha transferido a ' . $record->customer->name . ' como nuevo cliente Punto de Venta.')
+                            ->icon('heroicon-o-information-circle')
+                            ->iconColor('info')
+                            ->color('info')
+                            ->sendToDatabase($recipient);
                     })
+                    ->hidden(fn($record) => in_array($record->tipo_cliente, ['PV', 'RD', 'BK', 'SL']))
+
+
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

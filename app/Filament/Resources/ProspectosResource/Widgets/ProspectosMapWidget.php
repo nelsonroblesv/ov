@@ -111,7 +111,7 @@ class ProspectosMapWidget extends MapTableWidget
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+			TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()
 		];
 	}
@@ -157,7 +157,7 @@ class ProspectosMapWidget extends MapTableWidget
 					->modalHeading('Transferir a Cliente')
 					->modalDescription('Estas seguro que deseas transferir como Cliente? Esta acción no se puede deshacer.')
 					->action(function (Customer $record) {
-
+						/*
 						if (!$record->phone) {
 							Notification::make()
 								->title('Error')
@@ -180,7 +180,7 @@ class ProspectosMapWidget extends MapTableWidget
 								->send();
 							return;
 						}
-
+						*/
 						$record->update(['tipo_cliente' => 'PV']);
 
 						$recipient = User::where('role', 'Administrador')->get();

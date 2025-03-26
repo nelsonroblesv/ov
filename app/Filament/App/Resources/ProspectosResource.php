@@ -92,7 +92,6 @@ class ProspectosResource extends Resource
                                     'NC' => 'Ya no compran'
                                 ]),
 
-
                             Toggle::make('reventa')->label('Ya maneja Reventa')->default(false)
                                 ->onIcon('heroicon-m-check')
                                 ->offIcon('heroicon-m-x-mark')
