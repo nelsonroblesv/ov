@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BitacoraProspeccionResource\Pages;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
+use App\Models\Regiones;
 use App\Models\User;
+use DragonCode\Contracts\Http\Builder;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -37,65 +39,66 @@ class BitacoraProspeccionResource extends Resource
         return $form
             ->schema([
                 Section::make('Registro de actividad')
-                ->schema([
-                   Hidden::make('user_id')->label('Registrado por')
-                        ->disabled()
-                        ->dehydrated()
-                        ->default(auth()->user()->id),
+                    ->schema([
+                        Hidden::make('user_id')->label('Registrado por')
+                            ->disabled()
+                            ->dehydrated()
+                            ->default(auth()->user()->id),
 
-                    Select::make('customers_id')->label('Nombre de Cliente o Identificador')
-                        ->options(Customer::pluck('name', 'id'))
-                        ->required()
-                        ->preload()
-                        ->searchable(),
-                    Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                        ->onIcon('heroicon-m-play')
-                        ->offIcon('heroicon-m-x-mark')
-                        ->onColor('success')
-                        ->offColor('danger'),
+                        Select::make('customers_id')->label('Nombre de Cliente o Identificador')
+                            ->options(Customer::pluck('name', 'id'))
+                            ->required()
+                            ->preload()
+                            ->searchable(),
+                        Toggle::make('show_video')->label('Se presentó Video Testimonio')
+                            ->onIcon('heroicon-m-play')
+                            ->offIcon('heroicon-m-x-mark')
+                            ->onColor('success')
+                            ->offColor('danger'),
 
-                    MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
-                    Section::make('Testigos')->schema([
-                        FileUpload::make('testigo_1')->label('Foto 1')->nullable()
-                            ->directory('bitacora-testigos'),
-                        FileUpload::make('testigo_2')->label('Foto 2')->nullable()
-                            ->directory('bitacora-testigos')
-                    ])->columns(2)
-                ])
+                        MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
+                        Section::make('Testigos')->schema([
+                            FileUpload::make('testigo_1')->label('Foto 1')->nullable()
+                                ->directory('bitacora-testigos'),
+                            FileUpload::make('testigo_2')->label('Foto 2')->nullable()
+                                ->directory('bitacora-testigos')
+                        ])->columns(2)
+                    ])
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->heading('Registro de Actividad')
-        ->description('Listado de los registros de actividad de los Clientes y Prospectos')
-        ->defaultSort('created_at', 'desc')
+            ->heading('Registro de Actividad')
+            ->description('Listado de los registros de actividad de los Clientes y Prospectos')
+            ->defaultSort('created_at', 'desc')
 
             ->columns([
                 TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
                 TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('customers.regiones.name')->label('Region')->searchable()->sortable(),
+                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('notas')->label('Notas')->searchable(),
                 ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                //ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')->label('Registro')->date()->sortable(),
                 IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
             ])
             ->filters([
                 SelectFilter::make('user_id')->label('Usuario')
                     ->options(User::pluck('name', 'id'))
-                    ->multiple()
+                    ->multiple()                   
             ])
             ->actions([
-             //   Tables\Actions\EditAction::make(),
+                //   Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 /*
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-                */
-            ]);
+                */]);
     }
 
     public static function getRelations(): array
