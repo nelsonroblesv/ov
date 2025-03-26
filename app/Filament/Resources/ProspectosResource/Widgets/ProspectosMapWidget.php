@@ -144,10 +144,10 @@ class ProspectosMapWidget extends MapTableWidget
 		return [
 			ActionGroup::make([
 				ViewAction::make('view')
-					->url(fn(Customer $record): string => CustomerResource::getUrl('view', ['record' => $record])),
+					->url(fn(Customer $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
 
 				EditAction::make('edit')
-					->url(fn(Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
+					->url(fn(Customer $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
 
 				Action::make('transfer')
 					->label('Transferir')
