@@ -716,7 +716,9 @@ class RutasResource extends Resource
                         ->icon('heroicon-o-information-circle')
                         ->color('info')
                         ->send();
-
+                     
+                    return redirect(CustomerUserResource::getUrl());
+                           -
                     $recipient = User::where('role', 'Administrador')->get();
                     $username =  User::find($record['user_id'])->name;
 
