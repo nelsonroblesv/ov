@@ -183,11 +183,24 @@ class ProspectosMapWidget extends MapTableWidget
 
 						$record->update(['tipo_cliente' => 'PV']);
 
+						$recipient = User::where('role', 'Administrador')->get();
+						$username =  User::find($record['user_id'])->name;
+
 						Notification::make()
 							->title('Prospecto transferido')
-							->body('El prospecto ha sido transferido como Cliente Punto de Venta.')
-							->success()
+							->body('Se ha transferido un nuevo cliente Punto de Venta.')
+							->icon('heroicon-o-information-circle')
+							->iconColor('info')
+							->color('info')
 							->send();
+
+						Notification::make()
+							->title('Prospecto transferido')
+							->body('El vendedor ' . $username . ' ha transferido a ' . $record->name . ' como nuevo cliente Punto de Venta.')
+							->icon('heroicon-o-information-circle')
+							->iconColor('info')
+							->color('info')
+							->sendToDatabase($recipient);
 					})
 
 			])
