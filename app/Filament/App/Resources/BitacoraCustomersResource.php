@@ -21,6 +21,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -110,6 +111,8 @@ class BitacoraCustomersResource extends Resource
             ->columns([
                 TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
                 TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('customers.regiones.name')->label('Regiones')->searchable()->sortable(),
+                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('notas')->label('Notas')->searchable(),
                 ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
@@ -117,7 +120,6 @@ class BitacoraCustomersResource extends Resource
                // IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
             ])
             ->filters([
-                //
             ])
             ->actions([
              //   Tables\Actions\EditAction::make(),
