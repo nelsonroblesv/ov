@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('notas')->nullable();
             $table->boolean('show_video')->default(false);
             $table->json('testigo_1')->nullable();
-           /* $table->json('testigo_2')->nullable();*/
+           $table->json('testigo_2')->nullable();
             $table->timestamps();
         });
     }

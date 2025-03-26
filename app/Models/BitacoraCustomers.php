@@ -12,7 +12,7 @@ class BitacoraCustomers extends Model
         'show_video',
         'notas',
         'testigo_1',
-        /*'testigo_2',*/
+        'testigo_2',
         'created_at'
     ];
 

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BitacoraProspeccionResource\Pages;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
+use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -17,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Symfony\Component\HtmlSanitizer\Visitor\Node\TextNode;
 
@@ -66,7 +68,8 @@ class BitacoraProspeccionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-
+        ->heading('Registro de Actividad')
+        ->description('Listado de los registros de actividad de los Clientes y Prospectos')
         ->defaultSort('created_at', 'desc')
 
             ->columns([
@@ -79,7 +82,9 @@ class BitacoraProspeccionResource extends Resource
                 IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
             ])
             ->filters([
-                //
+                SelectFilter::make('user_id')->label('Usuario')
+                    ->options(User::pluck('name', 'id'))
+                    ->multiple()
             ])
             ->actions([
              //   Tables\Actions\EditAction::make(),
