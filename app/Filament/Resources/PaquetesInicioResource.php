@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\PaquetesInicioResource\Pages;
+use App\Filament\Resources\PaquetesInicioResource\RelationManagers;
+use App\Models\PaquetesInicio;
+use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class PaquetesInicioResource extends Resource
+{
+    protected static ?string $model = PaquetesInicio::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $navigationGroup = 'Catalogo';
+    protected static ?string $navigationLabel = 'Paquetes de Inicio';
+    protected static ?string $breadcrumb = "Paquetes de Inicio";
+    protected static ?int $navigationSort = 1;
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('nombre')
+                    ->label('Nombre')
+                    ->required(),
+                Textarea::make('descripcion')
+                    ->label('Descripción')
+                    ->required(),
+                FileUpload::make('imagen')
+                    ->label('Imagen')
+                    ->directory('paquetes-inicio')
+                    ->required(),
+                TextInput::make('precio')
+                    ->label('Precio')
+                    ->required(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                //
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPaquetesInicios::route('/'),
+            'create' => Pages\CreatePaquetesInicio::route('/create'),
+            'edit' => Pages\EditPaquetesInicio::route('/{record}/edit'),
+        ];
+    }
+}
