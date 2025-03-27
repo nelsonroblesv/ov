@@ -649,91 +649,133 @@ class RutasResource extends Resource
                 //
             ])
             ->actions([
-               ActionsActionGroup::make([
-                Action::make('Registrar Visita')
-                ->icon('heroicon-o-clipboard-document-check')
-                ->color('warning')
-                ->form([
-                    Section::make('Registro en Bitácora')->schema([
-                        Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                            ->onIcon('heroicon-m-play')
-                            ->offIcon('heroicon-m-x-mark')
-                            ->onColor('success')
-                            ->offColor('danger'),
+                ActionsActionGroup::make([
+                    Action::make('Registrar Visita')
+                        ->icon('heroicon-o-clipboard-document-check')
+                        ->color('warning')
+                        ->form([
+                            Section::make('Registro en Bitácora')->schema([
+                                Toggle::make('show_video')->label('Se presentó Video Testimonio')
+                                    ->onIcon('heroicon-m-play')
+                                    ->offIcon('heroicon-m-x-mark')
+                                    ->onColor('success')
+                                    ->offColor('danger'),
 
-                        TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
+                                TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
 
-                        Section::make('Evidencias')->schema([
-                            FileUpload::make('testigo_1')->label('')->nullable()
-                                ->placeholder('Tomar o cargar Fotos')
-                                ->multiple()
-                                ->directory('bitacora-testigos'),
-                            /*FileUpload::make('testigo_2')->label('Foto 2')->nullable()
+                                Section::make('Evidencias')->schema([
+                                    FileUpload::make('testigo_1')->label('')->nullable()
+                                        ->placeholder('Tomar o cargar Fotos')
+                                        ->multiple()
+                                        ->directory('bitacora-testigos'),
+                                    /*FileUpload::make('testigo_2')->label('Foto 2')->nullable()
                                 ->placeholder('Tomar o cargar Foto')
                                 ->multiple()
                                 ->directory('bitacora-testigos')*/
-                        ])->columnSpanFull()
-                    ])
+                                ])->columnSpanFull()
+                            ])
+                        ])
+                        ->hidden(function ($record) {
+                            return BitacoraCustomers::where('user_id', auth()->id())
+                                ->where('customers_id', $record->customer_id)
+                                ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString()) // Mismo día
+                                ->exists();
+                        })
+                        ->action(function ($record, array $data) {
+                            BitacoraCustomers::create([
+                                'customers_id' => $record->customer_id,
+                                'user_id' => auth()->id(),
+                                'show_video' => $data['show_video'],
+                                'notas' => $data['notas'],
+                                'testigo_1' => $data['testigo_1'],
+                                /*'testigo_2' => $data['testigo_2'],*/
+                                'created_at' => Carbon::now()->setTimezone('America/Merida')
+                            ]);
+
+                            $record->update(['visited' => 1]);
+
+                            Notification::make()
+                                ->title('Registro guardado en la Bitácora')
+                                ->success()
+                                ->send();
+                        }),
+                    Action::make('transferir')
+                        ->label('Transferir')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-arrows-up-down')
+                        ->color('info')
+                        ->modalHeading('Transferir a Cliente')
+                        ->modalDescription('Para el proceso de transferencia es necesario completar toda la 
+                                    informacion que se pide a continuacion.')
+
+                        ->fillForm(fn(Rutas $record) => [
+                            'customer_id' => $record->customer_id,
+                            'name' => $record->customer?->name,
+                            'phone' => $record->customer?->phone,
+                            'email' => $record->customer?->email,
+                        ])
+                        ->form([
+                            TextInput::make('name')
+                                ->label('Nombre')
+                                ->required(),
+
+                            TextInput::make('phone')
+                                ->label('Teléfono')
+                                ->required(),
+
+                            TextInput::make('email')
+                                ->label('Correo Electrónico')
+                                ->email()
+                                ->required(),
+
+                            DatePicker::make('birthday')
+                                ->label('Fecha de nacimiento')
+                                ->suffixIcon('heroicon-m-cake')
+                                ->required(),
+                        ])
+                        ->action(function (array $data, Rutas $record) {
+                            $customer = Customer::find($record->customer_id);
+
+                            if ($customer) {
+                                $customer->update([
+                                    'phone' => $data['phone'],
+                                    'email' => $data['email'],
+                                    'birthday' => $data['birthday'],
+                                    'tipo_cliente' => 'PV',
+                                ]);
+
+                                $record->update(['customer_id' => $customer->id]);
+                            }
+
+                            $record->update([
+                                'tipo_cliente' => 'PV',
+                            ]);
+
+                            Notification::make()
+                                ->title('Prospecto Transferido')
+                                ->body('El Prospecto ha sido transferido a la lista de Clientes.')
+                                ->icon('heroicon-o-information-circle')
+                                ->color('info')
+                                ->send();
+
+                            $recipient = User::where('role', 'Administrador')->get();
+                            $username =  User::find($record['user_id'])->name;
+
+                            Notification::make()
+                                ->title('Prospecto transferido')
+                                ->body('El vendedor ' . $username . ' ha transferido a ' . $record->customer->name . ' como nuevo cliente Punto de Venta.')
+                                ->icon('heroicon-o-information-circle')
+                                ->iconColor('info')
+                                ->color('info')
+                                ->sendToDatabase($recipient);
+                        })
+
+
+
+                        ->hidden(fn($record) => in_array($record->tipo_cliente, ['PV', 'RD', 'BK', 'SL']))
+
+
                 ])
-                ->hidden(function ($record) {
-                    return BitacoraCustomers::where('user_id', auth()->id())
-                        ->where('customers_id', $record->customer_id)
-                        ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString()) // Mismo día
-                        ->exists();
-                })
-                ->action(function ($record, array $data) {
-                    BitacoraCustomers::create([
-                        'customers_id' => $record->customer_id,
-                        'user_id' => auth()->id(),
-                        'show_video' => $data['show_video'],
-                        'notas' => $data['notas'],
-                        'testigo_1' => $data['testigo_1'],
-                        /*'testigo_2' => $data['testigo_2'],*/
-                        'created_at' => Carbon::now()->setTimezone('America/Merida')
-                    ]);
-
-                    $record->update(['visited' => 1]);
-
-                    Notification::make()
-                        ->title('Registro guardado en la Bitácora')
-                        ->success()
-                        ->send();
-                }),
-            Action::make('transferir')
-                ->label('Transferir')
-                ->requiresConfirmation()
-                ->icon('heroicon-o-arrows-up-down')
-                ->color('info')
-                ->modalHeading('Transferir a Cliente')
-                ->modalDescription('Estas seguro que deseas transferir como Cliente? 
-                                    Esta acción no se puede deshacer.')
-                ->action(function ($record, array $data) {
-                    $record->update(['tipo_cliente' => 'PV']);
-                    Customer::where('id', $record->customer_id)->update(['tipo_cliente' => 'PV']);
-                    Notification::make()
-                        ->title('Prospecto Transferido')
-                        ->body('El Prospecto ha sido transferido a la lista de Clientes.')
-                        ->icon('heroicon-o-information-circle')
-                        ->color('info')
-                        ->send();
-                     
-                    return redirect(CustomerUserResource::getUrl());
-                           -
-                    $recipient = User::where('role', 'Administrador')->get();
-                    $username =  User::find($record['user_id'])->name;
-
-                    Notification::make()
-                        ->title('Prospecto transferido')
-                        ->body('El vendedor ' . $username . ' ha transferido a ' . $record->customer->name . ' como nuevo cliente Punto de Venta.')
-                        ->icon('heroicon-o-information-circle')
-                        ->iconColor('info')
-                        ->color('info')
-                        ->sendToDatabase($recipient);
-                })
-                ->hidden(fn($record) => in_array($record->tipo_cliente, ['PV', 'RD', 'BK', 'SL']))
-
-
-               ])
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
