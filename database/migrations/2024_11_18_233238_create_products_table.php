@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('visibility')->default(true);
             $table->boolean('availability')->default(true);
             $table->decimal('price_distribuidor', 10, 2);
-            $table->decimal('price_salon', 10, 2);
+            $table->decimal('price_salon', 10, 2)->nullable();
             $table->decimal('price_publico', 10, 2);
            /* $table->string('sku')->nullable();*/
             $table->boolean('shipping')->default(true);
