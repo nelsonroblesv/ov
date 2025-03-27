@@ -10,6 +10,7 @@ use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\User;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
@@ -75,7 +76,7 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('paquete_inicio.nombre')->label('Paquete Inicio')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
-				'black',/*
+					'black',/*
 					'custom' => 'SB',
 					'success' => 'BB', 
 					'success' => 'UN', 
@@ -86,20 +87,20 @@ class CustomersMap extends MapTableWidget
 				])
 				->icons([
 					'heroicon-o-scissors' => 'SB',
-					'heroicon-o-building-storefront' => 'BB', 
-					'heroicon-o-hand-raised' => 'UN', 
-					'heroicon-o-rocket-launch' => 'OS', 
-					'heroicon-o-x-mark' => 'CR', 
-					'heroicon-o-map-pin' => 'UB', 
+					'heroicon-o-building-storefront' => 'BB',
+					'heroicon-o-hand-raised' => 'UN',
+					'heroicon-o-rocket-launch' => 'OS',
+					'heroicon-o-x-mark' => 'CR',
+					'heroicon-o-map-pin' => 'UB',
 					'heroicon-o-exclamation-triangle' => 'NC'
 				])
 				->formatStateUsing(fn(string $state): string => [
 					'SB' => 'Salón de Belleza',
-					'BB' => 'Barbería', 
-					'UN' => 'Salón de Uñas', 
-					'OS' => 'OSBERTH', 
-					'CR' => 'Cliente Pedido Rechazado', 
-					'UB' => 'Ubicación en Grupo', 
+					'BB' => 'Barbería',
+					'UN' => 'Salón de Uñas',
+					'OS' => 'OSBERTH',
+					'CR' => 'Cliente Pedido Rechazado',
+					'UB' => 'Ubicación en Grupo',
 					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
@@ -122,7 +123,13 @@ class CustomersMap extends MapTableWidget
 					'BK' => 'Black',
 					'SL' => 'Silver'
 				]),
-				MapIsFilter::make('map'),
+
+			SelectFilter::make('paquete_inicio_id')
+				->label('Paquete Inicio')
+				->multiple()
+				->options(PaquetesInicio::pluck('nombre', 'id')->toArray()),
+
+			MapIsFilter::make('map'),
 		];
 	}
 
