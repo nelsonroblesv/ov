@@ -40,7 +40,8 @@ class Customer extends Model
         'user_id',
         'tipo_cliente',
         'simbolo',
-        'created_at'
+        'created_at',
+        'paquete_inicio_id'
     ];
 
     protected $appends = [

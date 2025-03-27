@@ -3,6 +3,9 @@
 namespace App\Filament\App\Resources\CustomerUserResource\Pages;
 
 use App\Filament\App\Resources\CustomerUserResource;
+use App\Models\ClientesPaquetesInicio;
+use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -31,6 +34,7 @@ class CreateCustomerUser extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+
         $recipient = User::where('role', 'Administrador')->get();
         $username =  User::find($data['user_id'])->name;
         $tipo_cliente = $data['tipo_cliente'];
@@ -40,13 +44,13 @@ class CreateCustomerUser extends CreateRecord
             'BK' => 'Black',
             'SL' => 'Silver',
             'PO' => 'Posible',
-            'PR' => 'Prospecto'        
+            'PR' => 'Prospecto'
         ];
         $cliente = $tipos[$tipo_cliente];
 
         Notification::make()
             ->title('Nuevo Cliente Registrado')
-            ->body("El usuario ". $username." ha registrado a {$data['name']} como nuevo Cliente {$cliente}.")
+            ->body("El usuario " . $username . " ha registrado a {$data['name']} como nuevo Cliente {$cliente}.")
             ->icon('heroicon-o-information-circle')
             ->iconColor('info')
             ->color('info')
