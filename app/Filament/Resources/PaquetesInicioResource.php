@@ -7,11 +7,14 @@ use App\Filament\Resources\PaquetesInicioResource\RelationManagers;
 use App\Models\PaquetesInicio;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,25 +27,27 @@ class PaquetesInicioResource extends Resource
     protected static ?string $navigationGroup = 'Catalogo';
     protected static ?string $navigationLabel = 'Paquetes de Inicio';
     protected static ?string $breadcrumb = "Paquetes de Inicio";
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('nombre')
-                    ->label('Nombre')
-                    ->required(),
-                Textarea::make('descripcion')
-                    ->label('Descripción')
-                    ->required(),
-                FileUpload::make('imagen')
-                    ->label('Imagen')
-                    ->directory('paquetes-inicio')
-                    ->required(),
-                TextInput::make('precio')
-                    ->label('Precio')
-                    ->required(),
+                Section::make('Información del Paquete de Inicio')->schema([
+                    TextInput::make('nombre')
+                        ->label('Nombre')
+                        ->required(),
+                    Textarea::make('descripcion')
+                        ->label('Descripción')
+                        ->required(),
+                    FileUpload::make('imagen')
+                        ->label('Imagen')
+                        ->directory('paquetes-inicio')
+                        ->required(),
+                    TextInput::make('precio')
+                        ->label('Precio')
+                        ->required(),
+                ])
             ]);
     }
 
@@ -50,7 +55,23 @@ class PaquetesInicioResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('imagen')
+                    ->label('Imagen')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('nombre')
+                    ->label('Nombre')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('descripcion')
+                    ->label('Descripción')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('precio')
+                    ->label('Precio')
+                    ->searchable()
+                    ->money()
+                    ->sortable(),   
             ])
             ->filters([
                 //

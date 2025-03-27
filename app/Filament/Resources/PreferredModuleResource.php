@@ -34,7 +34,7 @@ class PreferredModuleResource extends Resource
     protected static ?string $navigationGroup = 'Catalogo';
     protected static ?string $navigationLabel = 'Modulos Preferred';
     protected static ?string $breadcrumb = "Modulos Preferred";
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
