@@ -128,19 +128,23 @@ class CustomerResource extends Resource
                                         'RD' => 'Red',
                                         'BK' => 'Black',
                                         'SL' => 'Silver',
+                                        'PO' => 'Posible',
+                                        'PR' => 'Prospecto',
                                     ])
                                     ->default('PV')
                                     ->colors([
                                         'PV' => 'success',
                                         'RD' => 'danger',
                                         'BK' => 'info',
-                                        'SL' => 'warning'
+                                        'SL' => 'warning',
+                                        'PO' => 'danger',
+                                        'PR' => 'warning',
                                     ])
-                                    ->icons([
+                                    ->icons([/*
                                         'PV' => 'heroicon-o-building-storefront',
                                         'RD' => 'heroicon-o-user',
                                         'BK' => 'heroicon-o-star',
-                                        'SL' => 'heroicon-o-sparkles'
+                                        'SL' => 'heroicon-o-sparkles'*/
                                     ])
                             ])
                         ])->columns(2),
