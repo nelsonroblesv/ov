@@ -31,6 +31,7 @@ class DashboardPanelProvider extends PanelProvider
             ->login(CustomLogin::class)
             ->profile()
             ->brandLogo(fn() => view('filament.logo'))
+            ->darkModeBrandLogo(fn() => view('filament.dark-logo'))
             ->databaseNotifications()
             ->favicon(asset('images/favicon.png'))
             ->colors([
