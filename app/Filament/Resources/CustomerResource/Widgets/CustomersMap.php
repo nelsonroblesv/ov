@@ -10,6 +10,7 @@ use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\User;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
@@ -131,6 +132,11 @@ class CustomersMap extends MapTableWidget
 				->label('Zonas')
 				->multiple()
 				->options(Zonas::pluck('nombre_zona', 'id')->toArray()),
+
+			SelectFilter::make('paquete_inicio_id')
+				->label('Paquete Inicio')
+				->multiple()
+				->options(PaquetesInicio::pluck('nombre', 'id')->toArray()),
 			MapIsFilter::make('map'),
 		];
 	}
