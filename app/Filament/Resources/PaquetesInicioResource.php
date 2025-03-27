@@ -23,7 +23,7 @@ class PaquetesInicioResource extends Resource
 {
     protected static ?string $model = PaquetesInicio::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $navigationIcon = 'heroicon-o-check-badge';
     protected static ?string $navigationGroup = 'Catalogo';
     protected static ?string $navigationLabel = 'Paquetes de Inicio';
     protected static ?string $breadcrumb = "Paquetes de Inicio";

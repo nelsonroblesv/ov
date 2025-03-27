@@ -9,11 +9,15 @@ use Filament\Resources\Pages\ListRecords;
 class ListPaquetesInicios extends ListRecords
 {
     protected static string $resource = PaquetesInicioResource::class;
+    protected static ?string $title = 'Clientes';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Nuevo Paquete de Inicio')
+                ->icon('heroicon-o-check-badge')
+                ->color('success'),
         ];
     }
 }
