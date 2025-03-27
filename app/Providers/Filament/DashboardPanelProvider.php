@@ -33,7 +33,7 @@ class DashboardPanelProvider extends PanelProvider
             ->brandLogo(fn() => view('filament.logo'))
             ->darkModeBrandLogo(fn() => view('filament.dark-logo'))
             ->databaseNotifications()
-            ->favicon(asset('images/favicon.png'))
+            ->favicon(asset('images/favicon.ico'))
             ->colors([
                 'primary' => Color::Emerald,
             ])
