@@ -179,4 +179,9 @@ class Customer extends Model
         return $this->belongsTo(Rutas::class, 'zonas_id');
     }
 
+    public function paquete_inicio(): BelongsTo
+    {
+        return $this->belongsTo(PaquetesInicio::class, 'paquete_inicio_id');
+    }
+
 }

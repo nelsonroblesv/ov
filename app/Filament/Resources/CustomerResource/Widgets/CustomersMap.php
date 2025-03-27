@@ -72,6 +72,7 @@ class CustomersMap extends MapTableWidget
 					'SL' => 'Silver',
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
+			TextColumn::make('paquete_inicio.nombre')->label('Paquete Inicio')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
 					'black',/*
