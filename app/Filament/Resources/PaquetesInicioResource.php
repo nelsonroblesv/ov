@@ -46,6 +46,9 @@ class PaquetesInicioResource extends Resource
                         ->required(),
                     TextInput::make('precio')
                         ->label('Precio')
+                        ->numeric()
+                        ->placeholder('0.00')
+                        ->suffixIcon('heroicon-m-currency-dollar')
                         ->required(),
                 ])
             ]);
@@ -70,7 +73,8 @@ class PaquetesInicioResource extends Resource
                 TextColumn::make('precio')
                     ->label('Precio')
                     ->searchable()
-                    ->money()
+                    
+                    ->prefix('$')
                     ->sortable(),   
             ])
             ->filters([

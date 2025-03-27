@@ -223,7 +223,7 @@ class HistorialPedidosResource extends Resource
 
                 TextColumn::make('grand_total')
                     ->label('Total')
-                    ->numeric()
+                    ->money()
                     ->summarize(Sum::make()->label('Total'))
                     ->prefix('$')
             ])
