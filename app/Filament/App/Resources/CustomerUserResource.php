@@ -54,7 +54,7 @@ class CustomerUserResource extends Resource
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')
-                                   // ->required()
+                                    ->required()
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true)
                                     ->suffixIcon('heroicon-m-user'),
@@ -62,7 +62,7 @@ class CustomerUserResource extends Resource
                                 TextInput::make('email')
                                     ->label('Correo electrónico')
                                     ->email()
-                                    //->required()
+                                    ->required()
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(255)
                                     ->suffixIcon('heroicon-m-at-symbol'),
@@ -70,7 +70,7 @@ class CustomerUserResource extends Resource
                                 TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
-                                    //->required()
+                                    ->required()
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
@@ -128,8 +128,7 @@ class CustomerUserResource extends Resource
                                     ->label('Paquete de inicio')
                                     ->options(PaquetesInicio::pluck('nombre', 'id'))
                                     ->placeholder('Selecciona un paquete')
-                                    //->required()
-                                    ->reactive(),
+                                    ->required(),
                             ])->columns(2)
                         ])->columns(2),
 
@@ -139,7 +138,7 @@ class CustomerUserResource extends Resource
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
-                               // ->required()
+                                ->required()
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map')
                                 ->columnSpanFull(),
@@ -215,7 +214,7 @@ class CustomerUserResource extends Resource
 
                             Select::make('regiones_id')
                                 ->label('Región')
-                                //->required()
+                                ->required()
                                 ->options(
                                     fn() =>
                                     Regiones::whereIn('id', function ($query) {
@@ -229,7 +228,7 @@ class CustomerUserResource extends Resource
                             Select::make('zonas_id')
                                 ->label('Zona')
                                 ->placeholder('Selecciona una zona')
-                                //->required()
+                                ->required()
                                 ->searchable()
                                 ->options(
                                     fn(callable $get) =>

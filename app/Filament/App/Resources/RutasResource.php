@@ -9,6 +9,7 @@ use App\Filament\App\Resources\RutasResource\RelationManagers;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\Rutas;
 use App\Models\Services;
@@ -732,6 +733,11 @@ class RutasResource extends Resource
                                 ->label('Fecha de nacimiento')
                                 ->suffixIcon('heroicon-m-cake')
                                 ->required(),
+
+                            Select::make('paquete_inicio_id')
+                                ->label('Paquete de inicio')
+                                ->options(PaquetesInicio::pluck('nombre', 'id'))
+                                ->placeholder('Selecciona un paquete')
                         ])
                         ->action(function (array $data, Rutas $record) {
                             $customer = Customer::find($record->customer_id);
@@ -742,6 +748,7 @@ class RutasResource extends Resource
                                     'email' => $data['email'],
                                     'birthday' => $data['birthday'],
                                     'tipo_cliente' => 'PV',
+                                    'paquete_inicio_id' => $data['paquete_inicio_id'],
                                 ]);
 
                                 $record->update(['customer_id' => $customer->id]);
