@@ -107,7 +107,8 @@ class ProductResource extends Resource
                             ->numeric()
                             ->prefix('$')
                             ->disabled()
-                            ->dehydrated(),
+                            ->dehydrated()
+                            ->hidden(),
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
@@ -170,7 +171,7 @@ class ProductResource extends Resource
                 TextColumn::make('marca.name')->label('Marca')->searchable()->sortable(),
                 TextColumn::make('familia.name')->label('Familia')->searchable()->sortable(),
                 TextColumn::make('sku')->label('SKU')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('price_distribuidor')->label('Distribuidor')->sortable(),
+               // TextColumn::make('price_distribuidor')->label('Distribuidor')->sortable(),
                 TextColumn::make('price_salon')->label('Salon')->sortable(),
                 TextColumn::make('price_publico')->label('Publico')->sortable(),
                 IconColumn::make('visibility')->label('Visible')->boolean()
