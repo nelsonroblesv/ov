@@ -12,18 +12,18 @@ class CreatePaqueteGuia extends CreateRecord
 {
     protected static string $resource = PaqueteGuiaResource::class;
     protected static ?string $title = 'Nuevo Paquete de Guías';
-
+/*
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
-
+*/
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
             ->success()
             ->title('Paquete de Guías Creado')
-            ->body('Se ha registrado un nuevo Paquete de Guías de forma exitosa.')
+            ->body('Se ha registrado un nuevo Paquete de Guías. Ya puedes asignar guías a este paquete.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');
