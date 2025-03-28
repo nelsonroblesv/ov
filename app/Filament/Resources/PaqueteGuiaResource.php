@@ -8,6 +8,7 @@ use App\Models\PaqueteGuia;
 use App\Models\Regiones;
 use App\Models\Zonas;
 use Filament\Forms;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -33,6 +34,9 @@ class PaqueteGuiaResource extends Resource
         return $form
             ->schema([
                 Section::make('Datos del Paquete')->schema([
+
+                    Hidden::make('user_id')->default(fn() => auth()->id()),
+
                     TextInput::make('periodo')
                         ->required()
                         ->maxLength(10),
@@ -77,10 +81,11 @@ class PaqueteGuiaResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('users.name')->sortable()->searchable()->toggleable(),
                 TextColumn::make('periodo')->sortable()->searchable(),
                 TextColumn::make('semana')->sortable(),
-                TextColumn::make('regiones_id')->label('Región')->sortable()->searchable(),
-                TextColumn::make('zonas_id')->label('Zona')->sortable()->searchable(),
+                TextColumn::make('regiones.name')->label('Región')->sortable()->searchable(),
+                TextColumn::make('zonas.nombre_zona')->label('Zona')->sortable()->searchable(),
                 TextColumn::make('estado')->badge()
                     ->colors([
                         'secondary' => 'Pendiente',

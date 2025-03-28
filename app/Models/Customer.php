@@ -154,6 +154,7 @@ class Customer extends Model
     {
         return $this->hasMany(Services::class);
     }
+    
     public function regiones(): BelongsTo
     {
         return $this->belongsTo(Regiones::class, 'regiones_id');
