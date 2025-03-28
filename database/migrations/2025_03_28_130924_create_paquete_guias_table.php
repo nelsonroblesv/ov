@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('periodo');
             $table->string('semana');
-            $table->foreignId('zona_id')->constrained()->onDelete('cascade');
-            $table->foreignId('region_id')->constrained()->onDelete('cascade');
+            $table->foreignId('zonas_id')->constrained()->onDelete('cascade');
+            $table->foreignId('regiones_id')->constrained()->onDelete('cascade');
             $table->enum('estado', ['pendiente', 'completado'])->default('pendiente');
             $table->timestamps();
             $table->softDeletes();

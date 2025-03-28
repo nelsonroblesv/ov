@@ -13,9 +13,10 @@ class PaqueteGuia extends Model
     protected $fillable = [
         'periodo',
         'semana',
-        'zona_id',
-        'region_id',
+        'zonas_id',
+        'regiones_id',
         'estado',
+        'created_at',
     ];
 
     public function zona()
