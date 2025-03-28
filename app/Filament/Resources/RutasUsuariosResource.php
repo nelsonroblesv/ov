@@ -4,14 +4,18 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RutasUsuariosResource\Pages;
 use App\Filament\Resources\RutasUsuariosResource\RelationManagers;
+use App\Models\Regiones;
 use App\Models\Rutas;
 use App\Models\RutasUsuarios;
+use App\Models\User;
+use App\Models\Zonas;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -49,7 +53,33 @@ class RutasUsuariosResource extends Resource
                     ->date(),
             ])
             ->filters([
-                //
+                SelectFilter::make('user_id')->label('Usuarios')
+                    ->options(User::pluck('name', 'id'))
+                    ->multiple(),
+
+                SelectFilter::make('tipo_semana')->label('Semana')
+                    ->options([
+                        'PAR' => 'PAR',
+                        'NON' => 'NON',
+                    ])
+                    ->multiple(),
+
+                SelectFilter::make('tipo_cliente')->label('Tipo Cliente')
+                    ->options([
+                        'PV' => 'Punto de Venta',
+                        'RD' => 'Red',
+                        'BK' => 'Black',    
+                        'SL' => 'Silver',
+                    ])
+                    ->multiple(),
+
+                SelectFilter::make('regiones_id')->label('Regiones')
+                    ->options(Regiones::pluck('name', 'id'))
+                    ->multiple(),
+
+                SelectFilter::make('zonas_id')->label('Zonas')
+                    ->options(Zonas::pluck('nombre_zona', 'id'))
+                    ->multiple(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
