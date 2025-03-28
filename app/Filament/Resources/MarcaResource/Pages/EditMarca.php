@@ -35,5 +35,4 @@ class EditMarca extends EditRecord
                 ->label('Borrar'),
         ];
     }
-
 }
