@@ -17,7 +17,9 @@ class PaqueteGuiaResource extends Resource
 {
     protected static ?string $model = PaqueteGuia::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationGroup = 'Logistica';
+    protected static ?string $navigationLabel = 'Paquetes de Guías';
 
     public static function form(Form $form): Form
     {
