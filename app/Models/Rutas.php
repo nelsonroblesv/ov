@@ -36,4 +36,9 @@ class Rutas extends Model
         return $this->belongsTo(Zonas::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
