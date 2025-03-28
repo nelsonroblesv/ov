@@ -15,7 +15,7 @@ class ListPaqueteGuias extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('Crear Paquete de Guías')
+            ->label('Registrar Paquete de Guías')
                 ->icon('heroicon-o-archive-box-arrow-down')
                 ->color('success')
         ];
