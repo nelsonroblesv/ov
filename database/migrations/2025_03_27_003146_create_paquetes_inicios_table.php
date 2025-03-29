@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('paquetes_inicios', function (Blueprint $table) {
             $table->id();
+            $table->string('prefijo');
             $table->string('nombre');
             $table->string('descripcion');
             $table->string('imagen');

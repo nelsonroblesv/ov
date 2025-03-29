@@ -34,6 +34,9 @@ class PaquetesInicioResource extends Resource
         return $form
             ->schema([
                 Section::make('Información del Paquete de Inicio')->schema([
+                    TextInput::make('prefijo')
+                        ->label('Prefijo')
+                        ->required(),
                     TextInput::make('nombre')
                         ->label('Nombre')
                         ->required(),
@@ -60,6 +63,10 @@ class PaquetesInicioResource extends Resource
             ->columns([
                 ImageColumn::make('imagen')
                     ->label('Imagen')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('prefijo')
+                    ->label('Prefijo')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('nombre')

@@ -170,7 +170,7 @@ class RutasResource extends Resource
                                     ->options(
                                         PaquetesInicio::all()->mapWithKeys(function ($paquete){
                                             return [
-                                                 $paquete->id => "{$paquete->nombre} ({$paquete->precio} MXN)"
+                                                $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];
                                         })
                                     )
