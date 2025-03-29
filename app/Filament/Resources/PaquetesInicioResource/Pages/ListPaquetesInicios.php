@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListPaquetesInicios extends ListRecords
 {
     protected static string $resource = PaquetesInicioResource::class;
-    protected static ?string $title = 'Clientes';
+    protected static ?string $title = 'Paquetes de Inicio';
 
     protected function getHeaderActions(): array
     {
