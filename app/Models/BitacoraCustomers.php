@@ -13,7 +13,8 @@ class BitacoraCustomers extends Model
         'notas',
         'testigo_1',
         'testigo_2',
-        'created_at'
+        'created_at',
+        'status',
     ];
 
     protected $casts = [

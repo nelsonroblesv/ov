@@ -26,6 +26,8 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -668,24 +670,62 @@ class RutasResource extends Resource
                         ->color('warning')
                         ->form([
                             Section::make('Registro en Bitácora')->schema([
-                                Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                                    ->onIcon('heroicon-m-play')
-                                    ->offIcon('heroicon-m-x-mark')
-                                    ->onColor('success')
-                                    ->offColor('danger'),
+                                Tabs::make('Opciones')
+                                    ->tabs([
+                                        Tab::make('Entrega de Pedido')
+                                            ->schema([
+                                                FileUpload::make('entrega')->label('')->nullable()
+                                                    ->placeholder('Foto de entrega de pedido')
+                                                    ->multiple()
+                                                    ->directory('fotos-bitacora'),
+                                                FileUpload::make('stockA')->label('')->nullable()
+                                                    ->placeholder('Foto de stock antes de entrega')
+                                                    ->multiple()
+                                                    ->directory('fotos-bitacora'),
+                                                FileUpload::make('stockD')->label('')->nullable()
+                                                    ->placeholder('Foto de stock despues de entrega')
+                                                    ->multiple()
+                                                    ->directory('fotos-bitacora'),
+                                            ]),
+                                        Tab::make('Establecimiento Cerrado')
+                                            ->schema([
+                                                FileUpload::make('cerrado')->label('')->nullable()
+                                                    ->placeholder('Foto de establecimiento cerrado')
+                                                    ->multiple()
+                                                    ->directory('fotos-bitacora'),
+                                            ]),
+                                        Tab::make('Visita regular')
+                                            ->schema([
+                                                FileUpload::make('stock')->label('')->nullable()
+                                                    ->placeholder('Foto de stock actual')
+                                                    ->multiple()
+                                                    ->directory('fotos-bitacora'),
+                                            ]),
+                                        Tab::make('Prospectación')
+                                            ->schema([
+                                                Toggle::make('show_video')->label('Se presentó Video Testimonio')
+                                                ->onIcon('heroicon-m-play')
+                                                ->offIcon('heroicon-m-x-mark')
+                                                ->onColor('success')
+                                                ->offColor('danger'),
+             
+                                            ]),
 
+                                    ])->columnSpanFull(),
+                               
                                 TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
-
+                            /*
                                 Section::make('Evidencias')->schema([
                                     FileUpload::make('testigo_1')->label('')->nullable()
                                         ->placeholder('Tomar o cargar Fotos')
                                         ->multiple()
                                         ->directory('bitacora-testigos'),
-                                    /*FileUpload::make('testigo_2')->label('Foto 2')->nullable()
+                                FileUpload::make('testigo_2')->label('Foto 2')->nullable()
                                 ->placeholder('Tomar o cargar Foto')
                                 ->multiple()
-                                ->directory('bitacora-testigos')*/
+                                ->directory('bitacora-testigos')
                                 ])->columnSpanFull()
+                            */
                             ])
                         ])
                         ->hidden(function ($record) {
