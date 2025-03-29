@@ -669,25 +669,27 @@ class RutasResource extends Resource
                         ->icon('heroicon-o-clipboard-document-check')
                         ->color('warning')
                         ->form([
-                            Section::make('Registro en Bitácora')->schema([
+                            Section::make('Información de la Visita')->schema([
                                 Tabs::make('Opciones')
                                     ->tabs([
                                         Tab::make('Entrega de Pedido')
+                                            ->icon('heroicon-o-truck')
                                             ->schema([
                                                 FileUpload::make('entrega')->label('')->nullable()
                                                     ->placeholder('Foto de entrega de pedido')
                                                     ->multiple()
                                                     ->directory('fotos-bitacora'),
-                                                FileUpload::make('stockA')->label('')->nullable()
+                                                FileUpload::make('stock1')->label('')->nullable()
                                                     ->placeholder('Foto de stock antes de entrega')
                                                     ->multiple()
                                                     ->directory('fotos-bitacora'),
-                                                FileUpload::make('stockD')->label('')->nullable()
+                                                FileUpload::make('stock2')->label('')->nullable()
                                                     ->placeholder('Foto de stock despues de entrega')
                                                     ->multiple()
                                                     ->directory('fotos-bitacora'),
                                             ]),
                                         Tab::make('Establecimiento Cerrado')
+                                            ->icon('heroicon-o-no-symbol')
                                             ->schema([
                                                 FileUpload::make('cerrado')->label('')->nullable()
                                                     ->placeholder('Foto de establecimiento cerrado')
@@ -695,6 +697,7 @@ class RutasResource extends Resource
                                                     ->directory('fotos-bitacora'),
                                             ]),
                                         Tab::make('Visita regular')
+                                            ->icon('heroicon-o-heart')
                                             ->schema([
                                                 FileUpload::make('stock')->label('')->nullable()
                                                     ->placeholder('Foto de stock actual')
@@ -702,12 +705,18 @@ class RutasResource extends Resource
                                                     ->directory('fotos-bitacora'),
                                             ]),
                                         Tab::make('Prospectación')
+                                            ->icon('heroicon-o-exclamation-circle')
                                             ->schema([
                                                 Toggle::make('show_video')->label('Se presentó Video Testimonio')
                                                 ->onIcon('heroicon-m-play')
                                                 ->offIcon('heroicon-m-x-mark')
                                                 ->onColor('success')
                                                 ->offColor('danger'),
+                                            
+                                            FileUpload::make('evidencias')->label('')
+                                                ->placeholder('Tomar o cargar Fotos de Evidencia')
+                                                ->multiple()
+                                                ->directory('bitacora-testigos'),
              
                                             ]),
 
