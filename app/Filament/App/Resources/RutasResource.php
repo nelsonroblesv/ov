@@ -719,7 +719,6 @@ class RutasResource extends Resource
                                                 ->directory('bitacora-testigos'),
              
                                             ]),
-
                                     ])->columnSpanFull(),
                                
                                 TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
