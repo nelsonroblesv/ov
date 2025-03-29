@@ -149,8 +149,7 @@ class CustomerUserResource extends Resource
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map')
                                 ->columnSpanFull(),
-
-
+                                
                             Map::make('location')
                                 ->mapControls([
                                     'mapTypeControl'    => true,

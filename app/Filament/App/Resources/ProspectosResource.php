@@ -109,7 +109,7 @@ class ProspectosResource extends Resource
 
                             Map::make('location')
                                 ->mapControls([
-                                    'mapTypeControl'    => false,
+                                    'mapTypeControl'    => true,
                                     'scaleControl'      => true,
                                     'streetViewControl' => false,
                                     'rotateControl'     => true,
