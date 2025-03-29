@@ -126,7 +126,14 @@ class CustomerUserResource extends Resource
                                     ]),
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
-                                    ->options(PaquetesInicio::pluck('nombre', 'id'))
+                                    ->columnSpanFull()
+                                    ->options(
+                                        PaquetesInicio::all()->mapWithKeys(function ($paquete){
+                                            return [
+                                                 $paquete->id => "{$paquete->nombre} ({$paquete->precio} MXN)"
+                                            ];
+                                        })
+                                    )
                                     ->placeholder('Selecciona un paquete')
                                     ->required(),
                             ])->columns(2)

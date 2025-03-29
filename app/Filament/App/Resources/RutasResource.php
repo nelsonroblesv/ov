@@ -6,6 +6,7 @@ use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\App\Resources\RutasResource\Pages;
 use App\Filament\App\Resources\RutasResource\RelationManagers;
+use App\Filament\Resources\PaquetesInicioResource;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
@@ -163,7 +164,18 @@ class RutasResource extends Resource
                                         'RD' => 'heroicon-o-user',
                                         'BK' => 'heroicon-o-star',
                                         'SL' => 'heroicon-o-sparkles'
-                                    ])
+                                    ]),
+                                Select::make('paquete_inicio_id')
+                                    ->label('Paquete de inicio')
+                                    ->options(
+                                        PaquetesInicio::all()->mapWithKeys(function ($paquete){
+                                            return [
+                                                 $paquete->id => "{$paquete->nombre} ({$paquete->precio} MXN)"
+                                            ];
+                                        })
+                                    )
+                                    ->placeholder('Selecciona un paquete')
+                                    ->required(),
                             ])->icon('heroicon-o-computer-desktop'),
 
                         Section::make('Ubicación')

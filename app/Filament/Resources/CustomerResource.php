@@ -7,6 +7,7 @@ use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\Zonas;
 use Filament\Forms\Components\DatePicker;
@@ -145,7 +146,18 @@ class CustomerResource extends Resource
                                         'RD' => 'heroicon-o-user',
                                         'BK' => 'heroicon-o-star',
                                         'SL' => 'heroicon-o-sparkles'*/
-                                    ])
+                                    ]),
+                                Select::make('paquete_inicio_id')
+                                    ->label('Paquete de inicio')
+                                    ->options(
+                                        PaquetesInicio::all()->mapWithKeys(function ($paquete){
+                                            return [
+                                                 $paquete->id => "{$paquete->nombre} ({$paquete->precio} MXN)"
+                                            ];
+                                        })
+                                    )
+                                    ->placeholder('Selecciona un paquete')
+                                    ->required(),
                             ])
                         ])->columns(2),
 
