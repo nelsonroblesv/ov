@@ -766,6 +766,7 @@ class RutasResource extends Resource
                         ->icon('heroicon-o-arrows-up-down')
                         ->color('info')
                         ->modalHeading('Transferir a Cliente')
+                        ->visible(fn ($record) => $record->tipo_cliente === 'PR') // Solo para PR
                         ->modalDescription('Para el proceso de transferencia es necesario completar toda la 
                                     informacion que se pide a continuacion.')
 
