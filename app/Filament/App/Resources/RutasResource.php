@@ -394,6 +394,8 @@ class RutasResource extends Resource
                                     ->label('Simbologia')
                                     ->options([
                                         'SB' => 'Salón de Belleza',
+                                        'SYB' => 'Salón y Barbería',
+                                        'EU' => 'Estética Unisex',
                                         'BB' => 'Barbería',
                                         'UN' => 'Salón de Uñas',
                                         'OS' => 'OSBERTH',
@@ -617,6 +619,8 @@ class RutasResource extends Resource
                     ])
                     ->formatStateUsing(fn(string $state): string => [
                         'SB' => 'Salón de Belleza',
+                        'SYB' => 'Salón y Barbería',
+                        'EU' => 'Estética Unisex',
                         'BB' => 'Barbería',
                         'UN' => 'Salón de Uñas',
                         'OS' => 'OSBERTH',

@@ -101,6 +101,8 @@ class CustomerResource extends Resource
                                     ->required()
                                     ->options([
                                         'SB' => 'Salón de Belleza',
+                                        'SYB' => 'Salón y Barbería',
+                                        'EU' => 'Estética Unisex',
                                         'BB' => 'Barbería',
                                         'UN' => 'Salón de Uñas',
                                         'OS' => 'OSBERTH',
@@ -148,12 +150,11 @@ class CustomerResource extends Resource
                                         'PV' => 'heroicon-o-building-storefront',
                                         'RD' => 'heroicon-o-user',
                                         'BK' => 'heroicon-o-star',
-                                        'SL' => 'heroicon-o-sparkles'*/
-                                    ]),
+                                        'SL' => 'heroicon-o-sparkles'*/]),
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
-                                        PaquetesInicio::all()->mapWithKeys(function ($paquete){
+                                        PaquetesInicio::all()->mapWithKeys(function ($paquete) {
                                             return [
                                                 $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];
@@ -391,5 +392,4 @@ class CustomerResource extends Resource
     {
         return static::getModel()::whereIn('tipo_cliente', ['PV', 'BL', 'SL', 'RD'])->count();
     }
-
 }

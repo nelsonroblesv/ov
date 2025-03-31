@@ -28,7 +28,7 @@ class PaqueteGuiaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
     protected static ?string $navigationGroup = 'Logistica';
-    protected static ?string $navigationLabel = 'Paquetes de Guías';
+    protected static ?string $navigationLabel = 'Guías';
 
     public static function form(Form $form): Form
     {
@@ -56,24 +56,6 @@ class PaqueteGuiaResource extends Resource
                             })->pluck('name', 'id')
                         )
                         ->reactive(),
-
-                    Select::make('zonas_id')
-                        ->label('Zona')
-                        ->placeholder('Selecciona una zona')
-                        // ->required()
-                        ->searchable()
-                        ->options(
-                            fn(callable $get) =>
-                            Zonas::where('regiones_id', $get('regiones_id'))
-                                ->whereIn('id', function ($query) {
-                                    $query->select('id')
-                                        ->from('zonas');
-                                })
-                                ->pluck('nombre_zona', 'id')
-                        )
-
-                        ->reactive()
-                        ->disabled(fn(callable $get) => empty($get('regiones_id'))),
                 ])->columns(2)
             ]);
     }
@@ -86,7 +68,6 @@ class PaqueteGuiaResource extends Resource
                 TextColumn::make('periodo')->sortable()->searchable(),
                 TextColumn::make('semana')->sortable(),
                 TextColumn::make('regiones.name')->label('Región')->sortable()->searchable(),
-                TextColumn::make('zonas.nombre_zona')->label('Zona')->sortable()->searchable(),
                 TextColumn::make('estado')->badge()
                     ->colors([
                         'secondary' => 'Pendiente',

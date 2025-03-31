@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('periodo');
             $table->string('semana');
-            $table->foreignId('zonas_id')->constrained()->onDelete('cascade');
             $table->foreignId('regiones_id')->constrained()->onDelete('cascade');
             $table->enum('estado', ['pendiente', 'completado'])->default('pendiente');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

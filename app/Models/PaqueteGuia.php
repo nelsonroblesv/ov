@@ -14,7 +14,6 @@ class PaqueteGuia extends Model
     protected $fillable = [
         'periodo',
         'semana',
-        'zonas_id',
         'regiones_id',
         'estado',
         'created_at',
@@ -24,11 +23,6 @@ class PaqueteGuia extends Model
     public function users()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function zonas()
-    {
-        return $this->belongsTo(Zonas::class);
     }
 
     public function regiones(): BelongsTo

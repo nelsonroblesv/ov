@@ -57,7 +57,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
 
             $table->enum('tipo_cliente', ['PV', 'RD', 'BK', 'SL', 'PR', 'PO'])->default('PV');
-            $table->enum('simbolo', ['SB','BB', 'UN', 'OS', 'CR', 'UB', 'NC'])->nullable();
+            $table->enum('simbolo', ['SB','SYB', 'EU', 'BB', 'UN', 'OS', 'CR', 'UB', 'NC'])->nullable();
 
         });
     }

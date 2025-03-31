@@ -111,6 +111,8 @@ class ProspectosResource extends Resource
                                 ->required()
                                 ->options([
                                     'SB' => 'Salón de Belleza',
+                                    'SYB' => 'Salón y Barbería',
+                                    'EU' => 'Estética Unisex',
                                     'BB' => 'Barbería',
                                     'UN' => 'Salón de Uñas',
                                     'OS' => 'OSBERTH',
@@ -288,5 +290,4 @@ class ProspectosResource extends Resource
     {
         return static::getModel()::whereIn('tipo_cliente', ['PO', 'PR'])->count();
     }
-
 }
