@@ -124,6 +124,7 @@ class RutasResource extends Resource
                                     ->suffixIcon('heroicon-m-phone'),
 
                                 Select::make('simbolo')
+                                    ->required()
                                     ->label('Simbologia')
                                     ->options([
                                         'SB' => 'Salón de Belleza',
@@ -292,7 +293,6 @@ class RutasResource extends Resource
                             ])->columns(2)->icon('heroicon-o-map-pin'),
 
                         Section::make('Fotos del establecimiento')
-                            ->collapsed()
                             ->schema([
                                 FileUpload::make('front_image')
                                     ->label('Fotos de Exterior')
@@ -301,6 +301,7 @@ class RutasResource extends Resource
                                     ->image()
                                     ->imageEditor()
                                     ->directory('customer-images')
+                                    ->required()
                                     ->columnSpanFull(),
 
                                 FileUpload::make('inside_image')
@@ -310,6 +311,7 @@ class RutasResource extends Resource
                                     ->image()
                                     ->imageEditor()
                                     ->directory('customer-images')
+                                    ->required()
                                     ->columnSpanFull(),
                             ])->columns(2)->icon('heroicon-o-camera'),
                     ])
