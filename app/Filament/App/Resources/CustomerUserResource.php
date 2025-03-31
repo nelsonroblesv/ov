@@ -51,6 +51,7 @@ class CustomerUserResource extends Resource
                             Section::make('Datos personales')->schema([
 
                                 Hidden::make('user_id')->default(fn() => auth()->id()),
+                                Hidden::make('alta_user_id')->default(fn() => auth()->id()),
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')

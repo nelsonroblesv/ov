@@ -99,6 +99,7 @@ class RutasResource extends Resource
                             ->schema([
 
                                 Hidden::make('user_id')->default(fn() => auth()->id()),
+                                Hidden::make('alta_user_id')->default(fn() => auth()->id()),
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')
@@ -353,6 +354,7 @@ class RutasResource extends Resource
                             ->schema([
 
                                 Hidden::make('user_id')->default(fn() => auth()->id()),
+                                Hidden::make('alta_user_id')->default(fn() => auth()->id()),
 
                                 ToggleButtons::make('tipo_cliente')
                                     ->label('Tipo de Registro')

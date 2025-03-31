@@ -45,6 +45,7 @@ class ProspectosResource extends Resource
                         ->description('Informacion Basica')
                         ->schema([
                             Hidden::make('user_id')->default(fn() => auth()->id()),
+                            Hidden::make('alta_user_id')->default(fn() => auth()->id()),
 
                             ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Registro')
