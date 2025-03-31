@@ -15,11 +15,17 @@ class BitacoraCustomers extends Model
         'testigo_2',
         'created_at',
         'status',
+        'tipo_visita',
+        'foto_entrega',
+        'foto_stock_antes',
+        'foto_stock_despues',
+        'foto_lugar_cerrado',
+        'foto_stock_regular',
+        'foto_evidencia_prospectacion',
     ];
 
     protected $casts = [
-        'testigo_1' => 'array',
-        /*'testigo_2' => 'array'*/
+        'foto_evidencia_prospectacion' => 'array',
     ];
     public function customers()
     {

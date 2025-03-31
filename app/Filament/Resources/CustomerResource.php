@@ -66,10 +66,12 @@ class CustomerResource extends Resource
                         ->schema([
                             Section::make('Datos personales')->schema([
 
+                                Hidden::make('alta_user_id')->default(fn() => auth()->id()),
+
                                 Select::make('user_id')
                                     ->required()
                                     ->relationship('user', 'name')
-                                    ->label('Registrado por:'),
+                                    ->label('Asignado a:'),
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')

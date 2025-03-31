@@ -171,7 +171,7 @@ class RutasResource extends Resource
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
-                                        PaquetesInicio::all()->mapWithKeys(function ($paquete){
+                                        PaquetesInicio::all()->mapWithKeys(function ($paquete) {
                                             return [
                                                 $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];
@@ -672,86 +672,125 @@ class RutasResource extends Resource
                         ->color('warning')
                         ->form([
                             Section::make('Información de la Visita')->schema([
-                                Tabs::make('Opciones')
-                                    ->tabs([
-                                        Tab::make('Entrega de Pedido')
-                                            ->icon('heroicon-o-truck')
-                                            ->schema([
-                                                FileUpload::make('entrega')->label('')->nullable()
-                                                    ->placeholder('Foto de entrega de pedido')
-                                                    ->multiple()
-                                                    ->directory('fotos-bitacora'),
-                                                FileUpload::make('stock1')->label('')->nullable()
-                                                    ->placeholder('Foto de stock antes de entrega')
-                                                    ->multiple()
-                                                    ->directory('fotos-bitacora'),
-                                                FileUpload::make('stock2')->label('')->nullable()
-                                                    ->placeholder('Foto de stock despues de entrega')
-                                                    ->multiple()
-                                                    ->directory('fotos-bitacora'),
-                                            ]),
-                                        Tab::make('Establecimiento Cerrado')
-                                            ->icon('heroicon-o-no-symbol')
-                                            ->schema([
-                                                FileUpload::make('cerrado')->label('')->nullable()
-                                                    ->placeholder('Foto de establecimiento cerrado')
-                                                    ->multiple()
-                                                    ->directory('fotos-bitacora'),
-                                            ]),
-                                        Tab::make('Visita regular')
-                                            ->icon('heroicon-o-heart')
-                                            ->schema([
-                                                FileUpload::make('stock')->label('')->nullable()
-                                                    ->placeholder('Foto de stock actual')
-                                                    ->multiple()
-                                                    ->directory('fotos-bitacora'),
-                                            ]),
-                                        Tab::make('Prospectación')
-                                            ->icon('heroicon-o-exclamation-circle')
-                                            ->schema([
-                                                Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                                                ->onIcon('heroicon-m-play')
-                                                ->offIcon('heroicon-m-x-mark')
-                                                ->onColor('success')
-                                                ->offColor('danger'),
-                                            
-                                            FileUpload::make('evidencias')->label('')
-                                                ->placeholder('Tomar o cargar Fotos de Evidencia')
-                                                ->multiple()
-                                                ->directory('bitacora-testigos'),
-             
-                                            ]),
-                                    ])->columnSpanFull(),
-                               
-                                TextInput::make('notas')->label('Notas')->required()->columnSpanFull(),
-                            /*
-                                Section::make('Evidencias')->schema([
-                                    FileUpload::make('testigo_1')->label('')->nullable()
-                                        ->placeholder('Tomar o cargar Fotos')
-                                        ->multiple()
-                                        ->directory('bitacora-testigos'),
-                                FileUpload::make('testigo_2')->label('Foto 2')->nullable()
-                                ->placeholder('Tomar o cargar Foto')
-                                ->multiple()
-                                ->directory('bitacora-testigos')
-                                ])->columnSpanFull()
-                            */
+
+                                // Select para elegir el tipo de visita
+                                Select::make('tipo_visita')
+                                    ->placeholder('Seleccione una opción') // Placeholder no seleccionable
+                                    ->required()
+                                    ->label('Tipo de Visita')
+                                    ->options([
+                                        'entrega' => 'Entrega de Pedido',
+                                        'cerrado' => 'Establecimiento Cerrado',
+                                        'regular' => 'Visita Regular',
+                                        'prospectacion' => 'Prospectación',
+                                    ])
+                                    ->reactive()
+                                    ->default('entrega')
+                                    ->columnSpanFull(),
+
+                                // Sección de Entrega de Pedido
+                                Section::make('Entrega de Pedido')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'entrega')
+                                    ->schema([
+                                        FileUpload::make('foto_entrega')
+                                            ->label('Foto de entrega')
+                                            ->nullable()
+                                            ->placeholder('Foto de entrega de pedido')
+                                            ->multiple()
+                                            ->directory('fotos-bitacora')
+                                            ->required(),
+
+                                        FileUpload::make('foto_stock_antes')
+                                            ->label('Foto de stock antes')
+                                            ->placeholder('Foto de stock antes de entrega')
+                                            ->multiple()
+                                            ->directory('fotos-bitacora')
+                                            ->required(),
+
+                                        FileUpload::make('foto_stock_despues')
+                                            ->label('Foto de stock después')
+                                            ->placeholder('Foto de stock después de entrega')
+                                            ->multiple()
+                                            ->directory('fotos-bitacora')
+                                            ->required(),
+                                    ]),
+
+                                // Sección de Establecimiento Cerrado
+                                Section::make('Establecimiento Cerrado')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'cerrado')
+                                    ->schema([
+                                        FileUpload::make('foto_lugar_cerrado')
+                                            ->label('Foto de establecimiento cerrado')
+                                            ->placeholder('Tomar o cargar foto')
+                                            ->multiple()
+                                            ->directory('fotos-bitacora')
+                                            ->required(),
+                                    ]),
+
+                                // Sección de Visita Regular
+                                Section::make('Visita Regular')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'regular')
+                                    ->schema([
+                                        FileUpload::make('foto_stock_regular')
+                                            ->label('Foto de stock actual')
+                                            ->placeholder('Tomar o cargar foto')
+                                            ->multiple()
+                                            ->directory('fotos-bitacora')
+                                            ->required(),
+                                    ]),
+
+                                // Sección de Prospectación
+                                Section::make('Prospectación')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'prospectacion')
+                                    ->schema([
+                                        Toggle::make('show_video')
+                                            ->label('Se presentó Video Testimonio')
+                                            ->onIcon('heroicon-m-play')
+                                            ->offIcon('heroicon-m-x-mark')
+                                            ->onColor('success')
+                                            ->offColor('danger'),
+
+                                        FileUpload::make('foto_evidencia_prospectacion')
+                                            ->label('Fotos de Evidencia')
+                                            ->placeholder('Tomar o carga foto')
+                                            //->multiple()
+                                            ->directory('bitacora-testigos')
+                                            ->required(),
+                                    ]),
+
+                                // Notas generales
+                                TextInput::make('notas')
+                                    ->label('Notas')
+                                    ->required()
+                                    ->columnSpanFull(),
+
                             ])
                         ])
                         ->hidden(function ($record) {
                             return BitacoraCustomers::where('user_id', auth()->id())
                                 ->where('customers_id', $record->customer_id)
-                                ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString()) // Mismo día
+                                ->whereDate('created_at', Carbon::now()->setTimezone('America/Merida')->toDateString())
                                 ->exists();
                         })
                         ->action(function ($record, array $data) {
                             BitacoraCustomers::create([
+
                                 'customers_id' => $record->customer_id,
                                 'user_id' => auth()->id(),
-                                'show_video' => $data['show_video'],
+                                'show_video' => $data['show_video'] ?? null,
+
+                                'tipo_visita' => $data['tipo_visita'],
+
+                                'foto_entrega' => isset($data['foto_entrega']) ? (is_array($data['foto_entrega']) ? $data['foto_entrega'][0] : $data['foto_entrega']) : null,
+                                'foto_stock_antes' => isset($data['foto_stock_antes']) ? (is_array($data['foto_stock_antes']) ? $data['foto_stock_antes'][0] : $data['foto_stock_antes']) : null,
+                                'foto_stock_despues' => isset($data['foto_stock_despues']) ? (is_array($data['foto_stock_despues']) ? $data['foto_stock_despues'][0] : $data['foto_stock_despues']) : null,
+                                'foto_lugar_cerrado' => isset($data['foto_lugar_cerrado']) ? (is_array($data['foto_lugar_cerrado']) ? $data['foto_lugar_cerrado'][0] : $data['foto_lugar_cerrado']) : null,
+                                'foto_stock_regular' => isset($data['foto_stock_regular']) ? (is_array($data['foto_stock_regular']) ? $data['foto_stock_regular'][0] : $data['foto_stock_regular']) : null,
+                                'foto_evidencia_prospectacion' => isset($data['foto_evidencia_prospectacion']) ? (is_array($data['foto_evidencia_prospectacion']) ? $data['foto_evidencia_prospectacion'][0] : $data['foto_evidencia_prospectacion']) : null,
+
+
                                 'notas' => $data['notas'],
-                                'testigo_1' => $data['testigo_1'],
-                                /*'testigo_2' => $data['testigo_2'],*/
+
                                 'created_at' => Carbon::now()->setTimezone('America/Merida')
                             ]);
 
@@ -762,13 +801,14 @@ class RutasResource extends Resource
                                 ->success()
                                 ->send();
                         }),
+
                     Action::make('transferir')
                         ->label('Transferir')
                         ->requiresConfirmation()
                         ->icon('heroicon-o-arrows-up-down')
                         ->color('info')
                         ->modalHeading('Transferir a Cliente')
-                        ->visible(fn ($record) => $record->tipo_cliente === 'PR') // Solo para PR
+                        ->visible(fn($record) => $record->tipo_cliente === 'PR') // Solo para PR
                         ->modalDescription('Para el proceso de transferencia es necesario completar toda la 
                                     informacion que se pide a continuacion.')
 

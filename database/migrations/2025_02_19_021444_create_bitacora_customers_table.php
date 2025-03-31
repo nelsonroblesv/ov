@@ -18,8 +18,16 @@ return new class extends Migration
             $table->string('notas')->nullable();
             $table->boolean('show_video')->default(false);
             $table->json('testigo_1')->nullable();
-           $table->json('testigo_2')->nullable();
-           $table->enum('status', ['entrega', 'cerrado', 'visita'])->default('visita');
+            $table->json('testigo_2')->nullable();
+
+           $table->enum('tipo_visita', ['entrega', 'cerrado', 'regular', 'prospectacion'])->default('regular');
+           $table->string('foto_entrega')->nullable();
+           $table->string('foto_stock_antes')->nullable();
+           $table->string('foto_stock_despues')->nullable();
+           $table->string('foto_lugar_cerrado')->nullable();
+           $table->string('foto_stock_regular')->nullable();
+           $table->string('foto_evidencia_prospectacion')->nullable();
+
             $table->timestamps();
         });
     }

@@ -41,7 +41,8 @@ class Customer extends Model
         'tipo_cliente',
         'simbolo',
         'created_at',
-        'paquete_inicio_id'
+        'paquete_inicio_id',
+        'alta_user_id'
     ];
 
     protected $appends = [
@@ -140,6 +141,11 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function altaUser()
+    {
+        return $this->belongsTo(User::class, 'alta_user_id');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -154,7 +160,7 @@ class Customer extends Model
     {
         return $this->hasMany(Services::class);
     }
-    
+
     public function regiones(): BelongsTo
     {
         return $this->belongsTo(Regiones::class, 'regiones_id');

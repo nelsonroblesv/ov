@@ -11,9 +11,13 @@ use App\Models\Customer;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,62 +43,108 @@ class BitacoraCustomersResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('Registro de actividad')
-                ->schema([
-                    Select::make('customers_id')->label('Nombre de Cliente o Identificador')
-                        ->placeholder('Visitas para hoy:')
-                        ->required()
-                        ->preload()
-                        ->searchable()
-                        ->options(function()
-                        {
-                            $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
-                            $dias = [
-                                'MON' => 'Lun',
-                                'TUE' => 'Mar',
-                                'WED' => 'Mie',
-                                'THU' => 'Jue',
-                                'FRI' => 'Vie',
-                                'SAT' => 'Sab',
-                                'SUN' => 'Dom',
-                            ];
-                            $diaActual = $dias[$hoy];
-                            $user = auth()->id();
-                            $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
-                            $valores = [
-                                '0' => 'PAR',
-                                '1' => 'NON',
-                            ];
-                            $semana = $valores[$tipoSemanaSeleccionado];
-                           
-                            return Customer::whereIn('zonas_id', function ($query) use ($diaActual, $user, $semana) {
-                                $query->select('id')
-                                      ->from('zonas')
-                                      ->where('dia_zona', $diaActual) 
-                                      ->where('tipo_semana', $semana)
-                                      ->where('user_id', $user);
-                            })->pluck('name', 'id');
-                        }),
+        ->schema([
+            Section::make('Información de la Visita')->schema([
 
-                    Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                        ->onIcon('heroicon-m-play')
-                        ->offIcon('heroicon-m-x-mark')
-                        ->onColor('success')
-                        ->offColor('danger'),
+                // Select para elegir el tipo de visita
+                Select::make('tipo_visita')
+                    ->placeholder('Seleccione una opción') // Placeholder no seleccionable
+                    ->required()
+                    ->label('Tipo de Visita')
+                    ->options([
+                        'entrega' => 'Entrega de Pedido',
+                        'cerrado' => 'Establecimiento Cerrado',
+                        'regular' => 'Visita Regular',
+                        'prospectacion' => 'Prospectación',
+                    ])
+                    ->reactive()
+                    ->default('entrega')
+                    ->columnSpanFull(),
 
-                    MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
-                    Section::make('Testigos')->schema([
-                        FileUpload::make('testigo_1')->label('Evidencias')->nullable()
+                // Sección de Entrega de Pedido
+                Section::make('Entrega de Pedido')
+                    ->visible(fn($get) => $get('tipo_visita') === 'entrega')
+                    ->schema([
+                        FileUpload::make('foto_entrega')
+                            ->label('Foto de entrega')
+                            ->placeholder('Foto de entrega de pedido')
+                            ->multiple()
+                            ->directory('fotos-bitacora')
+                            ->required(),
+
+                        FileUpload::make('foto_stock_antes')
+                            ->label('Foto de stock antes')
+                            ->placeholder('Foto de stock antes de entrega')
+                            ->multiple()
+                            ->directory('fotos-bitacora')
+                            ->required(),
+
+                        FileUpload::make('foto_stock_despues')
+                            ->label('Foto de stock después')
+                            ->placeholder('Foto de stock después de entrega')
+                            ->multiple()
+                            ->directory('fotos-bitacora')
+                            ->required(),
+                    ]),
+
+                // Sección de Establecimiento Cerrado
+                Section::make('Establecimiento Cerrado')
+                    ->visible(fn($get) => $get('tipo_visita') === 'cerrado')
+                    ->schema([
+                        FileUpload::make('foto_lugar_cerrado')
+                            ->label('Foto de establecimiento cerrado')
+                            ->placeholder('Tomar o cargar foto')
+                            ->multiple()
+                            ->directory('fotos-bitacora')
+                            ->required(),
+                    ]),
+
+                // Sección de Visita Regular
+                Section::make('Visita Regular')
+                    ->visible(fn($get) => $get('tipo_visita') === 'regular')
+                    ->schema([
+                        FileUpload::make('foto_stock_regular')
+                            ->label('Foto de stock actual')
+                            ->placeholder('Tomar o cargar foto')
+                            ->multiple()
+                            ->default(function ($record) {
+                                if ($record && $record->foto_entrega && is_array($record->foto_entrega) && count($record->foto_entrega) > 0) {
+                                    return asset($record->foto_entrega[0]); // Asumiendo que la ruta está en el primer elemento del array
+                                }
+                                return null;
+                            })
+                            ->image()
+                            ->directory('fotos-bitacora')
+                            ->required(),
+                    ]),
+
+                // Sección de Prospectación
+                Section::make('Prospectación')
+                    ->visible(fn($get) => $get('tipo_visita') === 'prospectacion')
+                    ->schema([
+                        Toggle::make('show_video')
+                            ->label('Se presentó Video Testimonio')
+                            ->onIcon('heroicon-m-play')
+                            ->offIcon('heroicon-m-x-mark')
+                            ->onColor('success')
+                            ->offColor('danger'),
+
+                        FileUpload::make('foto_evidencia_prospectacion')
+                            ->label('Fotos de Evidencia')
                             ->placeholder('Tomar o cargar fotos')
                             ->multiple()
-                            ->directory('bitacora-testigos'),
-                       /* FileUpload::make('testigo_2')->label('Foto 2')->nullable()
-                            ->placeholder('Tomar o cargar Foto')
-                            ->directory('bitacora-testigos')*/
-                    ])->columnSpanFull()
-                ])
-            ]);
+                            ->directory('fotos-bitacora')
+                            ->required(),
+                    ]),
+
+                // Notas generales
+                TextInput::make('notas')
+                    ->label('Notas')
+                    ->required()
+                    ->columnSpanFull(),
+
+            ])
+        ]);
     }
 
     public static function table(Table $table): Table
