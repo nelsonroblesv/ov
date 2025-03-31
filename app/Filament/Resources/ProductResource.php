@@ -47,7 +47,8 @@ class ProductResource extends Resource
                             ->maxLength(255)
                             ->label('Nombre')
                             ->helperText('Ingresa el nombre del Producto')
-                            ->disabledOn('edit')
+                            ->unique()
+                            //->disabledOn('edit')
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
                                 if ($operation !== 'create') {
