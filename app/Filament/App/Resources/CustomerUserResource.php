@@ -56,14 +56,14 @@ class CustomerUserResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
-                                    ->unique(ignoreRecord: true)
+                                    ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
                                     ->label('Correo electrónico')
                                     ->email()
                                     ->required()
-                                    ->unique(ignoreRecord: true)
+                                    ->unique(table: Customer::class, column: 'email')
                                     ->maxLength(255)
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
@@ -71,7 +71,7 @@ class CustomerUserResource extends Resource
                                     ->label('Teléfono')
                                     ->tel()
                                     ->required()
-                                    ->unique(ignoreRecord: true)
+                                    ->unique(table: Customer::class, column: 'phone')
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
 

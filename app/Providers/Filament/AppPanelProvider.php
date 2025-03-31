@@ -30,6 +30,7 @@ class AppPanelProvider extends PanelProvider
             ->path('')
             ->login(CustomLogin::class)
             //->domain('app.osberthvalle.com')
+           // ->passwordReset()
             ->profile()
             ->brandLogo(fn() => view('filament.logo'))
             ->darkModeBrandLogo(fn() => view('filament.dark-logo'))

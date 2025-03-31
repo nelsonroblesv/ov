@@ -104,7 +104,7 @@ class RutasResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
-                                    ->unique(table: Customer::class, column: 'name')
+                                    ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
