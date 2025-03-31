@@ -68,7 +68,7 @@ class ProspectosResource extends Resource
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
                                 ->maxLength(255)
-                                ->unique(ignoreRecord: true)
+                                ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                 ->suffixIcon('heroicon-m-map-pin'),
 
                             Select::make('services')
