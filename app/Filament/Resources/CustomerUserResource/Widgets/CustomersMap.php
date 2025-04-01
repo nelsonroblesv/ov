@@ -101,7 +101,9 @@ class CustomersMap extends MapTableWidget
 					'OS' => 'OSBERTH',
 					'CR' => 'Cliente Pedido Rechazado',
 					'UB' => 'Ubicación en Grupo',
-					'NC' => 'Ya no compran'
+					'NC' => 'Ya no compran',
+					'SYB' => 'Salon y Barbería',
+					'EU' => 'Estética Unisex'
 				][$state] ?? 'Otro'),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),

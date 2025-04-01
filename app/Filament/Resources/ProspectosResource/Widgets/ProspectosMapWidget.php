@@ -106,7 +106,9 @@ class ProspectosMapWidget extends MapTableWidget
 					'OS' => 'OSBERTH',
 					'CR' => 'Cliente Pedido Rechazado',
 					'UB' => 'Ubicación en Grupo',
-					'NC' => 'Ya no compran'
+					'NC' => 'Ya no compran',
+					'SYB' => 'Salon y Barbería',
+					'EU' => 'Estética Unisex'
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
