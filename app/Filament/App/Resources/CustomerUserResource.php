@@ -134,7 +134,7 @@ class CustomerUserResource extends Resource
                                     ->label('Paquete de inicio')
                                     ->columnSpanFull()
                                     ->options(
-                                        PaquetesInicio::all()->mapWithKeys(function ($paquete) {
+                                        PaquetesInicio::all()->where('activo', 1)->mapWithKeys(function ($paquete) {
                                             return [
                                                 $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];

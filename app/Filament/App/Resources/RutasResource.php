@@ -176,7 +176,7 @@ class RutasResource extends Resource
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
-                                        PaquetesInicio::all()->mapWithKeys(function ($paquete) {
+                                        PaquetesInicio::all()->where('activo', 1)->mapWithKeys(function ($paquete) {
                                             return [
                                                 $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];
