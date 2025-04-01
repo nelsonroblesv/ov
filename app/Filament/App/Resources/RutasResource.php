@@ -109,18 +109,20 @@ class RutasResource extends Resource
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
-                                    ->label('Correo electrónico')
-                                    ->email()
+                                    ->label('Correo Electrónico')
                                     ->required()
-                                    ->unique(table: Customer::class, column: 'email')
-                                    ->maxLength(255)
+                                    ->rules([
+                                        'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                                    ])
+                                    ->unique(table: Customer::class, column: 'email', ignoreRecord:true)
+                                    ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
                                 TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
                                     ->required()
-                                    ->unique(table: Customer::class, column: 'phone')
+                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord:true)
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
 
@@ -141,8 +143,8 @@ class RutasResource extends Resource
 
                                 DatePicker::make('birthday')
                                     ->label('Fecha de nacimiento')
-                                    ->suffixIcon('heroicon-m-cake')
-                                    ->required(),
+                                    ->suffixIcon('heroicon-m-cake'),
+                                //->required(),
 
                             ])->columns(2)->icon('heroicon-o-information-circle'),
 
@@ -321,10 +323,11 @@ class RutasResource extends Resource
                     ->action(function (array $data) {
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
                         $customer = Customer::create($data);
-
+                       
                         Rutas::create([
                             'user_id'  => auth()->id(),
                             'customer_id' => $customer->id,
+                            'regiones_id' => $data['regiones_id'],
                             'regiones_id' => $data['regiones_id'],
                             'zonas_id' => $data['zonas_id'],
                             'tipo_semana' => Zonas::find($data['zonas_id'])->tipo_semana,
@@ -380,7 +383,6 @@ class RutasResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
-                                    ->unique(table: Customer::class, column: 'name')
                                     ->suffixIcon('heroicon-m-user'),
 
                                 Select::make('services')
@@ -394,6 +396,7 @@ class RutasResource extends Resource
 
                                 Select::make('simbolo')
                                     ->label('Simbologia')
+                                    ->required()
                                     ->options([
                                         'SB' => 'Salón de Belleza',
                                         'SYB' => 'Salón y Barbería',
@@ -419,16 +422,18 @@ class RutasResource extends Resource
                             ->description('Ingresa la información de contacto.')
                             ->schema([
                                 TextInput::make('email')
-                                    ->label('Correo electrónico')
-                                    ->email()
-                                    ->unique(table: Customer::class, column: 'email')
-                                    ->maxLength(255)
+                                    ->label('Correo Electrónico')
+                                    ->rules([
+                                        'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                                    ])
+                                    ->unique(table: Customer::class, column: 'email', ignoreRecord:true)
+                                    ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
                                 TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
-                                    ->unique(table: Customer::class, column: 'phone')
+                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord:true)
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone')
                             ])->columns(2)->icon('heroicon-o-identification'),
@@ -437,6 +442,7 @@ class RutasResource extends Resource
                             ->schema([
                                 FileUpload::make('front_image')
                                     ->label('Fotos del establecimiento')
+                                    ->required()
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->multiple()
                                     ->image()
