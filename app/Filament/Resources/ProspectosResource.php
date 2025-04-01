@@ -267,7 +267,8 @@ class ProspectosResource extends Resource
                                 ->image()
                                 ->required()
                                 ->imageEditor()
-                                ->directory('customer-images'),
+                                ->directory('customer-images')
+                                ->columnSpanFull(),
 
                         ])->columns(2),
                 ])->columnSpanFull()
