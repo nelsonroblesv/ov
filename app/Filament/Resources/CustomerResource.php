@@ -87,7 +87,7 @@ class CustomerResource extends Resource
                                     ->rules([
                                         'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                     ])
-                                    ->unique()
+                                    ->unique(ignoreRecord:true)
                                     ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 

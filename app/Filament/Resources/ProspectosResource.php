@@ -249,10 +249,10 @@ class ProspectosResource extends Resource
                         ->schema([
                             TextInput::make('email')
                                 ->label('Correo Electrónico')
+                                ->unique(ignoreRecord:true)
                                 ->rules([
                                     'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                 ])
-                                ->unique()
                                 ->placeholder('ejemplo@dominio.com')
                                 ->suffixIcon('heroicon-m-at-symbol'),
 
