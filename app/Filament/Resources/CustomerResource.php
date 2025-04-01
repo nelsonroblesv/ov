@@ -157,16 +157,20 @@ class CustomerResource extends Resource
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
-                                        PaquetesInicio::where('activo', 1)
-                                            ->orderByRaw("CASE 
-                                                        WHEN prefijo = 'paquete' THEN 1 
-                                                        WHEN prefijo = 'barber' THEN 2 
-                                                        ELSE 3 
-                                                      END, precio DESC") // Agrupa primero 'paquete', luego 'barber', luego los demás. Dentro de cada grupo, ordena por precio DESC.
+                                        PaquetesInicio::orderByRaw("CASE 
+                                            WHEN prefijo = 'paquete' THEN 1 
+                                             WHEN prefijo = 'barber' THEN 2 
+                                                ELSE 3 
+                                            END, precio DESC") // Ordena por prefijo y luego por precio DESC
                                             ->get()
-                                            ->mapWithKeys(function ($paquete) {
+                                            ->groupBy('prefijo') // Agrupa por prefijo
+                                            ->mapWithKeys(function ($paquetes, $prefijo) {
                                                 return [
-                                                    $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
+                                                    strtoupper($prefijo) => $paquetes->mapWithKeys(function ($paquete) {
+                                                        return [
+                                                            $paquete->id => "{$paquete->nombre} ({$paquete->precio} MXN)"
+                                                        ];
+                                                    })
                                                 ];
                                             })
                                     )
