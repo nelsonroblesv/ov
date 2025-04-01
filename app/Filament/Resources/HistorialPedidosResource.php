@@ -105,13 +105,13 @@ class HistorialPedidosResource extends Resource
                         ->label('Estado del Pedido')
                         ->required()
                         ->options([
-                            'Pendiente' => 'Pendiente',
-                            'Completado' => 'Completado',
-                            'Rechazado' => 'Rechazado',
-                            'Reubicar' => 'Reubicar',
-                            'Devuelta Parcial' => 'Devuelta Parcial',
-                            'Siguiente Visita' => 'Siguiente Visita'
-                        ]),
+                            'PEN' => 'Pendiente',
+                            'COM'  => 'Completo',
+                            'REC'  => 'Rechazado',
+                            'REU'  => 'Reubicar',
+                            'DEV'  => 'Devuelta Parcial',
+                            'SIG'  => 'Siguiente Visita'
+                         ]),
 
                     DatePicker::make('created_at')
                         ->label('Fecha')

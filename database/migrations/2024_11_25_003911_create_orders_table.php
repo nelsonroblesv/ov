@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->string('number')->unique();
-            $table->enum('status', ['Pendiente', 'Completado', 'Rechazado', 'Reubicar', 'Devuelta Parcial', 'Siguiente Visita'])->default('Pendiente');
+            $table->enum('status', ['PEN', 'COM', 'REC', 'REU', 'DEV', 'SIG'])->default('PEN');
             $table->enum('tipo_nota', ['Sistema', 'Remisión'])->default('Sistema');
             $table->enum('tipo_semana_nota', ['PAR', 'NON'])->default('PAR');
             $table->enum('dia_nota', ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'])->default('Lunes');

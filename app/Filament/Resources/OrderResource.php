@@ -75,10 +75,12 @@ class OrderResource extends Resource
                                 ->required()
                                 ->inline()
                                 ->options([
-                                    'pending' => OrderStatusEnum::PENDING->value,
-                                    'completed' => OrderStatusEnum::COMPLETED->value,
-                                    'processing' => OrderStatusEnum::PROCESSING->value,
-                                    'declined' => OrderStatusEnum::DECLINED->value
+                                   'PEN' => 'Pendiente',
+                                   'COM'  => 'Completo',
+                                   'REC'  => 'Rechazado',
+                                   'REU'  => 'Reubicar',
+                                   'DEV'  => 'Devuelta Parcial',
+                                   'SIG'  => 'Siguiente Visita'
                                 ])
                                 ->colors([
                                     'pending' => 'info',
@@ -133,10 +135,12 @@ class OrderResource extends Resource
                     ->badge()
                     ->colors([
                         'primary',
-                        'info' => 'pending',
-                        'warning' => 'processing',
-                        'success' => 'completed',
-                        'danger' => 'declined',
+                        'info' => 'Pendiente',
+                        'warning' => 'Completado',
+                        'success' => 'Rechazado',
+                        'danger' => 'Reubicar',
+                        'success' => 'Devuelta Parcial',
+                        'danger' => 'Siguiente Visita',
                     ])
                     ->icons([
                         'heroicon-o-x',
