@@ -97,7 +97,7 @@ class ProspectosResource extends Resource
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
                                 ->maxLength(255)
-                                ->unique()
+                                ->unique(ignoreRecord: true)
                                 ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                 ->suffixIcon('heroicon-m-map-pin'),
 
@@ -262,11 +262,12 @@ class ProspectosResource extends Resource
                                 ->suffixIcon('heroicon-m-phone'),
 
                             FileUpload::make('front_image')
-                                ->label('Foto de fachada')
+                                ->label('Foto de Fachada')
+                                ->helperText('Carga una foto del exterior del establecimiento')
                                 ->image()
+                                ->required()
                                 ->imageEditor()
-                                ->directory('prospectos-images')
-                                ->columnSpanFull()
+                                ->directory('customer-images'),
 
                         ])->columns(2),
                 ])->columnSpanFull()
