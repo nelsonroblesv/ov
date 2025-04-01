@@ -67,10 +67,13 @@ class ProspectosResource extends Resource
                     Step::make('Ubicacion')
                         ->description('Informacion Basica')
                         ->schema([
+
+                            Hidden::make('alta_user_id')->default(fn() => auth()->id()),
+
                             Select::make('user_id')
                                 ->required()
                                 ->relationship('user', 'name')
-                                ->label('Registrado por:'),
+                                ->label('Asignado a:'),
 
                             ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Registro')
@@ -94,6 +97,7 @@ class ProspectosResource extends Resource
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
                                 ->maxLength(255)
+                                ->unique()
                                 ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                 ->suffixIcon('heroicon-m-map-pin'),
 
