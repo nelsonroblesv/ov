@@ -37,4 +37,21 @@ class EditProspectos extends EditRecord
                 ->label('Borrar'),
         ];
     }
+
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Formatea el nombre al cargar el formulario
+        $data['name'] = ucwords(strtolower($data['name']));
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Formatea el nombre antes de guardar
+        $data['name'] = ucwords(strtolower($data['name']));
+
+        return $data;
+    }
 }
