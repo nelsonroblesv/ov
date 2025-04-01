@@ -87,7 +87,7 @@ class CustomerResource extends Resource
                                     ->rules([
                                         'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                     ])
-                                    ->unique(ignoreRecord:true)
+                                    ->unique(ignoreRecord: true)
                                     ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
@@ -158,17 +158,17 @@ class CustomerResource extends Resource
                                     ->label('Paquete de inicio')
                                     ->options(
                                         PaquetesInicio::where('activo', 1)
-                                        ->orderByRaw("CASE 
+                                            ->orderByRaw("CASE 
                                                         WHEN prefijo = 'paquete' THEN 1 
                                                         WHEN prefijo = 'barber' THEN 2 
                                                         ELSE 3 
                                                       END, precio DESC") // Agrupa primero 'paquete', luego 'barber', luego los demás. Dentro de cada grupo, ordena por precio DESC.
-                                        ->get()
-                                        ->mapWithKeys(function ($paquete) {
-                                            return [
-                                                $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
-                                            ];
-                                        })
+                                            ->get()
+                                            ->mapWithKeys(function ($paquete) {
+                                                return [
+                                                    $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
+                                                ];
+                                            })
                                     )
                                     ->placeholder('Selecciona un paquete')
                                     ->required(),

@@ -114,7 +114,7 @@ class RutasResource extends Resource
                                     ->rules([
                                         'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                     ])
-                                    ->unique(table: Customer::class, column: 'email', ignoreRecord:true)
+                                    ->unique(table: Customer::class, column: 'email', ignoreRecord: true)
                                     ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
@@ -122,7 +122,7 @@ class RutasResource extends Resource
                                     ->label('Teléfono')
                                     ->tel()
                                     ->required()
-                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord:true)
+                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord: true)
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone'),
 
@@ -176,11 +176,18 @@ class RutasResource extends Resource
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
-                                        PaquetesInicio::all()->where('activo', 1)->mapWithKeys(function ($paquete) {
-                                            return [
-                                                $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
-                                            ];
-                                        })
+                                        PaquetesInicio::where('activo', 1)
+                                            ->orderByRaw("CASE 
+                                                    WHEN prefijo = 'paquete' THEN 1 
+                                                    WHEN prefijo = 'barber' THEN 2 
+                                                    ELSE 3 
+                                                  END, precio DESC") // Agrupa primero 'paquete', luego 'barber', luego los demás. Dentro de cada grupo, ordena por precio DESC.
+                                            ->get()
+                                            ->mapWithKeys(function ($paquete) {
+                                                return [
+                                                    $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
+                                                ];
+                                            })
                                     )
                                     ->placeholder('Selecciona un paquete')
                                     ->required(),
@@ -323,7 +330,7 @@ class RutasResource extends Resource
                     ->action(function (array $data) {
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
                         $customer = Customer::create($data);
-                       
+
                         Rutas::create([
                             'user_id'  => auth()->id(),
                             'customer_id' => $customer->id,
@@ -426,14 +433,14 @@ class RutasResource extends Resource
                                     ->rules([
                                         'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                     ])
-                                    ->unique(table: Customer::class, column: 'email', ignoreRecord:true)
+                                    ->unique(table: Customer::class, column: 'email', ignoreRecord: true)
                                     ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
                                 TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
-                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord:true)
+                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord: true)
                                     ->maxLength(50)
                                     ->suffixIcon('heroicon-m-phone')
                             ])->columns(2)->icon('heroicon-o-identification'),
