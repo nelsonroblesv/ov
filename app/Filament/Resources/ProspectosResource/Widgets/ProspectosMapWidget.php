@@ -161,37 +161,15 @@ class ProspectosMapWidget extends MapTableWidget
 					->visible(fn($record) => $record->tipo_cliente === 'PR')
 					->modalDescription('Estas seguro que deseas transferir como Cliente? Esta acción no se puede deshacer.')
 					->action(function (Customer $record) {
-						/*
-						if (!$record->phone) {
-							Notification::make()
-								->title('Error')
-								->body('Solo puedes transferir Prospectos que cuenten con informacion de contacto. Por lo menos el numero de telefono.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-						if (Customer::where('phone', $record->phone)
-							->where('id', '!=', $record->id)
-							->exists()
-						) {
-							Notification::make()
-								->title('Error')
-								->body('El número de teléfono indicado ya está asociado con un Cliente existente.')
-								->danger()
-								->color('danger')
-								->send();
-							return;
-						}
-						*/
+						
 						$record->update(['tipo_cliente' => 'PV']);
 						$recipient = User::where('role', 'Administrador')->get();
 						$username =  User::find($record['user_id'])->name;
-
+						return redirect(CustomerResource::getUrl('edit', ['record' => $record->id]));
 						Notification::make()
 							->title('Prospecto transferido')
-							->body('Se ha transferido un nuevo cliente Punto de Venta.')
+							->body('Se ha transferido un nuevo cliente Punto de Venta. Debes llenar la información
+									para completar el registro. Se te redireccionará en un momento.')
 							->icon('heroicon-o-information-circle')
 							->iconColor('info')
 							->color('info')
@@ -205,7 +183,6 @@ class ProspectosMapWidget extends MapTableWidget
 							->color('info')
 							->sendToDatabase($recipient);
 					})
-
 			])
 		];
 		/*
