@@ -69,7 +69,7 @@ class ProspectosResource extends Resource
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
                                 ->maxLength(255)
-                                ->unique(ignoreRecord:true)
+                                ->unique(ignoreRecord: true)
                                 ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                 ->suffixIcon('heroicon-m-map-pin'),
 
@@ -229,10 +229,13 @@ class ProspectosResource extends Resource
                         ->description('Informacion adicional')
                         ->schema([
                             TextInput::make('email')
-                                ->label('Correo electrónico')
-                                ->email()
-                                ->unique(ignoreRecord: true)
-                                ->maxLength(255)
+                                ->label('Correo Electrónico')
+                                ->required()
+                                ->rules([
+                                    'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                                ])
+                                ->unique()
+                                ->placeholder('ejemplo@dominio.com')
                                 ->suffixIcon('heroicon-m-at-symbol'),
 
                             TextInput::make('phone')

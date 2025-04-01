@@ -82,11 +82,13 @@ class CustomerResource extends Resource
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
-                                    ->label('Correo electrónico')
-                                    ->email()
+                                    ->label('Correo Electrónico')
                                     ->required()
-                                    ->unique(ignoreRecord: true)
-                                    ->maxLength(255)
+                                    ->rules([
+                                        'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                                    ])
+                                    ->unique()
+                                    ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
                                 TextInput::make('phone')
@@ -282,7 +284,7 @@ class CustomerResource extends Resource
                                         ->label('Foto Exterior')
                                         ->helperText('Carga una foto del exterior del establecimiento')
                                         ->image()
-                                        //  ->required()
+                                        ->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
 
@@ -290,7 +292,7 @@ class CustomerResource extends Resource
                                         ->label('Foto Interior')
                                         ->helperText('Carga una foto del interior del establecimiento')
                                         ->image()
-                                        //   ->required()
+                                        ->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
                                 ])->columns(2)->icon('heroicon-o-camera'),

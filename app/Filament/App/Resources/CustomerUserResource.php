@@ -62,11 +62,13 @@ class CustomerUserResource extends Resource
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
-                                    ->label('Correo electrónico')
-                                    ->email()
+                                    ->label('Correo Electrónico')
                                     ->required()
-                                    ->unique(table: Customer::class, column: 'email')
-                                    ->maxLength(255)
+                                    ->rules([
+                                        'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                                    ])
+                                    ->unique()
+                                    ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
                                 TextInput::make('phone')
@@ -132,9 +134,9 @@ class CustomerUserResource extends Resource
                                     ->label('Paquete de inicio')
                                     ->columnSpanFull()
                                     ->options(
-                                        PaquetesInicio::all()->mapWithKeys(function ($paquete){
+                                        PaquetesInicio::all()->mapWithKeys(function ($paquete) {
                                             return [
-                                                 $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
+                                                $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];
                                         })
                                     )
@@ -153,7 +155,7 @@ class CustomerUserResource extends Resource
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map')
                                 ->columnSpanFull(),
-                                
+
                             Map::make('location')
                                 ->mapControls([
                                     'mapTypeControl'    => true,
