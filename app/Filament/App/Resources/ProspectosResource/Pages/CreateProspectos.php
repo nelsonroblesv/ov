@@ -33,6 +33,7 @@ class CreateProspectos extends CreateRecord
         $recipient = User::where('role', 'Administrador')->get();
         $username =  User::find($data['user_id'])->name;
         $tipo_cliente = $data['tipo_cliente'];
+        $data['name'] = ucwords(strtolower($data['name'])); // Convierte a minúsculas y luego pone mayúsculas iniciales
         $tipos = [
             'PV' => 'Punto de Venta',
             'RD' => 'Red',

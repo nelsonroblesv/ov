@@ -36,6 +36,7 @@ class CreateCustomer extends CreateRecord
         $assignTo = User::find($data['user_id'])->name;
         $username =  auth()->user()->name;
         $tipo_cliente = $data['tipo_cliente'];
+        $data['name'] = ucwords(strtolower($data['name'])); // Convierte a minúsculas y luego pone mayúsculas iniciales
         $tipos = [
             'PV' => 'Punto de Venta',
             'RD' => 'Red',

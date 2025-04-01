@@ -77,6 +77,7 @@ class CustomerResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
+                                    ->unique()
                                     ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
