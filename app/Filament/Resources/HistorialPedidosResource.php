@@ -111,7 +111,7 @@ class HistorialPedidosResource extends Resource
                             'REU'  => 'Reubicar',
                             'DEV'  => 'Devuelta Parcial',
                             'SIG'  => 'Siguiente Visita'
-                         ]),
+                        ]),
 
                     DatePicker::make('created_at')
                         ->label('Fecha')
@@ -183,7 +183,7 @@ class HistorialPedidosResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->colors([
-                        'info' => 'PAR',
+                        'success' => 'PAR',
                         'danger' => 'NON',
                     ])
                     ->icons([
@@ -200,22 +200,29 @@ class HistorialPedidosResource extends Resource
                     ->sortable()
                     ->badge()
                     ->colors([
-                        'info' => 'Pendiente',
-                        'success' => 'Completado',
-                        'gray' => 'Rechazado',
-                        'warning' => 'Reubicar',
-                        'danger' => 'Devuelta Parcial',
-                        'info' => 'Siguiente Visita'
+                        'info' => 'PEN',
+                        'success' => 'COM',
+                        'danger' => 'REC',
+                        'custom' => 'REU',
+                        'warning' => 'DEV',
+                        'info' => 'SIG',
                     ])
                     ->icons([
-                        'heroicon-o-clock' => 'Pendiente',
-                        'heroicon-o-check' => 'Completado',
-                        'heroicon-o-x-mark' => 'Rechazado',
-                        'heroicon-o-megaphone' => 'Reubicar',
-                        'heroicon-o-arrow-uturn-left' => 'Devuelta Parcial',
-                        'heroicon-o-calendar-date-range' => 'Siguiente Visita'
-
-                    ]),
+                        'heroicon-o-exclamation-circle' =>  'PEN',
+                        'heroicon-o-check' => 'COM',
+                        'heroicon-o-x-mark' => 'REC',
+                        'heroicon-o-map-pin' => 'REU',
+                        'heroicon-o-archive-box-arrow-down' => 'DEV',
+                        'heroicon-o-calendar-date-range' => 'SIG',
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PEN' => 'PENDIENTE',
+                        'COM' => 'COMPLETADO',
+                        'REC' => 'RECHAZADO',
+                        'REU' => 'REUBICADO',
+                        'DEV' => 'DEV PARCIAL',
+                        'SIG' => 'SIG VISITA',
+                    ][$state] ?? 'Otro'),
 
                 TextColumn::make('notes')
                     ->label('Notas')

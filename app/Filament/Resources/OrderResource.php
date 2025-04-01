@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Enums\OrderStatusEnum;
 use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
+use App\Models\Customer;
 use App\Models\OrderItem;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
@@ -56,11 +57,14 @@ class OrderResource extends Resource
                         ->schema([
                             Select::make('customer_id')
                                 ->label('Cliente')
-                                ->relationship('customer', 'name')
                                 ->disabledOn('edit')
                                 ->searchable()
                                 ->preload()
-                                ->required(),
+                                ->required()
+                                ->suffixIcon('heroicon-m-user')
+                                ->options(Customer::query()
+                                    ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                                    ->pluck('name', 'id')),
 
                             TextInput::make('number')
                                 ->label('Numero de Orden')
@@ -75,26 +79,30 @@ class OrderResource extends Resource
                                 ->required()
                                 ->inline()
                                 ->options([
-                                   'PEN' => 'Pendiente',
-                                   'COM'  => 'Completo',
-                                   'REC'  => 'Rechazado',
-                                   'REU'  => 'Reubicar',
-                                   'DEV'  => 'Devuelta Parcial',
-                                   'SIG'  => 'Siguiente Visita'
+                                    'PEN' => 'Pendiente',
+                                    'COM'  => 'Completo',
+                                    'REC'  => 'Rechazado',
+                                    'REU'  => 'Reubicar',
+                                    'DEV'  => 'Devuelta Parcial',
+                                    'SIG'  => 'Siguiente Visita'
                                 ])
                                 ->colors([
-                                    'pending' => 'info',
-                                    'processing' => 'warning',
-                                    'completed' => 'success',
-                                    'declined' => 'danger',
+                                    'PEN' => 'info',
+                                    'COM' => 'warning',
+                                    'REC' => 'success',
+                                    'REU' => 'danger',
+                                    'DEV' => 'success',
+                                    'SIG' => 'danger'
                                 ])
                                 ->icons([
-                                    'pending' => 'heroicon-o-exclamation-circle',
-                                    'processing' => 'heroicon-o-arrow-path',
-                                    'completed' => 'heroicon-o-check',
-                                    'declined' => 'heroicon-o-x-mark'
+                                    'PEN' => 'heroicon-o-exclamation-circle',
+                                    'COM' => 'heroicon-o-check',
+                                    'REC' => 'heroicon-o-x-mark',
+                                    'REU' => 'heroicon-o-map-pin',
+                                    'DEV' => 'heroicon-o-archive-box-arrow-down',
+                                    'SIG' => 'heroicon-o-calendar-date-range',
                                 ])
-                                ->default('pending')
+                                ->default('PEN')
                                 ->columnSpanFull(),
                         ])->columns(2),
 
@@ -134,21 +142,30 @@ class OrderResource extends Resource
                     ->sortable()
                     ->badge()
                     ->colors([
-                        'primary',
-                        'info' => 'Pendiente',
-                        'warning' => 'Completado',
-                        'success' => 'Rechazado',
-                        'danger' => 'Reubicar',
-                        'success' => 'Devuelta Parcial',
-                        'danger' => 'Siguiente Visita',
+                        'info' => 'PEN',
+                        'success' => 'COM',
+                        'danger' => 'REC',
+                        'custom' => 'REU',
+                        'warning' => 'DEV',
+                        'info' => 'SIG',
                     ])
                     ->icons([
-                        'heroicon-o-x',
-                        'heroicon-o-clock' => 'pending',
-                        'heroicon-o-x-mark' => 'declined',
-                        'heroicon-o-check' => 'completed',
-                        'heroicon-o-arrow-path' => 'processing'
-                    ]),
+                        'heroicon-o-exclamation-circle' =>  'PEN',
+                        'heroicon-o-check' => 'COM',
+                        'heroicon-o-x-mark' => 'REC',
+                        'heroicon-o-map-pin' => 'REU',
+                        'heroicon-o-archive-box-arrow-down' => 'DEV',
+                        'heroicon-o-calendar-date-range' => 'SIG',
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PEN' => 'PENDIENTE',
+                        'COM' => 'COMPLETADO',
+                        'REC' => 'RECHAZADO',
+                        'REU' => 'REUBICADO',
+                        'DEV' => 'DEV PARCIAL',
+                        'SIG' => 'SIG VISITA',
+                    ][$state] ?? 'Otro'),
+
                 TextColumn::make('notes')
                     ->label('Notas')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -174,35 +191,35 @@ class OrderResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Pedido eliminado')
-                            ->body('El Pedido ha sido eliminado del sistema.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Pedido')
-                    ->modalDescription('Estas seguro que deseas eliminar este Pedido? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Pedido eliminado')
+                                ->body('El Pedido ha sido eliminado del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Pedido')
+                        ->modalDescription('Estas seguro que deseas eliminar este Pedido? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Registros eliminados')
-                            ->body('Los registros seleccionados han sido eliminados.')
-                            ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
-                    )
-                    ->modalHeading('Borrar Pedidos')
-                    ->modalDescription('Estas seguro que deseas eliminar los Pedidos seleccionados? Esta acción no se puede deshacer.')
-                    ->modalSubmitActionLabel('Si, eliminar'),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registros eliminados')
+                                ->body('Los registros seleccionados han sido eliminados.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Pedidos')
+                        ->modalDescription('Estas seguro que deseas eliminar los Pedidos seleccionados? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
                 ]),
             ]);
     }
