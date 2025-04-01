@@ -8,6 +8,7 @@ use App\Models\PaquetesInicio;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -36,9 +37,11 @@ class PaquetesInicioResource extends Resource
         return $form
             ->schema([
                 Section::make('Información del Paquete de Inicio')->schema([
-                    TextInput::make('prefijo')
-                        ->label('Prefijo')
-                        ->required(),
+                    Select::make('prefijo')
+                        ->options([
+                            'paquete' => 'Paquete',
+                            'barber' => 'Barber'
+                        ]),
                     TextInput::make('nombre')
                         ->label('Nombre')
                         ->required(),
@@ -71,7 +74,11 @@ class PaquetesInicioResource extends Resource
                 TextColumn::make('prefijo')
                     ->label('Prefijo')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'paquete' => 'Paquete',
+                        'barber' => 'Barber',
+                    ][$state] ?? 'Otro'),
                 TextColumn::make('nombre')
                     ->label('Nombre')
                     ->searchable()
