@@ -29,6 +29,7 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('')
             ->login(CustomLogin::class)
+            ->unsavedChangesAlerts()
             //->domain('app.osberthvalle.com')
            // ->passwordReset()
             ->profile()

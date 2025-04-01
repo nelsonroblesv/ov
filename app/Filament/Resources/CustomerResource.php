@@ -157,7 +157,14 @@ class CustomerResource extends Resource
                                 Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
-                                        PaquetesInicio::all()->where('activo', 1)->mapWithKeys(function ($paquete) {
+                                        PaquetesInicio::where('activo', 1)
+                                        ->orderByRaw("CASE 
+                                                        WHEN prefijo = 'paquete' THEN 1 
+                                                        WHEN prefijo = 'barber' THEN 2 
+                                                        ELSE 3 
+                                                      END, precio DESC") // Agrupa primero 'paquete', luego 'barber', luego los demás. Dentro de cada grupo, ordena por precio DESC.
+                                        ->get()
+                                        ->mapWithKeys(function ($paquete) {
                                             return [
                                                 $paquete->id => "{$paquete->prefijo} {$paquete->nombre} ({$paquete->precio} MXN)"
                                             ];

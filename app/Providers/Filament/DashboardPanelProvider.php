@@ -28,6 +28,7 @@ class DashboardPanelProvider extends PanelProvider
         return $panel
             ->id('dashboard')
             ->path('dashboard')
+            ->unsavedChangesAlerts()
             ->login(CustomLogin::class)
             ->profile()
             ->brandLogo(fn() => view('filament.logo'))
