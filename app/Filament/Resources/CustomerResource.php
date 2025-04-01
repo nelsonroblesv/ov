@@ -174,8 +174,8 @@ class CustomerResource extends Resource
                                                 ];
                                             })
                                     )
-                                    ->placeholder('Selecciona un paquete')
-                                    ->required(),
+                                    ->placeholder('Selecciona un paquete'),
+                                    //->required(),
                             ])
                         ])->columns(2),
 
@@ -185,7 +185,7 @@ class CustomerResource extends Resource
                             TextInput::make('full_address')
                                 ->label('Dirección')
                                 ->helperText('Calle, Núm. Ext., Núm. Int., Colonia, Intersecciones')
-                                // ->required()
+                                //->required()
                                 ->maxLength(255)
                                 ->suffixIcon('heroicon-m-map')
                                 ->columnSpanFull(),
@@ -261,7 +261,7 @@ class CustomerResource extends Resource
 
                             Select::make('regiones_id')
                                 ->label('Región')
-                                //  ->required()
+                                ->required()
                                 ->options(
                                     fn() =>
                                     Regiones::whereIn('id', function ($query) {
@@ -274,7 +274,7 @@ class CustomerResource extends Resource
                             Select::make('zonas_id')
                                 ->label('Zona')
                                 ->placeholder('Selecciona una zona')
-                                // ->required()
+                                ->required()
                                 ->searchable()
                                 ->options(
                                     fn(callable $get) =>
@@ -295,7 +295,7 @@ class CustomerResource extends Resource
                                         ->label('Foto Exterior')
                                         ->helperText('Carga una foto del exterior del establecimiento')
                                         ->image()
-                                        ->required()
+                                        //->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
 
@@ -303,7 +303,7 @@ class CustomerResource extends Resource
                                         ->label('Foto Interior')
                                         ->helperText('Carga una foto del interior del establecimiento')
                                         ->image()
-                                        ->required()
+                                        //->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
                                 ])->columns(2)->icon('heroicon-o-camera'),
