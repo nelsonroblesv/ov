@@ -158,6 +158,7 @@ class ProspectosMapWidget extends MapTableWidget
 					->icon('heroicon-o-arrows-up-down')
 					->color('info')
 					->modalHeading('Transferir a Cliente')
+					->visible(fn($record) => $record->tipo_cliente === 'PR')
 					->modalDescription('Estas seguro que deseas transferir como Cliente? Esta acción no se puede deshacer.')
 					->action(function (Customer $record) {
 						/*
@@ -185,7 +186,6 @@ class ProspectosMapWidget extends MapTableWidget
 						}
 						*/
 						$record->update(['tipo_cliente' => 'PV']);
-
 						$recipient = User::where('role', 'Administrador')->get();
 						$username =  User::find($record['user_id'])->name;
 

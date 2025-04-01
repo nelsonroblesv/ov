@@ -12,5 +12,6 @@ class PaquetesInicio extends Model
         'descripcion',
         'imagen',
         'precio',
+        'activo'
     ];
 }

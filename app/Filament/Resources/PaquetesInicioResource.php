@@ -10,11 +10,13 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -53,6 +55,7 @@ class PaquetesInicioResource extends Resource
                         ->placeholder('0.00')
                         ->suffixIcon('heroicon-m-currency-dollar')
                         ->required(),
+                    Toggle::make('activo')->default(1)
                 ])
             ]);
     }
@@ -80,9 +83,11 @@ class PaquetesInicioResource extends Resource
                 TextColumn::make('precio')
                     ->label('Precio')
                     ->searchable()
-                    
                     ->prefix('$')
-                    ->sortable(),   
+                    ->sortable(),
+                ToggleColumn::make('activo')
+                    ->label('Activo')
+                    ->sortable(),
             ])
             ->filters([
                 //

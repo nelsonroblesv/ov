@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('descripcion');
             $table->string('imagen');
             $table->string('precio');
+            $table->boolean('activo');
             $table->timestamps();
         });
     }
