@@ -249,7 +249,6 @@ class ProspectosResource extends Resource
                         ->schema([
                             TextInput::make('email')
                                 ->label('Correo Electrónico')
-                                ->required()
                                 ->rules([
                                     'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                 ])
