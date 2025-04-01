@@ -77,7 +77,7 @@ class CustomerResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
-                                    ->unique()
+                                    ->unique(ignoreRecord:true)
                                     ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
@@ -277,7 +277,6 @@ class CustomerResource extends Resource
                                 ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
                             Section::make('Fotos del establecimiento')
-                                ->collapsed()
                                 ->schema([
                                     FileUpload::make('front_image')
                                         ->label('Foto Exterior')

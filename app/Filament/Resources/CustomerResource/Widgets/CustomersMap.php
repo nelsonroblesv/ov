@@ -22,6 +22,7 @@ use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -168,7 +169,6 @@ class CustomersMap extends MapTableWidget
                         ->modalSubmitActionLabel('Si, eliminar'),
 		*/
 			])
-
 		];
 		//GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
 		/*
