@@ -69,7 +69,7 @@ class ProspectosResource extends Resource
                                 ->label('Nombre del lugar o identificador')
                                 ->required()
                                 ->maxLength(255)
-                                ->unique()
+                                ->unique(ignoreRecord:true)
                                 ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                 ->suffixIcon('heroicon-m-map-pin'),
 
@@ -84,6 +84,7 @@ class ProspectosResource extends Resource
 
                             Select::make('simbolo')
                                 ->label('Simbologia')
+                                ->required()
                                 ->options([
                                     'SB' => 'Salón de Belleza',
                                     'SYB' => 'Salón y Barbería',
@@ -245,6 +246,7 @@ class ProspectosResource extends Resource
                                 ->label('Fotos del establecimiento')
                                 ->placeholder('Tomar fotos o cargar desde galeria')
                                 ->multiple()
+                                ->required()
                                 ->image()
                                 ->imageEditor()
                                 ->directory('prospectos-images')
