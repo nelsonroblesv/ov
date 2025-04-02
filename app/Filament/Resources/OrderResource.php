@@ -147,7 +147,7 @@ class OrderResource extends Resource
                         'danger' => 'REC',
                         'custom' => 'REU',
                         'warning' => 'DEV',
-                        'info' => 'SIG',
+                        'primary' => 'SIG',
                     ])
                     ->icons([
                         'heroicon-o-exclamation-circle' =>  'PEN',
