@@ -33,6 +33,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Get;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\Relationship;
 use Illuminate\Support\Number;
@@ -243,12 +244,12 @@ class OrderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'pending')->count();
+        return static::getModel()::where('status', 'PEN')->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return static::getModel()::where('status', '-', 'pending')->count() > 1 ? 'success' : 'info';
+        return static::getModel()::where('status', '-', 'PEN')->count() > 1 ? 'success' : 'info';
     }
 
     public static function shouldRegisterNavigation(): bool

@@ -20,6 +20,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction as ActionsCreateAction;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -91,11 +93,11 @@ class ItemsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->heading('Productos en el Pedido')
             ->columns([
-                Tables\Columns\TextColumn::make('order.number')->label('Orden No.'),
-                Tables\Columns\TextColumn::make('product.name')->label('Producto'),
-                Tables\Columns\TextColumn::make('quantity')->label('Cantidad'),
-                Tables\Columns\TextColumn::make('price_publico')->label('Precio'),
-                Tables\Columns\TextColumn::make('total_price')->label('Total')
+                TextColumn::make('order.number')->label('Orden No.'),
+                TextColumn::make('product.name')->label('Producto'),
+                TextColumn::make('quantity')->label('Cantidad'),
+                TextColumn::make('price_publico')->label('Precio'),
+                TextColumn::make('total_price')->label('Total')->summarize(Sum::make())
             ])
             ->filters([
                 //

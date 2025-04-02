@@ -36,25 +36,35 @@ class ListOrders extends ListRecords
             ->label('Todos')
             ->icon('heroicon-m-table-cells'),
 
-            'pending' => Tab::make()
+            'PEN' => Tab::make()
             ->label('Pendientes')
-            ->icon('heroicon-m-clock')
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'pending')),
+            ->icon('heroicon-o-exclamation-circle')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'PEN')),
 
-            'processing' => Tab::make()
-            ->label('Procesando')
-            ->icon('heroicon-m-arrow-path')
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'processing')),
-
-            'completed' => Tab::make()
+            'COM' => Tab::make()
             ->label('Completos')
-            ->icon('heroicon-m-check')
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'completed')),
+            ->icon('heroicon-o-check')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'COM')),
 
-            'declined' => Tab::make()
+            'REC' => Tab::make()
             ->label('Rechazados')
-            ->icon('heroicon-m-x-mark')
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'declined'))
+            ->icon('heroicon-o-x-mark')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'REC')),
+
+            'REU' => Tab::make()
+            ->label('Reubicados')
+            ->icon('heroicon-o-map-pin')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'REU')),
+
+            'DEV' => Tab::make()
+            ->label('Dev Parcial')
+            ->icon('heroicon-o-archive-box-arrow-down')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'DEV')),
+
+            'SIG' => Tab::make()
+            ->label('Sig Visita')
+            ->icon( 'heroicon-o-calendar-date-range')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'SIG'))
         ];
     }
 }

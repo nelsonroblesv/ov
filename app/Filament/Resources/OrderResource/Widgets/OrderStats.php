@@ -11,12 +11,14 @@ class OrderStats extends BaseWidget
 {
     protected function getStats(): array
     {
-        return [/*
-            Stat::make('Pendientes', Order::query()->where('status', 'pending')->count()),
-            Stat::make('Procesando', Order::query()->where('status', 'processing')->count()),
-            Stat::make('Completos', Order::query()->where('status', 'completed')->count()),
+        return [
+            Stat::make('PENDIENTES', Order::query()->where('status', 'PEN')->count()),
+            Stat::make('COMPLETOS', Order::query()->where('status', 'COM')->count()),
+            Stat::make('REUBICADOS', Order::query()->where('status', 'REU')->count()),
+            Stat::make('DEVUELTOS', Order::query()->where('status', 'DEV')->count()),
+            Stat::make('SIGUIENTE VISITA', Order::query()->where('status', 'SIG')->count()),
             Stat::make('Total', Number::currency(Order::query()->sum('grand_total'), 'MXN'))
-            */
+            
         ];
     }
 }
