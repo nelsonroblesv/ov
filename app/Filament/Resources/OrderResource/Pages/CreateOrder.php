@@ -68,7 +68,7 @@ class CreateOrder extends CreateRecord
         $customer = $customerId->name;
 
         $customerUserId = Customer::where('id', $data['customer_id'])->value('user_id');
-
+        $vendedor = User::where('id', $customerUserId)->value('name');
         // Obtener los usuarios con rol "Administrador"
         $adminUsers = User::where('role', 'Administrador')->get();
 
@@ -82,7 +82,7 @@ class CreateOrder extends CreateRecord
         if ($users->isNotEmpty()) {
             Notification::make()
                 ->title('Nuevo Pedido Registrado')
-                ->body($addBy . ' agregó un Nuevo Pedido para: ' . $customer.'. Estado: PENDIENTE.')
+                ->body($addBy . ' agregó un Nuevo Pedido de '.$vendedor.' para: ' . $customer.'. Estado: PENDIENTE.')
                 ->icon('heroicon-o-information-circle')
                 ->iconColor('info')
                 ->color('info')
