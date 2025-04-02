@@ -18,7 +18,8 @@ class ListOrders extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Registrar Pedido'),
+                ->label('Registrar Nuevo Pedido')
+                ->icon('heroicon-o-shopping-bag'),
         ];
     }
 
