@@ -91,7 +91,7 @@ class EditOrder extends EditRecord
             return $collection->push($customerUser);
         });
 
-        switch ($newStatus['status']) {
+        switch ($newStatus) {
             case 'PEN': $estado = 'PENDIENTE';break;
             case 'COM': $estado = 'COMPLETADO';break;
             case 'REC': $estado = 'RECHAZADO';break;
