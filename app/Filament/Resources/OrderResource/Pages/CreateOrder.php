@@ -77,12 +77,21 @@ class CreateOrder extends CreateRecord
         $users = $adminUsers->when($customerUser, function ($collection) use ($customerUser) {
             return $collection->push($customerUser);
         });
+
+        switch ($data['status']) {
+            case 'PEN': $estado = 'PENDIENTE';break;
+            case 'COM': $estado = 'COMPLETADO';break;
+            case 'REC': $estado = 'RECHAZADO';break;
+            case 'REU': $estado = 'REUBICADO';break;
+            case 'DEV': $estado = 'DEVUELTA PARCIAL';break;
+            case 'SIG': $estado = 'SIGUIENTE VISITA';break;
+        }
         
         $addBy =  auth()->user()->name;
         if ($users->isNotEmpty()) {
             Notification::make()
                 ->title('Nuevo Pedido Registrado')
-                ->body($addBy . ' agregó un Nuevo Pedido de '.$vendedor.' para: ' . $customer.'. Estado: PENDIENTE.')
+                ->body($addBy . ' agregó un Nuevo Pedido de '.$vendedor.' para: ' . $customer.'. Estado: '.$estado)
                 ->icon('heroicon-o-information-circle')
                 ->iconColor('info')
                 ->color('info')
