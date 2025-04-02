@@ -17,7 +17,7 @@ class Order extends Model
 
     protected $fillable = [
         'customer_id', 'number', 'status', 'notes', 'grand_total', 'created_at', 'notas_venta', 
-        'fecha_liquidacion', 'tipo_nota', 'tipo_semana_nota', 'dia_nota'
+        'fecha_liquidacion', 'tipo_nota', 'tipo_semana_nota', 'dia_nota', 'created_at', 'updated_at'
     ];
 
     protected $casts = [

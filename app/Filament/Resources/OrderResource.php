@@ -120,6 +120,7 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'DESC')
             ->heading('Pedidos')
             ->description('Gestion de Pedidos.')
             ->columns([
@@ -134,8 +135,13 @@ class OrderResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('created_at')
-                    ->label('Fecha')
-                    ->date()
+                    ->label('Registrado')
+                    ->dateTime()
+                    ->sortable(),
+
+                TextColumn::make('updated_at')
+                    ->label('Actualizado')
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('status')
@@ -173,11 +179,6 @@ class OrderResource extends Resource
 
                 TextColumn::make('grand_total')
                     ->label('Total'),
-
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('deleted_at')
                     ->dateTime()

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource;
 use App\Models\Customer;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -77,6 +78,9 @@ class CreateOrder extends CreateRecord
         $users = $adminUsers->when($customerUser, function ($collection) use ($customerUser) {
             return $collection->push($customerUser);
         });
+
+        $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
+
 
         switch ($data['status']) {
             case 'PEN': $estado = 'PENDIENTE';break;

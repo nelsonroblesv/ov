@@ -6,6 +6,7 @@ use App\Filament\Resources\OrderResource;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -99,6 +100,9 @@ class EditOrder extends EditRecord
             case 'DEV': $estado = 'DEVUELTA PARCIAL';break;
             case 'SIG': $estado = 'SIGUIENTE VISITA';break;
         }
+
+        $data['updated_at'] = Carbon::now()->setTimezone('America/Merida');
+
 
         // Si hay usuarios, enviar la notificación
         $addBy =  auth()->user()->name;
