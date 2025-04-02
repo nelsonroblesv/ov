@@ -87,12 +87,11 @@ class ZonasResource extends Resource
                         ])
                         ->required(),
 
-                    Select::make('user_id')
+                    Select::make('users')
+                        ->multiple()
                         ->label('Asignar a:')
                         ->placeholder('Seleccione un Usuario')
-                        ->options(
-                            User::all()->pluck('name', 'id')
-                        )
+                        ->relationship('users', 'name')
                         ->required()
                         ->preload()
                 ])->columns(2)
@@ -105,8 +104,8 @@ class ZonasResource extends Resource
             ->columns([
                 TextColumn::make('nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Región')->searchable()->sortable(),
-                ColorColumn::make('user.color')->label('Color')->searchable()->sortable(),
-                TextColumn::make('user.name')->label('Asignado a')->searchable()->sortable(),
+                ColorColumn::make('users.color')->label('Color')->searchable()->sortable(),
+                TextColumn::make('users.name')->label('Asignado a')->searchable()->sortable(),
                 TextColumn::make('tipo_semana')->label('Semana')->alignCenter()->badge()
                     ->colors([
                         'success' => 'PAR',

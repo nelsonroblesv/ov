@@ -19,8 +19,8 @@ class ZonaUsuarioSeeder extends Seeder
 
         foreach ($zonas as $zona) {
             DB::table('zona_usuario')->insert([
-                'zona_id' => $zona->id,
-                'user_id' => $zona->user_id,
+                'zonas_id' => $zona->id,
+                'users_id' => $zona->user_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

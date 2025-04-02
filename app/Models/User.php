@@ -9,6 +9,7 @@ use Filament\Panel;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -83,10 +84,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Customer::class);
     }
 
-    public function zonas(): HasMany
+    public function zonas(): BelongsToMany
     {
-        return $this->hasMany(Zonas::class);
+        return $this->belongsToMany(Zonas::class, 'zona_usuario', 'users_id', 'zonas_id');
     }
+
 
     public function rutas(): BelongsTo
     {
