@@ -23,7 +23,7 @@ class CreateZonas extends CreateRecord
         return Notification::make()
             ->success()
             ->title('Zona registrada')
-            ->body('Se ha registrado una Zona de forma exitosa.')
+            ->body('Se ha registrado una nueva Zona y fue asignada de forma exitosa.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');
