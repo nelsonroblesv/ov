@@ -47,7 +47,7 @@ class ProductResource extends Resource
                             ->maxLength(255)
                             ->label('Nombre')
                             ->helperText('Ingresa el nombre del Producto')
-                            ->unique()
+                            ->unique(ignoreRecord:true)
                             //->disabledOn('edit')
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
@@ -78,8 +78,9 @@ class ProductResource extends Resource
                             ->label('Imagen del Producto')
                             ->image()
                             ->imageEditor()
-                            ->directory('product-images')
-                            ->columnSpanFull()
+                            ->directory('product-images'),
+                        
+                            TextInput::make('sku')
                     ])->columns(2),
 
                 Section::make('Inventario')
