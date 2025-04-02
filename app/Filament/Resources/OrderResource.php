@@ -89,11 +89,11 @@ class OrderResource extends Resource
                                 ])
                                 ->colors([
                                     'PEN' => 'info',
-                                    'COM' => 'warning',
-                                    'REC' => 'success',
-                                    'REU' => 'danger',
-                                    'DEV' => 'success',
-                                    'SIG' => 'danger'
+                                    'COM' => 'success',
+                                    'REC' => 'danger',
+                                    'REU' => 'info',
+                                    'DEV' => 'warning',
+                                    'SIG' => 'info'
                                 ])
                                 ->icons([
                                     'PEN' => 'heroicon-o-exclamation-circle',
@@ -152,9 +152,9 @@ class OrderResource extends Resource
                         'info' => 'PEN',
                         'success' => 'COM',
                         'danger' => 'REC',
-                        'custom' => 'REU',
+                        'info' => 'REU',
                         'warning' => 'DEV',
-                        'primary' => 'SIG',
+                        'info' => 'SIG',
                     ])
                     ->icons([
                         'heroicon-o-exclamation-circle' =>  'PEN',
