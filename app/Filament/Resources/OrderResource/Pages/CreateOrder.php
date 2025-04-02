@@ -82,7 +82,7 @@ class CreateOrder extends CreateRecord
         if ($users->isNotEmpty()) {
             Notification::make()
                 ->title('Nuevo Pedido Registrado')
-                ->body($addBy . ' agregó un Nuevo Pedido para: ' . $customer.' marcado como PENDIENTE.')
+                ->body($addBy . ' agregó un Nuevo Pedido para: ' . $customer.'. Estado: PENDIENTE.')
                 ->icon('heroicon-o-information-circle')
                 ->iconColor('info')
                 ->color('info')
