@@ -64,7 +64,6 @@ class CreateOrder extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Obtener el usuario del customer
         // Obtener el cliente
         $customerId = Customer::find($data['customer_id']);
         $customer = $customerId?->name ?? 'Cliente desconocido';
@@ -72,6 +71,7 @@ class CreateOrder extends CreateRecord
         // Obtener IDs de los usuarios involucrados
         $solicita = is_array($data['solicitado_por']) ? $data['solicitado_por'] : [$data['solicitado_por']];
         $registra = $data['registrado_por'] ?? null;
+        $usuarioLogueadoId = auth()->id(); // ID del usuario autenticado
 
         // Obtener usuarios con rol "Administrador"
         $adminUsers = User::where('role', 'Administrador')->get();
@@ -80,11 +80,16 @@ class CreateOrder extends CreateRecord
         $vendedores = User::whereIn('id', $solicita)->get();
         $registrador = $registra ? User::find($registra) : null;
 
-        // Unir todos los destinatarios en una colección
+        // Unir administradores, vendedores y el usuario que registró la orden
         $destinos = $adminUsers->merge($vendedores);
-        if ($registrador) {
+
+        // Evitar que el usuario logueado reciba dos veces la notificación
+        if ($registrador && !$adminUsers->contains($registrador) && $registrador->id !== $usuarioLogueadoId) {
             $destinos->push($registrador);
         }
+
+        // Filtrar duplicados
+        $destinos = $destinos->unique('id');
 
         // Asignar fecha de creación
         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
@@ -109,15 +114,15 @@ class CreateOrder extends CreateRecord
         if ($destinos->isNotEmpty()) {
             Notification::make()
                 ->title('Nuevo Pedido Registrado')
-                ->body(($registrador?->name ?? '') .
+                ->body(($registrador?->name ?? 'Alguien') .
                     ' agregó un Nuevo Pedido de ' . ($nombresVendedores ?: 'Desconocido') .
                     ' para: ' . $customer . '. Estado: ' . $estado)
-                ->icon('heroicon-o-information-circle')
+                ->icon('heroicon-o-shopping-bag')
                 ->iconColor('info')
                 ->color('info')
                 ->sendToDatabase($destinos);
-
-            return $data;
         }
+
+        return $data;
     }
 }
