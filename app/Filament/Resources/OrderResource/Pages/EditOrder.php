@@ -69,6 +69,8 @@ class EditOrder extends EditRecord
         // Verificar si el estado cambió
         if ($order->status !== $data['status']) {
             $this->notifyStatusChange($order, $data['status']);
+            $data['updated_at'] = Carbon::now()->setTimezone('America/Merida');
+
         }
 
         return $data;
@@ -76,45 +78,54 @@ class EditOrder extends EditRecord
 
     private function notifyStatusChange(Order $order, $newStatus)
     {
-        // Obtener el usuario del customer asignado a la orden
-        $customerId = Customer::find($order->customer_id);
-        $customer = $customerId->name;
-
-        $customerUserId = Customer::where('id', $order->customer_id)->value('user_id');
-        $vendedor = User::where('id', $customerUserId)->value('name');
+        $cliente = Customer::find($order->customer_id)?->name;
+        
+        $solicita = is_array($order->solicitado_por) ? $order->solicitado_por : [$order->solicitado_por];
+        $registra = $order->registrado_por;
+        $usuarioLogueadoId = auth()->id(); // ID del usuario autenticado
 
         // Obtener usuarios con rol "Administrador"
         $adminUsers = User::where('role', 'Administrador')->get();
-        $customerUser = $customerUserId ? User::find($customerUserId) : null;
 
-        // Unir los administradores con el usuario del customer
-        $users = $adminUsers->when($customerUser, function ($collection) use ($customerUser) {
-            return $collection->push($customerUser);
-        });
+        // Obtener los usuarios solicitantes y quien registró la orden
+        $vendedores = User::whereIn('id', $solicita)->get();
+        $registrador = $registra ? User::find($registra) : null;
 
-        switch ($newStatus) {
-            case 'PEN': $estado = 'PENDIENTE';break;
-            case 'COM': $estado = 'COMPLETADO';break;
-            case 'REC': $estado = 'RECHAZADO';break;
-            case 'REU': $estado = 'REUBICADO';break;
-            case 'DEV': $estado = 'DEVUELTA PARCIAL';break;
-            case 'SIG': $estado = 'SIGUIENTE VISITA';break;
+        // Unir administradores, vendedores y registrador
+        $destinos = $adminUsers->merge($vendedores);
+
+        // Evitar duplicados y que el usuario logueado reciba la notificación dos veces
+        if ($registrador && !$adminUsers->contains($registrador) && $registrador->id !== $usuarioLogueadoId) {
+            $destinos->push($registrador);
         }
 
-        $order['updated_at'] = Carbon::now()->setTimezone('America/Merida');
+        // Filtrar duplicados
+        $destinos = $destinos->unique('id');
 
-        // Si hay usuarios, enviar la notificación
-        $addBy =  auth()->user()->name;
-        if ($users->isNotEmpty()) {
+        // Mapeo de estados
+        $estados = [
+            'PEN' => 'PENDIENTE',
+            'COM' => 'COMPLETADO',
+            'REC' => 'RECHAZADO',
+            'REU' => 'REUBICADO',
+            'DEV' => 'DEVUELTA PARCIAL',
+            'SIG' => 'SIGUIENTE VISITA',
+        ];
+        $estado = $estados[$newStatus] ?? 'DESCONOCIDO';
+
+        // Construir la lista de vendedores
+        $nombresVendedores = $vendedores->pluck('name')->implode(', ');
+
+        // Enviar la notificación
+        if ($destinos->isNotEmpty()) {
             Notification::make()
-                ->title('Pedido Actualizado')
-                ->body($addBy . ' cambio el Pedido de '.$vendedor.' para: ' . $customer.'. Estado: '.$estado)
-                ->icon('heroicon-o-information-circle')
+                ->title('Cambio de Estado en Pedido')
+                ->body("El pedido de {$nombresVendedores} para el cliente: {$cliente}, 
+                            ha cambiado su estado a: **{$estado}**.")
+                ->icon('heroicon-o-arrow-path')
                 ->iconColor('info')
                 ->color('info')
-                ->sendToDatabase($users);
+                ->sendToDatabase($destinos);
         }
-
     }
-
 }

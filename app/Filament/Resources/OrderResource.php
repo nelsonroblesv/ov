@@ -139,6 +139,7 @@ class OrderResource extends Resource
                 TextColumn::make('number')
                     ->label('Num. Orden')
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 TextColumn::make('customer.name')
@@ -158,6 +159,7 @@ class OrderResource extends Resource
 
                 TextColumn::make('registrador.name')
                     ->label('Registró:')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 TextColumn::make('solicitador.name')
@@ -172,9 +174,9 @@ class OrderResource extends Resource
                         'info' => 'PEN',
                         'success' => 'COM',
                         'danger' => 'REC',
-                        'info' => 'REU',
-                        'warning' => 'DEV',
-                        'info' => 'SIG',
+                        'warning' => 'REU',
+                        'primary' => 'DEV',
+                        'primary' => 'SIG',
                     ])
                     ->icons([
                         'heroicon-o-exclamation-circle' =>  'PEN',
