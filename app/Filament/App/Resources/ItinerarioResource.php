@@ -114,13 +114,15 @@ class ItinerarioResource extends Resource
                         $semana = $valores[$tipoSemanaSeleccionado];
 
                         // Obtener los registros que se están mostrando en la tabla
-                        $clientes = Customer::where('user_id', $user)
-                            ->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
-                                $q->where('dia_zona', $diaActual)
-                                    ->where('tipo_semana', $semana)
-                                    ->where('user_id', $user);
-                            })
-                            ->get();
+                        $clientes = Customer::whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
+                            $q->where('dia_zona', $diaActual)
+                                ->where('tipo_semana', $semana)
+                                ->whereIn('id', function ($subquery) use ($user) {
+                                    $subquery->select('zonas_id')
+                                        ->from('zona_usuario')
+                                        ->where('users_id', $user); // Filtrar zonas por usuario en la tabla pivote
+                                });
+                        })->get();
 
                         // Verificar si hay registros
                         if ($clientes->isEmpty()) {
