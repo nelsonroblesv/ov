@@ -351,7 +351,7 @@ class CustomerUserResource extends Resource
 
                         ])->columns(2),
                 ])->columnSpanFull()
-                    ->startOnStep(2)
+                   // ->startOnStep(2)
             ]);
     }
 
