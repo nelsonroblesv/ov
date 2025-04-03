@@ -235,7 +235,6 @@ class CustomerUserResource extends Resource
                                     ]);
                                 })->lazy(),
 
-
                             Select::make('regiones_id')
                                 ->label('Región')
                                 ->required()
@@ -247,9 +246,9 @@ class CustomerUserResource extends Resource
                                             ->whereIn('id', function ($subquery) {
                                                 $subquery->select('zonas_id')
                                                     ->from('zona_usuario')
-                                                    ->where('users_id', auth()->id()); // Filtra por el usuario autenticado
+                                                    ->where('users_id', auth()->id()); 
                                             });
-                                    })->pluck('name', 'id') // Asegúrate de usar 'nombre' en lugar de 'name' si tu campo se llama así
+                                    })->pluck('name', 'id') 
                                 )
                                 ->reactive()
                                 ->searchable(),
