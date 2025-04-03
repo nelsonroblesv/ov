@@ -35,7 +35,7 @@ class EditCustomer extends EditRecord
                 ->label('Borrar'),
         ];
     }
-
+/*
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Formatea el nombre al cargar el formulario
@@ -51,4 +51,5 @@ class EditCustomer extends EditRecord
 
         return $data;
     }
+        */
 }
