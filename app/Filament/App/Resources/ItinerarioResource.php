@@ -72,12 +72,13 @@ class ItinerarioResource extends Resource
                 ];
                 $semana = $valores[$tipoSemanaSeleccionado];
 
-                $query->where('user_id', $user)
-                    ->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
-                        $q->where('dia_zona', $diaActual)
-                            ->where('tipo_semana', $semana)
-                            ->where('user_id', $user);
-                    });
+                $query->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
+                    $q->where('dia_zona', $diaActual)
+                        ->where('tipo_semana', $semana)
+                        ->whereHas('users', function ($subquery) use ($user) {
+                            $subquery->where('users.id', $user); // Filtrar por el usuario autenticado en la tabla pivote
+                        });
+                });
             })
             ->defaultSort('created_at', 'desc')
 
