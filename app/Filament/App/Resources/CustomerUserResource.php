@@ -262,7 +262,7 @@ class CustomerUserResource extends Resource
                                     ->whereHas('users', fn($query) => $query->where('users.id', auth()->id())) // Filtra por el usuario autenticado
                                     ->pluck('nombre_zona', 'id'))
                                 ->reactive()
-                                ->disabled(fn(callable $get) => empty($get('regiones_id'))), // Deshabil
+                                ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
                             Section::make('Fotos del establecimiento')
                                 ->schema([

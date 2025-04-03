@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -35,7 +36,13 @@ class EditCustomer extends EditRecord
                 ->label('Borrar'),
         ];
     }
-/*
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['updated_at'] = Carbon::now()->setTimezone('America/Merida');
+        return $data;
+    }
+    /*
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Formatea el nombre al cargar el formulario

@@ -3,6 +3,7 @@
 namespace App\Filament\App\Resources\ProspectosResource\Pages;
 
 use App\Filament\App\Resources\ProspectosResource;
+use Carbon\Carbon;
 use Cheesegrits\FilamentGoogleMaps\Concerns\InteractsWithMaps;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -36,5 +37,11 @@ class EditProspectos extends EditRecord
             Actions\DeleteAction::make()
                // ->label('Borrar'),
         ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['updated_at'] = Carbon::now()->setTimezone('America/Merida');
+        return $data;
     }
 }

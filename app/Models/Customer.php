@@ -41,6 +41,7 @@ class Customer extends Model
         'tipo_cliente',
         'simbolo',
         'created_at',
+        'updated_at',
         'paquete_inicio_id',
         'alta_user_id'
     ];

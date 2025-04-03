@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
@@ -46,6 +47,7 @@ class CreateCustomer extends CreateRecord
             'PR' => 'Prospecto'        
         ];
         $cliente = $tipos[$tipo_cliente];
+        $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
 
         Notification::make()
             ->title('Nuevo Cliente Registrado')
