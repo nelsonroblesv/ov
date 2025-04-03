@@ -220,16 +220,15 @@ class ProspectosResource extends Resource
                                 ->placeholder('Selecciona una zona')
                                 ->required()
                                 ->searchable()
-                                ->options(function (callable $get) {
-                                    $regionId = $get('regiones_id');
-                                    if (!$regionId) {
-                                        return [];
-                                    }
-                                    return Zonas::where('regiones_id', $regionId)->pluck('nombre_zona', 'id');
-                                })
-                                ->reactive() // Hace que el campo se actualice dinámicamente
-                                ->disabled(fn(callable $get) => empty($get('regiones_id'))), // Deshabilita si no hay región seleccionada
-
+                                ->options(
+                                    fn(callable $get) =>
+                                    Zonas::where('regiones_id', $get('regiones_id'))
+                                        ->whereIn('id', function ($query) {
+                                            $query->select('id')
+                                                ->from('zonas');
+                                        })
+                                        ->pluck('nombre_zona', 'id')
+                                ),
 
                             Section::make('Notas Generales')
                                 ->description('Despliega para agregar notas adicionales')
@@ -249,7 +248,7 @@ class ProspectosResource extends Resource
                         ->schema([
                             TextInput::make('email')
                                 ->label('Correo Electrónico')
-                                ->unique(ignoreRecord:true)
+                                ->unique(ignoreRecord: true)
                                 ->rules([
                                     'regex:/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                                 ])

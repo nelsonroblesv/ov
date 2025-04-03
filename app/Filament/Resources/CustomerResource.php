@@ -284,7 +284,6 @@ class CustomerResource extends Resource
                                         })
                                         ->pluck('nombre_zona', 'id')
                                 )
-
                                 ->reactive()
                                 ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
