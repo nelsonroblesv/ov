@@ -246,9 +246,9 @@ class CustomerUserResource extends Resource
                                             ->whereIn('id', function ($subquery) {
                                                 $subquery->select('zonas_id')
                                                     ->from('zona_usuario')
-                                                    ->where('users_id', auth()->id()); 
+                                                    ->where('users_id', auth()->id());
                                             });
-                                    })->pluck('name', 'id') 
+                                    })->pluck('name', 'id')
                                 )
                                 ->reactive()
                                 ->searchable(),
@@ -263,6 +263,7 @@ class CustomerUserResource extends Resource
                                     ->pluck('nombre_zona', 'id'))
                                 ->reactive()
                                 ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+
 
                             Section::make('Fotos del establecimiento')
                                 ->schema([
@@ -351,7 +352,7 @@ class CustomerUserResource extends Resource
 
                         ])->columns(2),
                 ])->columnSpanFull()
-                   // ->startOnStep(2)
+                // ->startOnStep(2)
             ]);
     }
 

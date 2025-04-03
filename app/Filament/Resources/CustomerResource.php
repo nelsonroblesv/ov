@@ -190,7 +190,6 @@ class CustomerResource extends Resource
                                 ->suffixIcon('heroicon-m-map')
                                 ->columnSpanFull(),
 
-
                             Map::make('location')
                                 ->mapControls([
                                     'mapTypeControl'    => false,
