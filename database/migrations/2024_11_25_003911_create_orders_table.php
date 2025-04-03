@@ -23,6 +23,8 @@ return new class extends Migration
             $table->decimal('grand_total', 10, 2)->nullable();
             $table->json('notas_venta')->nullable();
             $table->date('fecha_liquidacion')->nullable();
+            $table->foreignId('registrado_por');
+            $table->foreignId('solicitado_por');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -89,9 +89,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->belongsToMany(Zonas::class, 'zona_usuario', 'users_id', 'zonas_id');
     }
 
-
     public function rutas(): BelongsTo
     {
         return $this->belongsTo(Rutas::class, 'zonas_id');
     }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    
 }

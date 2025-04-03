@@ -65,43 +65,59 @@ class CreateOrder extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Obtener el usuario del customer
+        // Obtener el cliente
         $customerId = Customer::find($data['customer_id']);
-        $customer = $customerId->name;
+        $customer = $customerId?->name ?? 'Cliente desconocido';
 
-        $customerUserId = Customer::where('id', $data['customer_id'])->value('user_id');
-        $vendedor = User::where('id', $customerUserId)->value('name');
-        // Obtener los usuarios con rol "Administrador"
+        // Obtener IDs de los usuarios involucrados
+        $solicita = is_array($data['solicitado_por']) ? $data['solicitado_por'] : [$data['solicitado_por']];
+        $registra = $data['registrado_por'] ?? null;
+
+        // Obtener usuarios con rol "Administrador"
         $adminUsers = User::where('role', 'Administrador')->get();
 
-        $customerUser = $customerUserId ? User::find($customerUserId) : null;
+        // Obtener los usuarios solicitantes y quien registró la orden
+        $vendedores = User::whereIn('id', $solicita)->get();
+        $registrador = $registra ? User::find($registra) : null;
 
-        $users = $adminUsers->when($customerUser, function ($collection) use ($customerUser) {
-            return $collection->push($customerUser);
-        });
-
-        $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
-
-
-        switch ($data['status']) {
-            case 'PEN': $estado = 'PENDIENTE';break;
-            case 'COM': $estado = 'COMPLETADO';break;
-            case 'REC': $estado = 'RECHAZADO';break;
-            case 'REU': $estado = 'REUBICADO';break;
-            case 'DEV': $estado = 'DEVUELTA PARCIAL';break;
-            case 'SIG': $estado = 'SIGUIENTE VISITA';break;
+        // Unir todos los destinatarios en una colección
+        $destinos = $adminUsers->merge($vendedores);
+        if ($registrador) {
+            $destinos->push($registrador);
         }
-        
-        $addBy =  auth()->user()->name;
-        if ($users->isNotEmpty()) {
+
+        // Asignar fecha de creación
+        $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
+        $data['updated_at'] = null;
+        $data['deleted_at'] = null;
+
+        // Mapeo de estados
+        $estados = [
+            'PEN' => 'PENDIENTE',
+            'COM' => 'COMPLETADO',
+            'REC' => 'RECHAZADO',
+            'REU' => 'REUBICADO',
+            'DEV' => 'DEVUELTA PARCIAL',
+            'SIG' => 'SIGUIENTE VISITA',
+        ];
+        $estado = $estados[$data['status']] ?? 'DESCONOCIDO';
+
+        // Construir la lista de vendedores
+        $nombresVendedores = $vendedores->pluck('name')->implode(', ');
+
+        // Enviar la notificación
+        if ($destinos->isNotEmpty()) {
             Notification::make()
                 ->title('Nuevo Pedido Registrado')
-                ->body($addBy . ' agregó un Nuevo Pedido de '.$vendedor.' para: ' . $customer.'. Estado: '.$estado)
+                ->body(($registrador?->name ?? '') .
+                    ' agregó un Nuevo Pedido de ' . ($nombresVendedores ?: 'Desconocido') .
+                    ' para: ' . $customer . '. Estado: ' . $estado)
                 ->icon('heroicon-o-information-circle')
                 ->iconColor('info')
                 ->color('info')
-                ->sendToDatabase($users);
-        }
+                ->sendToDatabase($destinos);
 
-        return $data;
+            return $data;
+        }
     }
 }

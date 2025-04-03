@@ -23,6 +23,7 @@ use App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManag
 use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Models\Customer;
 use App\Models\OrderItem;
+use App\Models\User;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -56,6 +57,18 @@ class OrderResource extends Resource
                 Wizard::make([
                     Step::make('Detalles del Pedido')
                         ->schema([
+
+                            TextInput::make('number')
+                                ->label('Identificador de Orden')
+                                ->required()
+                                ->disabled()
+                                ->default('OV-' . random_int(100000, 9999999))
+                                ->dehydrated()
+                                ->maxLength(255)
+                                ->columnSpanFull(),
+
+                            Hidden::make('registrado_por')->default(fn() => auth()->id()),
+
                             Select::make('customer_id')
                                 ->label('Cliente')
                                 ->disabledOn('edit')
@@ -67,13 +80,12 @@ class OrderResource extends Resource
                                     ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                                     ->pluck('name', 'id')),
 
-                            TextInput::make('number')
-                                ->label('Numero de Orden')
+                            Select::make('solicitado_por')
+                                ->label('Solicitado por:')
+                                ->placeholder('Seleccione un Usuario')
+                                ->options(User::pluck('name', 'id'))
                                 ->required()
-                                ->disabled()
-                                ->default('OR-' . random_int(100000, 9999999))
-                                ->dehydrated()
-                                ->maxLength(255),
+                                ->preload(),
 
                             ToggleButtons::make('status')
                                 ->label('Estado del Pedido')
@@ -142,6 +154,14 @@ class OrderResource extends Resource
                 TextColumn::make('updated_at')
                     ->label('Actualizado')
                     ->dateTime()
+                    ->sortable(),
+
+                TextColumn::make('registrador.name')
+                    ->label('Registró:')
+                    ->sortable(),
+
+                TextColumn::make('solicitador.name')
+                    ->label('Solicitó:')
                     ->sortable(),
 
                 TextColumn::make('status')

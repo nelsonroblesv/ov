@@ -101,8 +101,7 @@ class EditOrder extends EditRecord
             case 'SIG': $estado = 'SIGUIENTE VISITA';break;
         }
 
-        $data['updated_at'] = Carbon::now()->setTimezone('America/Merida');
-
+        $order['updated_at'] = Carbon::now()->setTimezone('America/Merida');
 
         // Si hay usuarios, enviar la notificación
         $addBy =  auth()->user()->name;
