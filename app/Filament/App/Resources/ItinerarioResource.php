@@ -177,10 +177,14 @@ class ItinerarioResource extends Resource
                         'heroicon-o-rocket-launch' => 'OS',
                         'heroicon-o-x-mark' => 'CR',
                         'heroicon-o-map-pin' => 'UB',
-                        'heroicon-o-exclamation-triangle' => 'NC'
+                        'heroicon-o-exclamation-triangle' => 'NC',
+                        'heroicon-o-sparkles' => 'EU',
+                        'heroicon-o-home-modern' => 'SYB'
                     ])
                     ->formatStateUsing(fn(string $state): string => [
                         'SB' => 'Salón de Belleza',
+                        'SYB' => 'Salón y Barbería',
+                        'EU' => 'Estética Unisex',
                         'BB' => 'Barbería',
                         'UN' => 'Salón de Uñas',
                         'OS' => 'OSBERTH',

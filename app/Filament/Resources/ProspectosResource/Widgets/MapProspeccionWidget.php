@@ -83,18 +83,20 @@ class MapProspeccionWidget extends MapTableWidget
 					'heroicon-o-rocket-launch' => 'OS',
 					'heroicon-o-x-mark' => 'CR',
 					'heroicon-o-map-pin' => 'UB',
-					'heroicon-o-exclamation-triangle' => 'NC'
+					'heroicon-o-exclamation-triangle' => 'NC',
+					'heroicon-o-sparkles' => 'EU',
+					'heroicon-o-home-modern' => 'SYB'
 				])
 				->formatStateUsing(fn(string $state): string => [
 					'SB' => 'Salón de Belleza',
+					'SYB' => 'Salón y Barbería',
+					'EU' => 'Estética Unisex',
 					'BB' => 'Barbería',
 					'UN' => 'Salón de Uñas',
 					'OS' => 'OSBERTH',
 					'CR' => 'Cliente Pedido Rechazado',
 					'UB' => 'Ubicación en Grupo',
-					'NC' => 'Ya no compran',
-					'SYB' => 'Salon y Barbería',
-					'EU' => 'Estética Unisex'
+					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
