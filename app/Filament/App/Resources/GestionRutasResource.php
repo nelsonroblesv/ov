@@ -40,24 +40,25 @@ class GestionRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->modifyQueryUsing(function (Builder $query) {
-            $userId = auth()->id();
-        
-            $query->where('user_id', $userId)
-                ->whereNotIn('id', function ($subQuery) use ($userId) {
-                    $subQuery->select('customer_id')
-                        ->from('gestion_rutas')
-                        ->where('user_id', $userId);
-                });
-        })
-        
-            
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = auth()->id();
+
+                $query->where('user_id', $userId)
+                    ->whereNotIn('id', function ($subQuery) use ($userId) {
+                        $subQuery->select('customer_id')
+                            ->from('gestion_rutas')
+                            ->where('user_id', $userId);
+                    });
+            })
+
+
             ->columns([
                 TextColumn::make('user.name')->label('Nombre')->searchable()->sortable(),
 
                 TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
-                TextColumn::make('email')->label('Correo')->searchable()->sortable(),
-                TextColumn::make('phone')->label('Teléfono')->searchable()->sortable(),
+                // TextColumn::make('email')->label('Correo')->searchable()->sortable(),
+                // TextColumn::make('phone')->label('Teléfono')->searchable()->sortable(),
+                TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
                 TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('zona.dia_zona')->label('Día')->searchable()->sortable(),
                 TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable(),
@@ -81,8 +82,6 @@ class GestionRutasResource extends Resource
                                     'Mie' => 'Miércoles',
                                     'Jue' => 'Jueves',
                                     'Vie' => 'Viernes',
-                                    'Sab' => 'Sábado',
-                                    'Dom' => 'Domingo',
                                 ])
                                 ->required(),
                             Radio::make('tipo_semana')

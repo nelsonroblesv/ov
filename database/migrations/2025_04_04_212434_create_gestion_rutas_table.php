@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('dia_semana');
             $table->string('tipo_semana');
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('region_id')->constrained()->onDelete('cascade');
+            $table->foreignId('zona_id')->constrained()->onDelete('cascade');
+
             $table->integer('orden')->nullable(); // Para definir el orden de visita (opcional)
             $table->timestamps();
 
