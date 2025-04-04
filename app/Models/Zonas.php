@@ -26,4 +26,9 @@ class Zonas extends Model
     {
         return $this->hasMany(Rutas::class);
     }
+    
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
 }

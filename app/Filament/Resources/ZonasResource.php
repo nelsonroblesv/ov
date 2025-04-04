@@ -131,6 +131,7 @@ class ZonasResource extends Resource
                         'PAR' => 'PAR',
                         'NON' => 'NON'
                     ]),
+
                 SelectFilter::make('dia_zona')
                     ->multiple()
                     ->options([
@@ -139,7 +140,17 @@ class ZonasResource extends Resource
                         'Mie' => 'Miércoles',
                         'Jue' => 'Jueves',
                         'Vie' => 'Viernes',
-                    ])
+                    ]),
+
+                SelectFilter::make('regiones_id')->label('Regiones')
+                    ->options(Regiones::pluck('name', 'id'))
+                    ->multiple(),
+
+                SelectFilter::make('user_id')->label('Usuarios')
+                    //->options(User::pluck('name', 'id'))
+                    ->relationship('users', 'name')
+                    ->preload()
+                    ->multiple()
             ])
             ->actions([
                 ActionGroup::make([

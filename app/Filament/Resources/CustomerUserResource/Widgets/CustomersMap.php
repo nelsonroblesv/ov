@@ -52,7 +52,9 @@ class CustomersMap extends MapTableWidget
 		return [
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
-			TextColumn::make('zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
+			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
+			TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable(),
+			TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable(),
 			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
 					'success' => 'PV',

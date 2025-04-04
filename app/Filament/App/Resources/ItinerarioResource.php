@@ -72,7 +72,7 @@ class ItinerarioResource extends Resource
                 ];
                 $semana = $valores[$tipoSemanaSeleccionado];
 
-                $query->whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
+                $query->whereHas('zona', function ($q) use ($diaActual, $user, $semana) {
                     $q->where('dia_zona', $diaActual)
                         ->where('tipo_semana', $semana)
                         ->whereHas('users', function ($subquery) use ($user) {
@@ -114,7 +114,7 @@ class ItinerarioResource extends Resource
                         $semana = $valores[$tipoSemanaSeleccionado];
 
                         // Obtener los registros que se están mostrando en la tabla
-                        $clientes = Customer::whereHas('zonas', function ($q) use ($diaActual, $user, $semana) {
+                        $clientes = Customer::whereHas('zona', function ($q) use ($diaActual, $user, $semana) {
                             $q->where('dia_zona', $diaActual)
                                 ->where('tipo_semana', $semana)
                                 ->whereIn('id', function ($subquery) use ($user) {
@@ -196,8 +196,8 @@ class ItinerarioResource extends Resource
                     ][$state] ?? 'Otro'),
                 TextColumn::make('tipo_cliente')->label('tipo'),
                 TextColumn::make('regiones.name')->label('Región'),
-                TextColumn::make('zonas.nombre_zona')->label('Zona'),
-                TextColumn::make('zonas.tipo_semana')->label('Semana')->badge()->alignCenter()
+                TextColumn::make('zona.nombre_zona')->label('Zona'),
+                TextColumn::make('zona.tipo_semana')->label('Semana')->badge()->alignCenter()
                     ->colors([
                         'success' => 'PAR',
                         'danger' => 'NON',
