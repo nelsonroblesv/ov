@@ -40,10 +40,18 @@ class GestionRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                $user = auth()->id();
-                $query->where('user_id', $user);
-            })
+        ->modifyQueryUsing(function (Builder $query) {
+            $userId = auth()->id();
+        
+            $query->where('user_id', $userId)
+                ->whereNotIn('id', function ($subQuery) use ($userId) {
+                    $subQuery->select('customer_id')
+                        ->from('gestion_rutas')
+                        ->where('user_id', $userId);
+                });
+        })
+        
+            
             ->columns([
                 TextColumn::make('user.name')->label('Nombre')->searchable()->sortable(),
 
