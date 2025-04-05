@@ -48,4 +48,5 @@ class ListMisRutas extends ListRecords
             ->modifyQueryUsing(fn (Builder $query) => $query->where('dia_semana', 'Vie')),
         ];
     }
+    
 }
