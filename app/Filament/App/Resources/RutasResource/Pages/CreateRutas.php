@@ -10,9 +10,5 @@ class CreateRutas extends CreateRecord
 {
     protected static string $resource = RutasResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-       /// $data['name'] = ucwords(strtolower($data['name']));
-        return $data;
-    }
+    
 }

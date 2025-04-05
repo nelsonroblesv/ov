@@ -118,6 +118,7 @@ class RutasResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
+                                    ->unique(table: Customer::class, column: 'name', ignoreRecord: true)
                                     ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
@@ -341,22 +342,36 @@ class RutasResource extends Resource
                             ])->columns(2)->icon('heroicon-o-camera'),
                     ])
                     ->action(function (array $data) {
+                       
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
                         $customer = Customer::create($data);
 
-                        Rutas::create([
-                            'user_id'  => auth()->id(),
-                            'customer_id' => $customer->id,
-                            'regiones_id' => $data['regiones_id'],
-                            'regiones_id' => $data['regiones_id'],
-                            'zonas_id' => $data['zonas_id'],
-                            'tipo_semana' => Zonas::find($data['zonas_id'])->tipo_semana,
-                            'tipo_cliente' => $data['tipo_cliente'],
-                            'full_address' => $data['full_address'],
-                            'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
-                            'visited' => 0
-                        ]);
+                        $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
+                        $valores = [
+                            '0' => 'PAR',
+                            '1' => 'NON',
+                        ];
+                        $semana = $valores[$tipoSemanaSeleccionado];
+        
+                        $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
+                        $dias = [
+                            'MON' => 'Lun',
+                            'TUE' => 'Mar',
+                            'WED' => 'Mie',
+                            'THU' => 'Jue',
+                            'FRI' => 'Vie',
+                            'SAT' => 'Sab',
+                            'SUN' => 'Dom',
+                        ];
+                        $diaActual = $dias[$hoy];
 
+                        GestionRutas::create([
+                            'user_id'  => auth()->id(),
+                            'dia_semana' => $diaActual,
+                            'tipo_semana' => $semana,
+                            'customer_id' => $customer->id,
+                            'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
+                        ]);
 
                         Notification::make()
                             ->title('Cliente registrado')
@@ -403,6 +418,7 @@ class RutasResource extends Resource
                                     ->label('Nombre completo')
                                     ->required()
                                     ->maxLength(255)
+                                    ->unique(table: Customer::class, column: 'name', ignoreRecord: true)
                                     ->suffixIcon('heroicon-m-user'),
 
                                 Select::make('services')
@@ -593,19 +609,35 @@ class RutasResource extends Resource
                             ])->columnSpanFull()->icon('heroicon-o-pencil-square')
                     ])
                     ->action(function (array $data) {
+
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
                         $customer = Customer::create($data);
 
-                        Rutas::create([
+                        $tipoSemanaSeleccionado = AsignarTipoSemana::value('tipo_semana');
+                        $valores = [
+                            '0' => 'PAR',
+                            '1' => 'NON',
+                        ];
+                        $semana = $valores[$tipoSemanaSeleccionado];
+        
+                        $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
+                        $dias = [
+                            'MON' => 'Lun',
+                            'TUE' => 'Mar',
+                            'WED' => 'Mie',
+                            'THU' => 'Jue',
+                            'FRI' => 'Vie',
+                            'SAT' => 'Sab',
+                            'SUN' => 'Dom',
+                        ];
+                        $diaActual = $dias[$hoy];
+
+                        GestionRutas::create([
                             'user_id'  => auth()->id(),
+                            'dia_semana' => $diaActual,
+                            'tipo_semana' => $semana,
                             'customer_id' => $customer->id,
-                            'regiones_id' => $data['regiones_id'],
-                            'zonas_id' => $data['zonas_id'],
-                            'tipo_semana' => Zonas::find($data['zonas_id'])->tipo_semana,
-                            'tipo_cliente' => $data['tipo_cliente'],
-                            'full_address' => $data['full_address'],
                             'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
-                            'visited' => 0
                         ]);
 
                         Notification::make()
