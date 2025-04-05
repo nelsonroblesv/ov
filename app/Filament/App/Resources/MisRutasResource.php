@@ -73,6 +73,9 @@ class MisRutasResource extends Resource
                 Action::make('Cambiar Ruta')
                     ->label('Cambiar Ruta')
                     ->icon('heroicon-o-arrows-right-left')
+                    ->requiresConfirmation()
+                    ->modalHeading('Cambiar Cliente de Ruta')
+                      ->modalDescription('Estás seguro que deseas cambiar este registro de tu Ruta?')
                     ->form([
                         Select::make('dia_semana')
                             ->label('Día de la Semana')
@@ -118,6 +121,11 @@ class MisRutasResource extends Resource
                             }
                         }
                     }),
+                      Tables\Actions\DeleteAction::make()
+                      ->label('Eliminar Ruta')
+                      ->modalHeading('Borrar Cliente de Ruta')
+                      ->modalDescription('Estás seguro que deseas eliminar este registro de tu Ruta? Esta acción
+                      no se puede deshacer.'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
