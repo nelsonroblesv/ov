@@ -44,6 +44,7 @@ class GestionRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->recordUrl(null)
             ->modifyQueryUsing(function (Builder $query) {
                 $userId = auth()->id();
 
@@ -74,6 +75,7 @@ class GestionRutasResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     BulkAction::make('agregarARuta')
+                        ->icon('heroicon-o-truck')
                         ->label('Agregar a Ruta')
                         ->form([
                             Select::make('dia_semana')

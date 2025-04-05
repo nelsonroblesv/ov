@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateGestionRutas extends CreateRecord
 {
     protected static string $resource = GestionRutasResource::class;
+
 }

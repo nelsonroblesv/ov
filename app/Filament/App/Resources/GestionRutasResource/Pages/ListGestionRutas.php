@@ -9,11 +9,12 @@ use Filament\Resources\Pages\ListRecords;
 class ListGestionRutas extends ListRecords
 {
     protected static string $resource = GestionRutasResource::class;
+    protected static ?string $title = 'Registros no asignados a Ruta';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+           // Actions\CreateAction::make(),
         ];
     }
 }
