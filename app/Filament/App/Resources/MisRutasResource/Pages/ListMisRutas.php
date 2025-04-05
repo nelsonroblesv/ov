@@ -3,6 +3,7 @@
 namespace App\Filament\App\Resources\MisRutasResource\Pages;
 
 use App\Filament\App\Resources\MisRutasResource;
+use App\Models\GestionRutas;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
@@ -24,27 +25,27 @@ class ListMisRutas extends ListRecords
         return [
             'Lun' => Tab::make()
             ->label('Lunes')
-            ->icon('heroicon-o-exclamation-circle')
+            ->icon('heroicon-o-truck')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('dia_semana', 'Lun')),
 
             'Mar' => Tab::make()
             ->label('Martes')
-            ->icon('heroicon-o-exclamation-circle')
+            ->icon('heroicon-o-truck')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('dia_semana', 'Mar')),
 
             'Mie' => Tab::make()
             ->label('Miercoles')
-            ->icon('heroicon-o-exclamation-circle')
+            ->icon('heroicon-o-truck')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('dia_semana', 'Mie')),
 
             'Jue' => Tab::make()
             ->label('Jueves')
-            ->icon('heroicon-o-exclamation-circle')
+            ->icon('heroicon-o-truck')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('dia_semana', 'Jue')),
 
             'Vie' => Tab::make()
             ->label('Viernes')
-            ->icon('heroicon-o-exclamation-circle')
+            ->icon('heroicon-o-truck')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('dia_semana', 'Vie')),
         ];
     }
