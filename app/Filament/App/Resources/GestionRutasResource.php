@@ -26,7 +26,7 @@ class GestionRutasResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-map';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
     protected static ?string $navigationGroup = 'Rutas';
     protected static ?string $navigationLabel = 'Agregar Clientes a Ruta';
     protected static ?string $breadcrumb = "Agregar Clientes a Ruta";

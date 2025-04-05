@@ -10,6 +10,7 @@ use App\Filament\Resources\PaquetesInicioResource;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
+use App\Models\GestionRutas;
 use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\Rutas;
@@ -48,13 +49,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RutasResource extends Resource
 {
-    protected static ?string $model = Rutas::class;
+    protected static ?string $model = GestionRutas::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-map';
-    protected static ?string $navigationGroup = 'Bitacora';
-    protected static ?string $navigationLabel = 'Mis Rutas';
-    protected static ?string $breadcrumb = "Mis Rutas";
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static ?string $navigationGroup = 'Rutas';
+    protected static ?string $navigationLabel = 'Mi Ruta';
+    protected static ?string $breadcrumb = "Mi Ruta";
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -71,7 +72,6 @@ class RutasResource extends Resource
             ->heading('Mis Rutas')
             ->description('Estas son tus Rutas programadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y') .
                 '. No olvides agregar un registro en la Bitacora durante cada visita.')
-            ->reorderable('sort')
             ->modifyQueryUsing(function (Builder $query) {
                 $user = auth()->id();
 
@@ -81,11 +81,24 @@ class RutasResource extends Resource
                     '1' => 'NON',
                 ];
                 $semana = $valores[$tipoSemanaSeleccionado];
+
+                $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
+                $dias = [
+                    'MON' => 'Lun',
+                    'TUE' => 'Mar',
+                    'WED' => 'Mie',
+                    'THU' => 'Jue',
+                    'FRI' => 'Vie',
+                    'SAT' => 'Sab',
+                    'SUN' => 'Dom',
+                ];
+                $diaActual = $dias[$hoy];
+               
                 $query->where('user_id', $user)
-                    ->where('visited', '0')
+                    ->where('dia_semana', 'Lun')
                     ->where('tipo_semana', $semana);
             })
-            ->defaultSort('sort', 'desc')
+            ->defaultSort('orden', 'desc')
             ->headerActions([
 
                 /************ NUEVO CLIENTE  ****************/
@@ -605,7 +618,7 @@ class RutasResource extends Resource
                     }),
             ])
             ->columns([
-                TextColumn::make('sort')->label('#')->sortable(),
+                TextColumn::make('orden')->label('#')->sortable(),
                 TextColumn::make('customer.name')->label('Cliente o Identificador'),
                 IconColumn::make('customer.phone')->label('WhatsApp')->alignCenter()
                     ->icon('heroicon-o-device-phone-mobile')
@@ -643,7 +656,7 @@ class RutasResource extends Resource
                         'UB' => 'Ubicación en Grupo',
                         'NC' => 'Ya no compran'
                     ][$state] ?? 'Otro'),
-                TextColumn::make('tipo_cliente')->label('Tipo')->badge()->alignCenter()
+                TextColumn::make('customer.tipo_cliente')->label('Tipo')->badge()
                     ->colors([
                         'gray' => 'PO',
                         'warning' => 'PR',
@@ -668,16 +681,16 @@ class RutasResource extends Resource
                         'BK' => 'Black',
                         'SL' => 'Silver',
                     ][$state] ?? 'Otro'),
-                TextColumn::make('regiones.name')->label('Region')
+                TextColumn::make('customer.regiones.name')->label('Region')
                     ->badge()
                     ->alignCenter()
                     ->colors(['info']),
-                TextColumn::make('zonas.nombre_zona')->label('Zona')
+                TextColumn::make('customer.zona.nombre_zona')->label('Zona')
                     ->badge()
                     ->alignCenter()
                     ->colors(['warning']),
-                TextColumn::make('full_address')->label('Direccion'),
-                IconColumn::make('full_address')->label('Ubicación')->alignCenter()
+                TextColumn::make('customer.full_address')->label('Direccion'),
+                IconColumn::make('customer.full_address')->label('Ubicación')->alignCenter()
                     ->icon('heroicon-o-map-pin')
                     ->color('danger')
                     ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode($record->full_address), true)

@@ -21,7 +21,7 @@ class MisRutasResource extends Resource
 {
     protected static ?string $model = GestionRutas::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-map';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-up-down';
     protected static ?string $navigationGroup = 'Rutas';
     protected static ?string $navigationLabel = 'Gestionar Rutas';
     protected static ?string $breadcrumb = "Gestionar Ruta";
