@@ -53,7 +53,7 @@ class RutasResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
     protected static ?string $navigationGroup = 'Rutas';
-    protected static ?string $navigationLabel = 'Mi Ruta';
+    protected static ?string $navigationLabel = 'Mi Ruta de Hoy';
     protected static ?string $breadcrumb = "Mi Ruta";
     protected static ?int $navigationSort = 1;
 

@@ -6,15 +6,20 @@ use App\Filament\App\Resources\MisRutasResource\Pages;
 use App\Filament\App\Resources\MisRutasResource\RelationManagers;
 use App\Models\GestionRutas;
 use App\Models\MisRutas;
+use Doctrine\DBAL\Query\QueryException;
 use Filament\Forms;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MisRutasResource extends Resource
@@ -46,7 +51,7 @@ class MisRutasResource extends Resource
             ->reorderable('orden')
             ->columns([
                 TextColumn::make('orden')->label('Orden')->sortable(),
-               //TextColumn::make('user.name')->label('Nombre')->searchable(),
+                //TextColumn::make('user.name')->label('Nombre')->searchable(),
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),
                 TextColumn::make('customer.regiones.name')->label('Region'),
                 TextColumn::make('customer.zona.nombre_zona')->label('Zona'),
@@ -65,10 +70,58 @@ class MisRutasResource extends Resource
             ])
             ->actions([
                 //Tables\Actions\EditAction::make(),
+                Action::make('Cambiar Ruta')
+                    ->label('Cambiar Ruta')
+                    ->icon('heroicon-o-arrows-right-left')
+                    ->form([
+                        Select::make('dia_semana')
+                            ->label('Día de la Semana')
+                            ->options([
+                                'Lun' => 'Lunes',
+                                'Mar' => 'Martes',
+                                'Mie' => 'Miércoles',
+                                'Jue' => 'Jueves',
+                                'Vie' => 'Viernes',
+                            ])
+                            ->required(),
+                        Radio::make('tipo_semana')
+                            ->label('Tipo de Semana')
+                            ->options([
+                                'PAR' => 'PAR',
+                                'NON' => 'NON',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $rutaExistente = GestionRutas::where([
+                            'user_id' => auth()->id(),
+                            'customer_id' => $record->customer_id,
+                        ])->first();
+
+                        if ($rutaExistente) {
+                            try {
+                                $rutaExistente->update([
+                                    'dia_semana' => $data['dia_semana'],
+                                    'tipo_semana' => $data['tipo_semana'],
+                                ]);
+                                Notification::make()
+                                    ->title('Ruta actualizada')
+                                    ->body('El Cliente ha sido cambiado de ruta de forma exitosa.')
+                                    ->success()
+                                    ->send();
+                            } catch (QueryException $e) {
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('No se pudo cambiar la ruta. Intenta nuevamente.')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                   // Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

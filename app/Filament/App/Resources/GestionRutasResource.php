@@ -54,8 +54,6 @@ class GestionRutasResource extends Resource
                             ->where('user_id', $userId);
                     });
             })
-
-
             ->columns([
                 TextColumn::make('user.name')->label('Nombre')->searchable()->sortable(),
 
