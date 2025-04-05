@@ -7,6 +7,7 @@ use App\Filament\App\Resources\MisRutasResource\RelationManagers;
 use App\Models\GestionRutas;
 use App\Models\MisRutas;
 use Doctrine\DBAL\Query\QueryException;
+use Filament\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -15,7 +16,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -69,68 +72,71 @@ class MisRutasResource extends Resource
                     ->searchable(),
             ])
             ->actions([
-                //Tables\Actions\EditAction::make(),
-                Action::make('Cambiar Ruta')
-                    ->label('Cambiar Ruta')
-                    ->icon('heroicon-o-arrows-right-left')
-                    ->requiresConfirmation()
-                    ->modalHeading('Cambiar Cliente de Ruta')
-                      ->modalDescription('Estás seguro que deseas cambiar este registro de tu Ruta?')
-                    ->form([
-                        Select::make('dia_semana')
-                            ->label('Día de la Semana')
-                            ->options([
-                                'Lun' => 'Lunes',
-                                'Mar' => 'Martes',
-                                'Mie' => 'Miércoles',
-                                'Jue' => 'Jueves',
-                                'Vie' => 'Viernes',
-                            ])
-                            ->required(),
-                        Radio::make('tipo_semana')
-                            ->label('Tipo de Semana')
-                            ->options([
-                                'PAR' => 'PAR',
-                                'NON' => 'NON',
-                            ])
-                            ->required(),
-                    ])
-                    ->action(function ($record, array $data) {
-                        $rutaExistente = GestionRutas::where([
-                            'user_id' => auth()->id(),
-                            'customer_id' => $record->customer_id,
-                        ])->first();
+                ActionsActionGroup::make([
+                    Action::make('Cambiar Ruta')
+                        ->label('Cambiar Ruta')
+                        ->icon('heroicon-o-arrows-right-left')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Cambiar Cliente de Ruta')
+                        ->modalDescription('Estás seguro que deseas cambiar este registro de tu Ruta?')
+                        ->form([
+                            Select::make('dia_semana')
+                                ->label('Día de la Semana')
+                                ->options([
+                                    'Lun' => 'Lunes',
+                                    'Mar' => 'Martes',
+                                    'Mie' => 'Miércoles',
+                                    'Jue' => 'Jueves',
+                                    'Vie' => 'Viernes',
+                                ])
+                                ->required(),
+                            Radio::make('tipo_semana')
+                                ->label('Tipo de Semana')
+                                ->options([
+                                    'PAR' => 'PAR',
+                                    'NON' => 'NON',
+                                ])
+                                ->required(),
+                        ])
+                        ->action(function ($record, array $data) {
+                            $rutaExistente = GestionRutas::where([
+                                'user_id' => auth()->id(),
+                                'customer_id' => $record->customer_id,
+                            ])->first();
 
-                        if ($rutaExistente) {
-                            try {
-                                $rutaExistente->update([
-                                    'dia_semana' => $data['dia_semana'],
-                                    'tipo_semana' => $data['tipo_semana'],
-                                ]);
-                                Notification::make()
-                                    ->title('Ruta actualizada')
-                                    ->body('El Cliente ha sido cambiado de ruta de forma exitosa.')
-                                    ->success()
-                                    ->send();
-                            } catch (QueryException $e) {
-                                Notification::make()
-                                    ->title('Error')
-                                    ->body('No se pudo cambiar la ruta. Intenta nuevamente.')
-                                    ->danger()
-                                    ->send();
+                            if ($rutaExistente) {
+                                try {
+                                    $rutaExistente->update([
+                                        'dia_semana' => $data['dia_semana'],
+                                        'tipo_semana' => $data['tipo_semana'],
+                                    ]);
+                                    Notification::make()
+                                        ->title('Ruta actualizada')
+                                        ->body('El Cliente ha sido cambiado de ruta de forma exitosa.')
+                                        ->success()
+                                        ->send();
+                                } catch (QueryException $e) {
+                                    Notification::make()
+                                        ->title('Error')
+                                        ->body('No se pudo cambiar la ruta. Intenta nuevamente.')
+                                        ->danger()
+                                        ->send();
+                                }
                             }
-                        }
-                    }),
-                      Tables\Actions\DeleteAction::make()
-                      ->label('Eliminar Ruta')
-                      ->modalHeading('Borrar Cliente de Ruta')
-                      ->modalDescription('Estás seguro que deseas eliminar este registro de tu Ruta? Esta acción
-                      no se puede deshacer.'),
-            ])
+                        }),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Eliminar Ruta')
+                        ->modalHeading('Borrar Cliente de Ruta')
+                        ->modalDescription('Estás seguro que deseas eliminar este registro de tu Ruta? Esta acción
+                  no se puede deshacer.'),
+                ])
+                    ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     // Tables\Actions\DeleteBulkAction::make(),
                 ]),
+
             ]);
     }
 
