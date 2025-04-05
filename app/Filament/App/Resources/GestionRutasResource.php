@@ -56,9 +56,9 @@ class GestionRutasResource extends Resource
                     });
             })
             ->columns([
-                TextColumn::make('user.name')->label('Nombre')->searchable()->sortable(),
+                //TextColumn::make('user.name')->label('Nombre')->searchable()->sortable(),
 
-                TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
+                TextColumn::make('name')->label('Iidentificador')->searchable()->sortable(),
                 // TextColumn::make('email')->label('Correo')->searchable()->sortable(),
                 // TextColumn::make('phone')->label('Teléfono')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),

@@ -58,7 +58,8 @@ return new class extends Migration
 
             $table->enum('tipo_cliente', ['PV', 'RD', 'BK', 'SL', 'PR', 'PO'])->default('PV');
             $table->enum('simbolo', ['SB','SYB', 'EU', 'BB', 'UN', 'OS', 'CR', 'UB', 'NC'])->nullable();
-
+            $table->foreignId('paquete_inicio_id')->nullable()->constrained('paquetes')->cascadeOnDelete();
+            $table->foreignId('alta_user_id')->nullable()->constrained('users')->cascadeOnDelete();
         });
     }
 
