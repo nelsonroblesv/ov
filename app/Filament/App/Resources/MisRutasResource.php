@@ -52,17 +52,6 @@ class MisRutasResource extends Resource
                         'NON' => 'NON',
                     ])
                     ->searchable(),
-
-                SelectFilter::make('dia_semana')
-                    ->label('Día de la semana')
-                    ->options([
-                        'Lun' => 'Lunes',
-                        'Mar' => 'Martes',
-                        'Mie' => 'Miércoles',
-                        'Jue' => 'Jueves',
-                        'Vie' => 'Viernes',
-                    ]),
-
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
