@@ -26,7 +26,11 @@ class GestionRutasResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-map';
+    protected static ?string $navigationGroup = 'Rutas';
+    protected static ?string $navigationLabel = 'Agregar Clientes a Ruta';
+    protected static ?string $breadcrumb = "Agregar Clientes a Ruta";
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -67,7 +71,7 @@ class GestionRutasResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+               // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
