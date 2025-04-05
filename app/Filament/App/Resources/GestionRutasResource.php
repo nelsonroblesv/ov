@@ -153,4 +153,5 @@ class GestionRutasResource extends Resource
             'edit' => Pages\EditGestionRutas::route('/{record}/edit'),
         ];
     }
+
 }
