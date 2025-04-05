@@ -159,10 +159,10 @@ class BitacoraCustomersResource extends Resource
         ->heading('Registros de Actividad')
         ->description('Listado de registros de visitas realizados a Clientes y Prospección')
             ->columns([
-                TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
+                //TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
                 TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
                 TextColumn::make('customers.regiones.name')->label('Regiones')->searchable()->sortable(),
-                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
+                TextColumn::make('customers.zona.nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('notas')->label('Notas')->searchable(),
                 ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),

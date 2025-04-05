@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListRutas extends ListRecords
 {
     protected static string $resource = RutasResource::class;
+    protected static ?string $title = 'Mi Rutas para Hoy';
 
     protected function getHeaderActions(): array
     {
