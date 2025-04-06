@@ -58,9 +58,49 @@ class MisRutasResource extends Resource
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),
                 TextColumn::make('customer.regiones.name')->label('Region'),
                 TextColumn::make('customer.zona.nombre_zona')->label('Zona'),
-                TextColumn::make('customer.tipo_cliente')->label('Tipo Cliente'),
-                TextColumn::make('tipo_semana')->label('Dia')->searchable(),
-                TextColumn::make('dia_semana')->label('Semana')->searchable(),
+                TextColumn::make('customer.tipo_cliente')->label('Tipo Cliente')->badge()
+                    ->colors([
+                        'success' => 'PV',
+                        'danger' => 'RD',
+                        'custom_black' => 'BK',
+                        'custom_gray' => 'SL',
+                        'danger' => 'PO',
+                        'warning' => 'PR'
+                    ])
+                    ->icons([
+                        'heroicon-o-building-storefront' => 'PV',
+                        'heroicon-o-user' => 'RD',
+                        'heroicon-o-star' => 'BK',
+                        'heroicon-o-sparkles' => 'SL'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PV' => 'Punto Venta',
+                        'RD' => 'Red',
+                        'BK' => 'Black',
+                        'SL' => 'Silver',
+                        'PO' => 'Posible',
+                        'PR' => 'Prospecto',
+                    ][$state] ?? 'Otro'),
+
+                TextColumn::make('tipo_semana')->label('Semana')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'success' => 'PAR',
+                        'danger' => 'NON',
+                    ])
+                    ->icons([
+                        'heroicon-o-arrow-long-down' => 'PAR',
+                        'heroicon-o-arrow-long-up' => 'NON',
+                    ]),
+                TextColumn::make('dia_semana')->label('Dia')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'Lun',
+                        'warning' => 'Mar',
+                        'danger' => 'Me',
+                        'success' => 'Jue',
+                        'custom_light_blue' => 'Vie',
+                    ]),
             ])
             ->filters([
                 SelectFilter::make('tipo_semana')
@@ -131,7 +171,7 @@ class MisRutasResource extends Resource
                         ->modalDescription('Estás seguro que deseas eliminar este registro de tu Ruta? Esta acción
                   no se puede deshacer.'),
                 ])
-                    ], position: ActionsPosition::BeforeCells)
+            ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     // Tables\Actions\DeleteBulkAction::make(),
