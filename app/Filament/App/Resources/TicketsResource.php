@@ -16,6 +16,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -72,7 +74,14 @@ class TicketsResource extends Resource
     {
         return $table
             ->columns([
-                //
+               // TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
+                TextColumn::make('toUser.name')->label('Destinatario')->searchable()->sortable(),
+                TextColumn::make('asunto')->label('Asunto')->searchable()->sortable()->limit(50),
+                TextColumn::make('created_at')->label('Solicitado')->dateTime()->sortable(),
+                IconColumn::make('estado')->label('Resuelto')->boolean()
+                    ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')->sortable(),
+                TextColumn::make('updated_at')->label('Cerrado')->dateTime()->sortable(),
+
             ])
             ->filters([
                 //

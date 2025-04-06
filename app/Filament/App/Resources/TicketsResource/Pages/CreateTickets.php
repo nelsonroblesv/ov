@@ -35,6 +35,7 @@ class CreateTickets extends CreateRecord
         $username =  $data['from_user_id'];
        
         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
+        $data['updated_at'] = null;
 
         Notification::make()
             ->title('Nuevo Ticket Abierto')
