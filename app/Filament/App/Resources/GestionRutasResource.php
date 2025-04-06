@@ -171,9 +171,9 @@ class GestionRutasResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGestionRutas::route('/'),
-            'create' => Pages\CreateGestionRutas::route('/create'),
-            'edit' => Pages\EditGestionRutas::route('/{record}/edit'),
+          //  'index' => Pages\ListGestionRutas::route('/'),
+          //  'create' => Pages\CreateGestionRutas::route('/create'),
+          //  'edit' => Pages\EditGestionRutas::route('/{record}/edit'),
         ];
     }
 }
