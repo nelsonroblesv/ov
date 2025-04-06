@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Filament\App\Resources\TicketsResource\Pages;
+namespace App\Filament\Resources\AdministrarTicketsResource\Pages;
 
 use App\Filament\App\Resources\TicketsResource;
+use App\Filament\Resources\AdministrarTicketsResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListTickets extends ListRecords
+class ListAdministrarTickets extends ListRecords
 {
-    protected static string $resource = TicketsResource::class;
+    protected static string $resource = AdministrarTicketsResource::class;
     protected static ?string $title = 'Mis Tickets';
 
     protected function getHeaderActions(): array

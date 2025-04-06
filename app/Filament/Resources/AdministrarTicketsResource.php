@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Filament\App\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\App\Resources\TicketsResource\Pages;
-use App\Filament\App\Resources\TicketsResource\RelationManagers;
+use App\Filament\Resources\AdministrarTicketsResource\Pages;
+use App\Filament\Resources\AdministrarTicketsResource\RelationManagers;
+use App\Models\AdministrarTickets;
 use App\Models\Tickets;
 use App\Models\User;
 use Filament\Forms;
@@ -11,8 +12,6 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,7 +21,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TicketsResource extends Resource
+class AdministrarTicketsResource extends Resource
 {
     protected static ?string $model = Tickets::class;
 
@@ -31,6 +30,7 @@ class TicketsResource extends Resource
     protected static ?string $navigationLabel = 'Administrar Tickets';
     protected static ?string $breadcrumb = 'Administrar Tickets';
     protected static ?int $navigationSort = 1;
+
 
     public static function form(Form $form): Form
     {
@@ -74,7 +74,7 @@ class TicketsResource extends Resource
     {
         return $table
             ->columns([
-               // TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
+                // TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
                 TextColumn::make('toUser.name')->label('Destinatario')->searchable()->sortable(),
                 TextColumn::make('asunto')->label('Asunto')->searchable()->sortable()->limit(50),
                 TextColumn::make('created_at')->label('Solicitado')->dateTime()->sortable(),
@@ -86,11 +86,11 @@ class TicketsResource extends Resource
                 //
             ])
             ->actions([
-               //Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                   // Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -105,9 +105,9 @@ class TicketsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTickets::route('/'),
-            'create' => Pages\CreateTickets::route('/create'),
-            'edit' => Pages\EditTickets::route('/{record}/edit'),
+            'index' => Pages\ListAdministrarTickets::route('/'),
+            'create' => Pages\CreateAdministrarTickets::route('/create'),
+            'edit' => Pages\EditAdministrarTickets::route('/{record}/edit'),
         ];
     }
 }
