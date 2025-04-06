@@ -375,8 +375,7 @@ class RutasResource extends Resource
 
                         Notification::make()
                             ->title('Cliente registrado')
-                            ->body('El Cliente ha sido registrado con éxito. Se agregó a la Ruta actual. 
-                                        Recuerda completar la información adicional posteriormente.')
+                            ->body('El Cliente ha sido registrado con éxito. Se agregó a la Ruta actual.')
                             ->icon('heroicon-o-user-plus')
                             ->color('success')
                             ->send();
