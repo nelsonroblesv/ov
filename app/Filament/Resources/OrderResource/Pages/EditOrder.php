@@ -121,8 +121,8 @@ class EditOrder extends EditRecord
             Notification::make()
                 ->title('Cambio de Estado en Pedido')
                 ->body("El pedido de {$nombresVendedores} para el cliente: {$cliente}, 
-                            ha cambiado su estado a: **{$estado}**.")
-                ->icon('heroicon-o-arrow-path')
+                            ha cambiado su estado a:  **{$estado}**.")
+                ->icon('heroicon-o-shopping-bag')
                 ->iconColor('info')
                 ->color('info')
                 ->sendToDatabase($destinos);
