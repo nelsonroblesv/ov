@@ -32,14 +32,16 @@ class CreateAdministrarTickets extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $recipient = User::findOrFail($data['to_user_id']);
-        $username =  $data['from_user_id'];
+        $username = User::find($data['from_user_id'])?->name ?? 'Usuario desconocido';
+
+        dd($username);
        
         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
         $data['updated_at'] = null;
 
         Notification::make()
             ->title('Nuevo Ticket Abierto')
-            ->body("El usuario " . $username . " ha abierto un nuevo Ticket.")
+            ->body("El usuario" . $username . " ha abierto un nuevo Ticket.")
             ->icon('heroicon-o-ticket')
             ->iconColor('info')
             ->color('info')

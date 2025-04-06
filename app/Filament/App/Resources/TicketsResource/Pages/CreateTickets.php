@@ -32,7 +32,7 @@ class CreateTickets extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $recipient = User::findOrFail($data['to_user_id']);
-        $username =  $data['from_user_id'];
+        $username = User::find($data['from_user_id'])?->name ?? 'Usuario desconocido';
        
         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
         $data['updated_at'] = null;

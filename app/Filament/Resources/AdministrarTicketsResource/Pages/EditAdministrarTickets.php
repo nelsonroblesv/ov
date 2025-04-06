@@ -22,6 +22,17 @@ class EditAdministrarTickets extends EditRecord
         ];
     }
 
+    protected function getSavedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Ticket Actualizado')
+            ->body('Se ha actualizado el estado del Ticket de forma correcta.')
+            ->icon('heroicon-o-ticket')
+            ->iconColor('success')
+            ->color('success');
+    }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -41,13 +52,21 @@ class EditAdministrarTickets extends EditRecord
 
     protected function notifyStatusChange($ticket, string $nuevoEstado): void
     {
+        $toUser = User::find($ticket->to_user_id)?->name ?? 'Usuario desconocido';
         $remitente = User::find($ticket->from_user_id);
+        
+       
+        $nuevoEstado = match ($nuevoEstado) {
+            '' => 'Abierto',
+            '1' => 'Cerrado',
+        };
 
         if ($remitente) {
             Notification::make()
                 ->title('Estado del Ticket Actualizado')
-                ->body("Tu ticket con folio #{$ticket->id} ha cambiado su estado a: {$nuevoEstado}.")
-                ->icon('heroicon-o-check-circle')
+                ->body($toUser. " ha cambiado el estado de tu ticket con folio OV-{$ticket->id} 
+                            a: {$nuevoEstado}.")
+                ->icon('heroicon-o-ticket')
                 ->iconColor('success')
                 ->color('success')
                 ->sendToDatabase($remitente);

@@ -18,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -82,13 +83,15 @@ class AdministrarTicketsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
                 TextColumn::make('toUser.name')->label('Destinatario')->searchable()->sortable(),
                 TextColumn::make('asunto')->label('Asunto')->searchable()->sortable()->limit(50),
                 TextColumn::make('created_at')->label('Solicitado')->dateTime()->sortable(),
-                IconColumn::make('estado')->label('Resuelto')->boolean()
-                    ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')->sortable(),
+                IconColumn::make('estado')->label('Estado')->sortable()->boolean()
+                        ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')
+                        ->trueColor('success')->falseColor('danger')->alignCenter(),
                 TextColumn::make('updated_at')->label('Cerrado')->dateTime()->sortable(),
             ])
             ->filters([
