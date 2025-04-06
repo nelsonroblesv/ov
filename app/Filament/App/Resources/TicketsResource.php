@@ -35,7 +35,7 @@ class TicketsResource extends Resource
         return $form
             ->schema([
                 Section::make('Abrir Ticket')->schema([
-                    Hidden::make('user_id')->default(fn() => auth()->id()),
+                    Hidden::make('from_user_id')->default(fn() => auth()->id()),
 
                     Select::make('to_user_id')
                         ->label('Para:')
