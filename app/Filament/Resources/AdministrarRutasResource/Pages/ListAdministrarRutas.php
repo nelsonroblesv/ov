@@ -9,11 +9,12 @@ use Filament\Resources\Pages\ListRecords;
 class ListAdministrarRutas extends ListRecords
 {
     protected static string $resource = AdministrarRutasResource::class;
+    protected static ?string $title = 'Administrar Rutas de Usuarios';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            //Actions\CreateAction::make(),
         ];
     }
 }
