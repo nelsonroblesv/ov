@@ -53,7 +53,7 @@ class CambiarRutasResource extends Resource
             // ->reorderable('orden')
             ->columns([
                 //TextColumn::make('orden')->label('Orden')->sortable(),
-                TextColumn::make('user.name')->label('Nombre')->searchable(),
+                TextColumn::make('user.name')->label('Usuario')->searchable(),
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),
                 TextColumn::make('customer.tipo_cliente')->label('Tipo Cliente')->badge()
                     ->colors([
