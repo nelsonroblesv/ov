@@ -102,11 +102,29 @@ class CambiarRutasResource extends Resource
                 TextColumn::make('customer.zona.nombre_zona')->label('Zona'),
             ])
             ->filters([
+                SelectFilter::make('user_id')
+                    ->label('Usuario')
+                    ->relationship('user', 'name')
+                    //->multiple()
+                    ->preload()
+                    ->searchable(),
+
                 SelectFilter::make('tipo_semana')
                     ->label('Tipo Semana')
                     ->options([
                         'PAR' => 'PAR',
                         'NON' => 'NON',
+                    ])
+                    ->searchable(),
+
+                SelectFilter::make('dia_semana')
+                    ->label('Día de la Semana')
+                    ->options([
+                        'Lun' => 'Lunes',
+                        'Mar' => 'Martes',
+                        'Mie' => 'Miércoles',
+                        'Jue' => 'Jueves',
+                        'Vie' => 'Viernes',
                     ])
                     ->searchable(),
             ])
