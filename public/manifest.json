@@ -27,6 +27,20 @@
       "label": "Mobile"
     },
     {
+      "src": "/images/assets/image2.jpg",
+      "sizes": "900x1600",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Mobile"
+    },
+    {
+      "src": "/images/assets/image3.jpg",
+      "sizes": "900x1600",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Mobile"
+    },
+    {
       "src": "/images/assets/desk1.png",
       "sizes": "1350x631",
       "type": "image/jpg",
