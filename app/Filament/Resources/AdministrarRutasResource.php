@@ -8,6 +8,7 @@ use App\Models\AdministrarRutas;
 use App\Models\Customer;
 use App\Models\GestionRutas;
 use Doctrine\DBAL\Query\QueryException;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -15,12 +16,14 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Ramsey\Collection\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class AdministrarRutasResource extends Resource
 {
@@ -45,34 +48,34 @@ class AdministrarRutasResource extends Resource
         return $table
             ->recordUrl(null)
             ->modifyQueryUsing(function (Builder $query) {
-                $query->whereNotIn('id', function ($subQuery)  {
-                        $subQuery->select('customer_id')
-                            ->from('gestion_rutas');
-                            //->where('user_id', $userId);
-                    });
+                $query->whereNotIn('id', function ($subQuery) {
+                    $subQuery->select('customer_id')
+                        ->from('gestion_rutas');
+                    //->where('user_id', $userId);
+                });
             })
             ->columns([
                 TextColumn::make('user.name')->label('Usuario')->searchable()->sortable(),
                 TextColumn::make('name')->label('Iidentificador')->searchable()->sortable(),
                 TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
-				->badge()
-				->colors([
-					'success' => 'PAR',
-					'danger' => 'NON',
-				])
-				->icons([
-					'heroicon-o-arrow-long-down' => 'PAR',
-					'heroicon-o-arrow-long-up' => 'NON',
-				]),
-			TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
-				->badge()
-				->colors([
-					'info' => 'Lun',
-					'warning' => 'Mar',
-					'danger' => 'Me',
-					'success' => 'Jue',
-					'custom_light_blue' => 'Vie',
-				]),
+                    ->badge()
+                    ->colors([
+                        'success' => 'PAR',
+                        'danger' => 'NON',
+                    ])
+                    ->icons([
+                        'heroicon-o-arrow-long-down' => 'PAR',
+                        'heroicon-o-arrow-long-up' => 'NON',
+                    ]),
+                TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'Lun',
+                        'warning' => 'Mar',
+                        'danger' => 'Me',
+                        'success' => 'Jue',
+                        'custom_light_blue' => 'Vie',
+                    ]),
                 // TextColumn::make('email')->label('Correo')->searchable()->sortable(),
                 // TextColumn::make('phone')->label('Teléfono')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
@@ -82,77 +85,55 @@ class AdministrarRutasResource extends Resource
             ])
             ->filters([])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-            ])
+                ActionsAction::make('agregarARuta')
+                    ->icon('heroicon-o-truck')
+                    ->label('Agregar a Ruta')
+                    ->form([
+                        Select::make('dia_semana')
+                            ->label('Día de la Semana')
+                            ->options([
+                                'Lun' => 'Lunes',
+                                'Mar' => 'Martes',
+                                'Mie' => 'Miércoles',
+                                'Jue' => 'Jueves',
+                                'Vie' => 'Viernes',
+                            ])
+                            ->required(),
+                        Radio::make('tipo_semana')
+                            ->label('Tipo de Semana')
+                            ->options([
+                                'PAR' => 'PAR',
+                                'NON' => 'NON',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Customer $record): void {
+                        // Manejo de errores
+                        try {
+                            GestionRutas::insert([
+                                'user_id' =>  $record->user_id,
+                                'dia_semana'  => $data['dia_semana'],
+                                'tipo_semana' => $data['tipo_semana'],
+                                'customer_id' => $record->id,
+                                'region_id'   => $record->regiones_id, // << debe estar aquí
+                                'zona_id'     => $record->zonas_id,    // << debe estar aquí
+                            ]);
+                        } catch (QueryException $e) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Error al agregar el cliente a la ruta.')
+                                ->body($e->getMessage())
+                                ->send();
+                            return; // Salta a la siguiente iteración
+                        }
+
+                        Notification::make()
+                            ->success()
+                            ->title('Cliente ' . $record->name . ' agregado a la ruta.')
+                            ->send();
+                    }),
+                ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    BulkAction::make('agregarARuta')
-                        ->icon('heroicon-o-truck')
-                        ->label('Agregar a Ruta')
-                        ->form([
-                            Select::make('dia_semana')
-                                ->label('Día de la Semana')
-                                ->options([
-                                    'Lun' => 'Lunes',
-                                    'Mar' => 'Martes',
-                                    'Mie' => 'Miércoles',
-                                    'Jue' => 'Jueves',
-                                    'Vie' => 'Viernes',
-                                ])
-                                ->required(),
-                            Radio::make('tipo_semana')
-                                ->label('Tipo de Semana')
-                                ->options([
-                                    'PAR' => 'PAR',
-                                    'NON' => 'NON',
-                                ])
-                                ->required(),
-                        ])
-                        ->action(function (array $data, Collection $records): void {
-                            foreach ($records as $customer) {
-                                // Validación de existencia en rutas_planificadas
-                                if (GestionRutas::where([
-                                    'user_id' => auth()->id(),
-                                    'dia_semana' => $data['dia_semana'],
-                                    'tipo_semana' => $data['tipo_semana'],
-                                    'customer_id' => $customer->id,
-                                    'region_id' => $customer->regiones_id,
-                                    'zona_id' => $customer->zonas_id,
-                                ])->exists()) {
-                                    Notification::make()
-                                        ->warning()
-                                        ->title('El cliente ' . $customer->name . ' ya está en la ruta.')
-                                        ->send();
-                                    continue; // Salta a la siguiente iteración
-                                }
-
-                                // Manejo de errores
-                                try {
-                                    GestionRutas::insert([
-                                        'user_id'     => auth()->id(),
-                                        'dia_semana'  => $data['dia_semana'],
-                                        'tipo_semana' => $data['tipo_semana'],
-                                        'customer_id' => $customer->id,
-                                        'region_id'   => $customer->regiones_id, // << debe estar aquí
-                                        'zona_id'     => $customer->zonas_id,    // << debe estar aquí
-                                    ]);
-                                } catch (QueryException $e) {
-                                    Notification::make()
-                                        ->danger()
-                                        ->title('Error al agregar el cliente a la ruta.')
-                                        ->body($e->getMessage())
-                                        ->send();
-                                    continue; // Salta a la siguiente iteración
-                                }
-
-                                Notification::make()
-                                    ->success()
-                                    ->title('Cliente ' . $customer->name . ' agregado a la ruta.')
-                                    ->send();
-                            }
-                        }),
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
