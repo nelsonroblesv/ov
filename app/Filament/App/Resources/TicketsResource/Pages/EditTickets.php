@@ -9,11 +9,12 @@ use Filament\Resources\Pages\EditRecord;
 class EditTickets extends EditRecord
 {
     protected static string $resource = TicketsResource::class;
+    
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+           // Actions\DeleteAction::make(),
         ];
     }
 }
