@@ -53,8 +53,25 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
 			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
-			TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable(),
-			TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable(),
+			TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
+				->badge()
+				->colors([
+					'success' => 'PAR',
+					'danger' => 'NON',
+				])
+				->icons([
+					'heroicon-o-arrow-long-down' => 'PAR',
+					'heroicon-o-arrow-long-up' => 'NON',
+				]),
+			TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+				->badge()
+				->colors([
+					'info' => 'Lun',
+					'warning' => 'Mar',
+					'danger' => 'Me',
+					'success' => 'Jue',
+					'primary' => 'Vie',
+				]),
 			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
 					'success' => 'PV',
