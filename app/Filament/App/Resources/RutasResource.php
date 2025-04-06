@@ -95,7 +95,7 @@ class RutasResource extends Resource
                 $diaActual = $dias[$hoy];
                
                 $query->where('user_id', $user)
-                    ->where('dia_semana', $diaActual)
+                    ->where('dia_semana', 'Lun')
                     ->where('tipo_semana', $semana);
             })
             ->defaultSort('orden', 'desc')
