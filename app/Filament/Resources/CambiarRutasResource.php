@@ -47,10 +47,9 @@ class CambiarRutasResource extends Resource
     {
         return $table
             ->recordUrl(null)
-            ->heading('Mis Rutas')
-            ->description('Estas son tus Rutas. Utiliza los controles disponibles para organizar tus rutas.
-            Puedes arrastrar y soltar para cambiar el orden de las rutas. Seleccionar 
-            el dia, filtrar por tipo de semana y buscar por nombre de cliente.')
+            ->heading('Rutas de Usuarios')
+            ->description('Se muestra el listado de Rutas de Usuarios. Usa los controles disponbles para
+                Eliminar y/o Cambiar la Ruta.')
             // ->reorderable('orden')
             ->columns([
                 //TextColumn::make('orden')->label('Orden')->sortable(),
