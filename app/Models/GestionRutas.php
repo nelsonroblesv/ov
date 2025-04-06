@@ -12,6 +12,8 @@ class GestionRutas extends Model
         'dia_semana',
         'tipo_semana',
         'customer_id',
+        'region_id',
+        'zona_id',
         'orden',
         'created_at',
         'updated_at',
