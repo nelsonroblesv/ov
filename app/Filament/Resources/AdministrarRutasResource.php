@@ -47,6 +47,8 @@ class AdministrarRutasResource extends Resource
     {
         return $table
             ->recordUrl(null)
+            ->heading('Registros no asignados')
+            ->description('Clientes/Prospectos que no están asignados a ninguna ruta.')
             ->modifyQueryUsing(function (Builder $query) {
                 $query->whereNotIn('id', function ($subQuery) {
                     $subQuery->select('customer_id')
