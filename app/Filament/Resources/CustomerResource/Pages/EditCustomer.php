@@ -23,8 +23,8 @@ class EditCustomer extends EditRecord
     {
         return Notification::make()
             ->title('Cambios realizados')
-            ->body('Se ha actualizado el registro correctamente.')
-            ->icon('heroicon-o-arrow-path')
+            ->body('Se ha actualizado la información del Cliente de forma exitosa.')
+            ->icon('heroicon-o-user-plus')
             ->iconColor('success')
             ->color('success');
     }

@@ -53,7 +53,7 @@ class CreateCustomer extends CreateRecord
             ->title('Nuevo Cliente Registrado')
             ->body("El usuario ". $username." ha registrado a {$data['name']} 
                         como nuevo Cliente {$cliente} y fue asignado a ". $assignTo)
-            ->icon('heroicon-o-information-circle')
+            ->icon('heroicon-o-user-plus')
             ->iconColor('info')
             ->color('info')
             ->sendToDatabase($recipient);
