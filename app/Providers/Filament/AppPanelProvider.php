@@ -74,7 +74,8 @@ class AppPanelProvider extends PanelProvider
                 'light' => 'bg-black text-white',
                 'dark' => 'bg-gray-900 text-white',
             ],
-            'custom_gray' => '#757275'
+            'custom_gray' => '#757275',
+             'custom_light_blue' => '#018079'
         ]);
     }
 }

@@ -50,7 +50,8 @@ class CustomersMap extends MapTableWidget
 	protected function getTableColumns(): array
 	{
 		return [
-			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+			//TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
 			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
 			TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
@@ -70,7 +71,7 @@ class CustomersMap extends MapTableWidget
 					'warning' => 'Mar',
 					'danger' => 'Me',
 					'success' => 'Jue',
-					'primary' => 'Vie',
+					'custom_light_blue' => 'Vie',
 				]),
 			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
@@ -91,7 +92,6 @@ class CustomersMap extends MapTableWidget
 					'BK' => 'Black',
 					'SL' => 'Silver',
 				][$state] ?? 'Otro'),
-			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('paquete_inicio.nombre')->label('Paquete Inicio')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([

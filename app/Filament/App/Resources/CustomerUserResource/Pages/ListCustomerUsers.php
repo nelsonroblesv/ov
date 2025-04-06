@@ -10,7 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListCustomerUsers extends ListRecords
 {
     protected static string $resource = CustomerUserResource::class;
-    protected static ?string $title = 'Clientes';
+    protected static ?string $title = 'Mis Clientes';
 
     protected function getHeaderActions(): array
     {
