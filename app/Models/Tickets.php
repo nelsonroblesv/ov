@@ -12,7 +12,7 @@ class Tickets extends Model
         'to_user_id',
         'asunto',
         'mensaje',
-        'status',
+        'estado',
         'created_at',
         'updated_at',
     ];

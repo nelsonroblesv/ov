@@ -12,6 +12,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -51,6 +52,7 @@ class AdministrarTicketsResource extends Resource
                         })
                         ->native(false)
                         ->required(),
+
                     Select::make('asunto')
                         ->label('Asunto')
                         ->required()
@@ -61,12 +63,14 @@ class AdministrarTicketsResource extends Resource
                             'Problema con el servicio' => 'Problema con el servicio',
                             'Otros' => 'Otros',
                         ]),
+
                     Textarea::make('mensaje')
                         ->label('Mensaje')
                         ->rows(5)
                         ->columnSpan('full')
                         ->required(),
-                    Forms\Components\Toggle::make('estado')
+                        
+                    Toggle::make('estado')
                         ->label('Cerrado')
                         ->default(false)
                         ->columnSpan('full')

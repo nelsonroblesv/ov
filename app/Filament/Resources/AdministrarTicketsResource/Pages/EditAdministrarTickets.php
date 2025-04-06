@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AdministrarTicketsResource\Pages;
 
 use App\Filament\Resources\AdministrarTicketsResource;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -12,6 +13,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 class EditAdministrarTickets extends EditRecord
 {
     protected static string $resource = AdministrarTicketsResource::class;
+    protected static ?string $title = 'Editar Ticket';
 
     protected function getHeaderActions(): array
     {
@@ -20,69 +22,35 @@ class EditAdministrarTickets extends EditRecord
         ];
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $ticket = $this->record;
+        $info = $this->record;
 
-        if ($ticket->estado !== $data['estado']) {
-            $this->notifyStatusChange($ticket, $data['estado']);
+        // Verificar si el estado cambió
+        if ($info->estado !== $data['estado']) {
+            $this->notifyStatusChange($info, $data['estado']);
             $data['updated_at'] = Carbon::now()->setTimezone('America/Merida');
-
         }
-
         return $data;
     }
 
-    private function notifyStatusChange(Ticket $number, $newStatus)
+    protected function notifyStatusChange($ticket, string $nuevoEstado): void
     {
-        $ticket = Ticket::find($number->customer_id)?->name;
-        
-        $solicita = is_array($order->solicitado_por) ? $order->solicitado_por : [$order->solicitado_por];
-        $registra = $order->registrado_por;
-        $usuarioLogueadoId = auth()->id(); // ID del usuario autenticado
+        $remitente = User::find($ticket->from_user_id);
 
-        // Obtener usuarios con rol "Administrador"
-        $adminUsers = User::where('role', 'Administrador')->get();
-
-        // Obtener los usuarios solicitantes y quien registró la orden
-        $vendedores = User::whereIn('id', $solicita)->get();
-        $registrador = $registra ? User::find($registra) : null;
-
-        // Unir administradores, vendedores y registrador
-        $destinos = $adminUsers->merge($vendedores);
-
-        // Evitar duplicados y que el usuario logueado reciba la notificación dos veces
-        if ($registrador && !$adminUsers->contains($registrador) && $registrador->id !== $usuarioLogueadoId) {
-            $destinos->push($registrador);
-        }
-
-        // Filtrar duplicados
-        $destinos = $destinos->unique('id');
-
-        // Mapeo de estados
-        $estados = [
-            'PEN' => 'PENDIENTE',
-            'COM' => 'COMPLETADO',
-            'REC' => 'RECHAZADO',
-            'REU' => 'REUBICADO',
-            'DEV' => 'DEVUELTA PARCIAL',
-            'SIG' => 'SIGUIENTE VISITA',
-        ];
-        $estado = $estados[$newStatus] ?? 'DESCONOCIDO';
-
-        // Construir la lista de vendedores
-        $nombresVendedores = $vendedores->pluck('name')->implode(', ');
-
-        // Enviar la notificación
-        if ($destinos->isNotEmpty()) {
+        if ($remitente) {
             Notification::make()
-                ->title('Ticket Cerrado')
-                ->body("El ticket solicitado por {$nombresVendedores} ha sido resuelto.: {$cliente}, 
-                            ha cambiado su estado a:  **{$estado}**.")
-                ->icon('heroicon-o-shopping-bag')
-                ->iconColor('info')
-                ->color('info')
-                ->sendToDatabase($destinos);
+                ->title('Estado del Ticket Actualizado')
+                ->body("Tu ticket con folio #{$ticket->id} ha cambiado su estado a: {$nuevoEstado}.")
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->color('success')
+                ->sendToDatabase($remitente);
         }
     }
 }
