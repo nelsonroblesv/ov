@@ -44,7 +44,7 @@ class GestionRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->recordUrl(null)
+            ->recordUrl(null)
             ->modifyQueryUsing(function (Builder $query) {
                 $userId = auth()->id();
 
@@ -70,7 +70,7 @@ class GestionRutasResource extends Resource
             ])
             ->filters([])
             ->actions([
-               // Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -104,6 +104,8 @@ class GestionRutasResource extends Resource
                                     'dia_semana' => $data['dia_semana'],
                                     'tipo_semana' => $data['tipo_semana'],
                                     'customer_id' => $customer->id,
+                                    'region_id' => $customer->regiones_id,
+                                    'zona_id' => $customer->zonas_id,
                                 ])->exists()) {
                                     Notification::make()
                                         ->warning()
@@ -114,11 +116,13 @@ class GestionRutasResource extends Resource
 
                                 // Manejo de errores
                                 try {
-                                    GestionRutas::create([
-                                        'user_id' => auth()->id(),
-                                        'dia_semana' => $data['dia_semana'],
+                                    GestionRutas::insert([
+                                        'user_id'     => auth()->id(),
+                                        'dia_semana'  => $data['dia_semana'],
                                         'tipo_semana' => $data['tipo_semana'],
                                         'customer_id' => $customer->id,
+                                        'region_id'   => $customer->regiones_id, // << debe estar aquí
+                                        'zona_id'     => $customer->zonas_id,    // << debe estar aquí
                                     ]);
                                 } catch (QueryException $e) {
                                     Notification::make()
@@ -155,5 +159,4 @@ class GestionRutasResource extends Resource
             'edit' => Pages\EditGestionRutas::route('/{record}/edit'),
         ];
     }
-
 }
