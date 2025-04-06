@@ -10,7 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListAdministrarTickets extends ListRecords
 {
     protected static string $resource = AdministrarTicketsResource::class;
-    protected static ?string $title = 'Mis Tickets';
+    protected static ?string $title = 'Tickets';
 
     protected function getHeaderActions(): array
     {

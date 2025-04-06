@@ -66,6 +66,11 @@ class AdministrarTicketsResource extends Resource
                         ->rows(5)
                         ->columnSpan('full')
                         ->required(),
+                    Forms\Components\Toggle::make('estado')
+                        ->label('Cerrado')
+                        ->default(false)
+                        ->columnSpan('full')
+                        ->helperText('Marcar como Cerrado una vez que el ticket haya sido atendido.'),
                 ])
             ]);
     }
@@ -74,7 +79,7 @@ class AdministrarTicketsResource extends Resource
     {
         return $table
             ->columns([
-                // TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
+                TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
                 TextColumn::make('toUser.name')->label('Destinatario')->searchable()->sortable(),
                 TextColumn::make('asunto')->label('Asunto')->searchable()->sortable()->limit(50),
                 TextColumn::make('created_at')->label('Solicitado')->dateTime()->sortable(),
