@@ -49,22 +49,38 @@ class MapProspeccionWidget extends MapTableWidget
 	protected function getTableColumns(): array
 	{
 		return [
-			TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
-			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
-			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
+			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
 				->colors([
 					'danger' => 'PO',
 					'warning' => 'PR'
 				])
-				->icons([
-					'heroicon-o-map' => 'PO',
-					'heroicon-o-star' => 'PR'
-				])
 				->formatStateUsing(fn(string $state): string => [
 					'PO' => 'Posible',
 					'PR' => 'Prospecto',
 				][$state] ?? 'Otro'),
+			//TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
+			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
+			TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
+				->badge()
+				->colors([
+					'success' => 'PAR',
+					'danger' => 'NON',
+				])
+				->icons([
+					'heroicon-o-arrow-long-down' => 'PAR',
+					'heroicon-o-arrow-long-up' => 'NON',
+				]),
+			TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+				->badge()
+				->colors([
+					'info' => 'Lun',
+					'warning' => 'Mar',
+					'danger' => 'Me',
+					'success' => 'Jue',
+					'custom_light_blue' => 'Vie',
+				]),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
 					'black',/*
@@ -98,7 +114,6 @@ class MapProspeccionWidget extends MapTableWidget
 					'UB' => 'Ubicación en Grupo',
 					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
-			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
 			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),

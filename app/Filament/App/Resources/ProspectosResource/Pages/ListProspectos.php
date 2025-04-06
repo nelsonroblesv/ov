@@ -10,7 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListProspectos extends ListRecords
 {
     protected static string $resource = ProspectosResource::class;
-    protected static ?string $title = 'Prospectos';
+    protected static ?string $title = 'Mis Prospectos';
 
     protected function getHeaderActions(): array
     {

@@ -51,6 +51,25 @@ class CustomersMap extends MapTableWidget
 	{
 		return [
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
+				->colors([
+					'success' => 'PV',
+					'danger' => 'RD',
+					'custom_black' => 'BK',
+					'custom_gray' => 'SL'
+				])
+				->icons([
+					'heroicon-o-building-storefront' => 'PV',
+					'heroicon-o-user' => 'RD',
+					'heroicon-o-star' => 'BK',
+					'heroicon-o-sparkles' => 'SL'
+				])
+				->formatStateUsing(fn(string $state): string => [
+					'PV' => 'Punto Venta',
+					'RD' => 'Red',
+					'BK' => 'Black',
+					'SL' => 'Silver',
+				][$state] ?? 'Otro'),
 			//TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
 			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
 			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
@@ -73,25 +92,6 @@ class CustomersMap extends MapTableWidget
 					'success' => 'Jue',
 					'custom_light_blue' => 'Vie',
 				]),
-			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
-				->colors([
-					'success' => 'PV',
-					'danger' => 'RD',
-					'custom_black' => 'BK',
-					'custom_gray' => 'SL'
-				])
-				->icons([
-					'heroicon-o-building-storefront' => 'PV',
-					'heroicon-o-user' => 'RD',
-					'heroicon-o-star' => 'BK',
-					'heroicon-o-sparkles' => 'SL'
-				])
-				->formatStateUsing(fn(string $state): string => [
-					'PV' => 'Punto Venta',
-					'RD' => 'Red',
-					'BK' => 'Black',
-					'SL' => 'Silver',
-				][$state] ?? 'Otro'),
 			TextColumn::make('paquete_inicio.nombre')->label('Paquete Inicio')->searchable()->sortable(),
 			TextColumn::make('simbolo')->label('Simbolo')->badge()
 				->colors([
