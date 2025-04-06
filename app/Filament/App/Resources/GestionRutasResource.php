@@ -59,12 +59,29 @@ class GestionRutasResource extends Resource
                 //TextColumn::make('user.name')->label('Nombre')->searchable()->sortable(),
 
                 TextColumn::make('name')->label('Iidentificador')->searchable()->sortable(),
+                TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
+				->badge()
+				->colors([
+					'success' => 'PAR',
+					'danger' => 'NON',
+				])
+				->icons([
+					'heroicon-o-arrow-long-down' => 'PAR',
+					'heroicon-o-arrow-long-up' => 'NON',
+				]),
+			TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+				->badge()
+				->colors([
+					'info' => 'Lun',
+					'warning' => 'Mar',
+					'danger' => 'Me',
+					'success' => 'Jue',
+					'custom_light_blue' => 'Vie',
+				]),
                 // TextColumn::make('email')->label('Correo')->searchable()->sortable(),
                 // TextColumn::make('phone')->label('Teléfono')->searchable()->sortable(),
                 TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
                 TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
-                TextColumn::make('zona.dia_zona')->label('Día')->searchable()->sortable(),
-                TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable(),
                 TextColumn::make('full_address')->label('Dirección')->searchable()->sortable(),
                 // Agrega aquí 
             ])
