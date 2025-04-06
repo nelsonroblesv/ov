@@ -24,7 +24,7 @@ class CreateTickets extends CreateRecord
         return Notification::make()
             ->title('Cliente registrado')
             ->body('Se ha registrado el Ticket de forma correcta. Será atendido en breve.')
-            ->icon('heroicon-o-paper-airplane')
+            ->icon('heroicon-o-ticket')
             ->iconColor('success')
             ->color('success');
     }
