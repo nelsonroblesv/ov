@@ -8,6 +8,7 @@ use App\Models\AdministrarTickets;
 use App\Models\Tickets;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -70,7 +71,16 @@ class AdministrarTicketsResource extends Resource
                         ->rows(5)
                         ->columnSpan('full')
                         ->required(),
-                        
+
+                    FileUpload::make('adjuntos')
+                        ->label('Adjuntos (Opcional)')
+                        ->multiple()
+                        ->placeholder('Sube tus archivos aquí')
+                        ->directory('tickets')
+                        ->acceptedFileTypes(['application/pdf', 'image/*'])
+                        ->maxSize(1024 * 3) // 3 MB
+                        ->columnSpan('full'),
+
                     Toggle::make('estado')
                         ->label('Cerrado')
                         ->default(false)
@@ -83,15 +93,15 @@ class AdministrarTicketsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->defaultSort('created_at', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
                 TextColumn::make('toUser.name')->label('Destinatario')->searchable()->sortable(),
                 TextColumn::make('asunto')->label('Asunto')->searchable()->sortable()->limit(50),
                 TextColumn::make('created_at')->label('Solicitado')->dateTime()->sortable(),
                 IconColumn::make('estado')->label('Estado')->sortable()->boolean()
-                        ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')
-                        ->trueColor('success')->falseColor('danger')->alignCenter(),
+                    ->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')->falseColor('danger')->alignCenter(),
                 TextColumn::make('updated_at')->label('Cerrado')->dateTime()->sortable(),
             ])
             ->filters([

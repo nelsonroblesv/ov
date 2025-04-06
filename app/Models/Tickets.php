@@ -13,8 +13,13 @@ class Tickets extends Model
         'asunto',
         'mensaje',
         'estado',
+        'adjuntos',
         'created_at',
         'updated_at',
+    ];
+
+    protected $casts = [
+        'adjuntos' => 'array',
     ];
 
     public function fromUser(): BelongsTo

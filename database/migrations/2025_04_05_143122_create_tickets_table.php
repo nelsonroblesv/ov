@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('asunto')->nullable();
             $table->string('mensaje')->nullable();
             $table->boolean('estado')->default(0);
+            $table->longText('adjuntos')->nullable();
             $table->timestamps();
         });
     }

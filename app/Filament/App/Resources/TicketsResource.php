@@ -6,8 +6,11 @@ use App\Filament\App\Resources\TicketsResource\Pages;
 use App\Filament\App\Resources\TicketsResource\RelationManagers;
 use App\Models\Tickets;
 use App\Models\User;
+use DragonCode\PrettyArray\Services\File;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -66,7 +69,17 @@ class TicketsResource extends Resource
                         ->rows(5)
                         ->columnSpan('full')
                         ->required(),
-                ])
+
+                    FileUpload::make('adjuntos')
+                        ->label('Adjuntos (Opcional)')
+                        ->multiple()
+                        ->placeholder('Sube tus archivos aquí')
+                        ->directory('tickets')
+                        ->acceptedFileTypes(['application/pdf', 'image/*'])
+                        ->maxSize(1024 * 3) // 3 MB
+                        ->columnSpan('full'),
+                ]),
+
             ]);
     }
 
@@ -74,7 +87,7 @@ class TicketsResource extends Resource
     {
         return $table
             ->columns([
-               // TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
+                // TextColumn::make('fromUser.name')->label('Remitente')->searchable()->sortable(),
                 TextColumn::make('toUser.name')->label('Destinatario')->searchable()->sortable(),
                 TextColumn::make('asunto')->label('Asunto')->searchable()->sortable()->limit(50),
                 TextColumn::make('created_at')->label('Solicitado')->dateTime()->sortable(),
@@ -86,11 +99,11 @@ class TicketsResource extends Resource
                 //
             ])
             ->actions([
-               //Tables\Actions\EditAction::make(),
+                //Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                   // Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
