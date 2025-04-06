@@ -285,8 +285,7 @@ class RutasResource extends Resource
                                         ]);
                                     })->lazy(),
 
-
-                                Select::make('regiones_id')
+                                    Select::make('regiones_id')
                                     ->label('Región')
                                     ->required()
                                     ->options(
@@ -294,28 +293,27 @@ class RutasResource extends Resource
                                         Regiones::whereIn('id', function ($query) {
                                             $query->select('regiones_id')
                                                 ->from('zonas')
-                                                ->where('user_id', auth()->id());
+                                                ->whereIn('id', function ($subquery) {
+                                                    $subquery->select('zonas_id')
+                                                        ->from('zona_usuario')
+                                                        ->where('users_id', auth()->id());
+                                                });
                                         })->pluck('name', 'id')
                                     )
-                                    ->reactive(),
-
+                                    ->reactive()
+                                    ->searchable(),
+    
                                 Select::make('zonas_id')
                                     ->label('Zona')
                                     ->placeholder('Selecciona una zona')
                                     ->required()
                                     ->searchable()
-                                    ->options(
-                                        fn(callable $get) =>
-                                        Zonas::where('regiones_id', $get('regiones_id'))
-                                            ->whereIn('id', function ($query) {
-                                                $query->select('id')
-                                                    ->from('zonas')
-                                                    ->where('user_id', auth()->id());
-                                            })
-                                            ->pluck('nombre_zona', 'id')
-                                    )
+                                    ->options(fn(callable $get) => Zonas::where('regiones_id', $get('regiones_id')) // Obtiene el valor de 'regiones_id'
+                                        ->whereHas('users', fn($query) => $query->where('users.id', auth()->id())) // Filtra por el usuario autenticado
+                                        ->pluck('nombre_zona', 'id'))
                                     ->reactive()
                                     ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+
                             ])->columns(2)->icon('heroicon-o-map-pin'),
 
                         Section::make('Fotos del establecimiento')
@@ -370,6 +368,8 @@ class RutasResource extends Resource
                             'dia_semana' => $diaActual,
                             'tipo_semana' => $semana,
                             'customer_id' => $customer->id,
+                            'region_id' => $data['regiones_id'],
+                            'zona_id' => $data['zonas_id'],
                             'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
                         ]);
 
