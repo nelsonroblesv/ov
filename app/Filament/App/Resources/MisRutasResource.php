@@ -50,7 +50,7 @@ class MisRutasResource extends Resource
             ->heading('Mis Rutas')
             ->description('Estas son tus Rutas. Utiliza los controles disponibles para organizar tus rutas.
             Puedes arrastrar y soltar para cambiar el orden de las rutas. Seleccionar 
-            el dia, filtrar por Tipo de semana y buscar por nombre de cliente.')
+            el dia, filtrar por tipo de semana y buscar por nombre de cliente.')
             ->reorderable('orden')
             ->columns([
                 TextColumn::make('orden')->label('Orden')->sortable(),
