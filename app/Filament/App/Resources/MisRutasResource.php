@@ -46,6 +46,9 @@ class MisRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->where('user_id', auth()->user()->id);
+            })
             ->recordUrl(null)
             ->heading('Mis Rutas')
             ->description('Estas son tus Rutas. Utiliza los controles disponibles para organizar tus rutas.
