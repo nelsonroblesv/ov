@@ -77,7 +77,7 @@ class CreateProspectos extends CreateRecord
         Notification::make()
             ->title('Nuevo Cliente Registrado')
             ->body("El usuario {$username} ha registrado a {$customer->name} como nuevo Cliente {$clienteTipoTexto}. Se ha agregado a la Ruta del usuario.")
-            ->icon('heroicon-o-information-circle')
+            ->icon('heroicon-o-user-plus')
             ->iconColor('info')
             ->color('info')
             ->sendToDatabase($recipient);
