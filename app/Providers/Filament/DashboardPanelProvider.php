@@ -12,6 +12,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -76,5 +77,17 @@ class DashboardPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+    }
+
+    public function boot(): void
+    {
+        FilamentColor::register([
+            'custom-black' => [
+                'light' => 'bg-black text-white',
+                'dark' => 'bg-gray-900 text-white',
+            ],
+            'custom_gray' => '#757275',
+            'custom_light_blue' => '#018079'
+        ]);
     }
 }
