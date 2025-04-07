@@ -4,7 +4,7 @@
             <div class="text-xl font-bold">
             <span class="text-{{ $color }}-700">{{ $label }}</span>
             </div>
-            <div class="text-sm text-gray-500">Planifica tus rutas correctamente.</div>
+            <div class="text-sm text-gray-500">Planifica tus actividades para hoy. ¡Éxito!</div>
         </div>
     </div>
 </x-filament::card>
