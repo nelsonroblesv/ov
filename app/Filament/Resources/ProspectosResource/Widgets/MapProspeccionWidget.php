@@ -19,7 +19,9 @@ use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -114,11 +116,11 @@ class MapProspeccionWidget extends MapTableWidget
 					'UB' => 'Ubicación en Grupo',
 					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
-			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
+			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()
+			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
 		];
 	}
 
@@ -136,78 +138,11 @@ class MapProspeccionWidget extends MapTableWidget
 
 	protected function getTableActions(): array
 	{
-		
 		return [
-			ActionGroup::make([
-/*				ViewAction::make('view')
-					->url(fn (Customer $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
 
-				EditAction::make('edit')
-					->url(fn (Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
-				
-				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-				
-				Action::make('transfer')
-					->label('Transferir')
-					->requiresConfirmation()
-					->icon('heroicon-o-arrows-up-down')
-					->color('info')
-					->modalHeading('Transferir Prospecto')
-					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
-					->action(function (Customer $record) {
-					if (!$record->phone) {
-							Notification::make()
-								->title('Error')
-								->body('Solo puedes transferir Prospectos que cuenten con informacion de contacto.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-
-						if (Customer::where('phone', $record->phone)->exists()) {
-							Notification::make()
-								->title('Error')
-								->body('El numero de telefono indicado ya esta asociado con un Cliente existente.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-
-						$clienteData = $record->toArray();
-						unset($clienteData['id'], $clienteData['created_at'], $clienteData['updated_at']);
-						Customer::create($clienteData);
-						$record->delete();
-
-						Notification::make()
-							->title('Prospecto transferido')
-							->body('El prospecto ha sido transferido como Cliente.')
-							->success()
-							->send();
-					}),
-
-				ActionsDeleteAction::make('delete')
-					->successNotification(
-						Notification::make()
-							->success()
-							->title('Prospecto eliminado')
-							->body('El Prospecto ha sido eliminado  del sistema.')
-							->icon('heroicon-o-trash')
-							->iconColor('danger')
-							->color('danger')
-					)
-					->modalHeading('Borrar Prospecto')
-					->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
-					->modalSubmitActionLabel('Si, eliminar'),
-
-					*/
-					]),		
-					
+			EditAction::make('edit')
+				->url(fn(Customer $record): string => ResourcesProspectosResource::getUrl('edit', ['record' => $record])),
 		];
-
 	}
 
 	protected function getTableBulkActions(): array
