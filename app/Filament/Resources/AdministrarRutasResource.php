@@ -59,6 +59,15 @@ class AdministrarRutasResource extends Resource
             ->columns([
                 TextColumn::make('user.name')->label('Usuario')->searchable()->sortable(),
                 TextColumn::make('name')->label('Iidentificador')->searchable()->sortable(),
+                TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'Lun',
+                        'warning' => 'Mar',
+                        'danger' => 'Me',
+                        'success' => 'Jue',
+                        'custom_light_blue' => 'Vie',
+                    ]),
                 TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
                     ->badge()
                     ->colors([
@@ -69,21 +78,26 @@ class AdministrarRutasResource extends Resource
                         'heroicon-o-arrow-long-down' => 'PAR',
                         'heroicon-o-arrow-long-up' => 'NON',
                     ]),
-                TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
-                    ->badge()
+                TextColumn::make('tipo_cliente')->label('Tipo')->badge()
                     ->colors([
-                        'info' => 'Lun',
-                        'warning' => 'Mar',
-                        'danger' => 'Me',
-                        'success' => 'Jue',
-                        'custom_light_blue' => 'Vie',
-                    ]),
-                // TextColumn::make('email')->label('Correo')->searchable()->sortable(),
-                // TextColumn::make('phone')->label('Teléfono')->searchable()->sortable(),
+                        'success' => 'PV',
+                        'danger' => 'RD',
+                        'custom_black' => 'BK',
+                        'custom_gray' => 'SL',
+                        'danger' => 'PO',
+                        'warning' => 'PR'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PV' => 'Punto Venta',
+                        'RD' => 'Red',
+                        'BK' => 'Black',
+                        'SL' => 'Silver',
+                        'PO' => 'Posible',
+                        'PR' => 'Prospecto'
+                    ][$state] ?? 'Otro'),
                 TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
                 TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('full_address')->label('Dirección')->searchable()->sortable(),
-                // Agrega aquí 
             ])
             ->filters([])
             ->actions([
@@ -134,9 +148,8 @@ class AdministrarRutasResource extends Resource
                             ->title('Cliente ' . $record->name . ' agregado a la ruta.')
                             ->send();
                     }),
-                ], position: ActionsPosition::BeforeCells)
-            ->bulkActions([
-            ]);
+            ], position: ActionsPosition::BeforeCells)
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
