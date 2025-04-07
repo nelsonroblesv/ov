@@ -75,8 +75,6 @@ class TicketsResource extends Resource
                         ->multiple()
                         ->placeholder('Sube tus archivos aquí')
                         ->directory('tickets')
-                        ->acceptedFileTypes(['application/pdf', 'image/*'])
-                        ->maxSize(1024 * 3) // 3 MB
                         ->columnSpan('full'),
                 ]),
 
