@@ -270,22 +270,21 @@ class CustomerUserResource extends Resource
                                     FileUpload::make('front_image')
                                         ->label('Fotos de Exterior')
                                         ->placeholder('Tomar fotos o cargar desde galeria')
-                                        ->multiple()
                                         ->required()
-                                        ->image()
-                                        ->imageEditor()
                                         ->directory('customer-images')
+                                        ->multiple()
+                                        ->maxSize(2048)
                                         ->columnSpanFull(),
 
                                     FileUpload::make('inside_image')
                                         ->label('Fotos de Interior')
                                         ->placeholder('Tomar fotos o cargar desde galeria')
-                                        ->multiple()
-                                        ->image()
                                         ->required()
-                                        ->imageEditor()
                                         ->directory('customer-images')
-                                        ->columnSpanFull()
+                                        ->multiple()
+                                        ->maxSize(2048)
+                                        ->columnSpanFull(),
+                                        
                                 ])->columns(2)->icon('heroicon-o-camera'),
 
                             Section::make('Informacion adicional')

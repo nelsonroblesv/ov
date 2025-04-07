@@ -121,7 +121,6 @@ class CustomerResource extends Resource
 
                                 FileUpload::make('avatar')
                                     ->label('Avatar')
-                                    ->image()
                                     ->avatar()
                                     ->imageEditor()
                                     ->circleCropper()
@@ -292,7 +291,6 @@ class CustomerResource extends Resource
                                     FileUpload::make('front_image')
                                         ->label('Foto Exterior')
                                         ->helperText('Carga una foto del exterior del establecimiento')
-                                        ->image()
                                         //->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),
@@ -300,7 +298,6 @@ class CustomerResource extends Resource
                                     FileUpload::make('inside_image')
                                         ->label('Foto Interior')
                                         ->helperText('Carga una foto del interior del establecimiento')
-                                        ->image()
                                         //->required()
                                         ->imageEditor()
                                         ->directory('customer-images'),

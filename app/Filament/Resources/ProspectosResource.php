@@ -265,7 +265,6 @@ class ProspectosResource extends Resource
                             FileUpload::make('front_image')
                                 ->label('Foto de Fachada')
                                 ->helperText('Carga una foto del exterior del establecimiento')
-                                ->image()
                                 ->required()
                                 ->imageEditor()
                                 ->directory('customer-images')

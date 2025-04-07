@@ -244,11 +244,10 @@ class ProspectosResource extends Resource
                             FileUpload::make('front_image')
                                 ->label('Fotos del establecimiento')
                                 ->placeholder('Tomar fotos o cargar desde galeria')
-                                ->multiple()
-                                ->required()
-                                ->image()
-                                ->imageEditor()
                                 ->directory('prospectos-images')
+                                ->required()
+                                ->multiple()
+                                ->maxSize(2048)
                                 ->columnSpanFull()
 
                         ])->columns(2),

@@ -98,7 +98,6 @@ class UserResource extends Resource
 
                             FileUpload::make('avatar')
                                 ->label('Foto de perfil')
-                                ->image()
                                 ->avatar()
                                 ->imageEditor()
                                 ->circleCropper()
@@ -204,7 +203,6 @@ class UserResource extends Resource
                                 ->openable()
                                 ->downloadable()
                                 ->placeholder('Carga los archivos en formato de imagen')
-                                ->image()
                                 ->directory('licencia-user'),
 
                             FileUpload::make('ine_image')
@@ -213,7 +211,6 @@ class UserResource extends Resource
                                 ->openable()
                                 ->downloadable()
                                 ->helperText('Carga los archivos en formato de imagen')
-                                ->image()
                                 ->directory('ine-user')
                         ])->columns(2),
 

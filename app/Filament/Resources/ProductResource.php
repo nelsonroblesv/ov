@@ -76,7 +76,6 @@ class ProductResource extends Resource
 
                         FileUpload::make('thumbnail')
                             ->label('Imagen del Producto')
-                            ->image()
                             ->imageEditor()
                             ->directory('product-images'),
                         

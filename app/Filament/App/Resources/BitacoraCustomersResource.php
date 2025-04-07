@@ -113,7 +113,6 @@ class BitacoraCustomersResource extends Resource
                                 }
                                 return null;
                             })
-                            ->image()
                             ->directory('fotos-bitacora')
                             ->required(),
                     ]),
