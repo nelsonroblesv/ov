@@ -227,7 +227,7 @@ class RutasResource extends Resource
 
                                 Map::make('location')
                                     ->mapControls([
-                                        'mapTypeControl'    => true,
+                                        'mapTypeControl'    => false,
                                         'scaleControl'      => true,
                                         'streetViewControl' => false,
                                         'rotateControl'     => true,
@@ -503,7 +503,7 @@ class RutasResource extends Resource
 
                                 Map::make('location')
                                     ->mapControls([
-                                        'mapTypeControl'    => true,
+                                        'mapTypeControl'    => false,
                                         'scaleControl'      => true,
                                         'streetViewControl' => false,
                                         'rotateControl'     => true,
