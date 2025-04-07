@@ -70,6 +70,7 @@ class RutasResource extends Resource
         return $table
             ->recordUrl(null)
             ->heading('Mis Rutas')
+            ->defaultSort('orden', 'asc')
             ->description('Estas son tus Rutas programadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y') .
                 '. No olvides agregar un registro en la Bitacora durante cada visita.')
             ->modifyQueryUsing(function (Builder $query) {

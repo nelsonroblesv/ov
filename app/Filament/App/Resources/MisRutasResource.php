@@ -111,8 +111,7 @@ class MisRutasResource extends Resource
                     ->options([
                         'PAR' => 'PAR',
                         'NON' => 'NON',
-                    ])
-                    ->searchable(),
+                    ]),
             ])
             ->actions([])
             ->bulkActions([
