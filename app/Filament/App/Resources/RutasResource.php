@@ -330,8 +330,8 @@ class RutasResource extends Resource
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->directory('customer-images')
                                     ->required()
-                                    ->multiple()
                                     ->maxSize(2048)
+                                    ->imageEditor()
                                     ->columnSpanFull(),
 
                                 FileUpload::make('inside_image')
@@ -339,8 +339,8 @@ class RutasResource extends Resource
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->directory('customer-images')
                                     ->required()
-                                    ->multiple()
                                     ->maxSize(2048)
+                                    ->imageEditor()
                                     ->columnSpanFull(),
                             ])->columns(2)->icon('heroicon-o-camera'),
                     ])
@@ -485,7 +485,7 @@ class RutasResource extends Resource
                                     ->required()
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->directory('prospectos-images')
-                                    ->multiple()
+                                    ->imageEditor()
                                     ->maxSize(2048)
                                     ->columnSpanFull()
                             ])->icon('heroicon-o-camera'),
@@ -765,21 +765,21 @@ class RutasResource extends Resource
                                             ->label('Foto de entrega')
                                             ->nullable()
                                             ->placeholder('Foto de entrega de pedido')
-                                            ->multiple()
+                                            ->imageEditor()
                                             ->directory('fotos-bitacora')
                                             ->required(),
 
                                         FileUpload::make('foto_stock_antes')
                                             ->label('Foto de stock antes')
                                             ->placeholder('Foto de stock antes de entrega')
-                                            ->multiple()
+                                            ->imageEditor()
                                             ->directory('fotos-bitacora')
                                             ->required(),
 
                                         FileUpload::make('foto_stock_despues')
                                             ->label('Foto de stock después')
                                             ->placeholder('Foto de stock después de entrega')
-                                            ->multiple()
+                                            ->imageEditor()
                                             ->directory('fotos-bitacora')
                                             ->required(),
                                     ]),
@@ -791,7 +791,7 @@ class RutasResource extends Resource
                                         FileUpload::make('foto_lugar_cerrado')
                                             ->label('Foto de establecimiento cerrado')
                                             ->placeholder('Tomar o cargar foto')
-                                            ->multiple()
+                                            ->imageEditor()
                                             ->directory('fotos-bitacora')
                                             ->required(),
                                     ]),
@@ -803,7 +803,7 @@ class RutasResource extends Resource
                                         FileUpload::make('foto_stock_regular')
                                             ->label('Foto de stock actual')
                                             ->placeholder('Tomar o cargar foto')
-                                            ->multiple()
+                                            ->imageEditor()
                                             ->directory('fotos-bitacora')
                                             ->required(),
                                     ]),
@@ -822,7 +822,7 @@ class RutasResource extends Resource
                                         FileUpload::make('foto_evidencia_prospectacion')
                                             ->label('Fotos de Evidencia')
                                             ->placeholder('Tomar o carga foto')
-                                            //->multiple()
+                                            ->imageEditor()
                                             ->directory('bitacora-testigos')
                                             ->required(),
                                     ]),
