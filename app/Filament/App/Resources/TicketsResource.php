@@ -75,6 +75,7 @@ class TicketsResource extends Resource
                         ->multiple()
                         ->placeholder('Sube tus archivos aquí')
                         ->directory('tickets')
+                        ->image()
                         ->columnSpan('full'),
                 ]),
 
