@@ -98,7 +98,6 @@ class UserResource extends Resource
 
                             FileUpload::make('avatar')
                                 ->label('Foto de perfil')
-                                ->avatar()
                                 ->imageEditor()
                                 ->circleCropper()
                                 ->directory('user-avatar'),
