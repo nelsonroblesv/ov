@@ -93,7 +93,7 @@ class RutasResource extends Resource
                     'SUN' => 'Dom',
                 ];
                 $diaActual = $dias[$hoy];
-               
+
                 $query->where('user_id', $user)
                     ->where('dia_semana', $diaActual)
                     ->where('tipo_semana', $semana);
@@ -187,8 +187,8 @@ class RutasResource extends Resource
                                         'BK' => 'heroicon-o-star',
                                         'SL' => 'heroicon-o-sparkles'
                                     ]),
-                                    
-                                    Select::make('paquete_inicio_id')
+
+                                Select::make('paquete_inicio_id')
                                     ->label('Paquete de inicio')
                                     ->options(
                                         PaquetesInicio::orderByRaw("CASE 
@@ -291,7 +291,7 @@ class RutasResource extends Resource
                                         ]);
                                     })->lazy(),
 
-                                    Select::make('regiones_id')
+                                Select::make('regiones_id')
                                     ->label('Región')
                                     ->required()
                                     ->options(
@@ -308,7 +308,7 @@ class RutasResource extends Resource
                                     )
                                     ->reactive()
                                     ->searchable(),
-    
+
                                 Select::make('zonas_id')
                                     ->label('Zona')
                                     ->placeholder('Selecciona una zona')
@@ -327,26 +327,24 @@ class RutasResource extends Resource
                                 FileUpload::make('front_image')
                                     ->label('Fotos de Exterior')
                                     ->placeholder('Tomar fotos o cargar desde galeria')
-                                    ->multiple()
-                                    ->image()
-                                    ->imageEditor()
                                     ->directory('customer-images')
                                     ->required()
+                                    ->multiple()
+                                    ->maxSize(2048)
                                     ->columnSpanFull(),
 
                                 FileUpload::make('inside_image')
                                     ->label('Fotos de Interior')
                                     ->placeholder('Tomar fotos o cargar desde galeria')
-                                    ->multiple()
-                                    ->image()
-                                    ->imageEditor()
                                     ->directory('customer-images')
                                     ->required()
+                                    ->multiple()
+                                    ->maxSize(2048)
                                     ->columnSpanFull(),
                             ])->columns(2)->icon('heroicon-o-camera'),
                     ])
                     ->action(function (array $data) {
-                       
+
                         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
                         $customer = Customer::create($data);
 
@@ -356,7 +354,7 @@ class RutasResource extends Resource
                             '1' => 'NON',
                         ];
                         $semana = $valores[$tipoSemanaSeleccionado];
-        
+
                         $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                         $dias = [
                             'MON' => 'Lun',
@@ -485,10 +483,9 @@ class RutasResource extends Resource
                                     ->label('Fotos del establecimiento')
                                     ->required()
                                     ->placeholder('Tomar fotos o cargar desde galeria')
-                                    ->multiple()
-                                    ->image()
-                                    ->imageEditor()
                                     ->directory('prospectos-images')
+                                    ->multiple()
+                                    ->maxSize(2048)
                                     ->columnSpanFull()
                             ])->icon('heroicon-o-camera'),
 
@@ -624,7 +621,7 @@ class RutasResource extends Resource
                             '1' => 'NON',
                         ];
                         $semana = $valores[$tipoSemanaSeleccionado];
-        
+
                         $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
                         $dias = [
                             'MON' => 'Lun',

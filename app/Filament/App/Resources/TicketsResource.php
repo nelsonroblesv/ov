@@ -72,9 +72,9 @@ class TicketsResource extends Resource
 
                     FileUpload::make('adjuntos')
                         ->label('Adjuntos (Opcional)')
-                        ->multiple()
                         ->placeholder('Sube tus archivos aquí')
                         ->directory('tickets')
+                        ->multiple()
                         ->maxSize(2048)
                         ->columnSpan('full'),
                 ]),
