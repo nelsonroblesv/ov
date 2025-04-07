@@ -330,7 +330,7 @@ class RutasResource extends Resource
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->directory('customer-images')
                                     ->required()
-                                    ->maxSize(2048)
+                                    //->maxSize(2048)
                                     ->imageEditor()
                                     ->columnSpanFull(),
 
@@ -339,7 +339,7 @@ class RutasResource extends Resource
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->directory('customer-images')
                                     ->required()
-                                    ->maxSize(2048)
+                                    //->maxSize(2048)
                                     ->imageEditor()
                                     ->columnSpanFull(),
                             ])->columns(2)->icon('heroicon-o-camera'),
@@ -486,7 +486,7 @@ class RutasResource extends Resource
                                     ->placeholder('Tomar fotos o cargar desde galeria')
                                     ->directory('prospectos-images')
                                     ->imageEditor()
-                                    ->maxSize(2048)
+                                    //->maxSize(2048)
                                     ->columnSpanFull()
                             ])->icon('heroicon-o-camera'),
 
