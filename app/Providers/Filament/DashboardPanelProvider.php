@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Auth\CustomLogin;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActual;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActualWidget;
+use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaWidget;
 use App\Filament\Widgets\SemanaActual as WidgetsSemanaActual;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -51,8 +52,8 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                SemanaActualWidget::class,
                 Widgets\AccountWidget::class,
-                SemanaActualWidget::class
                 //Widgets\FilamentInfoWidget::class,
             ])
             ->navigationItems([

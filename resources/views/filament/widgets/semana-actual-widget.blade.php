@@ -1,8 +1,10 @@
-<x-filament::widget>
-    <x-filament::card>
-        <div class="text-sm text-gray-500">Semana Actual</div>
-        <div class="text-xl font-bold text-primary-600">
-            Estamos en semana: {{ $this->getSemana() }}
+<x-filament::card>
+    <div class="flex items-center space-x-4">
+        <div>
+            <div class="text-xl font-bold">
+            <span class="text-{{ $color }}-700">{{ $label }}</span>
+            </div>
+            <div class="text-sm text-gray-500">Planifica tus rutas correctamente.</div>
         </div>
-    </x-filament::card>
-</x-filament::widget>
+    </div>
+</x-filament::card>
