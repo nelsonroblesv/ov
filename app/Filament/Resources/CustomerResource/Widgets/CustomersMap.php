@@ -157,7 +157,7 @@ class CustomersMap extends MapTableWidget
 
 				EditAction::make('edit')
 					->url(fn(Customer $record): string => CustomerResource::getUrl('edit', ['record' => $record])),
-				/*
+				
 					ActionsDeleteAction::make()
                         ->successNotification(
                             Notification::make()
@@ -171,7 +171,7 @@ class CustomersMap extends MapTableWidget
                         ->modalHeading('Borrar Cliente')
                         ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
                         ->modalSubmitActionLabel('Si, eliminar'),
-		*/
+		
 			])
 		];
 		//GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
