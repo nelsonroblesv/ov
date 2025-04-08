@@ -185,76 +185,22 @@ class ProspectosMapWidget extends MapTableWidget
 							->color('info')
 							->sendToDatabase($recipient);
 					})
-			])
+				]),
+				ActionsDeleteAction::make()
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Cliente borrado')
+                                ->body('El Cliente ha sido eliminado del sistema.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('danger')
+                                ->color('danger')
+                        )
+                        ->modalHeading('Borrar Cliente')
+                        ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
 		];
-		/*
-		return [
-			ActionGroup::make([
-				/*ViewAction::make('view')
-					->url(fn (Prospectos $record): string => ProspectosResource::getUrl('view', ['record' => $record])),
 
-				
-				
-				GoToAction::make()->zoom(14)->label('Ver en Mapa')->color('success'),
-				/*
-				Action::make('transfer')
-					->label('Transferir')
-					->requiresConfirmation()
-					->icon('heroicon-o-arrows-up-down')
-					->color('info')
-					->modalHeading('Transferir Prospecto')
-					->modalDescription('Estas seguro que deseas transferir este Prospecto como Cliente? Esta acción no se puede deshacer.')
-					->action(function (Prospectos $record) {
-					if (!$record->phone) {
-							Notification::make()
-								->title('Error')
-								->body('Solo puedes transferir Prospectos que cuenten con informacion de contacto.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-
-						if (Customer::where('phone', $record->phone)->exists()) {
-							Notification::make()
-								->title('Error')
-								->body('El numero de telefono indicado ya esta asociado con un Cliente existente.')
-								->danger()
-								->color('danger')
-								->send();
-
-							return;
-						}
-
-						$clienteData = $record->toArray();
-						unset($clienteData['id'], $clienteData['created_at'], $clienteData['updated_at']);
-						Customer::create($clienteData);
-						$record->delete();
-
-						Notification::make()
-							->title('Prospecto transferido')
-							->body('El prospecto ha sido transferido como Cliente.')
-							->success()
-							->send();
-					}),
-
-				ActionsDeleteAction::make('delete')
-					->successNotification(
-						Notification::make()
-							->success()
-							->title('Prospecto eliminado')
-							->body('El Prospecto ha sido eliminado  del sistema.')
-							->icon('heroicon-o-trash')
-							->iconColor('danger')
-							->color('danger')
-					)
-					->modalHeading('Borrar Prospecto')
-					->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
-					->modalSubmitActionLabel('Si, eliminar'),
-					]),		
-		];
-*/
 	}
 
 	protected function getTableBulkActions(): array
