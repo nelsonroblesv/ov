@@ -64,9 +64,9 @@ class ProspectosMapWidget extends MapTableWidget
 		return [
 			TextColumn::make('altaUser.name')->label('Registrado por:')->searchable()->sortable(),
 			TextColumn::make('user.name')->label('Asignado a:')->searchable()->sortable(),
-			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
-			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
-			TextColumn::make('tipo_cliente')->label('Tipo')->badge()
+			TextColumn::make('regiones.name')->label('Region')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+			TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+			TextColumn::make('tipo_cliente')->label('Tipo')->badge()->toggleable(isToggledHiddenByDefault: false)
 				->colors([
 					'danger' => 'PO',
 					'warning' => 'PR'
@@ -79,7 +79,7 @@ class ProspectosMapWidget extends MapTableWidget
 					'PO' => 'Posible',
 					'PR' => 'Prospecto',
 				][$state] ?? 'Otro'),
-			TextColumn::make('simbolo')->label('Simbolo')->badge()
+				TextColumn::make('simbolo')->label('Simbolo')->badge()->toggleable(isToggledHiddenByDefault: false)
 				->colors([
 					'black',/*
 					'custom' => 'SB',
@@ -113,11 +113,10 @@ class ProspectosMapWidget extends MapTableWidget
 					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
-			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
-			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
-			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()
+			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 		];
 	}
 
