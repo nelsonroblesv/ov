@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class SemanaActualWidget extends BaseWidget
 {
 
-    protected static ?int $sort = -4; // opcional para orden
+    protected static ?int $sort = -1; // opcional para orden
     protected static string $view = 'filament.widgets.semana-actual-widget';
     protected static string $maxWidth = 'xl'; // también puedes probar con 'lg'
     protected int | string | array $columnSpan = '1'; // puede ser 'sm', 'md', 1, 2, etc.
