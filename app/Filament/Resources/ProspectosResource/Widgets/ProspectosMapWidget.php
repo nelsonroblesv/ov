@@ -183,8 +183,7 @@ class ProspectosMapWidget extends MapTableWidget
 							->iconColor('info')
 							->color('info')
 							->sendToDatabase($recipient);
-					})
-				]),
+					}),
 				ActionsDeleteAction::make()
                         ->successNotification(
                             Notification::make()
@@ -197,7 +196,8 @@ class ProspectosMapWidget extends MapTableWidget
                         )
                         ->modalHeading('Borrar Cliente')
                         ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
-                        ->modalSubmitActionLabel('Si, eliminar'),
+                        ->modalSubmitActionLabel('Si, eliminar')
+				]),
 		];
 
 	}
