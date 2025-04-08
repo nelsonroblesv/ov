@@ -12,6 +12,7 @@ use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -20,6 +21,7 @@ use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -57,7 +59,8 @@ class AdministrarRutasResource extends Resource
                 });
             })
             ->columns([
-                TextColumn::make('user.name')->label('Usuario')->searchable()->sortable(),
+                TextColumn::make('altaUser.name')->label('Alta')->searchable()->sortable(),
+                TextColumn::make('user.name')->label('Vendedor')->searchable()->sortable(),
                 TextColumn::make('name')->label('Iidentificador')->searchable()->sortable(),
                 TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
                     ->badge()
@@ -99,12 +102,21 @@ class AdministrarRutasResource extends Resource
                 TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
                 TextColumn::make('full_address')->label('Dirección')->searchable()->sortable(),
             ])
-            ->filters([])
+            ->filters([
+                
+            ])
             ->actions([
                 ActionsAction::make('agregarARuta')
                     ->icon('heroicon-o-truck')
                     ->label('Agregar a Ruta')
                     ->form([
+                        Select::make('user_id')
+                            ->label('Vendedor')
+                            ->relationship('user', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->required(),
+
                         Select::make('dia_semana')
                             ->label('Día de la Semana')
                             ->options([
@@ -127,12 +139,12 @@ class AdministrarRutasResource extends Resource
                         // Manejo de errores
                         try {
                             GestionRutas::insert([
-                                'user_id' =>  $record->user_id,
+                                'user_id' =>  $data['user_id'],
                                 'dia_semana'  => $data['dia_semana'],
                                 'tipo_semana' => $data['tipo_semana'],
                                 'customer_id' => $record->id,
-                                'region_id'   => $record->regiones_id, // << debe estar aquí
-                                'zona_id'     => $record->zonas_id,    // << debe estar aquí
+                                'region_id'   => $record->regiones_id,
+                                'zona_id'     => $record->zonas_id,
                             ]);
                         } catch (QueryException $e) {
                             Notification::make()
@@ -140,12 +152,14 @@ class AdministrarRutasResource extends Resource
                                 ->title('Error al agregar el cliente a la ruta.')
                                 ->body($e->getMessage())
                                 ->send();
-                            return; // Salta a la siguiente iteración
+                            return;
                         }
 
                         Notification::make()
                             ->success()
-                            ->title('Cliente ' . $record->name . ' agregado a la ruta.')
+                            ->title('Cliente agregado a ruta')
+                            ->body($record->name . ' ha sido agregado a la ruta de ' . $record->user->name . ' para el día ' . $data['dia_semana'] . ' de la semana ' . $data['tipo_semana'])
+                            ->icon('heroicon-o-truck')
                             ->send();
                     }),
             ], position: ActionsPosition::BeforeCells)
