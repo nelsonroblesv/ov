@@ -16,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -198,7 +199,9 @@ class BitacoraRutasResource extends Resource
                     ])
             ])
             ->actions([
+               ActionGroup::make([
                 Tables\Actions\DeleteAction::make(),
+               ])
             ])
             ->bulkActions([
               //  Tables\Actions\BulkActionGroup::make([
