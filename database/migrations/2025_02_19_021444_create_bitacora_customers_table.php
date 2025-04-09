@@ -20,7 +20,7 @@ return new class extends Migration
             $table->json('testigo_1')->nullable();
             $table->json('testigo_2')->nullable();
 
-           $table->enum('tipo_visita', ['EN', 'CE', 'RE', 'PR'])->default('RE');
+           $table->enum('tipo_visita', ['EN', 'CE', 'RE', 'PR'])->default('EN');
            $table->string('foto_entrega')->nullable();
            $table->string('foto_stock_antes')->nullable();
            $table->string('foto_stock_despues')->nullable();
