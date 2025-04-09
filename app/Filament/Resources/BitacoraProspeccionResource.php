@@ -37,7 +37,106 @@ class BitacoraProspeccionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([]);
+            ->schema([
+                Section::make('Información de la Visita')->schema([
+
+                    // Select para elegir el tipo de visita
+                    Select::make('tipo_visita')
+                        ->placeholder('Seleccione una opción') // Placeholder no seleccionable
+                        ->required()
+                        ->label('Tipo de Visita')
+                        ->options([
+                            'EN' => 'Entrega de Pedido',
+                            'CE' => 'Establecimiento Cerrado',
+                            'RE' => 'Visita Regular',
+                            'PR' => 'Prospectación',
+                        ])
+                        ->reactive()
+                        ->default('EN')
+                        ->columnSpanFull(),
+
+                    // Sección de Entrega de Pedido
+                    Section::make('Entrega de Pedido')
+                        ->visible(fn($get) => $get('tipo_visita') === 'EN')
+                        ->schema([
+                            FileUpload::make('foto_entrega')
+                                ->label('Foto de entrega')
+                                ->placeholder('Foto de entrega de pedido')
+                                ->multiple()
+                                ->directory('fotos-bitacora')
+                                ->required(),
+
+                            FileUpload::make('foto_stock_antes')
+                                ->label('Foto de stock antes')
+                                ->placeholder('Foto de stock antes de entrega')
+                                ->multiple()
+                                ->directory('fotos-bitacora')
+                                ->required(),
+
+                            FileUpload::make('foto_stock_despues')
+                                ->label('Foto de stock después')
+                                ->placeholder('Foto de stock después de entrega')
+                                ->multiple()
+                                ->directory('fotos-bitacora')
+                                ->required(),
+                        ]),
+
+                    Section::make('Establecimiento Cerrado')
+                        ->visible(fn($get) => $get('tipo_visita') === 'CE')
+                        ->schema([
+                            FileUpload::make('foto_lugar_cerrado')
+                                ->label('Foto de establecimiento cerrado')
+                                ->placeholder('Tomar o cargar foto')
+                                ->multiple()
+                                ->directory('fotos-bitacora')
+                                ->required(),
+                        ]),
+
+                    // Sección de Visita Regular
+                    Section::make('Visita Regular')
+                        ->visible(fn($get) => $get('tipo_visita') === 'RE')
+                        ->schema([
+                            FileUpload::make('foto_stock_regular')
+                                ->label('Foto de stock actual')
+                                ->placeholder('Tomar o cargar foto')
+                                ->multiple()
+                                ->default(function ($record) {
+                                    if ($record && $record->foto_entrega && is_array($record->foto_entrega) && count($record->foto_entrega) > 0) {
+                                        return asset($record->foto_entrega[0]); // Asumiendo que la ruta está en el primer elemento del array
+                                    }
+                                    return null;
+                                })
+                                ->directory('fotos-bitacora')
+                                ->required(),
+                        ]),
+
+                    // Sección de Prospectación
+                    Section::make('Prospectación')
+                        ->visible(fn($get) => $get('tipo_visita') === 'PR')
+                        ->schema([
+                            Toggle::make('show_video')
+                                ->label('Se presentó Video Testimonio')
+                                ->onIcon('heroicon-m-play')
+                                ->offIcon('heroicon-m-x-mark')
+                                ->onColor('success')
+                                ->offColor('danger'),
+
+                            FileUpload::make('foto_evidencia_prospectacion')
+                                ->label('Fotos de Evidencia')
+                                ->placeholder('Tomar o cargar fotos')
+                                ->multiple()
+                                ->directory('fotos-bitacora')
+                                ->required(),
+                        ]),
+
+                    // Notas generales
+                    TextInput::make('notas')
+                        ->label('Notas')
+                        ->required()
+                        ->columnSpanFull(),
+
+                ])
+            ]);
     }
 
     public static function table(Table $table): Table
