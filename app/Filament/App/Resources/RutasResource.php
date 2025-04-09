@@ -577,28 +577,27 @@ class RutasResource extends Resource
                                         Regiones::whereIn('id', function ($query) {
                                             $query->select('regiones_id')
                                                 ->from('zonas')
-                                                ->where('user_id', auth()->id());
+                                                ->whereIn('id', function ($subquery) {
+                                                    $subquery->select('zonas_id')
+                                                        ->from('zona_usuario')
+                                                        ->where('users_id', auth()->id());
+                                                });
                                         })->pluck('name', 'id')
                                     )
-                                    ->reactive(),
+                                    ->reactive()
+                                    ->searchable(),
 
                                 Select::make('zonas_id')
                                     ->label('Zona')
                                     ->placeholder('Selecciona una zona')
                                     ->required()
                                     ->searchable()
-                                    ->options(
-                                        fn(callable $get) =>
-                                        Zonas::where('regiones_id', $get('regiones_id'))
-                                            ->whereIn('id', function ($query) {
-                                                $query->select('id')
-                                                    ->from('zonas')
-                                                    ->where('user_id', auth()->id());
-                                            })
-                                            ->pluck('nombre_zona', 'id')
-                                    )
+                                    ->options(fn(callable $get) => Zonas::where('regiones_id', $get('regiones_id')) // Obtiene el valor de 'regiones_id'
+                                        ->whereHas('users', fn($query) => $query->where('users.id', auth()->id())) // Filtra por el usuario autenticado
+                                        ->pluck('nombre_zona', 'id'))
                                     ->reactive()
                                     ->disabled(fn(callable $get) => empty($get('regiones_id'))),
+
                             ])->columns(2)->icon('heroicon-o-map-pin'),
 
                         Section::make('Notas')
@@ -640,6 +639,8 @@ class RutasResource extends Resource
                             'dia_semana' => $diaActual,
                             'tipo_semana' => $semana,
                             'customer_id' => $customer->id,
+                            'region_id' => $data['regiones_id'],
+                            'zona_id' => $data['zonas_id'],
                             'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
                         ]);
 
@@ -748,18 +749,18 @@ class RutasResource extends Resource
                                     ->required()
                                     ->label('Tipo de Visita')
                                     ->options([
-                                        'entrega' => 'Entrega de Pedido',
-                                        'cerrado' => 'Establecimiento Cerrado',
-                                        'regular' => 'Visita Regular',
-                                        'prospectacion' => 'Prospectación',
+                                        'EN' => 'Entrega de Pedido',
+                                        'CE' => 'Establecimiento Cerrado',
+                                        'RE' => 'Visita Regular',
+                                        'PR' => 'Prospectación',
                                     ])
                                     ->reactive()
-                                    ->default('entrega')
+                                    ->default('EN')
                                     ->columnSpanFull(),
 
                                 // Sección de Entrega de Pedido
                                 Section::make('Entrega de Pedido')
-                                    ->visible(fn($get) => $get('tipo_visita') === 'entrega')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'EN')
                                     ->schema([
                                         FileUpload::make('foto_entrega')
                                             ->label('Foto de entrega')
@@ -786,7 +787,7 @@ class RutasResource extends Resource
 
                                 // Sección de Establecimiento Cerrado
                                 Section::make('Establecimiento Cerrado')
-                                    ->visible(fn($get) => $get('tipo_visita') === 'cerrado')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'CE')
                                     ->schema([
                                         FileUpload::make('foto_lugar_cerrado')
                                             ->label('Foto de establecimiento cerrado')
@@ -798,7 +799,7 @@ class RutasResource extends Resource
 
                                 // Sección de Visita Regular
                                 Section::make('Visita Regular')
-                                    ->visible(fn($get) => $get('tipo_visita') === 'regular')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'RE')
                                     ->schema([
                                         FileUpload::make('foto_stock_regular')
                                             ->label('Foto de stock actual')
@@ -810,7 +811,7 @@ class RutasResource extends Resource
 
                                 // Sección de Prospectación
                                 Section::make('Prospectación')
-                                    ->visible(fn($get) => $get('tipo_visita') === 'prospectacion')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'PR')
                                     ->schema([
                                         Toggle::make('show_video')
                                             ->label('Se presentó Video Testimonio')

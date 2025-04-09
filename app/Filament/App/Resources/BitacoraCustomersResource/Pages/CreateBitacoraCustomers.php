@@ -27,4 +27,10 @@ class CreateBitacoraCustomers extends CreateRecord
             ->iconColor('success')
             ->color('success');
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        dd($data['tipo_visita']);
+        return $data;
+    }
 }

@@ -179,7 +179,7 @@ class BitacoraProspeccionResource extends Resource
 
                 // ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 //ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')->label('Registro')->date()->sortable(),
+                TextColumn::make('created_at')->label('Registro')->dateTime()->sortable(),
                 IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
                     ->toggleable(isToggledHiddenByDefault: true)
             ])
