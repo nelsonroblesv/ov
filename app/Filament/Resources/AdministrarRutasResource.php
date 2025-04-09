@@ -52,10 +52,10 @@ class AdministrarRutasResource extends Resource
             ->heading('Registros no asignados')
             ->description('Clientes/Prospectos que no están asignados a ninguna ruta.')
             ->modifyQueryUsing(function (Builder $query) {
-                $query->whereNotIn('id', function ($subQuery) {
+                $query->where('is_active', true)
+                        ->whereNotIn('id', function ($subQuery) {
                     $subQuery->select('customer_id')
                         ->from('gestion_rutas');
-                    //->where('user_id', $userId);
                 });
             })
             ->columns([
