@@ -40,6 +40,7 @@ class MapProspeccionWidget extends MapTableWidget
 	{
 		return Customer::query()->where('user_id', auth()->id())
 			->whereIn('tipo_cliente', ['PO', 'PR'])
+			->where('is_active', true)
 			->orderBy('created_at', 'desc');
 	}
 

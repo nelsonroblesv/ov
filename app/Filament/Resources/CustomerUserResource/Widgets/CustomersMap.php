@@ -39,6 +39,7 @@ class CustomersMap extends MapTableWidget
 	{
 		return Customer::query()->where('user_id', auth()->id())
 			->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+			->where('is_active', true)
 			->orderBy('created_at', 'desc');
 	}
 
