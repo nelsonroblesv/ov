@@ -2,36 +2,36 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BitacoraProspeccionResource\Pages;
+use App\Filament\Resources\BitacoraRutasResource\Pages;
+use App\Filament\Resources\BitacoraRutasResource\RelationManagers;
 use App\Models\BitacoraCustomers;
-use App\Models\Customer;
-use App\Models\Regiones;
+use App\Models\BitacoraRutas;
 use App\Models\User;
-use DragonCode\Contracts\Http\Builder;
+use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Symfony\Component\HtmlSanitizer\Visitor\Node\TextNode;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class BitacoraProspeccionResource extends Resource
+class BitacoraRutasResource extends Resource
 {
     protected static ?string $model = BitacoraCustomers::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationGroup = 'Bitacora';
-    protected static ?string $navigationLabel = 'Registros de Actividad';
-    protected static ?string $breadcrumb = 'Bitacora';
+    protected static ?string $navigationLabel = 'Registros de Rutas';
+    protected static ?string $breadcrumb = 'Registros de Rutas';
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
@@ -143,7 +143,8 @@ class BitacoraProspeccionResource extends Resource
     {
         return $table
             ->heading('Registros de Actividad')
-            ->description('Listado de los registros de actividad de los Clientes y Prospectos')
+            ->description('Listado de visitas de los usuarios. Puedes filtrar por tipo de visita y 
+            vendedor, asi como ordenar por fecha de registro y mostrar u ocultar ciertas columnas.')
             ->defaultSort('created_at', 'desc')
 
             ->columns([
@@ -212,12 +213,13 @@ class BitacoraProspeccionResource extends Resource
             //
         ];
     }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListBitacoraProspeccions::route('/'),
-            'create' => Pages\CreateBitacoraProspeccion::route('/create'),
-            'edit' => Pages\EditBitacoraProspeccion::route('/{record}/edit'),
+            'index' => Pages\ListBitacoraRutas::route('/'),
+            'create' => Pages\CreateBitacoraRutas::route('/create'),
+            'edit' => Pages\EditBitacoraRutas::route('/{record}/edit'),
         ];
     }
 }

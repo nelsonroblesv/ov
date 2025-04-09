@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\BitacoraProspeccionResource\Pages;
+namespace App\Filament\Resources\BitacoraRutasResource\Pages;
 
-use App\Filament\Resources\BitacoraProspeccionResource;
+use App\Filament\Resources\BitacoraRutasResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateBitacoraProspeccion extends CreateRecord
+class CreateBitacoraRutas extends CreateRecord
 {
-    protected static string $resource = BitacoraProspeccionResource::class;
+    protected static string $resource = BitacoraRutasResource::class;
     protected static ?string $title = 'Regitrar en Bitacora de Prospección';
 
     protected function getRedirectUrl(): string
@@ -27,5 +27,4 @@ class CreateBitacoraProspeccion extends CreateRecord
             ->iconColor('success')
             ->color('success');
     }
-
 }

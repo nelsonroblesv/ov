@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\BitacoraProspeccionResource\Pages;
+namespace App\Filament\Resources\BitacoraRutasResource\Pages;
 
-use App\Filament\Resources\BitacoraProspeccionResource;
+use App\Filament\Resources\BitacoraRutasResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
-class EditBitacoraProspeccion extends EditRecord
+class EditBitacoraRutas extends EditRecord
 {
-    protected static string $resource = BitacoraProspeccionResource::class;
+    protected static string $resource = BitacoraRutasResource::class;
+
     protected static ?string $title = 'Editar Registro de Bitácora';
 
     protected function getRedirectUrl(): string
@@ -31,8 +32,8 @@ class EditBitacoraProspeccion extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-                ->label('Borrar'),
+           // Actions\DeleteAction::make()
+               // ->label('Borrar'),
         ];
     }
 
