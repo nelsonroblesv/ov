@@ -97,8 +97,7 @@ class RutasResource extends Resource
 
                 $query->where('user_id', $user)
                     ->where('dia_semana', $diaActual)
-                    ->where('tipo_semana', $semana)
-                    ->where('is_active', true);
+                    ->where('tipo_semana', $semana);
             })
             ->defaultSort('orden', 'desc')
             ->headerActions([
