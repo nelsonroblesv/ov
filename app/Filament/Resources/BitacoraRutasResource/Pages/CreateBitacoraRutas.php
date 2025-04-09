@@ -10,7 +10,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateBitacoraRutas extends CreateRecord
 {
     protected static string $resource = BitacoraRutasResource::class;
-    protected static ?string $title = 'Regitrar en Bitacora de Prospección';
+    protected static ?string $title = 'Crear Registro de Rutas';
 
     protected function getRedirectUrl(): string
     {

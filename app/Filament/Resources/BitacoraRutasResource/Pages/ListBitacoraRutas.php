@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListBitacoraRutas extends ListRecords
 {
     protected static string $resource = BitacoraRutasResource::class;
-    protected static ?string $title = 'Registros de Bitacora';
+    protected static ?string $title = 'Registros de Rutas de Vendedores';
 
     protected function getHeaderActions(): array
     {

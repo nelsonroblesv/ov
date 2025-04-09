@@ -11,7 +11,7 @@ class EditBitacoraRutas extends EditRecord
 {
     protected static string $resource = BitacoraRutasResource::class;
 
-    protected static ?string $title = 'Editar Registro de Bitácora';
+    protected static ?string $title = 'Editar Registro de Rutas';
 
     protected function getRedirectUrl(): string
     {

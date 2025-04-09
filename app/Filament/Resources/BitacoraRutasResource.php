@@ -158,7 +158,9 @@ class BitacoraRutasResource extends Resource
                         'RE' => 'Regular',
                         'PR' => 'Prospeccion',
                     ][$state] ?? 'Otro'),
-                TextColumn::make('notas')->label('Notas')->searchable(),
+
+                TextColumn::make('notas')->label('Notas')->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('customers.regiones.name')->label('Region')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -178,9 +180,8 @@ class BitacoraRutasResource extends Resource
                 ImageColumn::make('foto_evidencia_prospectacion')->label('Prospeccion')->searchable()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                // ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                //ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')->label('Registro')->dateTime()->sortable(),
+                TextColumn::make('created_at')->label('Registro')->dateTime()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
                     ->toggleable(isToggledHiddenByDefault: true)
             ])
@@ -220,6 +221,7 @@ class BitacoraRutasResource extends Resource
             'index' => Pages\ListBitacoraRutas::route('/'),
             'create' => Pages\CreateBitacoraRutas::route('/create'),
             'edit' => Pages\EditBitacoraRutas::route('/{record}/edit'),
+            'view' => Pages\ViewBitacoraRutas::route('/{record}'),
         ];
     }
 }
