@@ -52,18 +52,18 @@ class BitacoraCustomersResource extends Resource
                     ->required()
                     ->label('Tipo de Visita')
                     ->options([
-                        'entrega' => 'Entrega de Pedido',
-                        'cerrado' => 'Establecimiento Cerrado',
-                        'regular' => 'Visita Regular',
-                        'prospectacion' => 'Prospectación',
+                        'EN' => 'Entrega de Pedido',
+                        'CE' => 'Establecimiento Cerrado',
+                        'RE' => 'Visita Regular',
+                        'PR' => 'Prospectación',
                     ])
                     ->reactive()
-                    ->default('entrega')
+                    ->default('EN')
                     ->columnSpanFull(),
 
                 // Sección de Entrega de Pedido
                 Section::make('Entrega de Pedido')
-                    ->visible(fn($get) => $get('tipo_visita') === 'entrega')
+                    ->visible(fn($get) => $get('tipo_visita') === 'EN')
                     ->schema([
                         FileUpload::make('foto_entrega')
                             ->label('Foto de entrega')
@@ -87,9 +87,8 @@ class BitacoraCustomersResource extends Resource
                             ->required(),
                     ]),
 
-                // Sección de Establecimiento Cerrado
                 Section::make('Establecimiento Cerrado')
-                    ->visible(fn($get) => $get('tipo_visita') === 'cerrado')
+                    ->visible(fn($get) => $get('tipo_visita') === 'CE')
                     ->schema([
                         FileUpload::make('foto_lugar_cerrado')
                             ->label('Foto de establecimiento cerrado')
@@ -101,7 +100,7 @@ class BitacoraCustomersResource extends Resource
 
                 // Sección de Visita Regular
                 Section::make('Visita Regular')
-                    ->visible(fn($get) => $get('tipo_visita') === 'regular')
+                    ->visible(fn($get) => $get('tipo_visita') === 'RE')
                     ->schema([
                         FileUpload::make('foto_stock_regular')
                             ->label('Foto de stock actual')
@@ -119,7 +118,7 @@ class BitacoraCustomersResource extends Resource
 
                 // Sección de Prospectación
                 Section::make('Prospectación')
-                    ->visible(fn($get) => $get('tipo_visita') === 'prospectacion')
+                    ->visible(fn($get) => $get('tipo_visita') === 'PR')
                     ->schema([
                         Toggle::make('show_video')
                             ->label('Se presentó Video Testimonio')

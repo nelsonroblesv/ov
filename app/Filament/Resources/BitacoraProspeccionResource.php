@@ -37,58 +37,64 @@ class BitacoraProspeccionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('Registro de actividad')
-                    ->schema([
-                        Hidden::make('user_id')->label('Registrado por')
-                            ->disabled()
-                            ->dehydrated()
-                            ->default(auth()->user()->id),
-
-                        Select::make('customers_id')->label('Nombre de Cliente o Identificador')
-                            ->options(Customer::pluck('name', 'id'))
-                            ->required()
-                            ->preload()
-                            ->searchable(),
-                        Toggle::make('show_video')->label('Se presentó Video Testimonio')
-                            ->onIcon('heroicon-m-play')
-                            ->offIcon('heroicon-m-x-mark')
-                            ->onColor('success')
-                            ->offColor('danger'),
-
-                        MarkdownEditor::make('notas')->label('Notas')->required()->columnSpanFull(),
-                        Section::make('Testigos')->schema([
-                            FileUpload::make('testigo_1')->label('Foto 1')->nullable()
-                                ->directory('bitacora-testigos'),
-                            FileUpload::make('testigo_2')->label('Foto 2')->nullable()
-                                ->directory('bitacora-testigos')
-                        ])->columns(2)
-                    ])
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->heading('Registro de Actividad')
+            ->heading('Registros de Actividad')
             ->description('Listado de los registros de actividad de los Clientes y Prospectos')
             ->defaultSort('created_at', 'desc')
 
             ->columns([
-                TextColumn::make('customers.user.name')->label('Registrado')->searchable()->sortable(),
+                TextColumn::make('customers.user.name')->label('Vendedor')->searchable()->sortable(),
                 TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
-                TextColumn::make('customers.regiones.name')->label('Region')->searchable()->sortable(),
-                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->searchable()->sortable(),
+                TextColumn::make('tipo_visita')->label('Visita')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->formatStateUsing(fn(string $state): string => [
+                        'EN' => 'Entrega',
+                        'CE' => 'Cerrado',
+                        'RE' => 'Regular',
+                        'PR' => 'Prospeccion',
+                    ][$state] ?? 'Otro'),
                 TextColumn::make('notas')->label('Notas')->searchable(),
-                ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('customers.regiones.name')->label('Region')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                ImageColumn::make('foto_entrega')->label('Entrega')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('foto_stock_antes')->label('Stock Antes')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('foto_stock_despues')->label('Stock Despues')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('foto_lugar_cerrado')->label('Cerrado')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('foto_stock_regular')->label('Regular')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('foto_evidencia_prospectacion')->label('Prospeccion')->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                // ImageColumn::make('testigo_1')->label('Testigo 1')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 //ImageColumn::make('testigo_2')->label('Testigo 2')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')->label('Registro')->date()->sortable(),
                 IconColumn::make('show_video')->label('Video Testimonio')->boolean()->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 SelectFilter::make('user_id')->label('Usuario')
-                    ->options(User::pluck('name', 'id'))
-                    ->multiple()                   
+                    ->options(User::pluck('name', 'id')),
+
+                SelectFilter::make('tipo_visita')->label('Tipo Visita')
+                    ->options([
+                        'EN' => 'Entrega',
+                        'CE' => 'Cerrado',
+                        'RE' => 'Regular',
+                        'PR' => 'Prospección',
+                    ])
             ])
             ->actions([
                 //   Tables\Actions\EditAction::make(),
