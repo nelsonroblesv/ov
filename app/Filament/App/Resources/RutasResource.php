@@ -84,6 +84,7 @@ class RutasResource extends Resource
                 $semana = $valores[$tipoSemanaSeleccionado];
 
                 $hoy = strtoupper(Carbon::now()->setTimezone('America/Merida')->format('D'));
+                $date = Carbon::now()->setTimezone('America/Merida');
                 $dias = [
                     'MON' => 'Lun',
                     'TUE' => 'Mar',
@@ -97,7 +98,13 @@ class RutasResource extends Resource
 
                 $query->where('user_id', $user)
                     ->where('dia_semana', $diaActual)
-                    ->where('tipo_semana', $semana);
+                    ->where('tipo_semana', $semana)
+                    ->whereNotExists(function ($sub) use ($date) {
+                        $sub->selectRaw(1)
+                            ->from('bitacora_customers')
+                            ->whereColumn('bitacora_customers.customers_id', 'gestion_rutas.customer_id')
+                            ->whereDate('bitacora_customers.created_at', $date);
+                    });
             })
             ->defaultSort('orden', 'desc')
             ->headerActions([
@@ -717,6 +724,12 @@ class RutasResource extends Resource
                         'BK' => 'Black',
                         'SL' => 'Silver',
                     ][$state] ?? 'Otro'),
+                TextColumn::make('customer.full_address')->label('Direccion'),
+                IconColumn::make('customer.full_address')->label('Ubicación')->alignCenter()
+                    ->icon('heroicon-o-map-pin')
+                    ->color('danger')
+                    ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query={$record->customer->latitude},{$record->customer->longitude}", true)
+                    ->openUrlInNewTab(),
                 TextColumn::make('customer.regiones.name')->label('Region')
                     ->badge()
                     ->alignCenter()
@@ -725,12 +738,6 @@ class RutasResource extends Resource
                     ->badge()
                     ->alignCenter()
                     ->colors(['warning']),
-                TextColumn::make('customer.full_address')->label('Direccion'),
-                IconColumn::make('customer.full_address')->label('Ubicación')->alignCenter()
-                    ->icon('heroicon-o-map-pin')
-                    ->color('danger')
-                    ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query={$record->customer->latitude},{$record->customer->longitude}", true)
-                    ->openUrlInNewTab(),
             ])
             ->filters([
                 //
@@ -858,7 +865,6 @@ class RutasResource extends Resource
                                 'foto_stock_regular' => isset($data['foto_stock_regular']) ? (is_array($data['foto_stock_regular']) ? $data['foto_stock_regular'][0] : $data['foto_stock_regular']) : null,
                                 'foto_evidencia_prospectacion' => isset($data['foto_evidencia_prospectacion']) ? (is_array($data['foto_evidencia_prospectacion']) ? $data['foto_evidencia_prospectacion'][0] : $data['foto_evidencia_prospectacion']) : null,
 
-
                                 'notas' => $data['notas'],
 
                                 'created_at' => Carbon::now()->setTimezone('America/Merida')
@@ -949,8 +955,6 @@ class RutasResource extends Resource
                                 ->color('info')
                                 ->sendToDatabase($recipient);
                         })
-
-
 
                         ->hidden(fn($record) => in_array($record->tipo_cliente, ['PV', 'RD', 'BK', 'SL']))
 
