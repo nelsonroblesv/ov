@@ -729,7 +729,7 @@ class RutasResource extends Resource
                 IconColumn::make('customer.full_address')->label('Ubicación')->alignCenter()
                     ->icon('heroicon-o-map-pin')
                     ->color('danger')
-                    ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode($record->customer->full_address), true)
+                    ->url(fn($record) => "https://www.google.com/maps/search/?api=1&query={$record->customer->latitude},{$record->customer->longitude}", true)
                     ->openUrlInNewTab(),
             ])
             ->filters([
