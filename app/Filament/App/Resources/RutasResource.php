@@ -35,6 +35,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\ActionSize;
@@ -426,7 +427,8 @@ class RutasResource extends Resource
                                     ->icons([
                                         'PO' => 'heroicon-o-map',
                                         'PR' => 'heroicon-o-star'
-                                    ]),
+                                    ])
+                                    ->live(),
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')
@@ -480,12 +482,21 @@ class RutasResource extends Resource
                                     ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
-                                TextInput::make('phone')
+                                    TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
-                                    ->unique(table: Customer::class, column: 'phone', ignoreRecord: true)
+                                    ->requiredIf('tipo_cliente', 'PR')
+                                    ->helperText(function (Get $get) {
+                                        return $get('tipo_cliente') === 'PR'
+                                            ? 'Este campo es obligatorio para Prospectos.'
+                                            : null;
+                                    })
+                                    ->validationMessages([
+                                        'required' => 'El campo Teléfono es obligatorio para registros tipo Prospecto.',
+                                    ])
+                                    ->unique(Customer::class, column: 'phone', ignoreRecord: true)
                                     ->maxLength(50)
-                                    ->suffixIcon('heroicon-m-phone')
+                                    ->suffixIcon('heroicon-m-phone'),
                             ])->columns(2)->icon('heroicon-o-identification'),
 
                         Section::make('Fachada del establecimiento')
