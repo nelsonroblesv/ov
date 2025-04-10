@@ -662,12 +662,12 @@ class RutasResource extends Resource
             ])
             ->columns([
                 TextColumn::make('orden')->label('#')->sortable(),
-                TextColumn::make('customer.name')->label('Cliente o Identificador'),
                 IconColumn::make('customer.phone')->label('WhatsApp')->alignCenter()
                     ->icon('heroicon-o-device-phone-mobile')
                     ->color('success')
                     ->url(fn($record) => "https://wa.me/" . urlencode($record->customer->phone), true)
                     ->openUrlInNewTab(),
+                TextColumn::make('customer.name')->label('Cliente o Identificador'),
                 TextColumn::make('customer.simbolo')->label('Simbolo')->badge()
                     ->colors([
                         'black',/*
