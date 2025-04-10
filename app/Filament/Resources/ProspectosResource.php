@@ -222,8 +222,14 @@ class ProspectosResource extends Resource
                             Select::make('regiones_id')
                                 ->label('Región')
                                 ->required()
-                                ->searchable()
-                                ->options(Regiones::pluck('name', 'id'))
+                                ->options(
+                                    fn() =>
+                                    Regiones::whereIn('id', function ($query) {
+                                        $query->select('regiones_id')
+                                            ->from('zonas')
+                                            ->where('is_active', true);
+                                    })->pluck('name', 'id')
+                                )
                                 ->reactive(),
 
                             Select::make('zonas_id')
