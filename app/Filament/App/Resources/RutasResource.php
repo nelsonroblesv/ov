@@ -37,6 +37,7 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
@@ -113,6 +114,7 @@ class RutasResource extends Resource
                 Action::make('Registrar Cliente')
                     ->label('Nuevo Cliente')
                     ->icon('heroicon-m-user-plus')
+                    ->size(ActionSize::Large)
                     ->color('success')
                     ->form([
                         Section::make('Información Personal')
@@ -398,6 +400,7 @@ class RutasResource extends Resource
                 Action::make('Registrar Prospección')
                     ->label('Nueva Prospección')
                     ->icon('heroicon-m-magnifying-glass-plus')
+                    ->size(ActionSize::Large)
                     ->color('warning')
                     ->form([
                         Section::make('Información del establecimiento')

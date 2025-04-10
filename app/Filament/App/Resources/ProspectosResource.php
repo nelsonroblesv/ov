@@ -22,6 +22,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 
@@ -63,7 +64,8 @@ class ProspectosResource extends Resource
                                 ->icons([
                                     'PO' => 'heroicon-o-map',
                                     'PR' => 'heroicon-o-star'
-                                ]),
+                                ])
+                                ->live(),
 
                             TextInput::make('name')
                                 ->label('Nombre del lugar o identificador')
@@ -237,6 +239,15 @@ class ProspectosResource extends Resource
                             TextInput::make('phone')
                                 ->label('Teléfono')
                                 ->tel()
+                                ->requiredIf('tipo_cliente', 'PR')
+                                ->helperText(function (Get $get) {
+                                    return $get('tipo_cliente') === 'PR'
+                                        ? 'Este campo es obligatorio para Prospectos.'
+                                        : null;
+                                })
+                                ->validationMessages([
+                                    'required' => 'El campo Teléfono es obligatorio para registros tipo Prospecto.',
+                                ])
                                 ->unique(ignoreRecord: true)
                                 ->maxLength(50)
                                 ->suffixIcon('heroicon-m-phone'),
