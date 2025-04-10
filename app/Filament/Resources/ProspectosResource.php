@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Prospectos;
 use App\Models\Regiones;
 use App\Models\Services;
+use App\Models\User;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Actions\DeleteAction;
@@ -72,8 +73,18 @@ class ProspectosResource extends Resource
 
                             Select::make('user_id')
                                 ->required()
-                                ->relationship('user', 'name')
-                                ->label('Asignado a:'),
+                                ->label('Asignado a:')
+                                ->options(
+                                    fn() =>
+                                    User::whereIn('id', function ($query) {
+                                        $query->select('id')
+                                            ->from('users')
+                                            ->where('role', 'Vendedor')
+                                            ->orWhere('username', 'OArrocha')
+                                            ->orderBy('name', 'DESC');
+                                    })->pluck('name', 'id')
+                                ),
+
 
                             ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Registro')
