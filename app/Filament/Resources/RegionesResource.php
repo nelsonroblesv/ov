@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Markdown;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -55,7 +56,8 @@ class RegionesResource extends Resource
             ->description('Gestion de las Regiones de Prospeccion y Clientes.')
             ->columns([
                 TextColumn::make('name')->label('Nombre de la Region'),
-                TextColumn::make('description')->label('Descripcion')
+                TextColumn::make('description')->label('Descripcion'),
+                ToggleColumn::make('is_active')->label('Activo')
                 ])
             ->filters([
                 //
