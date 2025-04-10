@@ -9,7 +9,9 @@ use App\Filament\Resources\ProspectosResource\Pages\EditProspectos;
 use App\Filament\Resources\ProspectosResource\Pages\ListProspectos;
 use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
 use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\Prospectos;
+use App\Models\Rutas;
 use App\Models\User;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Actions\GoToAction;
@@ -20,6 +22,9 @@ use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Closure;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -79,7 +84,7 @@ class ProspectosMapWidget extends MapTableWidget
 					'PO' => 'Posible',
 					'PR' => 'Prospecto',
 				][$state] ?? 'Otro'),
-				TextColumn::make('simbolo')->label('Simbolo')->badge()->toggleable(isToggledHiddenByDefault: false)
+			TextColumn::make('simbolo')->label('Simbolo')->badge()->toggleable(isToggledHiddenByDefault: false)
 				->colors([
 					'black',/*
 					'custom' => 'SB',
@@ -113,7 +118,7 @@ class ProspectosMapWidget extends MapTableWidget
 					'NC' => 'Ya no compran'
 				][$state] ?? 'Otro'),
 			TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
-			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),			
+			TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
 			TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -155,29 +160,89 @@ class ProspectosMapWidget extends MapTableWidget
 				EditAction::make('edit')
 					->url(fn(Customer $record): string => ProspectosResource::getUrl('edit', ['record' => $record])),
 
-				Action::make('transfer')
+				ActionsDeleteAction::make()
+					->successNotification(
+						Notification::make()
+							->success()
+							->title('Prospecto borrado')
+							->body('El Prospecto ha sido eliminado del sistema.')
+							->icon('heroicon-o-trash')
+							->iconColor('danger')
+							->color('danger')
+					)
+					->modalHeading('Borrar Prospecto')
+					->modalDescription('Estas seguro que deseas eliminar este Prospecto? Esta acción no se puede deshacer.')
+					->modalSubmitActionLabel('Si, eliminar'),
+
+				Action::make('transferir')
 					->label('Transferir')
 					->requiresConfirmation()
 					->icon('heroicon-o-arrows-up-down')
 					->color('info')
 					->modalHeading('Transferir a Cliente')
-					->visible(fn($record) => $record->tipo_cliente === 'PR')
-					->modalDescription('Estas seguro que deseas transferir como Cliente? Esta acción no se puede deshacer.')
-					->action(function (Customer $record) {
+					->visible(fn($record) => $record->tipo_cliente === 'PR') // Solo para PR
+					->modalDescription('Para el proceso de transferencia es necesario completar toda la 
+								informacion que se pide a continuacion.')
 						
-						$record->update(['tipo_cliente' => 'PV']);
-						$recipient = User::where('role', 'Administrador')->get();
-						$username =  User::find($record['user_id'])->name;
-						return redirect(CustomerResource::getUrl('edit', ['record' => $record->id]));
+					->fillForm(fn(Customer $record) => [
+						'customer_id' => $record->id,
+						'name' => $record->name,
+						'phone' => $record->phone,
+						'email' => $record->email,
+					])
+					->form([
+						TextInput::make('name')
+							->label('Nombre')
+							->unique(Customer::class, ignoreRecord:true)
+							->required(),
+
+						TextInput::make('phone')
+							->label('Teléfono')
+							->unique(Customer::class, ignoreRecord:true)
+							->required(),
+
+						TextInput::make('email')
+							->label('Correo Electrónico')
+							->email()
+							->unique(Customer::class, ignoreRecord:true)
+							->required(),
+
+						DatePicker::make('birthday')
+							->label('Fecha de nacimiento')
+							->suffixIcon('heroicon-m-cake')
+							->required(),
+
+						Select::make('paquete_inicio_id')
+							->label('Paquete de inicio')
+							->options(PaquetesInicio::pluck('nombre', 'id'))
+							->placeholder('Selecciona un paquete')
+					])
+					->action(function (array $data, Customer $record) {
+						$customer = Customer::find($record->id);
+						
+						if ($customer) {
+							//dd($data['name']);
+							$customer->update([
+								'name' => $data['name'],
+								'phone' => $data['phone'],
+								'email' => $data['email'],
+								'birthday' => $data['birthday'],
+								'tipo_cliente' => 'PV',
+								'paquete_inicio_id' => $data['paquete_inicio_id'],
+							]);
+
+							$record->update(['customer_id' => $customer->id]);
+						}
+
 						Notification::make()
-							->title('Prospecto transferido')
-							->body('Se ha transferido un nuevo cliente Punto de Venta. Debes llenar la información
-									para completar el registro. Se te redireccionará en un momento.')
+							->title('Prospecto Transferido')
+							->body('El Prospecto ha sido transferido a la lista de Clientes.')
 							->icon('heroicon-o-information-circle')
-							->iconColor('info')
 							->color('info')
 							->send();
 
+						$recipient = User::where('role', 'Administrador')->get();
+						$username =  User::find($record['user_id'])->name;
 						Notification::make()
 							->title('Prospecto transferido')
 							->body('El vendedor ' . $username . ' ha transferido a ' . $record->name . ' como nuevo cliente Punto de Venta.')
@@ -185,23 +250,10 @@ class ProspectosMapWidget extends MapTableWidget
 							->iconColor('info')
 							->color('info')
 							->sendToDatabase($recipient);
-					}),
-				ActionsDeleteAction::make()
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Cliente borrado')
-                                ->body('El Cliente ha sido eliminado del sistema.')
-                                ->icon('heroicon-o-trash')
-                                ->iconColor('danger')
-                                ->color('danger')
-                        )
-                        ->modalHeading('Borrar Cliente')
-                        ->modalDescription('Estas seguro que deseas eliminar este Cliente? Esta acción no se puede deshacer.')
-                        ->modalSubmitActionLabel('Si, eliminar')
-				]),
+					})
+					->hidden(fn($record) => in_array($record->tipo_cliente, ['PV', 'RD', 'BK', 'SL'])),
+			])
 		];
-
 	}
 
 	protected function getTableBulkActions(): array

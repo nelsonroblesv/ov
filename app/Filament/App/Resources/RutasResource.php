@@ -971,8 +971,6 @@ class RutasResource extends Resource
                         })
 
                         ->hidden(fn($record) => in_array($record->tipo_cliente, ['PV', 'RD', 'BK', 'SL']))
-
-
                 ])
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
