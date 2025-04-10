@@ -9,6 +9,7 @@ use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
 use App\Models\PaquetesInicio;
 use App\Models\Regiones;
+use App\Models\User;
 use App\Models\Zonas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -70,8 +71,17 @@ class CustomerResource extends Resource
 
                                 Select::make('user_id')
                                     ->required()
-                                    ->relationship('user', 'name')
-                                    ->label('Asignado a:'),
+                                    ->label('Asignado a:')
+                                    ->options(
+                                        fn() =>
+                                        User::whereIn('id', function ($query) {
+                                            $query->select('id')
+                                                ->from('users')
+                                                ->where('role', 'Vendedor')
+                                                ->orWhere('username', 'OArrocha' )
+                                                ->orderBy('name', 'DESC');
+                                        })->pluck('name', 'id')
+                                    ),
 
                                 TextInput::make('name')
                                     ->label('Nombre completo')
@@ -174,7 +184,7 @@ class CustomerResource extends Resource
                                             })
                                     )
                                     ->placeholder('Selecciona un paquete'),
-                                    //->required(),
+                                //->required(),
                             ])
                         ])->columns(2),
 
@@ -264,7 +274,8 @@ class CustomerResource extends Resource
                                     fn() =>
                                     Regiones::whereIn('id', function ($query) {
                                         $query->select('regiones_id')
-                                            ->from('zonas');
+                                            ->from('zonas')
+                                            ->where('is_active', true);
                                     })->pluck('name', 'id')
                                 )
                                 ->reactive(),
