@@ -273,7 +273,7 @@ class CustomerUserResource extends Resource
                                         ->required()
                                         ->directory('customer-images')
                                         ->multiple()
-                                        ->maxSize(2048)
+                                        //->maxSize(2048)
                                         ->columnSpanFull(),
 
                                     FileUpload::make('inside_image')
@@ -282,7 +282,7 @@ class CustomerUserResource extends Resource
                                         ->required()
                                         ->directory('customer-images')
                                         ->multiple()
-                                        ->maxSize(2048)
+                                        //->maxSize(2048)
                                         ->columnSpanFull(),
                                         
                                 ])->columns(2)->icon('heroicon-o-camera'),

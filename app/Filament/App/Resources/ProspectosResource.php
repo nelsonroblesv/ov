@@ -258,7 +258,7 @@ class ProspectosResource extends Resource
                                 ->directory('prospectos-images')
                                 ->required()
                                 ->multiple()
-                                ->maxSize(2048)
+                                //->maxSize(2048)
                                 ->columnSpanFull()
 
                         ])->columns(2),
