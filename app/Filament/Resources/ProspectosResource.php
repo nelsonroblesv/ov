@@ -321,6 +321,7 @@ class ProspectosResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::whereIn('tipo_cliente', ['PO', 'PR'])->count();
+        return static::getModel()::whereIn('tipo_cliente', ['PO', 'PR'])
+            ->where('is_active', true)->count();
     }
 }

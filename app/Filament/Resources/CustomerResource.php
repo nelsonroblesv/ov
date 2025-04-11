@@ -78,7 +78,7 @@ class CustomerResource extends Resource
                                             $query->select('id')
                                                 ->from('users')
                                                 ->where('role', 'Vendedor')
-                                                ->orWhere('username', 'OArrocha' )
+                                                ->orWhere('username', 'OArrocha')
                                                 ->orderBy('name', 'DESC');
                                         })->pluck('name', 'id')
                                     ),
@@ -409,6 +409,7 @@ class CustomerResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::whereIn('tipo_cliente', ['PV', 'BL', 'SL', 'RD'])->count();
+        return static::getModel()::whereIn('tipo_cliente', ['PV', 'BL', 'SL', 'RD'])
+            ->where('is_active', true)->count();
     }
 }
