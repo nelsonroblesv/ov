@@ -9,4 +9,6 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewBitacoraRutas extends ViewRecord
 {
     protected static string $resource = BitacoraRutasResource::class;
+    protected static ?string $title = 'Detalles de Registro en Bitácora';
+
 }
