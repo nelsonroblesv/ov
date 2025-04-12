@@ -65,6 +65,7 @@ class BitacoraRutasResource extends Resource
                                 ->placeholder('Foto de entrega de pedido')
                                 ->multiple()
                                 ->directory('fotos-bitacora')
+                                ->downloadable()
                                 ->required(),
 
                             FileUpload::make('foto_stock_antes')
@@ -72,6 +73,7 @@ class BitacoraRutasResource extends Resource
                                 ->placeholder('Foto de stock antes de entrega')
                                 ->multiple()
                                 ->directory('fotos-bitacora')
+                                ->downloadable()
                                 ->required(),
 
                             FileUpload::make('foto_stock_despues')
@@ -79,6 +81,7 @@ class BitacoraRutasResource extends Resource
                                 ->placeholder('Foto de stock después de entrega')
                                 ->multiple()
                                 ->directory('fotos-bitacora')
+                                ->downloadable()
                                 ->required(),
                         ]),
 
@@ -90,6 +93,7 @@ class BitacoraRutasResource extends Resource
                                 ->placeholder('Tomar o cargar foto')
                                 ->multiple()
                                 ->directory('fotos-bitacora')
+                                ->downloadable()
                                 ->required(),
                         ]),
 
@@ -108,6 +112,7 @@ class BitacoraRutasResource extends Resource
                                     return null;
                                 })
                                 ->directory('fotos-bitacora')
+                                ->downloadable()
                                 ->required(),
                         ]),
 
@@ -127,6 +132,7 @@ class BitacoraRutasResource extends Resource
                                 ->placeholder('Tomar o cargar fotos')
                                 ->multiple()
                                 ->directory('fotos-bitacora')
+                                ->downloadable()
                                 ->required(),
                         ]),
 
