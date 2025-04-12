@@ -149,15 +149,37 @@ class BitacoraRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->with('customer.user');
+            })
             ->heading('Registros de Actividad')
             ->description('Listado de visitas de los usuarios. Puedes filtrar por tipo de visita y 
             vendedor, asi como ordenar por fecha de registro y mostrar u ocultar ciertas columnas.')
             ->defaultSort('created_at', 'desc')
 
             ->columns([
-                TextColumn::make('customers.user.name')->label('Vendedor')->searchable()->sortable(),
-                TextColumn::make('customers.name')->label('Identificador')->searchable()->sortable(),
-                TextColumn::make('tipo_visita')->label('Visita')->searchable()->sortable()
+                //TextColumn::make('customers.user.name')->label('Vendedor')->searchable()->sortable(),
+                TextColumn::make('customer.name')
+                    ->label('Cliente')
+                    ->sortable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas(
+                            'customer',
+                            fn($q) =>
+                            $q->where('name', 'like', "%{$search}%")
+                        );
+                    }),
+                TextColumn::make('customer.user.name')
+                    ->label('Vendedor')
+                    ->sortable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas(
+                            'customer.user',
+                            fn($q) =>
+                            $q->where('name', 'like', "%{$search}%")
+                        );
+                    }),
+                TextColumn::make('tipo_visita')->label('Visita')->sortable()
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->formatStateUsing(fn(string $state): string => [
                         'EN' => 'Entrega',
@@ -166,25 +188,25 @@ class BitacoraRutasResource extends Resource
                         'PR' => 'Prospeccion',
                     ][$state] ?? 'Otro'),
 
-                TextColumn::make('notas')->label('Notas')->searchable()
+                TextColumn::make('notas')->label('Notas')
                     ->toggleable(isToggledHiddenByDefault: false),
 
-                TextColumn::make('customers.regiones.name')->label('Region')->searchable()->sortable()
+                TextColumn::make('customers.regiones.name')->label('Region')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->searchable()->sortable()
+                TextColumn::make('customers.zonas.nombre_zona')->label('Zona')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                ImageColumn::make('foto_entrega')->label('Entrega')->searchable()->sortable()
+                ImageColumn::make('foto_entrega')->label('Entrega')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('foto_stock_antes')->label('Stock Antes')->searchable()->sortable()
+                ImageColumn::make('foto_stock_antes')->label('Stock Antes')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('foto_stock_despues')->label('Stock Despues')->searchable()->sortable()
+                ImageColumn::make('foto_stock_despues')->label('Stock Despues')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('foto_lugar_cerrado')->label('Cerrado')->searchable()->sortable()
+                ImageColumn::make('foto_lugar_cerrado')->label('Cerrado')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('foto_stock_regular')->label('Regular')->searchable()->sortable()
+                ImageColumn::make('foto_stock_regular')->label('Regular')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ImageColumn::make('foto_evidencia_prospectacion')->label('Prospeccion')->searchable()->sortable()
+                ImageColumn::make('foto_evidencia_prospectacion')->label('Prospeccion')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')->label('Registro')->dateTime()->sortable()
@@ -205,14 +227,14 @@ class BitacoraRutasResource extends Resource
                     ])
             ])
             ->actions([
-               ActionGroup::make([
-                Tables\Actions\DeleteAction::make(),
-               ])
+                ActionGroup::make([
+                    Tables\Actions\DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
-              //  Tables\Actions\BulkActionGroup::make([
-                  //  Tables\Actions\DeleteBulkAction::make(),
-              //  ]),
+                //  Tables\Actions\BulkActionGroup::make([
+                //  Tables\Actions\DeleteBulkAction::make(),
+                //  ]),
             ]);
     }
 
@@ -231,5 +253,10 @@ class BitacoraRutasResource extends Resource
             'edit' => Pages\EditBitacoraRutas::route('/{record}/edit'),
             'view' => Pages\ViewBitacoraRutas::route('/{record}'),
         ];
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return BitacoraCustomers::query()->with(['customer.user']);
     }
 }

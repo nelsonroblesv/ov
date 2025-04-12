@@ -29,6 +29,14 @@ class BitacoraCustomers extends Model
     ];
     public function customers()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customers_id');
     }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customers_id');
+    }
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }
