@@ -6,6 +6,8 @@ use App\Filament\Auth\CustomLogin;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActual;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActualWidget;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaWidget;
+use App\Filament\Resources\UbicacionUsuarioResource\Widgets\MapRecorridosWidget;
+use App\Filament\Widgets\MapRecorridosWidget as WidgetsMapRecorridosWidget;
 use App\Filament\Widgets\SemanaActual as WidgetsSemanaActual;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -55,6 +57,7 @@ class DashboardPanelProvider extends PanelProvider
                 SemanaActualWidget::class,
                 Widgets\AccountWidget::class,
                 //Widgets\FilamentInfoWidget::class,
+                WidgetsMapRecorridosWidget::class,
             ])
             ->navigationItems([
                 NavigationItem::make('Ver como Usuario')
