@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class UbicacionUsuario extends Model
 {
+    protected $fillable = ['user_id', 'latitud', 'longitud'];
+
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
 }

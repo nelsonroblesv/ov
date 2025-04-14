@@ -23,15 +23,38 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'username', 'birthday','email','email_empresa','phone','phone_empresa', 'password',
-        'avatar', 'rfc', 'rfc_doc', 'curp', 'curp_doc', 'imss', 'imss_doc', 'comprobante_domicilio_doc',
-        'banco', 'tarjeta', 'cuenta', 'clabe', 'fecha_inicio', 'fecha_fin',
-        'licencia_image', 'ine_image', 'color', 'role', 'is_active'
+        'name',
+        'username',
+        'birthday',
+        'email',
+        'email_empresa',
+        'phone',
+        'phone_empresa',
+        'password',
+        'avatar',
+        'rfc',
+        'rfc_doc',
+        'curp',
+        'curp_doc',
+        'imss',
+        'imss_doc',
+        'comprobante_domicilio_doc',
+        'banco',
+        'tarjeta',
+        'cuenta',
+        'clabe',
+        'fecha_inicio',
+        'fecha_fin',
+        'licencia_image',
+        'ine_image',
+        'color',
+        'role',
+        'is_active'
     ];
 
     protected $casts = [
         'ine_image' => 'array',
-         'licencia_image' => 'array'
+        'licencia_image' => 'array'
     ];
 
     /**
@@ -62,17 +85,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         if ($panel->getId() === 'dashboard') {
             return str_ends_with($this->role, 'Administrador') || str_ends_with($this->role, 'Gerente') || str_ends_with($this->role, 'Oficina');
         }
- 
+
         return true;
     }
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if(!$this->avatar || $this->avatar == null)
-        {
+        if (!$this->avatar || $this->avatar == null) {
             return "https://app.osberthvalle.com/storage/user-avatar/default.png";
         }
-        return "https://app.osberthvalle.com/storage/".$this->avatar;
+        return "https://app.osberthvalle.com/storage/" . $this->avatar;
     }
 
 
@@ -99,5 +121,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Order::class);
     }
 
-    
+    public function ubicaciones()
+    {
+        return $this->hasMany(UbicacionUsuario::class);
+    }
 }

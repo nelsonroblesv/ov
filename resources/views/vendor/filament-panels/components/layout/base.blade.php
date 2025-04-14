@@ -153,7 +153,51 @@
                     });
                 });
             }
-        </script>        
+        </script>  
+        
+        <script>
+            console.log("Script de geolocalización cargado...");
+        
+            function enviarUbicacion(lat, lng) {
+                fetch('/guardar-ubicacion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        latitud: lat,
+                        longitud: lng
+                    })
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Error al enviar ubicación');
+                    } else {
+                        console.log('Ubicación enviada:', lat, lng);
+                    }
+                });
+            }
+        
+            function obtenerYEnviarUbicacion() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        enviarUbicacion(
+                            position.coords.latitude,
+                            position.coords.longitude
+                        );
+                    }, error => {
+                        console.error("Error de geolocalización:", error);
+                    });
+                } else {
+                    console.error("Geolocalización no soportada");
+                }
+            }
+        
+            // Ejecutar al cargar y luego cada 30 segundos
+            obtenerYEnviarUbicacion();
+            setInterval(obtenerYEnviarUbicacion, 30000); // cada 30 segundos
+        </script>
+        
    
     </body>
 </html>

@@ -57,7 +57,6 @@ class DashboardPanelProvider extends PanelProvider
                 SemanaActualWidget::class,
                 Widgets\AccountWidget::class,
                 //Widgets\FilamentInfoWidget::class,
-               // WidgetsMapRecorridosWidget::class,
             ])
             ->navigationItems([
                 NavigationItem::make('Ver como Usuario')
