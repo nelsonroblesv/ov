@@ -49,7 +49,7 @@ class PagosRelationManager extends RelationManager
                     ->directory('comprobantes')
                     ->required()
                     ->columnSpanFull()
-                    ->acceptedFileTypes(['application/pdf', 'image/*'])
+                    //->acceptedFileTypes(['application/pdf', 'image/*'])
                     ->downloadable()
                     ->openable(),
             ]);
