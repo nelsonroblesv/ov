@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ListRecords;
 class ListCobranzas extends ListRecords
 {
     protected static string $resource = CobranzaResource::class;
+    protected static ?string $title = 'Vista Deuda';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Registrar Deuda'),
         ];
     }
 }

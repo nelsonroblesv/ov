@@ -4,14 +4,22 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CobranzaResource\Pages;
 use App\Filament\Resources\CobranzaResource\RelationManagers;
+use App\Filament\Resources\CobranzaResource\RelationManagers\PagosRelationManager;
+use App\Filament\Resources\PagoRelationManagerResource\RelationManagers\CobranzaResourceRelationManager;
 use App\Models\Cobranza;
 use Filament\Forms;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
+use Filament\Forms\Get;
+use Filament\Tables\Columns\TextColumn;
 
 class CobranzaResource extends Resource
 {
@@ -23,18 +31,24 @@ class CobranzaResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('customer_id')
+                Select::make('customer_id')
+                    ->label('Cliente')
                     ->relationship('customer', 'name')
+                    ->searchable()
+                    ->preload()
                     ->required(),
-                Forms\Components\TextInput::make('codigo')
+
+                TextInput::make('saldo_total')
+                    ->label('Saldo Total')
+                    ->numeric()
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('saldo_total')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('created_by')
-                    ->required()
-                    ->numeric(),
+                    ->prefix('$'),
+
+                Hidden::make('codigo')
+                    ->default(fn(Get $get) => 'COB-' . strtoupper(Str::random(5)) . '-' . $get('customer_id')),
+
+                Hidden::make('created_by')
+                    ->default(auth()->id()),
             ]);
     }
 
@@ -42,25 +56,18 @@ class CobranzaResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('customer.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('codigo')
+                TextColumn::make('codigo')->label('Folio')->searchable(),
+                TextColumn::make('customer.name')->label('Cliente')->searchable(),
+                TextColumn::make('saldo_total')
+                    ->label('Saldo total')
+                    ->money('MXN'),
+
+                TextColumn::make('saldo_pendiente')
+                    ->label('Saldo pendiente')
+                    ->money('MXN')
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('saldo_total')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->date()->label('Fecha'),
             ])
             ->filters([
                 //
@@ -78,7 +85,7 @@ class CobranzaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PagosRelationManager::class
         ];
     }
 
