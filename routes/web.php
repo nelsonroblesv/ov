@@ -3,6 +3,7 @@
 use App\Http\Controllers\OrdenPDFController;
 use App\Http\Controllers\UbicacionUsuarioController;
 use App\Models\UbicacionUsuario;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ Route::post('/guardar-ubicacion', function (Request $request) {
            'user_id' => auth()->id(),
            'latitud' => $request->input('latitud'),
            'longitud' => $request->input('longitud'),
+           'created_at' => Carbon::now()->setTimezone('America/Merida'),
        ]);
 
        return response()->json(['status' => 'ok']);
