@@ -1,29 +1,29 @@
-<x-filament::card>
-    <div wire:ignore>
-        <div id="map" style="width: 100%; height: 500px;"></div>
-    </div>
+<x-filament::widget>
+    <x-filament::card>
+        <div wire:ignore.self>
+            <div id="map" style="width: 100%; height: 500px;"></div>
+        </div>
+    </x-filament::card>
+</x-filament::widget>
 
-    <script>
-          console.log("Cargando mapa...");
-        function initMap() {
-            const center = { lat: 19.4326, lng: -99.1332 }; // CDMX como punto central
+@once
+    @push('scripts')
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&callback=initMap">
+        </script>
 
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 5,
-                center: center,
-            });
+        <script>
+            let mapInitialized = false;
+            
+            function initMap() {
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: 19.4326, lng: -99.1332 }, // CDMX por defecto
+                    zoom: 10,
+                });
 
-            // Marcador de prueba
-            const marker = new google.maps.Marker({
-                position: center,
-                map: map,
-                title: "Ciudad de México",
-                icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-            });
-        }
-    </script>
-
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&callback=initMap">
-    </script>
-</x-filament::card>
+                // Aquí puedes agregar marcadores si tienes coordenadas
+                // new google.maps.Marker({ position: { lat: XX, lng: YY }, map });
+            }
+        </script>
+    @endpush
+@endonce

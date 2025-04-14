@@ -10,10 +10,14 @@ class MapRecorridosWidget extends Widget
 
     protected int | string | array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Mapa de Recorridos';
-
     public static function canView(): bool
     {
         return true;
+    }
+
+    protected static bool $isLazy = true; // solo se carga una vez
+    public function getPollingInterval(): ?string
+    {
+        return null; // sin actualizaciones en vivo
     }
 }
