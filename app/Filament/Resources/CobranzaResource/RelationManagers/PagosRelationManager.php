@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CobranzaResource\RelationManagers;
 
+use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -9,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -46,6 +48,7 @@ class PagosRelationManager extends RelationManager
                     ->label('Comprobante (PDF o Imagen)')
                     ->directory('comprobantes')
                     ->required()
+                    ->columnSpanFull()
                     ->acceptedFileTypes(['application/pdf', 'image/*'])
                     ->downloadable()
                     ->openable(),
@@ -62,15 +65,15 @@ class PagosRelationManager extends RelationManager
                     ->dateTime()
                     ->timezone('America/Merida'),
 
-                TextColumn::make('monto')
-                    ->label('Monto')
-                    ->money('MXN')
-                    ->summarize(Sum::make()->label('Total pagado')),
-
                 TextColumn::make('tipo_pago')
                     ->label('Tipo de pago')
                     ->searchable()
                     ->sortable(),
+
+                TextColumn::make('monto')
+                    ->label('Monto')
+                    ->money('MXN')
+                    ->summarize(Sum::make()->label('Total pagado')),
 
                 TextColumn::make('comprobante')
                     ->label('Archivo')
