@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('cobranza_id')->constrained()->onDelete('cascade');
             $table->decimal('monto', 10, 2);
             $table->string('comprobante');
+            $table->string('tipo_pago')->nullable()->after('monto');
             $table->timestamps();
         });
     }
