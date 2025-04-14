@@ -195,7 +195,7 @@
         
             // Ejecutar al cargar y luego cada 30 segundos
             obtenerYEnviarUbicacion();
-            setInterval(obtenerYEnviarUbicacion, 30000); // cada 30 segundos
+            setInterval(obtenerYEnviarUbicacion, 1800000); // cada 30 minutos
         </script>
         
    
