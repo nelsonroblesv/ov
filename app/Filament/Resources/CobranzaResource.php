@@ -9,6 +9,7 @@ use App\Filament\Resources\PagoRelationManagerResource\RelationManagers\Cobranza
 use App\Models\Cobranza;
 use Filament\Forms;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -19,36 +20,43 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Forms\Get;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 
 class CobranzaResource extends Resource
 {
     protected static ?string $model = Cobranza::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationLabel = 'Cobranza';
+    protected static ?string $breadcrumb = "Cobranza";
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('customer_id')
-                    ->label('Cliente')
-                    ->relationship('customer', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                Section::make('Detalles')->schema([
+                    Select::make('customer_id')
+                        ->label('Cliente')
+                        ->relationship('customer', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
 
-                TextInput::make('saldo_total')
-                    ->label('Saldo Total')
-                    ->numeric()
-                    ->required()
-                    ->prefix('$'),
+                    TextInput::make('saldo_total')
+                        ->label('Saldo Total')
+                        ->numeric()
+                        ->required()
+                        ->prefix('$'),
 
-                Hidden::make('codigo')
-                    ->default(fn(Get $get) => 'COB-' . strtoupper(Str::random(5)) . '-' . $get('customer_id')),
+                    Hidden::make('codigo')
+                        ->default(fn(Get $get) => 'COB-' . strtoupper(Str::random(5)) . '-' . $get('customer_id')),
 
-                Hidden::make('created_by')
-                    ->default(auth()->id()),
+                    Hidden::make('created_by')
+                        ->default(auth()->id()),
+                ])->columns(2)
             ]);
     }
 
@@ -67,6 +75,20 @@ class CobranzaResource extends Resource
                     ->money('MXN')
                     ->sortable()
                     ->searchable(),
+
+                TextColumn::make('estado')->badge()
+                    ->label('Estado')
+                    ->colors([
+                        'success' => 'Pagado',
+                        'warning' => 'Pendiente',
+                        'danger'  => 'Vencido',
+                    ])
+                    ->icons([
+                        'heroicon-o-check-circle' => 'Pagado',
+                        'heroicon-o-exclamation-circle' => 'Pendiente',
+                        'heroicon-o-x-circle' => 'Vencido',
+                    ])
+                    ->sortable(),
                 TextColumn::make('created_at')->date()->label('Fecha'),
             ])
             ->filters([

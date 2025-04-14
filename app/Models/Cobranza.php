@@ -29,4 +29,20 @@ class Cobranza extends Model
     {
         return $this->saldo_total - $this->pagos()->sum('monto');
     }
+
+    public function getEstadoAttribute()
+    {
+        $pendiente = $this->saldo_total - $this->pagos()->sum('monto');
+
+        if ($pendiente <= 0) {
+            return 'Pagado';
+        }
+
+        // Se considera vencido si pasaron más de 15 días desde que se creó
+        if (now()->greaterThan($this->created_at->addDays(15))) {
+            return 'Vencido';
+        }
+
+        return 'Pendiente';
+    }
 }

@@ -11,7 +11,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCobranza extends CreateRecord
 {
     protected static string $resource = CobranzaResource::class;
-    protected static ?string $title = 'Registrar Deuda';
+    protected static ?string $title = 'Registrar Saldo Deudor';
 
     protected function getRedirectUrl(): string
     {

@@ -9,7 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditCobranza extends EditRecord
 {
     protected static string $resource = CobranzaResource::class;
-    protected static ?string $title = 'Registrar Deuda';
+    protected static ?string $title = 'Editar Saldo Deudor';
 
     protected function getHeaderActions(): array
     {

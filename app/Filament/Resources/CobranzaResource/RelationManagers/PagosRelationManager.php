@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CobranzaResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -29,6 +30,18 @@ class PagosRelationManager extends RelationManager
                     ->numeric()
                     ->prefix('$'),
 
+                Select::make('tipo_pago')
+                    ->label('Tipo de pago')
+                    ->required()
+                    ->options([
+                        'Efectivo' => 'Efectivo',
+                        'Transferencia' => 'Transferencia',
+                        'Depósito' => 'Depósito',
+                        'Cheque' => 'Cheque',
+                        'Otro' => 'Otro',
+                    ])
+                    ->native(false), // Estilo select moderno
+
                 FileUpload::make('comprobante')
                     ->label('Comprobante (PDF o Imagen)')
                     ->directory('comprobantes')
@@ -45,15 +58,20 @@ class PagosRelationManager extends RelationManager
             ->recordTitleAttribute('Pagos')
             ->columns([
                 TextColumn::make('created_at')
-                ->label('Fecha de pago')
-                ->dateTime()
-                ->timezone('America/Merida'),
+                    ->label('Fecha de pago')
+                    ->dateTime()
+                    ->timezone('America/Merida'),
 
                 TextColumn::make('monto')
                     ->label('Monto')
                     ->money('MXN')
                     ->summarize(Sum::make()->label('Total pagado')),
-   
+
+                TextColumn::make('tipo_pago')
+                    ->label('Tipo de pago')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('comprobante')
                     ->label('Archivo')
                     ->limit(30)

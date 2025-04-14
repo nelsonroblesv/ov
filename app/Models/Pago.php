@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pago extends Model
 {
-    protected $fillable = ['cobranza_id', 'monto', 'comprobante', 'created_at'];
+    protected $fillable = ['cobranza_id', 'monto', 'comprobante', 'tipo_pago', 'created_at'];
 
     public function cobranza(): BelongsTo
     {
