@@ -32,6 +32,7 @@ class CreateCobranza extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['created_at'] = Carbon::now()->setTimezone('America/Merida')->format('Y-m-d H:i:s');
+        $data['updated_at'] = null;
         return $data;
     }
 

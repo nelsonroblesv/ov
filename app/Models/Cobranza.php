@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cobranza extends Model
 {
-    protected $fillable = ['customer_id', 'codigo', 'saldo_total', 'created_by', 'created_at'];
+    protected $fillable = ['customer_id', 'codigo', 'saldo_total', 'created_by', 'created_at', 
+                    'updated_at'];
 
     public function customer(): BelongsTo
     {
