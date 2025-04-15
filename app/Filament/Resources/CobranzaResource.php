@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 use Filament\Forms\Get;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 
 class CobranzaResource extends Resource
 {
@@ -90,9 +91,9 @@ class CobranzaResource extends Resource
         return $table
             ->columns([
                 // TextColumn::make('codigo')->label('Folio')->searchable(),
-                TextColumn::make('periodo')->label('Periodo')->searchable()->alignCenter(),
-                TextColumn::make('semana')->label('Semana')->searchable()->alignCenter(),
-                TextColumn::make('tipo_semana')->label('Tipo')->searchable()->badge()
+                TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
+                TextColumn::make('semana')->label('Semana')->sortable()->alignCenter(),
+                TextColumn::make('tipo_semana')->label('Tipo')->sortable()->badge()
                     ->formatStateUsing(fn(string $state): string => [
                         0 => 'PAR',
                         1 => 'NON'
@@ -109,8 +110,7 @@ class CobranzaResource extends Resource
                 TextColumn::make('saldo_pendiente')
                     ->label('Saldo pendiente')
                     ->money('MXN')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
 
                 TextColumn::make('estado')->badge()
                     ->label('Estado')
@@ -128,7 +128,29 @@ class CobranzaResource extends Resource
                 TextColumn::make('created_at')->date()->label('Fecha'),
             ])
             ->filters([
-                //
+                SelectFilter::make('periodo')
+                    ->label('Periodo')
+                    ->options(
+                        Cobranza::query()
+                            ->select('periodo')
+                            ->distinct()
+                            ->orderBy('periodo')
+                            ->pluck('periodo', 'periodo')
+                            ->toArray()
+                    )
+                    ->searchable()
+                    ->placeholder('Todos'),
+
+                SelectFilter::make('semana')
+                    ->label('Semana')
+                    ->options([
+                        1 => 'Semana 1',
+                        2 => 'Semana 2',
+                        3 => 'Semana 3',
+                        4 => 'Semana 4',
+                    ])
+                    ->searchable()
+                    ->placeholder('Todas')
             ])
             ->actions([
                 //Tables\Actions\EditAction::make(),
