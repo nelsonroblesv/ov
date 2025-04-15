@@ -8,6 +8,7 @@ use App\Filament\Resources\CobranzaResource\RelationManagers\PagosRelationManage
 use App\Filament\Resources\PagoRelationManagerResource\RelationManagers\CobranzaResourceRelationManager;
 use App\Models\Cobranza;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -44,7 +45,6 @@ class CobranzaResource extends Resource
                         ->relationship('customer', 'name')
                         ->searchable()
                         ->preload()
-                        ->columnSpanFull()
                         ->required(),
 
                     Select::make('tipo_semana')
@@ -69,6 +69,12 @@ class CobranzaResource extends Resource
                             'S3' => 'S3',
                             'S4' => 'S4'
                         ]),
+
+                    DateTimePicker::make('created_at')
+                        ->label('Fecha de pago')
+                        ->seconds(false)
+                        ->required()
+                        ->default(now()),
 
                     TextInput::make('saldo_total')
                         ->label('Saldo Total')

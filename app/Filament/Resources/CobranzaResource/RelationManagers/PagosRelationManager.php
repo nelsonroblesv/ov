@@ -11,6 +11,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
@@ -140,7 +141,28 @@ class PagosRelationManager extends RelationManager
             ])
             ->actions([
                ActionsActionGroup::make([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->successNotification(null)
+                ->label('Registrar Pago')
+                ->after(function ($record) {
+                    Notification::make()
+                        ->title('Pago registrado')
+                        ->body("Se registró un pago por \$" . number_format($record->monto, 2))
+                        ->success()
+                        ->icon('heroicon-o-banknotes')
+                        ->send();
+                }),
+                Tables\Actions\EditAction::make()
+                ->successNotification(null)
+                ->label('Editar Pago')
+                ->after(function ($record) {
+                    Notification::make()
+                        ->title('Información de Pago actualizada')
+                        ->body("Se actualizó la informacion de forma exitosa.")
+                        ->success()
+                        ->icon('heroicon-o-banknotes')
+                        ->send();
+                }),
                 Tables\Actions\DeleteAction::make(),
                ])
             ])
