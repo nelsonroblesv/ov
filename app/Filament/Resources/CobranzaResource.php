@@ -64,10 +64,10 @@ class CobranzaResource extends Resource
                     Select::make('semana')
                         ->label('Semana:')
                         ->options([
-                            '1' => 'S1',
-                            '2' => 'S2',
-                            '3' => 'S3',
-                            '4' => 'S4'
+                            'S1' => 'S1',
+                            'S2' => 'S2',
+                            'S3' => 'S3',
+                            'S4' => 'S4'
                         ]),
 
                     TextInput::make('saldo_total')

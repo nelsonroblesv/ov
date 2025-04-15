@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CobranzaResource\RelationManagers;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -50,10 +52,10 @@ class PagosRelationManager extends RelationManager
                         ->label('Semana:')
                         ->required()
                         ->options([
-                            '1' => 'S1',
-                            '2' => 'S2',
-                            '3' => 'S3',
-                            '4' => 'S4'
+                            'S1' => 'S1',
+                            'S2' => 'S2',
+                            'S3' => 'S3',
+                            'S4' => 'S4'
                         ]),
 
                     Select::make('tipo_pago')
@@ -70,8 +72,6 @@ class PagosRelationManager extends RelationManager
 
                     DateTimePicker::make('created_at')
                         ->label('Fecha de pago')
-                        ->format('Y-m-d') // Formato visual en el formulario
-                        ->displayFormat('d/m/Y')
                         ->seconds(false)
                         ->required()
                         ->default(now()), // Coloca fecha y hora actual automáticamente
@@ -99,9 +99,20 @@ class PagosRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('Pagos')
             ->columns([
+                TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
+                TextColumn::make('semana')->label('Semana')->sortable()->alignCenter(),
+                TextColumn::make('tipo_semana')->label('Tipo')->sortable()->badge()
+                    ->formatStateUsing(fn(string $state): string => [
+                        0 => 'PAR',
+                        1 => 'NON'
+                    ][$state] ?? 'Otro')
+                    ->colors([
+                        'success' => 0,
+                        'info' => 1,
+                    ])->alignCenter(),
                 TextColumn::make('created_at')
                     ->label('Fecha de pago')
-                    ->dateTime()
+                    ->date()
                     ->timezone('America/Merida'),
 
                 TextColumn::make('tipo_pago')
@@ -123,11 +134,15 @@ class PagosRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->label('Registrar Pago')
+                    ->icon('heroicon-o-banknotes'),
             ])
             ->actions([
+               ActionsActionGroup::make([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+               ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
