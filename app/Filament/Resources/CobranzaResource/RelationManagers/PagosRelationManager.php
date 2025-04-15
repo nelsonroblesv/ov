@@ -33,6 +33,7 @@ class PagosRelationManager extends RelationManager
                     Select::make('tipo_semana')
                         ->label('Tipo de semana:')
                         ->placeholder('Selecciona el tipo de semana')
+                        ->required()
                         ->options([
                             '0' => 'PAR',
                             '1' => 'NON'
@@ -42,10 +43,12 @@ class PagosRelationManager extends RelationManager
                         ->label('Periodo:')
                         ->placeholder('Pj. P15')
                         ->maxLength(3)
+                        ->required()
                         ->autocapitalize(),
 
                     Select::make('semana')
                         ->label('Semana:')
+                        ->required()
                         ->options([
                             '1' => 'S1',
                             '2' => 'S2',
@@ -67,8 +70,10 @@ class PagosRelationManager extends RelationManager
 
                     DateTimePicker::make('created_at')
                         ->label('Fecha de pago')
-                        ->displayFormat('Y-m-d') // Formato visual en el formulario
+                        ->format('Y-m-d') // Formato visual en el formulario
+                        ->displayFormat('d/m/Y')
                         ->seconds(false)
+                        ->required()
                         ->default(now()), // Coloca fecha y hora actual automáticamente
 
                     TextInput::make('monto')
