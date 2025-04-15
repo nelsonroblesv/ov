@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cobranza', function (Blueprint $table) {
-            //
+        Schema::table('cobranzas', function (Blueprint $table) {
+            $table->string('periodo')->nullable();
+            $table->string('semana')->nullable();
+            $table->boolean('tipo_semana')->nullable();
         });
     }
 
@@ -21,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cobranza', function (Blueprint $table) {
+        Schema::table('cobranzas', function (Blueprint $table) {
             //
         });
     }

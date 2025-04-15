@@ -43,7 +43,32 @@ class CobranzaResource extends Resource
                         ->relationship('customer', 'name')
                         ->searchable()
                         ->preload()
+                        ->columnSpanFull()
                         ->required(),
+
+                    Select::make('tipo_semana')
+                        ->label('Tipo de semana:')
+                        ->placeholder('Selecciona el tipo de semana')
+                        ->options([
+                            '0' => 'PAR',
+                            '1' => 'NON'
+                        ]),
+
+                    TextInput::make('periodo')
+                        ->label('Periodo:')
+                        ->placeholder('Pj. P15')
+                        ->maxLength(3)
+                        ->autocapitalize(),
+
+                    Select::make('semana')
+                        ->label('Semana:')
+                        ->options([
+                            '1' => 'Semana 1',
+                            '2' => 'Semana 2',
+                            '3' => 'Semana 3',
+                            '4' => 'Semana 4'
+
+                        ]),
 
                     TextInput::make('saldo_total')
                         ->label('Saldo Total')
@@ -52,7 +77,7 @@ class CobranzaResource extends Resource
                         ->prefix('$'),
 
                     Hidden::make('codigo')
-                        ->default(fn(Get $get) => 'COB-' . strtoupper(Str::random(5)) . '-' . $get('customer_id')),
+                        ->default(fn(Get $get) => 'COV-' . strtoupper(Str::random(5)) . '-' . $get('customer_id')),
 
                     Hidden::make('created_by')
                         ->default(auth()->id()),
@@ -64,7 +89,18 @@ class CobranzaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('codigo')->label('Folio')->searchable(),
+                // TextColumn::make('codigo')->label('Folio')->searchable(),
+                TextColumn::make('periodo')->label('Periodo')->searchable()->alignCenter(),
+                TextColumn::make('semana')->label('Semana')->searchable()->alignCenter(),
+                TextColumn::make('tipo_semana')->label('Tipo')->searchable()->badge()
+                    ->formatStateUsing(fn(string $state): string => [
+                        0 => 'PAR',
+                        1 => 'NON'
+                    ][$state] ?? 'Otro')
+                    ->colors([
+                        'success' => 0,
+                        'info' => 1,
+                    ])->alignCenter(),
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),
                 TextColumn::make('saldo_total')
                     ->label('Saldo total')
@@ -99,7 +135,7 @@ class CobranzaResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                   // Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
