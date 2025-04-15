@@ -169,6 +169,8 @@ class PagosRelationManager extends RelationManager
                     Tables\Actions\CreateAction::make()
                         ->successNotification(null)
                         ->label('Registrar Pago')
+                        ->color('success')
+                        ->icon('heroicon-o-banknotes')
                         ->after(function ($record) {
                             Notification::make()
                                 ->title('Pago registrado')
