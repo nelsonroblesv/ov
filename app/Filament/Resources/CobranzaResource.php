@@ -64,10 +64,10 @@ class CobranzaResource extends Resource
                     Select::make('semana')
                         ->label('Semana:')
                         ->options([
-                            '1' => 'Semana 1',
-                            '2' => 'Semana 2',
-                            '3' => 'Semana 3',
-                            '4' => 'Semana 4'
+                            '1' => 'S1',
+                            '2' => 'S2',
+                            '3' => 'S3',
+                            '4' => 'S4'
 
                         ]),
 
@@ -144,10 +144,10 @@ class CobranzaResource extends Resource
                 SelectFilter::make('semana')
                     ->label('Semana')
                     ->options([
-                        1 => 'Semana 1',
-                        2 => 'Semana 2',
-                        3 => 'Semana 3',
-                        4 => 'Semana 4',
+                        1 => 'S1',
+                        2 => 'S2',
+                        3 => 'S3',
+                        4 => 'S4',
                     ])
                     ->searchable()
                     ->placeholder('Todas')
