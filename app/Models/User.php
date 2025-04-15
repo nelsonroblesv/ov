@@ -49,7 +49,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'ine_image',
         'color',
         'role',
-        'is_active'
+        'is_active',
+        'icon_url'
     ];
 
     protected $casts = [

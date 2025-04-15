@@ -101,6 +101,12 @@ class UserResource extends Resource
                                 ->imageEditor()
                                 ->circleCropper()
                                 ->directory('user-avatar'),
+
+                            FileUpload::make('icon_url')
+                                ->label('Icono')
+                                ->imageEditor()
+                                ->circleCropper()
+                                ->directory('user-icon'),
                         ])->columns(2),
 
                     Wizard\Step::make('Empresa')
@@ -241,6 +247,8 @@ class UserResource extends Resource
                     ->label('Perfil'),
                 ColorColumn::make('color')
                     ->label('Color'),
+                ImageColumn::make('icon_url')
+                    ->label('Icono'),
                 TextColumn::make('username')
                     ->searchable()
                     ->sortable()
