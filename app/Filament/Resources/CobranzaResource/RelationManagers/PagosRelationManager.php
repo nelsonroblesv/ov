@@ -47,7 +47,7 @@ class PagosRelationManager extends RelationManager
                 FileUpload::make('comprobante')
                     ->label('Comprobante (PDF o Imagen)')
                     ->directory('comprobantes')
-                    ->required()
+                    //->required()
                     ->columnSpanFull()
                     //->acceptedFileTypes(['application/pdf', 'image/*'])
                     ->downloadable()
