@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\CobranzaResource\RelationManagers;
 
+use App\Models\Cobranza;
+use App\Models\Pago;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Forms;
@@ -18,6 +20,7 @@ use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -132,7 +135,29 @@ class PagosRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('periodo')
+                    ->label('Periodo')
+                    ->options(
+                        Pago::query()
+                            ->select('periodo')
+                            ->distinct()
+                            ->orderBy('periodo')
+                            ->pluck('periodo', 'periodo')
+                            ->toArray()
+                    )
+                    ->searchable()
+                    ->placeholder('Todos'),
+
+                SelectFilter::make('semana')
+                    ->label('Semana')
+                    ->options([
+                        'S1' => 'S1',
+                        'S2' => 'S2',
+                        'S3' => 'S3',
+                        'S4' => 'S4',
+                    ])
+                    ->searchable()
+                    ->placeholder('Todas')
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
@@ -140,31 +165,31 @@ class PagosRelationManager extends RelationManager
                     ->icon('heroicon-o-banknotes'),
             ])
             ->actions([
-               ActionsActionGroup::make([
-                Tables\Actions\CreateAction::make()
-                ->successNotification(null)
-                ->label('Registrar Pago')
-                ->after(function ($record) {
-                    Notification::make()
-                        ->title('Pago registrado')
-                        ->body("Se registró un pago por \$" . number_format($record->monto, 2))
-                        ->success()
-                        ->icon('heroicon-o-banknotes')
-                        ->send();
-                }),
-                Tables\Actions\EditAction::make()
-                ->successNotification(null)
-                ->label('Editar Pago')
-                ->after(function ($record) {
-                    Notification::make()
-                        ->title('Información de Pago actualizada')
-                        ->body("Se actualizó la informacion de forma exitosa.")
-                        ->success()
-                        ->icon('heroicon-o-banknotes')
-                        ->send();
-                }),
-                Tables\Actions\DeleteAction::make(),
-               ])
+                ActionsActionGroup::make([
+                    Tables\Actions\CreateAction::make()
+                        ->successNotification(null)
+                        ->label('Registrar Pago')
+                        ->after(function ($record) {
+                            Notification::make()
+                                ->title('Pago registrado')
+                                ->body("Se registró un pago por \$" . number_format($record->monto, 2))
+                                ->success()
+                                ->icon('heroicon-o-banknotes')
+                                ->send();
+                        }),
+                    Tables\Actions\EditAction::make()
+                        ->successNotification(null)
+                        ->label('Editar Pago')
+                        ->after(function ($record) {
+                            Notification::make()
+                                ->title('Información de Pago actualizada')
+                                ->body("Se actualizó la informacion de forma exitosa.")
+                                ->success()
+                                ->icon('heroicon-o-banknotes')
+                                ->send();
+                        }),
+                    Tables\Actions\DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

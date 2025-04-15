@@ -94,6 +94,7 @@ class CobranzaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultSort('created_at', 'DESC')
             ->columns([
                 // TextColumn::make('codigo')->label('Folio')->searchable(),
                 TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
@@ -149,10 +150,10 @@ class CobranzaResource extends Resource
                 SelectFilter::make('semana')
                     ->label('Semana')
                     ->options([
-                        1 => 'S1',
-                        2 => 'S2',
-                        3 => 'S3',
-                        4 => 'S4',
+                        'S1' => 'S1',
+                        'S2' => 'S2',
+                        'S3' => 'S3',
+                        'S4' => 'S4',
                     ])
                     ->searchable()
                     ->placeholder('Todas')
