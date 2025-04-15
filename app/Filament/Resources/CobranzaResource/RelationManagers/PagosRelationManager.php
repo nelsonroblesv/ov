@@ -4,7 +4,9 @@ namespace App\Filament\Resources\CobranzaResource\RelationManagers;
 
 use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -26,32 +28,64 @@ class PagosRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                TextInput::make('monto')
-                    ->label('Monto del Pago')
-                    ->required()
-                    ->numeric()
-                    ->prefix('$'),
+                Section::make('Detalles del pago')->schema([
 
-                Select::make('tipo_pago')
-                    ->label('Tipo de pago')
-                    ->required()
-                    ->options([
-                        'Efectivo' => 'Efectivo',
-                        'Transferencia' => 'Transferencia',
-                        'Depósito' => 'Depósito',
-                        'Cheque' => 'Cheque',
-                        'Otro' => 'Otro',
-                    ])
-                    ->native(false), // Estilo select moderno
+                    Select::make('tipo_semana')
+                        ->label('Tipo de semana:')
+                        ->placeholder('Selecciona el tipo de semana')
+                        ->options([
+                            '0' => 'PAR',
+                            '1' => 'NON'
+                        ]),
 
-                FileUpload::make('comprobante')
-                    ->label('Comprobante (PDF o Imagen)')
-                    ->directory('comprobantes')
-                    //->required()
-                    ->columnSpanFull()
-                    //->acceptedFileTypes(['application/pdf', 'image/*'])
-                    ->downloadable()
-                    ->openable(),
+                    TextInput::make('periodo')
+                        ->label('Periodo:')
+                        ->placeholder('Pj. P15')
+                        ->maxLength(3)
+                        ->autocapitalize(),
+
+                    Select::make('semana')
+                        ->label('Semana:')
+                        ->options([
+                            '1' => 'S1',
+                            '2' => 'S2',
+                            '3' => 'S3',
+                            '4' => 'S4'
+                        ]),
+
+                    Select::make('tipo_pago')
+                        ->label('Tipo de pago')
+                        ->required()
+                        ->options([
+                            'Efectivo' => 'Efectivo',
+                            'Transferencia' => 'Transferencia',
+                            'Depósito' => 'Depósito',
+                            'Cheque' => 'Cheque',
+                            'Otro' => 'Otro',
+                        ])
+                        ->native(false), // Estilo select moderno
+
+                    DateTimePicker::make('created_at')
+                        ->label('Fecha de pago')
+                        ->displayFormat('Y-m-d') // Formato visual en el formulario
+                        ->seconds(false)
+                        ->default(now()), // Coloca fecha y hora actual automáticamente
+
+                    TextInput::make('monto')
+                        ->label('Monto del Pago')
+                        ->required()
+                        ->numeric()
+                        ->prefix('$'),
+
+                    FileUpload::make('comprobante')
+                        ->label('Comprobante (PDF o Imagen)')
+                        ->directory('comprobantes')
+                        //->required()
+                        ->columnSpanFull()
+                        //->acceptedFileTypes(['application/pdf', 'image/*'])
+                        ->downloadable()
+                        ->openable(),
+                ])->columns(2)
             ]);
     }
 

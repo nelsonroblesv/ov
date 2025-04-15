@@ -68,7 +68,6 @@ class CobranzaResource extends Resource
                             '2' => 'S2',
                             '3' => 'S3',
                             '4' => 'S4'
-
                         ]),
 
                     TextInput::make('saldo_total')
