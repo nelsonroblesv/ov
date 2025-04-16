@@ -62,7 +62,7 @@ class OrderResource extends Resource
                                 ->label('Identificador de Orden')
                                 ->required()
                                 ->disabled()
-                                ->default('OV-' . random_int(100000, 9999999))
+                                ->default('POV-' . random_int(100000, 9999999))
                                 ->dehydrated()
                                 ->maxLength(255)
                                 ->columnSpanFull(),
