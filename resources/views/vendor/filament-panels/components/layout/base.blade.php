@@ -102,6 +102,9 @@
         @endif
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_END, scopes: $livewire->getRenderHookScopes()) }}
+    
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     </head>
 
     <body
