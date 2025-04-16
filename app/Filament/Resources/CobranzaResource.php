@@ -7,6 +7,7 @@ use App\Filament\Resources\CobranzaResource\RelationManagers;
 use App\Filament\Resources\CobranzaResource\RelationManagers\PagosRelationManager;
 use App\Filament\Resources\PagoRelationManagerResource\RelationManagers\CobranzaResourceRelationManager;
 use App\Models\Cobranza;
+use App\Models\Customer;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
@@ -42,7 +43,10 @@ class CobranzaResource extends Resource
                 Section::make('Detalles')->schema([
                     Select::make('customer_id')
                         ->label('Cliente')
-                        ->relationship('customer', 'name')
+                        ->options(Customer::query()
+                        ->where('is_active', true)
+                        ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                        ->pluck('name', 'id'))
                         ->searchable()
                         ->preload()
                         ->required(),
