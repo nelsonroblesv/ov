@@ -123,7 +123,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 				'id'      => $location->id,
 				'label'    => $user ? $user->name : 'Usuario no encontrado',
 				'icon' => [
-					'url' => url($user ? $user->icon_url : 'images/location.png'),
+					'url' => url($user ? 'storage/'.$user->icon_url : 'images/location.png'),
 					'type' => 'png',
 					'scale' => [35, 35],
 				],
