@@ -93,6 +93,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 
 		foreach ($locations as $location) {
 			$user = $location->user;
+			dd($user);
 			$data[] = [
 				'location' => [
 					'lat' => $location->latitud ? round(floatval($location->latitud), static::$precision) : 0,
