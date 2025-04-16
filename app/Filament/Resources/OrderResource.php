@@ -77,6 +77,7 @@ class OrderResource extends Resource
                                 ->required()
                                 ->suffixIcon('heroicon-m-user')
                                 ->options(Customer::query()
+                                    ->where('is_active', true)
                                     ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                                     ->pluck('name', 'id')),
 
