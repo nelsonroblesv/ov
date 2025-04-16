@@ -33,9 +33,11 @@ class ListOrders extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('All')
+            'ALL' => Tab::make('All')
             ->label('Todos')
-            ->icon('heroicon-m-table-cells'),
+            ->icon('heroicon-m-table-cells')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('id', '>', 0)),
+
             'PEN' => Tab::make()
             ->label('Pendientes')
             ->icon('heroicon-o-exclamation-circle')
