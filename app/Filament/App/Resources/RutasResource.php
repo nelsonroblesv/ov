@@ -22,6 +22,7 @@ use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -482,7 +483,7 @@ class RutasResource extends Resource
                                     ->placeholder('ejemplo@dominio.com')
                                     ->suffixIcon('heroicon-m-at-symbol'),
 
-                                    TextInput::make('phone')
+                                TextInput::make('phone')
                                     ->label('Teléfono')
                                     ->tel()
                                     ->requiredIf('tipo_cliente', 'PR')
@@ -845,10 +846,72 @@ class RutasResource extends Resource
                                             ->label('Fotos de Evidencia')
                                             ->placeholder('Tomar o carga foto')
                                             ->imageEditor()
-                                            ->directory('bitacora-testigos')
+                                            ->directory('fotos-bitacora')
                                             ->required(),
                                     ]),
 
+                                Section::make('Registrar Pago')
+                                    ->visible(fn($get) => $get('tipo_visita') === 'EN' || $get('tipo_visita') === 'RE')
+                                    ->schema([
+                                        Select::make('tipo_semana')
+                                            ->label('Tipo de semana:')
+                                            ->placeholder('Selecciona el tipo de semana')
+                                            //->required()
+                                            ->options([
+                                                '0' => 'PAR',
+                                                '1' => 'NON'
+                                            ]),
+
+                                        TextInput::make('periodo')
+                                            ->label('Periodo:')
+                                            ->placeholder('Pj. P15')
+                                            ->maxLength(3)
+                                           // ->required()
+                                            ->autocapitalize(),
+
+                                        Select::make('semana')
+                                            ->label('Semana:')
+                                           // ->required()
+                                            ->options([
+                                                'S1' => 'S1',
+                                                'S2' => 'S2',
+                                                'S3' => 'S3',
+                                                'S4' => 'S4'
+                                            ]),
+
+                                        Select::make('tipo_pago')
+                                            ->label('Tipo de pago')
+                                            //->required()
+                                            ->options([
+                                                'Efectivo' => 'Efectivo',
+                                                'Transferencia' => 'Transferencia',
+                                                'Depósito' => 'Depósito',
+                                                'Cheque' => 'Cheque',
+                                                'Otro' => 'Otro',
+                                            ])
+                                            ->native(false), // Estilo select moderno
+
+                                        DateTimePicker::make('created_at')
+                                            ->label('Fecha de pago')
+                                            ->seconds(false)
+                                           // ->required()
+                                            ->default(now()), // Coloca fecha y hora actual automáticamente
+
+                                        TextInput::make('monto')
+                                            ->label('Monto del Pago')
+                                            //->required()
+                                            ->numeric()
+                                            ->prefix('$'),
+
+                                        FileUpload::make('comprobante')
+                                            ->label('Comprobante (PDF o Imagen)')
+                                            ->directory('comprobantes')
+                                            //->required()
+                                            ->columnSpanFull()
+                                            //->acceptedFileTypes(['application/pdf', 'image/*'])
+                                            ->downloadable()
+                                            ->openable(),
+                                    ])->columns(2),
                                 // Notas generales
                                 TextInput::make('notas')
                                     ->label('Notas')
@@ -865,22 +928,17 @@ class RutasResource extends Resource
                         })
                         ->action(function ($record, array $data) {
                             BitacoraCustomers::create([
-
                                 'customers_id' => $record->customer_id,
                                 'user_id' => auth()->id(),
                                 'show_video' => $data['show_video'] ?? null,
-
                                 'tipo_visita' => $data['tipo_visita'],
-
                                 'foto_entrega' => isset($data['foto_entrega']) ? (is_array($data['foto_entrega']) ? $data['foto_entrega'][0] : $data['foto_entrega']) : null,
                                 'foto_stock_antes' => isset($data['foto_stock_antes']) ? (is_array($data['foto_stock_antes']) ? $data['foto_stock_antes'][0] : $data['foto_stock_antes']) : null,
                                 'foto_stock_despues' => isset($data['foto_stock_despues']) ? (is_array($data['foto_stock_despues']) ? $data['foto_stock_despues'][0] : $data['foto_stock_despues']) : null,
                                 'foto_lugar_cerrado' => isset($data['foto_lugar_cerrado']) ? (is_array($data['foto_lugar_cerrado']) ? $data['foto_lugar_cerrado'][0] : $data['foto_lugar_cerrado']) : null,
                                 'foto_stock_regular' => isset($data['foto_stock_regular']) ? (is_array($data['foto_stock_regular']) ? $data['foto_stock_regular'][0] : $data['foto_stock_regular']) : null,
                                 'foto_evidencia_prospectacion' => isset($data['foto_evidencia_prospectacion']) ? (is_array($data['foto_evidencia_prospectacion']) ? $data['foto_evidencia_prospectacion'][0] : $data['foto_evidencia_prospectacion']) : null,
-
                                 'notas' => $data['notas'],
-
                                 'created_at' => Carbon::now()->setTimezone('America/Merida')
                             ]);
 
