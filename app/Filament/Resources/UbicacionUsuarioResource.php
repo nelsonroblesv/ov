@@ -4,13 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UbicacionUsuarioResource\Pages;
 use App\Filament\Resources\UbicacionUsuarioResource\RelationManagers;
-use App\Filament\Resources\UbicacionUsuarioResource\Widgets\UbicacionesUsuariosMap;
 use App\Models\UbicacionUsuario;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,38 +29,18 @@ class UbicacionUsuarioResource extends Resource
 
     public static function table(Table $table): Table
     {
+       
+        // Hide table from Resource
         return $table
-            ->columns([
-                TextColumn::make('user.name')->label('Usuario'),
-                TextColumn::make('latitud'),
-                TextColumn::make('longitud'),
-                TextColumn::make('created_at')->label('Fecha')->dateTime('d-m-Y H:i'),
-            ])
-            ->defaultSort('created_at', 'desc')
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->columns([])
+            ->content(null)
+            ->paginated(false);
     }
 
     public static function getRelations(): array
     {
         return [
             //
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            UbicacionesUsuariosMap::class,
         ];
     }
 

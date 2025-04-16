@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UbicacionUsuarioResource\Pages;
 
 use App\Filament\Resources\UbicacionUsuarioResource;
+use App\Filament\Resources\UbicacionUsuarioResource\Widgets\UbicacionUsuarioMap;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,13 @@ class ListUbicacionUsuarios extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            UbicacionUsuarioMap::class,
         ];
     }
 }
