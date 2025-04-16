@@ -129,7 +129,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 				],
 			];
 		}
-		dd($data);
+		//dd($data);
 		return $data;
 	}
 }
