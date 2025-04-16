@@ -4,22 +4,41 @@ const staticAssets = [
     '/css/app.css',
     '/js/app.js',
     '/manifest.json',
-    // Agrega aquí otros recursos estáticos que quieras cachear
+    // Otros recursos estáticos
 ];
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(cacheName).then(function(cache) {
+        caches.open(cacheName).then(cache => {
             console.log('ServiceWorker caching static assets');
             return cache.addAll(staticAssets);
         })
     );
 });
 
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.match(event.request).then(function(response) {
-            return response || fetch(event.request);
-        })
-    );
+self.addEventListener('fetch', event => {
+    const { request } = event;
+
+    // Ignorar peticiones externas como Google Maps API
+    const isSameOrigin = new URL(request.url).origin === self.location.origin;
+
+    if (isSameOrigin && request.method === 'GET') {
+        // Cache First para recursos estáticos
+        event.respondWith(
+            caches.match(request).then(cached => {
+                return cached || fetch(request).then(response => {
+                    return caches.open(cacheName).then(cache => {
+                        cache.put(request, response.clone());
+                        return response;
+                    });
+                });
+            }).catch(() => {
+                // Podrías devolver una página offline.html aquí si quisieras
+            })
+        );
+    } else if (isSameOrigin && request.method === 'POST') {
+        // Aquí puedes almacenar la petición en IndexedDB (para sincronización futura)
+        // O simplemente dejarla fallar silenciosamente si estás offline
+        // Mejor aún: manejarla desde el frontend como ya empezamos a hacer con Dexie.js
+    }
 });
