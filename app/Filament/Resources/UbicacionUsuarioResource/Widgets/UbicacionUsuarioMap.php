@@ -43,7 +43,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 	protected function getTableColumns(): array
 	{
 		return [
-			TextColumn::make('user.name')->label('Usuario'),
+			TextColumn::make('user.name')->label('Usuario')->searchable(),
 			ImageColumn::make('user.icon_url')->label('Usuario'),
 			TextColumn::make('created_at')->label('Registro'),
 			IconColumn::make('user_id')->label('Ubicación')->alignCenter()
