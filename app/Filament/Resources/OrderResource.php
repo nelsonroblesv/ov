@@ -33,7 +33,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Get;
-use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -62,7 +61,10 @@ class OrderResource extends Resource
                             TextInput::make('number')
                                 ->label('Identificador de Orden')
                                 ->required()
-                               ->default(fn(Get $get) => 'COV-' . strtoupper(Str::random(5)) . '-' . $get('customer_id'))
+                                ->disabled()
+                                ->default('POV-' . random_int(100000, 9999999))
+                                ->dehydrated()
+                                ->maxLength(255)
                                 ->columnSpanFull(),
 
                             Hidden::make('registrado_por')->default(fn() => auth()->id()),
