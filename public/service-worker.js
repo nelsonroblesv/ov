@@ -9,9 +9,13 @@ const staticAssets = [
 
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(cacheName).then(cache => {
-            console.log('ServiceWorker caching static assets');
-            return cache.addAll(staticAssets);
+        caches.open(cacheName).then(async (cache) => {
+            try {
+                await cache.addAll(staticAssets);
+                console.log('Caching exitoso');
+            } catch (err) {
+                console.error('Error cacheando assets:', err);
+            }
         })
     );
 });
