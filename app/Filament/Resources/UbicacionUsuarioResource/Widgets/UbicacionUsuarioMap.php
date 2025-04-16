@@ -14,6 +14,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class UbicacionUsuarioMap extends MapTableWidget
 {
@@ -24,9 +25,11 @@ class UbicacionUsuarioMap extends MapTableWidget
 	protected static ?string $mapId = 'user-location-map';
 	protected int|string|array $columnSpan = 'full';
 
+
 	protected function getTableQuery(): Builder
 	{
 		return UbicacionUsuario::query()->latest();
+        
 	}
 
 	protected function getTableDescription(): string|Htmlable|null
@@ -37,9 +40,8 @@ class UbicacionUsuarioMap extends MapTableWidget
 	protected function getTableColumns(): array
 	{
 		return [
-			TextColumn::make('user.name'),
-			TextColumn::make('latitud'),
-			TextColumn::make('longitud'),
+			TextColumn::make('user.name')->label('Usuario'),
+			TextColumn::make('created_at')->label('Registro'),
 			IconColumn::make('user_id')->label('Ubicación')->alignCenter()
                     ->icon('heroicon-o-map-pin')
                     ->color('danger')
@@ -63,6 +65,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 		return [
 			Tables\Actions\ViewAction::make(),
 			Tables\Actions\EditAction::make(),
+			Tables\Actions\DeleteAction::make(),
 			GoToAction::make()
 				->zoom(14),
 			RadiusAction::make(),
@@ -87,16 +90,16 @@ class UbicacionUsuarioMap extends MapTableWidget
 		$data = [];
 
 		foreach ($locations as $location) {
-			$user = UbicacionUsuario::find($location->user_id);
+			$user = $location->user;
 			$data[] = [
 				'location' => [
-					'lat' => $location->latitude ? round(floatval($location->latitude), static::$precision) : 0,
-					'lng' => $location->longitude ? round(floatval($location->longitude), static::$precision) : 0,
+					'lat' => $location->latitud ? round(floatval($location->latitud), static::$precision) : 0,
+					'lng' => $location->longitud ? round(floatval($location->longitud), static::$precision) : 0,
 				],
 				'id'      => $location->id,
-				'label'    => $user . ' -> ' . $location->name,
+				'label'    => $user ? $user->name : 'Usuario no encontrado',
 				'icon' => [
-					'url' => url('images/location.png'),
+					'url' => url($user ? $user->icon_url : 'images/location.png'),
 					'type' => 'png',
 					'scale' => [35, 35],
 				],
