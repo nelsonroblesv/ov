@@ -11,6 +11,7 @@ use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,6 +42,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 	{
 		return [
 			TextColumn::make('user.name')->label('Usuario'),
+			ImageColumn::make('user.icon_url')->label('Usuario'),
 			TextColumn::make('created_at')->label('Registro'),
 			IconColumn::make('user_id')->label('Ubicación')->alignCenter()
                     ->icon('heroicon-o-map-pin')
