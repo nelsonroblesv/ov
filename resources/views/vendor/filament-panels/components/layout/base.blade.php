@@ -146,7 +146,7 @@
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_END, scopes: $livewire->getRenderHookScopes()) }}
         
-        <script>
+        <!--script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                     navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
@@ -156,10 +156,10 @@
                     });
                 });
             }
-        </script>  
+        </script-->  
         
         <script>
-            console.log("Script de geolocalización cargado...");
+           // console.log("Script de geolocalización cargado...");
         
             function enviarUbicacion(lat, lng) {
                 fetch('/guardar-ubicacion', {
@@ -174,9 +174,9 @@
                     })
                 }).then(response => {
                     if (!response.ok) {
-                        console.error('Error al enviar ubicación');
+                        //console.error('Error al enviar ubicación');
                     } else {
-                        console.log('Ubicación enviada:', lat, lng);
+                        //console.log('Ubicación enviada:', lat, lng);
                     }
                 });
             }
@@ -189,10 +189,10 @@
                             position.coords.longitude
                         );
                     }, error => {
-                        console.error("Error de geolocalización:", error);
+                        //console.error("Error de geolocalización:", error);
                     });
                 } else {
-                    console.error("Geolocalización no soportada");
+                    //console.error("Geolocalización no soportada");
                 }
             }
         
