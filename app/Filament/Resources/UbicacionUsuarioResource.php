@@ -17,8 +17,11 @@ class UbicacionUsuarioResource extends Resource
 {
     protected static ?string $model = UbicacionUsuario::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-viewfinder-circle';
+    protected static ?string $navigationGroup = 'Administrar';
+    protected static ?string $navigationLabel = 'Ubicaciones';
+    protected static ?string $breadcrumb = "Ubicaciones";
+    protected static ?int $navigationSort = 7;
     public static function form(Form $form): Form
     {
         return $form
