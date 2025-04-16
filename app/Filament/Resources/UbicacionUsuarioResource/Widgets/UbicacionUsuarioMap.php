@@ -9,7 +9,9 @@ use Cheesegrits\FilamentGoogleMaps\Filters\RadiusFilter;
 use Cheesegrits\FilamentGoogleMaps\Widgets\MapTableWidget;
 use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Filters\MapIsFilter;
+use Filament\Notifications\Notification;
 use Filament\Tables;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -74,6 +76,25 @@ class UbicacionUsuarioMap extends MapTableWidget
 		];
 	}
 
+	protected function getTableBulkActions(): array
+	{
+		return [
+			DeleteBulkAction::make()
+				->successNotification(
+					Notification::make()
+						->success()
+						->title('Registros eliminados')
+						->body('Los registros seleccionados han sido eliminados.')
+						->icon('heroicon-o-trash')
+						->iconColor('danger')
+						->color('danger')
+				)
+				->modalHeading('Borrar Registros')
+				->modalDescription('Estas seguro que deseas eliminar los Registros seleccionados? Esta acción no se puede deshacer.')
+				->modalSubmitActionLabel('Si, eliminar'),
+		];
+	}
+
 	protected function getData(): array
 	{
 		$locations = $this->getRecords();
@@ -93,7 +114,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 
 		foreach ($locations as $location) {
 			$user = $location->user;
-			dd($user);
+			
 			$data[] = [
 				'location' => [
 					'lat' => $location->latitud ? round(floatval($location->latitud), static::$precision) : 0,
@@ -108,6 +129,7 @@ class UbicacionUsuarioMap extends MapTableWidget
 				],
 			];
 		}
+		dd($data);
 		return $data;
 	}
 }
