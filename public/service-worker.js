@@ -1,10 +1,9 @@
 const cacheName = 'mi-pwa-cache-v1';
 const staticAssets = [
     '/',
-    '/css/app.css',
-    '/js/app.js',
+    '/build/assets/app.css', // o el nombre completo si hay hash
+    '/build/assets/app.js',
     '/manifest.json',
-    // Otros recursos estáticos
 ];
 
 self.addEventListener('install', event => {
