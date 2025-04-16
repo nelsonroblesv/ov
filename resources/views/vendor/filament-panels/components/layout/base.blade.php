@@ -143,7 +143,7 @@
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_END, scopes: $livewire->getRenderHookScopes()) }}
         
-        <!--script>
+        <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                     navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
@@ -153,7 +153,7 @@
                     });
                 });
             }
-        </script-->  
+        </script>  
         
         <script>
             console.log("Script de geolocalización cargado...");
