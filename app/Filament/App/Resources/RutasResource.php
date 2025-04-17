@@ -2,11 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Enums\CfdiTypeEnum;
-use App\Enums\SociedadTypeEnum;
 use App\Filament\App\Resources\RutasResource\Pages;
-use App\Filament\App\Resources\RutasResource\RelationManagers;
-use App\Filament\Resources\PaquetesInicioResource;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
@@ -20,22 +16,15 @@ use App\Models\User;
 use App\Models\Zonas;
 use Carbon\Carbon;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
-use Filament\Actions\ActionGroup;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Components\Wizard;
-use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Notifications\Notification;
@@ -49,7 +38,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RutasResource extends Resource
 {
@@ -74,7 +62,6 @@ class RutasResource extends Resource
         return $table
             ->recordUrl(null)
             ->heading('Mis Rutas')
-            ->defaultSort('orden', 'asc')
             ->description('Estas son tus Rutas programadas para hoy ' . Carbon::now()->setTimezone('America/Merida')->locale('es')->translatedFormat('l d \d\e F Y') .
                 '. No olvides agregar un registro en la Bitacora durante cada visita.')
             ->modifyQueryUsing(function (Builder $query) {
@@ -110,7 +97,7 @@ class RutasResource extends Resource
                             ->whereDate('bitacora_customers.created_at', $date);
                     });
             })
-            ->defaultSort('orden', 'desc')
+            ->defaultSort('orden', 'ASC')
             ->headerActions([
 
                 /************ NUEVO CLIENTE  ****************/
