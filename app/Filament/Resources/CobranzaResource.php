@@ -48,6 +48,7 @@ class CobranzaResource extends Resource
                             ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                             ->pluck('name', 'id'))
                         ->searchable()
+                        ->disabledOn('edit')
                         ->preload()
                         ->required(),
 
@@ -55,8 +56,8 @@ class CobranzaResource extends Resource
                         ->label('Tipo de semana:')
                         ->placeholder('Selecciona el tipo de semana')
                         ->options([
-                            '0' => 'PAR',
-                            '1' => 'NON'
+                            0 => 'PAR',
+                            1 => 'NON'
                         ]),
 
                     TextInput::make('periodo')
