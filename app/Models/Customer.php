@@ -186,14 +186,19 @@ class Customer extends Model
     {
         return $this->belongsTo(PaquetesInicio::class, 'paquete_inicio_id');
     }
-    
+
     public function zona()
     {
         return $this->belongsTo(Zonas::class, 'zonas_id');
     }
-    
+
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = mb_convert_case(mb_strtolower($value, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+    }
+
+    public function cobranzas()
+    {
+        return $this->hasMany(Cobranza::class);
     }
 }

@@ -171,13 +171,26 @@ class PagosRelationManager extends RelationManager
                         ->label('Registrar Pago')
                         ->color('success')
                         ->icon('heroicon-o-banknotes')
-                        ->after(function ($record) {
-                            Notification::make()
-                                ->title('Pago registrado')
-                                ->body("Se registró un pago por \$" . number_format($record->monto, 2))
-                                ->success()
-                                ->icon('heroicon-o-banknotes')
-                                ->send();
+                        ->after(function ($livewire, $record) {
+                            $cobranza = $livewire->ownerRecord;
+                            $sumaPagos = $cobranza->pagos()->sum('monto');
+
+                            if ($sumaPagos >= $cobranza->saldo_total) {
+                                $cobranza->update(['is_pagada' => true]);
+                                Notification::make()
+                                    ->title('Cobranza pagada completamente')
+                                    ->body('La cobranza para el cliente ha sido cubierta en su totalidad.')
+                                    ->success()
+                                    ->send();
+                            } else {
+                                $cobranza->update(['is_pagada' => false]);
+                                Notification::make()
+                                    ->title('Pago registrado')
+                                    ->body("Se registró un pago por \$" . number_format($record->monto, 2))
+                                    ->success()
+                                    ->icon('heroicon-o-banknotes')
+                                    ->send();
+                            }
                         }),
                     Tables\Actions\EditAction::make()
                         ->successNotification(null)

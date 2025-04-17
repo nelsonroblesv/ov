@@ -44,9 +44,9 @@ class CobranzaResource extends Resource
                     Select::make('customer_id')
                         ->label('Cliente')
                         ->options(Customer::query()
-                        ->where('is_active', true)
-                        ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
-                        ->pluck('name', 'id'))
+                            ->where('is_active', true)
+                            ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                            ->pluck('name', 'id'))
                         ->searchable()
                         ->preload()
                         ->required(),
@@ -98,7 +98,7 @@ class CobranzaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->defaultSort('created_at', 'DESC')
+            ->defaultSort('created_at', 'DESC')
             ->columns([
                 // TextColumn::make('codigo')->label('Folio')->searchable(),
                 TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
@@ -122,17 +122,16 @@ class CobranzaResource extends Resource
                     ->money('MXN')
                     ->sortable(),
 
-                TextColumn::make('estado')->badge()
+                TextColumn::make('is_pagada')->badge()
                     ->label('Estado')
+                    ->formatStateUsing(fn(string $state): string => [
+                        0 => 'Pendiente',
+                        1 => 'Pagado',
+                    ][$state] ?? 'Otro')
+
                     ->colors([
-                        'success' => 'Pagado',
-                        'warning' => 'Pendiente',
-                        'danger'  => 'Vencido',
-                    ])
-                    ->icons([
-                        'heroicon-o-check-circle' => 'Pagado',
-                        'heroicon-o-exclamation-circle' => 'Pendiente',
-                        'heroicon-o-x-circle' => 'Vencido',
+                        'success' => 1,
+                        'warning' => 0,
                     ])
                     ->sortable(),
                 TextColumn::make('created_at')->date()->label('Fecha'),

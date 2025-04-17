@@ -11,6 +11,7 @@ use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
 use App\Models\Customer;
 use App\Models\GestionRutas;
+use App\Models\Pago;
 use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\Rutas;
@@ -866,12 +867,12 @@ class RutasResource extends Resource
                                             ->label('Periodo:')
                                             ->placeholder('Pj. P15')
                                             ->maxLength(3)
-                                           // ->required()
+                                            // ->required()
                                             ->autocapitalize(),
 
                                         Select::make('semana')
                                             ->label('Semana:')
-                                           // ->required()
+                                            // ->required()
                                             ->options([
                                                 'S1' => 'S1',
                                                 'S2' => 'S2',
@@ -894,7 +895,7 @@ class RutasResource extends Resource
                                         DateTimePicker::make('created_at')
                                             ->label('Fecha de pago')
                                             ->seconds(false)
-                                           // ->required()
+                                            // ->required()
                                             ->default(now()), // Coloca fecha y hora actual automáticamente
 
                                         TextInput::make('monto')
@@ -941,6 +942,13 @@ class RutasResource extends Resource
                                 'notas' => $data['notas'],
                                 'created_at' => Carbon::now()->setTimezone('America/Merida')
                             ]);
+
+                            if ($data['tipo_visita'] === 'EN' ||  $data['tipo_visita'] === 'RE') {
+                                Pago::create([
+                                    
+                                ]);
+                            }
+
 
                             $record->update(['visited' => 1]);
 
