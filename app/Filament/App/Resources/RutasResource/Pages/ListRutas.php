@@ -5,16 +5,18 @@ namespace App\Filament\App\Resources\RutasResource\Pages;
 use App\Filament\App\Resources\RutasResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class ListRutas extends ListRecords
 {
-    protected static string $resource = RutasResource::class;
-    protected static ?string $title = 'Mi Rutas para Hoy';
+  protected static string $resource = RutasResource::class;
+  protected static ?string $title = 'Mi Rutas para Hoy';
 
-    protected function getHeaderActions(): array
-    {
-        return [
-          //  Actions\CreateAction::make(),
-        ];
-    }
+  protected function getHeaderActions(): array
+  {
+    return [
+      //  Actions\CreateAction::make(),
+    ];
+  }
 }

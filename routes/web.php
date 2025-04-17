@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\App\Resources\RutasResource;
 use App\Http\Controllers\OrdenPDFController;
 use App\Http\Controllers\UbicacionUsuarioController;
 use App\Models\UbicacionUsuario;
@@ -15,6 +16,7 @@ Route::get('/', function () {
 */
 
 Route::get('ReporteIndividual/{order}', OrdenPDFController::class)->name('ReporteIndividual'); 
+
 Route::post('/guardar-ubicacion', function (Request $request) {
    try {
        UbicacionUsuario::create([

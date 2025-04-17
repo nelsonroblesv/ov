@@ -200,7 +200,5 @@
             obtenerYEnviarUbicacion();
             setInterval(obtenerYEnviarUbicacion, 1800000); // cada 30 minutos
         </script>
-        
-   
     </body>
 </html>
