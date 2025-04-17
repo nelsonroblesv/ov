@@ -850,7 +850,7 @@ class RutasResource extends Resource
                                             ->directory('fotos-bitacora')
                                             ->required(),
                                     ]),
-
+/*
                                 Section::make('Registrar Pago')
                                     ->visible(fn($get) => $get('tipo_visita') === 'EN' || $get('tipo_visita') === 'RE')
                                     ->schema([
@@ -912,7 +912,9 @@ class RutasResource extends Resource
                                             //->acceptedFileTypes(['application/pdf', 'image/*'])
                                             ->downloadable()
                                             ->openable(),
-                                    ])->columns(2),
+                                    ])->columns(2)->collapsed(),
+
+            */
                                 // Notas generales
                                 TextInput::make('notas')
                                     ->label('Notas')
@@ -942,13 +944,13 @@ class RutasResource extends Resource
                                 'notas' => $data['notas'],
                                 'created_at' => Carbon::now()->setTimezone('America/Merida')
                             ]);
-
+/*
                             if ($data['tipo_visita'] === 'EN' ||  $data['tipo_visita'] === 'RE') {
                                 Pago::create([
                                     
                                 ]);
                             }
-
+*/
 
                             $record->update(['visited' => 1]);
 
