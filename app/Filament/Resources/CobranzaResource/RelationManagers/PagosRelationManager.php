@@ -102,6 +102,11 @@ class PagosRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('Pagos')
+            ->heading('Registro de Pagos')
+            ->description('Este es el listado de Pagos realizados por cada Cobranza. Se detalla 
+            información  sobre el PERIODO, SEMANA,  TIPO DE PAGO, FECHA y MONTO. Recuerda que
+            se presenta el historial de Pagos que corresponden a la deuda de un Cliente determinado. 
+            Usa los controles para buscar por monto o bien los filtros disponibles. ')
             ->columns([
                 TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
                 TextColumn::make('semana')->label('Semana')->sortable()->alignCenter(),
@@ -121,12 +126,12 @@ class PagosRelationManager extends RelationManager
 
                 TextColumn::make('tipo_pago')
                     ->label('Tipo de pago')
-                    ->searchable()
                     ->sortable(),
 
                 TextColumn::make('monto')
                     ->label('Monto')
                     ->money('MXN')
+                    ->searchable()
                     ->summarize(Sum::make()->label('Total pagado')),
 
                 TextColumn::make('comprobante')

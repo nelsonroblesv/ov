@@ -103,8 +103,9 @@ class CobranzaResource extends Resource
             ->heading('Lista de Cobranzas')
             ->description('Esta es la lista de Saldos por cobrar. Usa los controles para ordenar por 
                             FECHA, TIPO DE SEMANA, SALDOS, o bien, usa la herramienta de filtro para obtener
-                            informacion mas detallada. Haz clic o toca sobre cada registro para consultar
-                            su historial de Pagos o realizar los correspondientes.')
+                            informacion mas detallada. En esta tabla se muestra el Saldo Total (deuda)
+                            así como también, el SALDO PENDIENTE.  Haz click o toca sobre cada registro 
+                            para consultar el historial o realizar los Pagos correspondientes.')
             ->columns([
                 // TextColumn::make('codigo')->label('Folio')->searchable(),
                // TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
