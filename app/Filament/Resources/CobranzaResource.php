@@ -102,8 +102,8 @@ class CobranzaResource extends Resource
             ->defaultSort('created_at', 'DESC')
             ->columns([
                 // TextColumn::make('codigo')->label('Folio')->searchable(),
-                TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
-                TextColumn::make('semana')->label('Semana')->sortable()->alignCenter(),
+               // TextColumn::make('periodo')->label('Periodo')->sortable()->alignCenter(),
+               // TextColumn::make('semana')->label('Semana')->sortable()->alignCenter(),
                 TextColumn::make('tipo_semana')->label('Tipo')->sortable()->badge()
                     ->formatStateUsing(fn(string $state): string => [
                         0 => 'PAR',
@@ -138,29 +138,21 @@ class CobranzaResource extends Resource
                 TextColumn::make('created_at')->date()->label('Fecha'),
             ])
             ->filters([
-                SelectFilter::make('periodo')
-                    ->label('Periodo')
-                    ->options(
-                        Cobranza::query()
-                            ->select('periodo')
-                            ->distinct()
-                            ->orderBy('periodo')
-                            ->pluck('periodo', 'periodo')
-                            ->toArray()
-                    )
-                    ->searchable()
+                SelectFilter::make('tipo_semana')
+                    ->label('Tipo Semana')
+                    ->options([
+                        0 => 'PAR',
+                        1 => 'NON',
+                       ])
                     ->placeholder('Todos'),
 
-                SelectFilter::make('semana')
-                    ->label('Semana')
+                    SelectFilter::make('is_pagada')
+                    ->label('Estatus')
                     ->options([
-                        'S1' => 'S1',
-                        'S2' => 'S2',
-                        'S3' => 'S3',
-                        'S4' => 'S4',
-                    ])
-                    ->searchable()
-                    ->placeholder('Todas')
+                        0 => 'Pendiente',
+                        1 => 'Pagado',
+                       ])
+                    ->placeholder('Todos'),
             ])
             ->actions([
                 //Tables\Actions\EditAction::make(),
