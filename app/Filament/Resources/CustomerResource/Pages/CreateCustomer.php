@@ -9,11 +9,10 @@ use App\Models\PaquetesInicio;
 use App\Models\User;
 use App\Models\Zonas;
 use Carbon\Carbon;
-use Filament\Actions;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
-use Stringable;
+
 
 class CreateCustomer extends CreateRecord
 {
@@ -31,13 +30,13 @@ class CreateCustomer extends CreateRecord
     {
         return Notification::make()
             ->title('Cliente registrado')
-            ->body('Se ha registrado un nuevo Cliente de forma exitosa.')
+            ->body('Nuevo Cliente registrado. Se agregó a la Ruta del Usuario y a 
+                        la sección de Cobranza. ')
             ->icon('heroicon-o-check-circle')
             ->iconColor('success')
             ->color('success');
     }
 
-   
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['created_at'] = Carbon::now()->setTimezone('America/Merida');
@@ -103,9 +102,9 @@ class CreateCustomer extends CreateRecord
 
         Notification::make()
             ->title('Nuevo Cliente Registrado')
-            ->body("El usuario {$username} ha registrado a {$customer->name} como 
+            ->body("{$username} ha registrado a {$customer->name} como 
                     nuevo Cliente {$clienteTipoTexto} y fue asignado a ". $assignTo.". 
-                    Se ha agregado a la Ruta del usuario.")
+                    Se ha agregado a la Ruta del usuario y al registro de Cobranzas.")
             ->icon('heroicon-o-user-plus')
             ->iconColor('info')
             ->color('info')

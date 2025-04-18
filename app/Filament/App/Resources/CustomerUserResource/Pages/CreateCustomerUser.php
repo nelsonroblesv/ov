@@ -3,14 +3,13 @@
 namespace App\Filament\App\Resources\CustomerUserResource\Pages;
 
 use App\Filament\App\Resources\CustomerUserResource;
-use App\Models\ClientesPaquetesInicio;
-use App\Models\Customer;
+use App\Models\Cobranza;
 use App\Models\GestionRutas;
 use App\Models\PaquetesInicio;
 use App\Models\User;
 use App\Models\Zonas;
 use Carbon\Carbon;
-use Filament\Actions;
+use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -29,8 +28,8 @@ class CreateCustomerUser extends CreateRecord
     {
         return Notification::make()
             ->title('Cliente registrado')
-            ->body('Se ha registrado un nuevo Cliente de forma exitosa.')
-            ->icon('heroicon-o-check')
+            ->body('Nuevo Cliente registrado. Se agregó a tu Ruta y a la sección de Cobranza. ')
+            ->icon('heroicon-o-user-plus')
             ->iconColor('success')
             ->color('success');
     }
@@ -48,8 +47,18 @@ class CreateCustomerUser extends CreateRecord
         $regionesId = $customer->regiones_id;
         $zonasId = $customer->zonas_id;
 
+        $assignTo = User::find($customer->user_id)->name;
+        $paquetePrecio = PaquetesInicio::find($customer->paquete_inicio_id)->precio;
+
         $zonas = Zonas::find($zonasId);
         $tipoSemana = $zonas->tipo_semana;
+
+        $valores = [
+            'PAR' => 0,
+            'NON' => 1,
+        ];
+        $tipoSemanaCobranza = $valores[$tipoSemana];
+
         $diaSemana = $zonas->dia_zona;
 
         if ($customer) {
@@ -62,6 +71,16 @@ class CreateCustomerUser extends CreateRecord
                 'customer_id' => $customer->id,
                 'created_at'  => now('America/Merida'),
                 'updated_at'  => now('America/Merida'),
+            ]);
+
+            Cobranza::insert([
+                'customer_id' => $customer->id, 
+                'created_by'     => auth()->id(),
+                'codigo' =>  'COV-' . strtoupper(Str::random(5)) . '-' . $customer->id,
+                'is_pagada' => 0,
+                'tipo_semana' => $tipoSemanaCobranza,
+                'saldo_total' => $paquetePrecio,
+                'created_at'  => now('America/Merida'),
             ]);
         }
 
@@ -80,7 +99,9 @@ class CreateCustomerUser extends CreateRecord
 
         Notification::make()
             ->title('Nuevo Cliente Registrado')
-            ->body("El usuario {$username} ha registrado a {$customer->name} como nuevo Cliente {$clienteTipoTexto}. Se ha agregado a la Ruta del usuario.")
+            ->body("{$username} ha registrado a {$customer->name} como 
+                    nuevo Cliente {$clienteTipoTexto} y fue asignado a ". $assignTo.". 
+                    Se ha agregado a la Ruta del usuario y al registro de Cobranzas.")
             ->icon('heroicon-o-user-plus')
             ->iconColor('info')
             ->color('info')

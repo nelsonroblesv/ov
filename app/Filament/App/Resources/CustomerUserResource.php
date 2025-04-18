@@ -58,7 +58,6 @@ class CustomerUserResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->unique(Customer::class, 'name', ignoreRecord: true)
-                                    ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
