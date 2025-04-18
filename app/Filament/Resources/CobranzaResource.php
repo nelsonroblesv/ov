@@ -59,7 +59,7 @@ class CobranzaResource extends Resource
                             0 => 'PAR',
                             1 => 'NON'
                         ]),
-
+/*
                     TextInput::make('periodo')
                         ->label('Periodo:')
                         ->placeholder('Pj. P15')
@@ -74,7 +74,7 @@ class CobranzaResource extends Resource
                             'S3' => 'S3',
                             'S4' => 'S4'
                         ]),
-
+*/
                     DateTimePicker::make('created_at')
                         ->label('Fecha de pago')
                         ->seconds(false)

@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cobranzas', function (Blueprint $table) {
-           // $table->string('periodo')->nullable();
-          //  $table->string('semana')->nullable();
-            $table->boolean('tipo_semana')->nullable();
+            $table->dropColumn(['periodo', 'semana']);
         });
     }
 
