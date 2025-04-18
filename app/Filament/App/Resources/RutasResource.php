@@ -5,6 +5,7 @@ namespace App\Filament\App\Resources;
 use App\Filament\App\Resources\RutasResource\Pages;
 use App\Models\AsignarTipoSemana;
 use App\Models\BitacoraCustomers;
+use App\Models\Cobranza;
 use App\Models\Customer;
 use App\Models\GestionRutas;
 use App\Models\Pago;
@@ -37,6 +38,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 
 class RutasResource extends Resource
@@ -119,7 +121,6 @@ class RutasResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->unique(table: Customer::class, column: 'name', ignoreRecord: true)
-                                    ->extraInputAttributes(['onInput' => 'this.value = this.value.toUpperCase()'])
                                     ->suffixIcon('heroicon-m-user'),
 
                                 TextInput::make('email')
@@ -374,12 +375,30 @@ class RutasResource extends Resource
                             'customer_id' => $customer->id,
                             'region_id' => $data['regiones_id'],
                             'zona_id' => $data['zonas_id'],
-                            'created_at' => Carbon::now()->setTimezone('America/Merida')->toDateString(),
+                            'created_at' => now('America/Merida'),
+                        ]);
+
+                        $valores = [
+                            'PAR' => 0,
+                            'NON' => 1,
+                        ];
+                        $tipoSemana = $valores[$semana];
+                        $paquetePrecio = PaquetesInicio::find($data['regiones_id'])->precio;
+
+                        Cobranza::insert([
+                            'customer_id' => $customer->id, 
+                            'created_by'     => auth()->id(),
+                            'codigo' =>  'COV-' . strtoupper(Str::random(5)) . '-' . $customer->id,
+                            'is_pagada' => 0,
+                            'tipo_semana' => $tipoSemana,
+                            'saldo_total' => $paquetePrecio,
+                            'created_at'  => now('America/Merida'),
                         ]);
 
                         Notification::make()
                             ->title('Cliente registrado')
-                            ->body('El Cliente ha sido registrado con éxito. Se agregó a la Ruta actual.')
+                            ->body('El Cliente ha sido registrado con éxito. Se agregó a la Ruta actual
+                                        y a la sección de Cobranza.')
                             ->icon('heroicon-o-user-plus')
                             ->color('success')
                             ->send();
