@@ -76,7 +76,7 @@ class CobranzaResource extends Resource
                         ]),
 */
                     DateTimePicker::make('created_at')
-                        ->label('Fecha de pago')
+                        ->label('Fecha de registro')
                         ->seconds(false)
                         ->required()
                         ->default(now()),
@@ -141,7 +141,7 @@ class CobranzaResource extends Resource
                         'warning' => 0,
                     ])
                     ->sortable(),
-                TextColumn::make('created_at')->date()->label('Fecha'),
+                TextColumn::make('created_at')->date()->label('Registrado'),
             ])
             ->filters([
                 SelectFilter::make('tipo_semana')

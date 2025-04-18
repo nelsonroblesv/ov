@@ -3,13 +3,17 @@
 namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
+use App\Models\Cobranza;
 use App\Models\GestionRutas;
+use App\Models\PaquetesInicio;
 use App\Models\User;
 use App\Models\Zonas;
 use Carbon\Carbon;
 use Filament\Actions;
+use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Stringable;
 
 class CreateCustomer extends CreateRecord
 {
@@ -48,9 +52,17 @@ class CreateCustomer extends CreateRecord
         $zonasId = $customer->zonas_id;
 
         $assignTo = User::find($customer->user_id)->name;
+        $paquetePrecio = PaquetesInicio::find($customer->paquete_inicio_id)->precio;
 
         $zonas = Zonas::find($zonasId);
         $tipoSemana = $zonas->tipo_semana;
+
+        $valores = [
+            'PAR' => 0,
+            'NON' => 1,
+        ];
+        $tipoSemanaCobranza = $valores[$tipoSemana];
+
         $diaSemana = $zonas->dia_zona;
 
         if ($customer) {
@@ -63,6 +75,16 @@ class CreateCustomer extends CreateRecord
                 'customer_id' => $customer->id,
                 'created_at'  => now('America/Merida'),
                 'updated_at'  => now('America/Merida'),
+            ]);
+
+            Cobranza::insert([
+                'customer_id' => $customer->id, 
+                'created_by'     => auth()->id(),
+                'codigo' =>  'COV-' . strtoupper(Str::random(5)) . '-' . $customer->id,
+                'is_pagada' => 0,
+                'tipo_semana' => $tipoSemanaCobranza,
+                'saldo_total' => $paquetePrecio,
+                'created_at'  => now('America/Merida'),
             ]);
         }
 
