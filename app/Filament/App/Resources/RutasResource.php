@@ -18,6 +18,7 @@ use App\Models\Zonas;
 use Carbon\Carbon;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
@@ -386,7 +387,7 @@ class RutasResource extends Resource
                         $paquetePrecio = PaquetesInicio::find($data['regiones_id'])->precio;
 
                         Cobranza::insert([
-                            'customer_id' => $customer->id, 
+                            'customer_id' => $customer->id,
                             'created_by'     => auth()->id(),
                             'codigo' =>  'COV-' . strtoupper(Str::random(5)) . '-' . $customer->id,
                             'is_pagada' => 0,
@@ -856,8 +857,9 @@ class RutasResource extends Resource
                                             ->directory('fotos-bitacora')
                                             ->required(),
                                     ]),
-/*
+
                                 Section::make('Registrar Pago')
+                                    ->description('Haz click o toca aqui para desplegar la información requerida.')
                                     ->visible(fn($get) => $get('tipo_visita') === 'EN' || $get('tipo_visita') === 'RE')
                                     ->schema([
                                         Select::make('tipo_semana')
@@ -920,7 +922,7 @@ class RutasResource extends Resource
                                             ->openable(),
                                     ])->columns(2)->collapsed(),
 
-            */
+
                                 // Notas generales
                                 TextInput::make('notas')
                                     ->label('Notas')
@@ -948,22 +950,45 @@ class RutasResource extends Resource
                                 'foto_stock_regular' => isset($data['foto_stock_regular']) ? (is_array($data['foto_stock_regular']) ? $data['foto_stock_regular'][0] : $data['foto_stock_regular']) : null,
                                 'foto_evidencia_prospectacion' => isset($data['foto_evidencia_prospectacion']) ? (is_array($data['foto_evidencia_prospectacion']) ? $data['foto_evidencia_prospectacion'][0] : $data['foto_evidencia_prospectacion']) : null,
                                 'notas' => $data['notas'],
-                                'created_at' => Carbon::now()->setTimezone('America/Merida')
+                                'created_at' => now('America/Merida')
                             ]);
-/*
+
                             if ($data['tipo_visita'] === 'EN' ||  $data['tipo_visita'] === 'RE') {
-                                Pago::create([
-                                    
-                                ]);
+                                $cobranza = Cobranza::query()
+                                    ->where('customer_id', $record->customer_id)
+                                    ->where('is_pagada', false)
+                                    ->first();
+
+                                if ($cobranza) {
+
+                                    Pago::insert([
+                                        'tipo_semana' => $data['tipo_semana'],
+                                        'periodo' =>  $data['periodo'],
+                                        'semana' =>  $data['semana'],
+                                        'tipo_pago' => $data['tipo_pago'],
+                                        'created_at' => $data['created_at'],
+                                        'monto' => $data['monto'],
+                                        'comprobante' => $data['comprobante'],
+                                        'cobranza_id' => $cobranza->id
+                                    ]);
+
+                                    Notification::make()
+                                        ->title('Registro guardado en la Bitácora. 
+                                            Se ha registrado un Pago por $' . $data['monto'])
+                                        ->success()
+                                        ->icon('heroicon-o-clipboard-document-list')
+                                        ->send();
+                                } else {
+                                    // No se encuentra ninguna cobranza activa
+                                    Notification::make()
+                                        ->title('Registro guardado en la Bitácora')
+                                        ->icon('heroicon-o-clipboard-document-list')
+                                        ->success()
+                                        ->send();
+                                }
                             }
-*/
 
                             $record->update(['visited' => 1]);
-
-                            Notification::make()
-                                ->title('Registro guardado en la Bitácora')
-                                ->success()
-                                ->send();
                         }),
 
                     Action::make('transferir')
