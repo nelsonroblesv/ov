@@ -989,6 +989,12 @@ class RutasResource extends Resource
                                         ->success()
                                         ->send();
                                     }
+                                }else{
+                                    Notification::make()
+                                    ->title('Registro guardado en la Bitácora')
+                                    ->icon('heroicon-o-clipboard-document-list')
+                                    ->success()
+                                    ->send();
                                 } 
                             }
 
