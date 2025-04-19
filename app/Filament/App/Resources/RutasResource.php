@@ -42,6 +42,8 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 
+use function PHPUnit\Framework\isEmpty;
+
 class RutasResource extends Resource
 {
     protected static ?string $model = GestionRutas::class;
@@ -960,32 +962,32 @@ class RutasResource extends Resource
                                     ->first();
 
                                 if ($cobranza) {
-
-                                    Pago::insert([
-                                        'tipo_semana' => $data['tipo_semana'],
-                                        'periodo' =>  $data['periodo'],
-                                        'semana' =>  $data['semana'],
-                                        'tipo_pago' => $data['tipo_pago'],
-                                        'created_at' => $data['created_at'],
-                                        'monto' => $data['monto'],
-                                        'comprobante' => $data['comprobante'],
-                                        'cobranza_id' => $cobranza->id
-                                    ]);
-
-                                    Notification::make()
-                                        ->title('Registro guardado en la Bitácora. 
-                                            Se ha registrado un Pago por $' . $data['monto'])
-                                        ->success()
-                                        ->icon('heroicon-o-clipboard-document-list')
-                                        ->send();
-                                } else {
-                                    // No se encuentra ninguna cobranza activa
-                                    Notification::make()
+                                    if(!empty($data['monto'])){
+                                        Pago::insert([
+                                            'tipo_semana' => $data['tipo_semana'],
+                                            'periodo' =>  $data['periodo'],
+                                            'semana' =>  $data['semana'],
+                                            'tipo_pago' => $data['tipo_pago'],
+                                            'created_at' => $data['created_at'],
+                                            'monto' => $data['monto'],
+                                            'comprobante' => $data['comprobante'],
+                                            'cobranza_id' => $cobranza->id
+                                        ]);
+    
+                                        Notification::make()
+                                            ->title('Registro guardado en la Bitácora. 
+                                                Se ha registrado un Pago por $' . $data['monto'])
+                                            ->success()
+                                            ->icon('heroicon-o-clipboard-document-list')
+                                            ->send();
+                                    }else{
+                                        Notification::make()
                                         ->title('Registro guardado en la Bitácora')
                                         ->icon('heroicon-o-clipboard-document-list')
                                         ->success()
                                         ->send();
-                                }
+                                    }
+                                } 
                             }
 
                             $record->update(['visited' => 1]);
