@@ -49,7 +49,7 @@ class MisRutasResource extends Resource
         ->modifyQueryUsing(function (Builder $query) {
             $query->join('customers', 'gestion_rutas.customer_id', '=', 'customers.id')
                   ->where('customers.is_active', true)
-                  ->where('gestion_rutas.user_id', auth()->user()->id) // Agregamos la condición del user_id
+                  ->where('gestion_rutas.user_id', auth()->user()->id) 
                   ->select('gestion_rutas.*');
         })
             ->recordUrl(null)
