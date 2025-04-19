@@ -46,9 +46,12 @@ class MisRutasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                $query->where('user_id', auth()->user()->id);
-            })
+        ->modifyQueryUsing(function (Builder $query) {
+            $query->join('customers', 'gestion_rutas.customer_id', '=', 'customers.id')
+                  ->where('customers.is_active', true)
+                  ->where('gestion_rutas.user_id', auth()->user()->id) // Agregamos la condición del user_id
+                  ->select('gestion_rutas.*');
+        })
             ->recordUrl(null)
             ->heading('Mis Rutas')
             ->description('Estas son tus Rutas. Utiliza los controles disponibles para organizar tus rutas.
