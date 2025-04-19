@@ -861,7 +861,9 @@ class RutasResource extends Resource
                                     ]),
 
                                 Section::make('Registrar Pago')
-                                    ->description('Haz click o toca aqui para desplegar la información requerida.')
+                                    ->description('Haz click o toca aqui para desplegar la información requerida. Si el cliente no
+                                    realiza el pago al momento de la visita, es importante dejar los campos vacíos. Si se registra un pago,
+                                    el monto no puede quedar vacío.')
                                     ->visible(fn($get) => $get('tipo_visita') === 'EN' || $get('tipo_visita') === 'RE')
                                     ->schema([
                                         Select::make('tipo_semana')
