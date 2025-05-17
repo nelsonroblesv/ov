@@ -87,13 +87,21 @@ class PaqueteGuiasResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('created_at')
-                    ->label('Fecha de Registro'),
+                    ->label('Fecha de Registro')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('periodo')
-                    ->label('Periodo'),
+                    ->label('Periodo')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('semana')
-                    ->label('Semana'),
+                    ->label('Semana')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('num_semana')
-                    ->label('# Semana'),
+                    ->label('# Semana')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('regiones.name')
                     ->label('Región'),
                 TextColumn::make('estado')
@@ -108,7 +116,9 @@ class PaqueteGuiasResource extends Resource
                         'warning' => 'rev',
                         'danger' => 'fal',
                         'success' => 'com',
-                    ]),
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('users.name')
                     ->label('Registrado por'),
 
