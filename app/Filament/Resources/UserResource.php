@@ -283,7 +283,6 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 ToggleColumn::make('is_active')
                     ->label('Activo')
-                    ->boolean(),
             ])
             ->filters([
                 //
