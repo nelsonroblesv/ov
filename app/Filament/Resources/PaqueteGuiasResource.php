@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\GuiaRelationManagerResource\RelationManagers\GuiaRelationManager;
 use App\Filament\Resources\PaqueteGuiasResource\Pages;
 use App\Filament\Resources\PaqueteGuiasResource\RelationManagers;
+use App\Filament\Resources\PaqueteGuiasResource\RelationManagers\GuiasRelationManager;
 use App\Models\PaqueteGuias;
 use App\Models\Regiones;
 use Carbon\Carbon;
@@ -139,7 +141,7 @@ class PaqueteGuiasResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           GuiasRelationManager::class
         ];
     }
 
