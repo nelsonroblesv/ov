@@ -11,14 +11,14 @@ class Guia extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'paquete_guia_id',
+        'paquete_guias_id',
         'numero_guia',
         'estado',
     ];
 
     public function paquete()
     {
-        return $this->belongsTo(PaqueteGuia::class, 'paquete_guia_id');
+        return $this->belongsTo(PaqueteGuias::class, 'paquete_guias_id');
     }
 
     public function incidencias()
