@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::get('ReporteIndividual/{order}', OrdenPDFController::class)->name('ReporteIndividual'); 
 
+/*
 Route::post('/guardar-ubicacion', function (Request $request) {
    try {
        UbicacionUsuario::create([
@@ -32,3 +33,4 @@ Route::post('/guardar-ubicacion', function (Request $request) {
        return response()->json(['status' => 'error', 'message' => 'Error al guardar ubicación'], 500);
    }
 });
+*/
