@@ -10,7 +10,10 @@ class ListPaqueteGuias extends ListRecords
 {
     protected static string $resource = PaqueteGuiasResource::class;
 <<<<<<< HEAD
+<<<<<<< HEAD
     protected static ?string $title = 'Paquetes de Guías';
+=======
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 =======
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 
@@ -19,6 +22,7 @@ class ListPaqueteGuias extends ListRecords
         return [
             Actions\CreateAction::make()
 <<<<<<< HEAD
+<<<<<<< HEAD
             ->label('Registrar Paquete de Guías')
                 ->icon('heroicon-o-archive-box-arrow-down')
                 ->color('success')
@@ -26,9 +30,14 @@ class ListPaqueteGuias extends ListRecords
     }
 }
 =======
+=======
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
             ->label('Registrar Paquete de Guias')
             ->icon('heroicon-o-archive-box')
         ];
     }
 }
+<<<<<<< HEAD
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
+=======
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0

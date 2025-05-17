@@ -4,9 +4,13 @@ namespace App\Filament\Resources\PaqueteGuiasResource\Pages;
 
 use App\Filament\Resources\PaqueteGuiasResource;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Notifications\Notification;
+=======
+use Filament\Actions;
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 =======
 use Filament\Actions;
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
@@ -15,6 +19,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePaqueteGuias extends CreateRecord
 {
     protected static string $resource = PaqueteGuiasResource::class;
+<<<<<<< HEAD
 <<<<<<< HEAD
     protected static ?string $title = 'Nuevo Paquete de Guías';
 
@@ -29,6 +34,9 @@ class CreatePaqueteGuias extends CreateRecord
             ->color('success');
     }
 }
+=======
+}
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 =======
 }
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0

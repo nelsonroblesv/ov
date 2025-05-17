@@ -5,7 +5,10 @@ namespace App\Filament\Resources\PaqueteGuiasResource\Pages;
 use App\Filament\Resources\PaqueteGuiasResource;
 use Filament\Actions;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use Filament\Notifications\Notification;
+=======
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 =======
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 use Filament\Resources\Pages\EditRecord;
@@ -13,6 +16,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditPaqueteGuias extends EditRecord
 {
     protected static string $resource = PaqueteGuiasResource::class;
+<<<<<<< HEAD
 <<<<<<< HEAD
     protected static ?string $title = 'Editar Paquete de Guías';
 
@@ -33,10 +37,13 @@ class EditPaqueteGuias extends EditRecord
     }
 =======
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
+=======
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 
     protected function getHeaderActions(): array
     {
         return [
+<<<<<<< HEAD
 <<<<<<< HEAD
             Actions\DeleteAction::make()
                 ->label('Borrar'),
@@ -45,8 +52,13 @@ class EditPaqueteGuias extends EditRecord
 
 }
 =======
+=======
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
             Actions\DeleteAction::make(),
         ];
     }
 }
+<<<<<<< HEAD
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
+=======
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0

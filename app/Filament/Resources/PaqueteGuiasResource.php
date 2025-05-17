@@ -142,7 +142,11 @@ class PaqueteGuiasResource extends Resource
     {
         return [
 <<<<<<< HEAD
+<<<<<<< HEAD
            
+=======
+           GuiasRelationManager::class
+>>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
 =======
            GuiasRelationManager::class
 >>>>>>> 0df0e650220aea14651197eb698b625ff483f8b0
