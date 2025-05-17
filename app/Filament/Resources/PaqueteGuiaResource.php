@@ -47,15 +47,11 @@ class PaqueteGuiaResource extends Resource
 
                     Select::make('regiones_id')
                         ->label('Región')
-                        //  ->required()
+                        ->placeholder('Seleccione una región')
+                        ->required()
                         ->options(
-                            fn() =>
-                            Regiones::whereIn('id', function ($query) {
-                                $query->select('regiones_id')
-                                    ->from('zonas');
-                            })->pluck('name', 'id')
+                            Regiones::query()->where('is_active', true)->pluck('name', 'id')
                         )
-                        ->reactive(),
                 ])->columns(2)
             ]);
     }
