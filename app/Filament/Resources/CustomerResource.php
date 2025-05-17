@@ -77,6 +77,7 @@ class CustomerResource extends Resource
                                         User::whereIn('id', function ($query) {
                                             $query->select('id')
                                                 ->from('users')
+                                                ->where('is_active', true)
                                                 ->where('role', 'Vendedor')
                                                 ->orWhere('username', 'OArrocha')
                                                 ->orderBy('name', 'DESC');
