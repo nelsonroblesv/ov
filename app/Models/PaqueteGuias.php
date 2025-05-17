@@ -14,6 +14,7 @@ class PaqueteGuias extends Model
     protected $fillable = [
         'periodo',
         'semana',
+        'num_semana',
         'regiones_id',
         'estado',
         'created_at',

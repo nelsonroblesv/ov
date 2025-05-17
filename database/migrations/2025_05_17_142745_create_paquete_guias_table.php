@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('periodo');
             $table->string('semana');
+            $table->string('num_semana');
             $table->foreignId('regiones_id');
-            $table->enum('estado', ['pendiente', 'completado'])->default('pendiente');
+            $table->enum('estado', ['rev', 'fal', 'com'])->default('rev');
             $table->foreignId('user_id');
             $table->timestamps();
             $table->softDeletes();
