@@ -91,7 +91,9 @@ class ZonasResource extends Resource
                         ->multiple()
                         ->label('Asignar a:')
                         ->placeholder('Seleccione un Usuario')
-                        ->relationship('users', 'name')
+                        ->options(
+                            User::query()->where('is_active', true)->pluck('name', 'id')
+                        )
                         ->required()
                         ->preload()
                 ])->columns(2)
