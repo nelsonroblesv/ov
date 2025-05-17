@@ -32,6 +32,7 @@ use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 
 class UserResource extends Resource
 {
@@ -280,9 +281,8 @@ class UserResource extends Resource
                     ->sortable()
                     ->label('Teléfono Empresa')
                     ->toggleable(isToggledHiddenByDefault: true),
-                IconColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label('Activo')
-                    ->sortable()
                     ->boolean(),
             ])
             ->filters([

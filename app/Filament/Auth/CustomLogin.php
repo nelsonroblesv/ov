@@ -40,6 +40,7 @@ class CustomLogin extends BaseAuth
         return [
             $login_type => $data['login'],
             'password'  => $data['password'],
+            'is_active' => true,
         ];
     }
 
