@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\PDF;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -142,7 +143,12 @@ class HistorialPedidosResource extends Resource
                         ->directory('notas_venta')
                         ->openable()
                         ->downloadable()
-                        ->columnSpanFull()
+                        ->columnSpanFull(),
+
+                    Hidden::make('registrado_por')->default(fn() => auth()->id()),
+                    Hidden::make('solicitado_por')->default(fn() => auth()->id()),
+
+
                 ])->columns(2),
 
             ]);

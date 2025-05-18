@@ -59,22 +59,7 @@ class CobranzaResource extends Resource
                             0 => 'PAR',
                             1 => 'NON'
                         ]),
-/*
-                    TextInput::make('periodo')
-                        ->label('Periodo:')
-                        ->placeholder('Pj. P15')
-                        ->maxLength(3)
-                        ->autocapitalize(),
 
-                    Select::make('semana')
-                        ->label('Semana:')
-                        ->options([
-                            'S1' => 'S1',
-                            'S2' => 'S2',
-                            'S3' => 'S3',
-                            'S4' => 'S4'
-                        ]),
-*/
                     DateTimePicker::make('created_at')
                         ->label('Fecha de registro')
                         ->seconds(false)
