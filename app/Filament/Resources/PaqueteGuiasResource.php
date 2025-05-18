@@ -10,6 +10,7 @@ use App\Models\PaqueteGuias;
 use App\Models\Regiones;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -70,6 +71,9 @@ class PaqueteGuiasResource extends Resource
                         ->options(
                             Regiones::query()->where('is_active', true)->pluck('name', 'id')
                         ),
+                    DatePicker::make('created_at')
+                        ->label('Fecha de registro')
+                        ->default(now()),
 
                     Select::make('estado')
                         ->label('Estado del paquete')
