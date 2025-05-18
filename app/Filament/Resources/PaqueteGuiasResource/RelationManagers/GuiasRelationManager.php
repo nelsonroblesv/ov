@@ -28,6 +28,7 @@ class GuiasRelationManager extends RelationManager
             ->schema([
                 Section::make('Información de la Guía')->schema([
                     TextInput::make('numero_guia')
+                        ->unique(ignoreRecord: true)
                         ->required()
                         ->maxLength(255),
                 ])
@@ -70,7 +71,6 @@ class GuiasRelationManager extends RelationManager
                             ->iconColor('success')
                             ->color('success')
                     ),
-
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -94,17 +94,17 @@ class GuiasRelationManager extends RelationManager
                             ->title('Guía eliminada')
                             ->body('La Guía ha sido eliminada del paquete.')
                             ->icon('heroicon-o-trash')
-                            ->iconColor('danger')
-                            ->color('danger')
+                            ->iconColor('success')
+                            ->color('success')
                     )
                     ->modalHeading('Borrar Guía')
                     ->modalDescription('Estas seguro que deseas eliminar esta Guía? Esta acción no se puede deshacer.')
                     ->modalSubmitActionLabel('Si, eliminar'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+               /* Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                ]),*/
             ]);
     }
 }
