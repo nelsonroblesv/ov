@@ -121,7 +121,7 @@ class PaymentResource extends Resource
                             Forms\Components\FileUpload::make('voucher')
                                 ->label('Comprobante de pago')
                                 ->image()
-                                ->required()
+                                //->required()
                                 ->imageEditor()
                                 ->directory('invoices-images'),
 
