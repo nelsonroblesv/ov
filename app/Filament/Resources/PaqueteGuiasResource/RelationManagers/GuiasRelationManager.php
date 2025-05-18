@@ -8,6 +8,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Count;
@@ -58,16 +59,47 @@ class GuiasRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Agregar Guia')
-                    ->modalHeading(('Agregar Guia')),
-                  
+                    ->icon('heroicon-o-document-check')
+                    ->modalHeading(('Agregar Guia'))
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Guía registrada correctamente')
+                            ->body('La Guía ha sido agregada al paquete actual.')
+                            ->icon('heroicon-o-document-check')
+                            ->iconColor('success')
+                            ->color('success')
+                    ),
+
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Editar')
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Guía actualizada correctamente')
+                            ->body('La Guía ha sido actualizada.')
+                            ->icon('heroicon-o-check-circle')
+                            ->iconColor('success')
+                            ->color('success')
+                    )
+                    ->modalHeading('Editar Guía'),
+
                 Tables\Actions\DeleteAction::make()
                     ->label('Eliminar')
-                    ->modalHeading(('Eliminar Guia'))
-                    ->modalDescription('Estás seguro que deseas eliminar esta Guia? Esta acción no se puede deshacer.'),
-                    
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Guía eliminada')
+                            ->body('La Guía ha sido eliminada del paquete.')
+                            ->icon('heroicon-o-trash')
+                            ->iconColor('danger')
+                            ->color('danger')
+                    )
+                    ->modalHeading('Borrar Guía')
+                    ->modalDescription('Estas seguro que deseas eliminar esta Guía? Esta acción no se puede deshacer.')
+                    ->modalSubmitActionLabel('Si, eliminar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
