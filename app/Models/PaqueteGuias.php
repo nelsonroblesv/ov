@@ -24,4 +24,9 @@ class PaqueteGuias extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function guias()
+    {
+        return $this->hasMany(Guias::class);
+    }
 }

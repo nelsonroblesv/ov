@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('guias', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('paquete_guias_id')->constrained()->onDelete('cascade');
+            $table->string('numero_guia')->nullable();
+            $table->boolean('recibido')->default(false);
+            $table->longText('foto_caja')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
