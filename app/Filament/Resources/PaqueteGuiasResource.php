@@ -89,18 +89,31 @@ class PaqueteGuiasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->withCount([
+                        'guias as guias_entregadas_count' => fn(Builder $q) =>
+                        $q->where('recibido', true),
+                        'guias as guias_pendientes_count' => fn(Builder $q) =>
+                        $q->where('recibido', false),
+                    ]);
+            })
             ->defaultSort('created_at', 'desc')
             ->columns([
+
                 TextColumn::make('created_at')
                     ->label('Fecha de registro')
-                    ->dateTime()
+                    ->date()
                     ->sortable(),
                 TextColumn::make('periodo')
-                    ->searchable(),
+                    ->searchable()
+                    ->alignCenter(),
                 TextColumn::make('semana')
-                    ->searchable(),
+                    ->searchable()
+                    ->alignCenter(),
                 TextColumn::make('num_semana')
-                    ->searchable(),
+                    ->searchable()
+                    ->alignCenter(),
                 TextColumn::make('region.name')
                     ->label('Región')
                     ->numeric()
@@ -118,10 +131,21 @@ class PaqueteGuiasResource extends Resource
                         'danger' => 'fal',
                         'success' => 'com'
                     ]),
+                TextColumn::make('guias_entregadas_count')
+                    ->label('Entregadas')
+                    ->sortable()
+                    ->alignCenter(),
+
+                TextColumn::make('guias_pendientes_count')
+                    ->label('Pendientes')
+                    ->sortable()
+                    ->alignCenter(),
+
                 TextColumn::make('user.name')
                     ->label('Registrado por')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault:true),
 
             ])
             ->filters([

@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -56,17 +57,7 @@ class GuiasRelationManager extends RelationManager
             ->recordTitleAttribute('numero_guia')
             ->columns([
                 TextColumn::make('numero_guia')->label('Número de guía'),
-                TextColumn::make('recibido')->badge()
-                    ->formatStateUsing(fn(string $state): string => [
-                        '0' => 'No recibido',
-                        '1' => 'Recibido'
-                    ][$state] ?? 'Otro')
-                    ->colors([
-                        'danger' => 0,
-                        'success' => 1,
-                    ])
-                    ->sortable()
-                    ->summarize(Count::make()->label('Total de Cajas')),
+                ToggleColumn::make('recibido')->summarize(Count::make()->label('Total de Cajas')),
                 TextColumn::make('created_at')->label('Fecha de registro')->dateTime(),
             ])
             ->filters([
