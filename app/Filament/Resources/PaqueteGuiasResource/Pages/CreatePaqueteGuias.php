@@ -12,12 +12,12 @@ class CreatePaqueteGuias extends CreateRecord
     protected static string $resource = PaqueteGuiasResource::class;
     protected static ?string $title = 'Registrar Nuevo Paquete de Guias';
 
-
+/*
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
-
+*/
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
