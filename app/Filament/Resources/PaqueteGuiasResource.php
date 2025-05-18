@@ -15,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -81,6 +82,7 @@ class PaqueteGuiasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Fecha de registro')
@@ -119,7 +121,12 @@ class PaqueteGuiasResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->modalHeading('Borrar Paquete de Guias')
+                        ->modalDescription('Estás seguro que deseas eliminar este Paquete de Guias? Esta acción no se puede deshacer.'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
