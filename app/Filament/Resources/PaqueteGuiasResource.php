@@ -25,7 +25,11 @@ class PaqueteGuiasResource extends Resource
 {
     protected static ?string $model = PaqueteGuias::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationGroup = 'Logistica';
+    protected static ?string $navigationLabel = 'Paquete de Guias';
+    protected static ?string $breadcrumb = "Paquete de Guias";
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
@@ -111,6 +115,7 @@ class PaqueteGuiasResource extends Resource
                         'danger' => 'fal',
                         'success' => 'com'
                     ]),
+                TextColumn::make('')->label('# Guias'),   
                 TextColumn::make('user.name')
                     ->label('Registrado por')
                     ->numeric()

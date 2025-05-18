@@ -22,7 +22,7 @@ class CreatePaqueteGuias extends CreateRecord
     {
         return Notification::make()
             ->title('Paquete de Guias registrado')
-            ->body('Se ha registrado un nuevo Paquete de Guias de forma exitosa.')
+            ->body('Se ha registrado un nuevo Paquete de Guias de forma exitosa. Ya puedes agregar guias a este paquete.')
             ->icon('heroicon-o-archive-box')
             ->iconColor('success')
             ->color('success');
