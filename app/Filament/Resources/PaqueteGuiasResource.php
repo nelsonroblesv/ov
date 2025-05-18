@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PaqueteGuiasResource\Pages;
 use App\Filament\Resources\PaqueteGuiasResource\RelationManagers;
 use App\Filament\Resources\PaqueteGuiasResource\RelationManagers\GuiasRelationManager;
+use App\Models\Guias;
 use App\Models\PaqueteGuias;
 use App\Models\Regiones;
 use Carbon\Carbon;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -116,8 +118,6 @@ class PaqueteGuiasResource extends Resource
                         'danger' => 'fal',
                         'success' => 'com'
                     ]),
-                 
-
                 TextColumn::make('user.name')
                     ->label('Registrado por')
                     ->numeric()

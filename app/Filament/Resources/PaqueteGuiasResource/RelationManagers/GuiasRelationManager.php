@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PaqueteGuiasResource\RelationManagers;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -29,9 +30,23 @@ class GuiasRelationManager extends RelationManager
                 Section::make('Información de la Guía')->schema([
                     TextInput::make('numero_guia')
                         ->unique(ignoreRecord: true)
+                        ->disabledOn('edit')
                         ->required()
                         ->maxLength(255),
-                ])
+
+                    Select::make('recibido')->label('Recibido')
+                        ->options([
+                            '0' => 'No recibido',
+                            '1' => 'Recibido'
+                        ])
+                        ->default('0')
+                        ->required(),
+
+                    FileUpload::make('foto_caja')
+                        ->label('Foto de la caja')
+                        ->directory('guias')
+                        ->columnSpanFull(),
+                ])->columns(2)
             ]);
     }
 
@@ -74,7 +89,7 @@ class GuiasRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Editar')
+                    ->label('Revisar')
                     ->successNotification(
                         Notification::make()
                             ->success()
