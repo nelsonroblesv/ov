@@ -58,28 +58,16 @@ class GuiasRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Agregar Guia')
-                    ->modalHeading(('Agregar Guia'))
-                /* ->form([
-                        TextInput::make('numero_guia')
-                            ->required()
-                            ->maxLength(255),
-                        FileUpload::make('foto_caja')
-                            ->label('Foto de la caja')
-                            ->image()
-                            ->required()
-                            ->maxSize(1024)
-                            ->acceptedFileTypes(['image/*'])
-                            ->directory('guias')
-                            ->preserveFilenames(),
-                        Toggle::make('recibido')
-                            ->label('Recibido')
-                            ->default(false)
-                    ])->modalHeading('Agregar Guia'
-            */
+                    ->modalHeading(('Agregar Guia')),
+                  
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Eliminar')
+                    ->modalHeading(('Eliminar Guia'))
+                    ->modalDescription('Estás seguro que deseas eliminar esta Guia? Esta acción no se puede deshacer.'),
+                    
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
