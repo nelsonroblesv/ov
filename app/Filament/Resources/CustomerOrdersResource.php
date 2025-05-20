@@ -23,8 +23,8 @@ class CustomerOrdersResource extends Resource
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Pedidos de Clientes';
-    protected static ?string $breadcrumb = "Pedidos de Clientes";
+    protected static ?string $navigationLabel = 'Gestionar Pedidos';
+    protected static ?string $breadcrumb = "Gestionar Pedidos";
 
     public static function form(Form $form): Form
     {
@@ -41,17 +41,30 @@ class CustomerOrdersResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
             ->modifyQueryUsing(function (Builder $query) {
-                $query->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
-                    ->where('is_active', true)
-                    ->orderBy('name', 'asc');
+                $query
+                    ->withSum(
+                        ['orders as monto_total' => function (Builder $q) {
+                            $q->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                                ->where('is_active', true);
+                        }],
+                        'grand_total'
+                    );
             })
 
-
+            ->defaultSort('created_at', 'asc')
             ->columns([
                 TextColumn::make('name')
                     ->label('Cliente')
-                    ->searchable()
+                    ->searchable(),
+
+                TextColumn::make('monto_total')
+                    ->label('Saldo Total')
+                    ->badge()
+                    ->formatStateUsing(fn(string $state) =>'$ '.number_format($state, 2))
+                    ->sortable()
+                    ->alignCenter(),
             ])
             ->filters([
                 //

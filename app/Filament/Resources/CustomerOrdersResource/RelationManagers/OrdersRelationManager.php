@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\CustomerOrdersResource\RelationManagers;
 
+use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -33,6 +35,7 @@ class OrdersRelationManager extends RelationManager
                 Section::make('Detalles')->schema([
                     TextInput::make('number')
                         ->label('Numero de Pedido')
+                        ->default('POV-' . random_int(100000, 9999999))
                         ->required()
                         ->maxLength(255)
                         ->suffixIcon('heroicon-m-hashtag')
@@ -91,12 +94,13 @@ class OrdersRelationManager extends RelationManager
 
                     DatePicker::make('created_at')
                         ->label('Fecha')
+                        ->default(Carbon::now())
                         ->required()
                         ->native(),
 
                     DatePicker::make('fecha_liquidacion')
                         ->label('Fecha de liquidación')
-                        ->required()
+                        ->default(Carbon::now()->addDays(15))
                         ->native(),
 
                     TextInput::make('notes')
@@ -105,11 +109,22 @@ class OrdersRelationManager extends RelationManager
                         ->suffixIcon('heroicon-m-pencil-square'),
 
                     TextInput::make('grand_total')
-                        ->label('Monto')
+                        ->label('Importe')
                         ->required()
                         ->numeric()
+                        ->minValue(1)
                         ->placeholder('0.00')
                         ->suffixIcon('heroicon-m-currency-dollar'),
+
+                    Select::make('solicitado_por')
+                        ->required()
+                        ->label('Solicitado por:')
+                        ->options(
+                            User::query()
+                                    ->where('is_active', true)
+                                    ->where('role', 'Vendedor')
+                                    ->pluck('name', 'id')
+                        ),
 
                     FileUpload::make('notas_venta')
                         ->label('Notas de Venta')
@@ -121,7 +136,7 @@ class OrdersRelationManager extends RelationManager
                         ->columnSpanFull(),
 
                     Hidden::make('registrado_por')->default(fn() => auth()->id()),
-                    Hidden::make('solicitado_por')->default(fn() => auth()->id()),
+
                 ])->columns(2)
             ]);
     }
@@ -131,11 +146,28 @@ class OrdersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('number')
             ->columns([
-                TextColumn::make('number'),
-                TextColumn::make('status'),
-                TextColumn::make('grand_total')
+                TextColumn::make('number')->label('# Pedido'),
+                TextColumn::make('grand_total')->label('Importe')
                     ->summarize(Sum::make()->label('Total'))
-                    ->prefix('$')
+                    ->prefix('$'),
+                TextColumn::make('status')->label('Estatus')->badge()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PEN' => 'Pendiente',
+                        'COM' => 'Completo',
+                        'REC' => 'Rechazado',
+                        'REU' => 'Reubicar',
+                        'DEV' => 'Devuelto Parcial',
+                        'SIG' => 'Siguiente Visita'
+                    ][$state] ?? 'Otro')
+                    ->colors([
+                        'warning' => 'PEN',
+                        'success' => 'COM',
+                        'danger' => 'REC',
+                        'info' => 'REU',
+                        'primary' => 'DEV',
+                        'secondary' => 'SIG'
+                    ]),
+                 TextColumn::make('solicitador.name')->label('Solicitado')
             ])
             ->filters([
                 //
