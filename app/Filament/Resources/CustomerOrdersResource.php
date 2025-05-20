@@ -52,13 +52,12 @@ class CustomerOrdersResource extends Resource
                         'grand_total'
                     );
             })
-
-            ->defaultSort('created_at', 'asc')
+            ->defaultSort('monto_total', 'DESC')
             ->columns([
                 TextColumn::make('name')
                     ->label('Cliente')
                     ->searchable(),
-
+        
                 TextColumn::make('monto_total')
                     ->label('Saldo Total')
                     ->badge()
