@@ -15,9 +15,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -121,9 +123,9 @@ class OrdersRelationManager extends RelationManager
                         ->label('Solicitado por:')
                         ->options(
                             User::query()
-                                    ->where('is_active', true)
-                                    ->where('role', 'Vendedor')
-                                    ->pluck('name', 'id')
+                                ->where('is_active', true)
+                                ->where('role', 'Vendedor')
+                                ->pluck('name', 'id')
                         ),
 
                     FileUpload::make('notas_venta')
@@ -168,22 +170,58 @@ class OrdersRelationManager extends RelationManager
                         'primary' => 'DEV',
                         'secondary' => 'SIG'
                     ]),
-                 TextColumn::make('solicitador.name')->label('Vendedor')
+                TextColumn::make('created_at')->label('Fecha')->date(),
+                TextColumn::make('solicitador.name')->label('Vendedor')
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Registrar Pedido'),
+                    ->label('Registrar Pedido')
+                     ->modalHeading('Nuevo Pedido de Cliente')
+                    ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Pedido registrado.')
+                                ->body('Se ha registrado un nuevo Pedido al cliente de forma correcta.')
+                                ->icon('heroicon-o-check-circle')
+                                ->iconColor('success')
+                                ->color('success')
+                        ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->label('Editar')
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Pedido actualizado')
+                                ->body('La información del Pedido ha sido actualizada.')
+                                ->icon('heroicon-o-check-circle')
+                                ->iconColor('success')
+                                ->color('success')
+                        ),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Eliminar')
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Pedido eliminado')
+                                ->body('El Pedido del cliente ha sido eliminado.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('success')
+                                ->color('success')
+                        )
+                        ->modalHeading('Borrar Pedido de Cliente')
+                        ->modalDescription('Estas seguro que deseas eliminar este Pedido? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                   // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
