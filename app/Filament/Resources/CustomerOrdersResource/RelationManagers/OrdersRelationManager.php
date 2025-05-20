@@ -145,6 +145,7 @@ class OrdersRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('number')
+            ->heading('Pedidos del Cliente')
             ->columns([
                 TextColumn::make('number')->label('# Pedido'),
                 TextColumn::make('grand_total')->label('Importe')
@@ -167,7 +168,7 @@ class OrdersRelationManager extends RelationManager
                         'primary' => 'DEV',
                         'secondary' => 'SIG'
                     ]),
-                 TextColumn::make('solicitador.name')->label('Solicitado')
+                 TextColumn::make('solicitador.name')->label('Vendedor')
             ])
             ->filters([
                 //

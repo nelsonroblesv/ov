@@ -57,11 +57,21 @@ class CustomerOrdersResource extends Resource
                 TextColumn::make('name')
                     ->label('Cliente')
                     ->searchable(),
-        
+
                 TextColumn::make('monto_total')
                     ->label('Saldo Total')
                     ->badge()
-                    ->formatStateUsing(fn(string $state) =>'$ '.number_format($state, 2))
+                    ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))
+                    ->color(function ($state) {
+                        if ($state == 0.00) {
+                            return 'info';      // Azul
+                        } elseif ($state > 0.00) {
+                            return 'warning';   // Amarillo
+                        } elseif ($state < 0.00) {
+                            return 'success';   // Verde
+                        }
+                        return null;
+                    })
                     ->sortable()
                     ->alignCenter(),
             ])
