@@ -180,7 +180,7 @@ class OrdersRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Registrar Pedido')
+                    ->label('Agregar Pedido')
                      ->modalHeading('Nuevo Pedido de Cliente')
                     ->successNotification(
                             Notification::make()
