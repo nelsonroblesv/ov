@@ -26,7 +26,7 @@ class ListCustomers extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            CustomersMap::class,
+            //CustomersMap::class,
         ];
     }
 }

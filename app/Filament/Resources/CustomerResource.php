@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
+use App\Filament\Resources\CustomerOrdersResource\RelationManagers\OrdersRelationManager;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
 use App\Models\PaquetesInicio;
@@ -30,6 +31,7 @@ use Filament\Notifications\Collection;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -299,6 +301,7 @@ class CustomerResource extends Resource
                                 ->disabled(fn(callable $get) => empty($get('regiones_id'))),
 
                             Section::make('Fotos del establecimiento')
+                                ->collapsed()
                                 ->schema([
                                     FileUpload::make('front_image')
                                         ->label('Foto Exterior')
@@ -386,16 +389,101 @@ class CustomerResource extends Resource
     public static function table(Table $table): Table
     {
         // Hide table from Resource
-        return $table
-            ->columns([])
+        //return $table
+        /*  ->columns([])
             ->content(null)
             ->paginated(false);
+            */
+        return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                    ->where('is_active', true);
+            })
+            ->heading('Lista de Clientes')
+            ->description('Clientes registrados en el sistema.')
+            ->defaultSort('name', 'ASC')
+            ->columns([
+                TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
+                TextColumn::make('altaUser.name')->label('Registrado por:')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.name')->label('Asignado a:')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('regiones.name')->label('Region')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('tipo_cliente')->label('Tipo')->badge()->toggleable(isToggledHiddenByDefault: false)
+                    ->colors([
+                        'success' => 'PV',
+                        'danger' => 'RD',
+                        'custom_black' => 'BK',
+                        'custom_gray' => 'SL'
+                    ])
+                    ->icons([
+                        'heroicon-o-building-storefront' => 'PV',
+                        'heroicon-o-user' => 'RD',
+                        'heroicon-o-star' => 'BK',
+                        'heroicon-o-sparkles' => 'SL'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PV' => 'Punto Venta',
+                        'RD' => 'Red',
+                        'BK' => 'Black',
+                        'SL' => 'Silver',
+                    ][$state] ?? 'Otro'),
+                TextColumn::make('paquete_inicio.nombre')->label('Paquete Inicio')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('simbolo')->label('Simbolo')->badge()->toggleable(isToggledHiddenByDefault: false)
+                    ->icons([
+                        'heroicon-o-scissors' => 'SB',
+                        'heroicon-o-building-storefront' => 'BB',
+                        'heroicon-o-hand-raised' => 'UN',
+                        'heroicon-o-rocket-launch' => 'OS',
+                        'heroicon-o-x-mark' => 'CR',
+                        'heroicon-o-map-pin' => 'UB',
+                        'heroicon-o-exclamation-triangle' => 'NC',
+                        'heroicon-o-sparkles' => 'EU',
+                        'heroicon-o-home-modern' => 'SYB'
+                    ])
+                    ->color('grey')
+                    ->formatStateUsing(fn(string $state): string => [
+                        'SB' => 'Salón de Belleza',
+                        'SYB' => 'Salón y Barbería',
+                        'EU' => 'Estética Unisex',
+                        'BB' => 'Barbería',
+                        'UN' => 'Salón de Uñas',
+                        'OS' => 'OSBERTH',
+                        'CR' => 'Cliente Pedido Rechazado',
+                        'UB' => 'Ubicación en Grupo',
+                        'NC' => 'Ya no compran'
+                    ][$state] ?? 'Otro'),
+                TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                ToggleColumn::make('is_active')->label('Activo')
+            ])
+
+            ->filters([])
+
+            ->actions([
+                 ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                    ->label('Detalles')
+                    ->color('warning'),
+                Tables\Actions\EditAction::make()
+                     ->label('Editar')
+                     ->color('info'),
+                 ])
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    // Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+             OrdersRelationManager::class
         ];
     }
     public static function getPages(): array

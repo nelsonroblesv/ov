@@ -41,7 +41,6 @@ class CustomerOrdersResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-
             ->modifyQueryUsing(function (Builder $query) {
                 $query
                  ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
@@ -55,7 +54,7 @@ class CustomerOrdersResource extends Resource
                 TextColumn::make('name')
                     ->label('Cliente')
                     ->searchable(),
-
+                    
                 TextColumn::make('monto_total')
                     ->label('Saldo Total')
                     ->badge()

@@ -116,7 +116,6 @@ class CustomersMap extends MapTableWidget
 			TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
 			TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
 			ToggleColumn::make('is_active')->label('Activo')
-
 		];
 	}
 
