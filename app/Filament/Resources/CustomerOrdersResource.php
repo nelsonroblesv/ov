@@ -44,12 +44,10 @@ class CustomerOrdersResource extends Resource
 
             ->modifyQueryUsing(function (Builder $query) {
                 $query
+                 ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                                ->where('is_active', true)
                     ->withSum(
-                        ['orders as monto_total' => function (Builder $q) {
-                            $q->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
-                                ->where('is_active', true);
-                        }],
-                        'grand_total'
+                        ['orders as monto_total'],'grand_total'
                     );
             })
             ->defaultSort('monto_total', 'DESC')
