@@ -186,7 +186,7 @@ class OrdersRelationManager extends RelationManager
                             Notification::make()
                                 ->success()
                                 ->title('Pedido registrado.')
-                                ->body('Se ha registrado un nuevo Pedido al cliente de forma correcta.')
+                                ->body('Se ha agregado un nuevo Pedido al cliente de forma correcta.')
                                 ->icon('heroicon-o-check-circle')
                                 ->iconColor('success')
                                 ->color('success')
@@ -195,7 +195,7 @@ class OrdersRelationManager extends RelationManager
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make()
-                        ->label('Editar')
+                        ->label('Editar Pedido')
                         ->successNotification(
                             Notification::make()
                                 ->success()

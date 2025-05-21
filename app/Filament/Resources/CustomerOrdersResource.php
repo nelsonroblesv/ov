@@ -77,7 +77,8 @@ class CustomerOrdersResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Detalle del Pedido'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
