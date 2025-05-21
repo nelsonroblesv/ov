@@ -150,9 +150,11 @@ class OrdersRelationManager extends RelationManager
             ->heading('Pedidos del Cliente')
             ->columns([
                 TextColumn::make('number')->label('# Pedido'),
-                TextColumn::make('grand_total')->label('Importe')
-                    ->summarize(Sum::make()->label('Total'))
-                    ->prefix('$'),
+                TextColumn::make('grand_total')->label('Importe')->alignRight()
+                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))
+                    ->summarize(
+                        Sum::make()->label('Total')
+                            ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))),
                 TextColumn::make('status')->label('Estatus')->badge()
                     ->formatStateUsing(fn(string $state): string => [
                         'PEN' => 'Pendiente',
