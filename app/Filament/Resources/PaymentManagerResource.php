@@ -13,6 +13,7 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -98,6 +99,10 @@ class PaymentManagerResource extends Resource
                     Textarea::make('notas')
                         ->rows(3)
                         ->columnSpanFull(),
+
+                    Hidden::make('is_verified')
+                        ->default(true)
+                        ->dehydrated(true),
                 ])->columns(2),
             ]);
     }
@@ -105,6 +110,7 @@ class PaymentManagerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'DESC')
             ->columns([
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),
                 TextColumn::make('created_at')->label('Fecha de Pago')->date(),
@@ -130,7 +136,7 @@ class PaymentManagerResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
