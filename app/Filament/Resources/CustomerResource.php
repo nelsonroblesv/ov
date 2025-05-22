@@ -7,6 +7,7 @@ use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\Resources\CustomerOrdersResource\RelationManagers\OrdersRelationManager;
 use App\Filament\Resources\CustomerResource\Pages;
+use App\Filament\Resources\CustomerResource\RelationManagers\PaymentsRelationManager;
 use App\Models\Customer;
 use App\Models\PaquetesInicio;
 use App\Models\Regiones;
@@ -483,7 +484,8 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-             OrdersRelationManager::class
+             OrdersRelationManager::class,
+             PaymentsRelationManager::class
         ];
     }
     public static function getPages(): array

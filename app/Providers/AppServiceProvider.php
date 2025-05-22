@@ -32,7 +32,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        Payment::observe(PaymentObserver::class);
         OrderItem::observe(OrderItemObserver::class);
         PreferredModuleItem::observe(PreferredItemObserver::class);
 

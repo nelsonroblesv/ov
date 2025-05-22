@@ -29,6 +29,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class OrdersRelationManager extends RelationManager
 {
     protected static string $relationship = 'orders';
+    protected static ?string $title = 'Pedidos';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    //protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationLabel = 'Gestionar Pedidos';
+    protected static ?string $breadcrumb = "Gestionar Pedidos";
 
     public function form(Form $form): Form
     {

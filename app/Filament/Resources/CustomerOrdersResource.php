@@ -22,7 +22,9 @@ class CustomerOrdersResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $title = 'Pedidos';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
     protected static ?string $breadcrumb = "Gestionar Pedidos";
 
@@ -43,34 +45,61 @@ class CustomerOrdersResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 $query
-                 ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
-                                ->where('is_active', true)
+                    ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                    ->where('is_active', true)
+                    ->withSum('orders as total_ordenes', 'grand_total')
                     ->withSum(
-                        ['orders as monto_total'],'grand_total'
+                        ['payments as total_pagos' => function ($q) {
+                            $q->where('is_verified', true);
+                        }],
+                        'importe'
                     );
             })
-            ->defaultSort('monto_total', 'DESC')
+            ->defaultSort('total_ordenes', 'DESC')
+            ->heading('Lista de Pedidos por Cliente')
+            ->description('TOTAL: Indica el importe total del o los Pedidos realizados por los clientes. PAGOS: Suma de los importes de cada pago generado y que ha sido verificado. SALDO: Diferencia entre el Total y los Pagos. El saldo a favor se indica con A FAVOR.')
             ->columns([
                 TextColumn::make('name')
                     ->label('Cliente')
                     ->searchable(),
-                    
-                TextColumn::make('monto_total')
-                    ->label('Saldo Total')
+
+                TextColumn::make('total_ordenes')->label('Total')
                     ->badge()
-                    ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))
+                    ->color('info')
+                    ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
+                TextColumn::make('total_pagos')->label('Pagos')
+                    ->badge()
+                    ->color('warning')
+                    ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
+                TextColumn::make('saldo_pendiente')
+                    ->label('Saldo')
+                    ->badge()
+                    ->getStateUsing(
+                        fn($record) =>
+                        $record->total_ordenes - $record->total_pagos
+                    )
                     ->color(function ($state) {
-                        if ($state == 0.00) {
-                            return 'info';      // Azul
-                        } elseif ($state > 0.00) {
-                            return 'warning';   // Amarillo
-                        } elseif ($state < 0.00) {
-                            return 'success';   // Verde
+                        $state = (float) $state;
+
+                        if ($state == 0) {
+                            return 'black';
+                        } elseif ($state > 0) {
+                            return 'danger';
+                        } else {
+                            return 'success';
                         }
-                        return null;
                     })
-                    ->sortable()
-                    ->alignCenter(),
+                    ->formatStateUsing(function ($state) {
+                        $valor = (float) $state;
+                        $texto = '$ ' . number_format($valor, 2);
+
+                        if ($valor < 0) {
+                            $texto .= ' (A FAVOR)';
+                        }
+
+                        return $texto;
+                    }),
+
             ])
             ->filters([
                 //
@@ -81,7 +110,7 @@ class CustomerOrdersResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                  //  Tables\Actions\DeleteBulkAction::make(),
+                    //  Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -154,7 +154,7 @@ class Customer extends Model
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payments::class);
     }
 
     public function services(): HasMany
