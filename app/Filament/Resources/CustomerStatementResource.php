@@ -43,6 +43,7 @@ class CustomerStatementResource extends Resource
                     ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                     ->where('is_active', true);
             })
+            ->recordUrl(null)
             ->defaultSort('name', 'ASC')
             ->heading('Estados de Cuenta')
             ->description('')
@@ -65,7 +66,7 @@ class CustomerStatementResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                   // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
