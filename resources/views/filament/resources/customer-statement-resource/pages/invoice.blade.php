@@ -70,8 +70,7 @@
                     <td colspan="2"
                         style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
                         Total</td>
-                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;"><b>
-                            $ {{ number_format($order->sum('grand_total'), 2) }}</b>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">$ {{ number_format($order->sum('grand_total'), 2) }}
                     </td>
                 </tr>
             </tfoot>
@@ -99,8 +98,7 @@
                         <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #718096;">
                             @if($item->tipo == 'E') Efectivo @elseif ($item->tipo == 'T') Transferencia @else Otro @endif
                             </td>
-                        <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
-                           <b> $ {{ number_format($item->importe, 2) }}</b></td>
+                        <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">$ {{ number_format($item->importe, 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>
