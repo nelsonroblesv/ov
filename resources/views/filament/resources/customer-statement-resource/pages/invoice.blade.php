@@ -100,7 +100,7 @@
                             @if($item->tipo == 'E') Efectivo @elseif ($item->tipo == 'T') Transferencia @else Otro @endif
                             </td>
                         <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
-                            $ {{ number_format($item->importe, 2) }}</td>
+                           <b> $ {{ number_format($item->importe, 2) }}</b></td>
                     </tr>
                 @endforeach
             </tbody>
