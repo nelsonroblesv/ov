@@ -6,7 +6,7 @@
     <div
         style="background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; max-width: 800px; margin: 0 auto;">
         <!-- Header -->
-        <table style="width: 100%; border: 1px solid red; padding-bottom: 16px;">
+        <table style="width: 100%; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
             <tr>
                 <td>
                     <h1 style="font-size: 24px; font-weight: bold; color: #4a5568;">Estado de Cuenta</h1>
@@ -14,7 +14,7 @@
                     <p style="color: #a0aec0;">Fecha: {{ now()->format('d/m/Y') }}</p>
                 </td>
                 <td style="text-align: right;">
-                    <img src="https://app.osberthvalle.com/images/logo_ovalleB.png" alt="Company Logo" style="width: 50px;">
+                    <img src="https://app.osberthvalle.com/images/logo_ovalleB.png" alt="Company Logo" style="width: 64px;">
                 </td>
             </tr>
         </table>
