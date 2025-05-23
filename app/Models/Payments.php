@@ -11,6 +11,11 @@ class Payments extends Model
         'customer_id', 'user_id', 'importe', 'tipo', 'voucher', 'notas', 'created_at', 'updated_at', 'is_verified'
     ];
 
+    protected $casts = [
+        'importe' => 'decimal:2',
+        'is_verified' => 'boolean',
+    ];
+
     public function customer() :BelongsTo
     {
         return $this->belongsTo(Customer::class);

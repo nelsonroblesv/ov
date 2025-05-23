@@ -26,6 +26,8 @@ class Order extends Model
 
     protected $casts = [
         'notas_venta' => 'array',
+        'fecha_liquidacion' => 'date',
+        'grand_total' => 'decimal:2',
     ];
 
     public function customer() :BelongsTo
@@ -50,6 +52,6 @@ class Order extends Model
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payments::class);
     }
 }

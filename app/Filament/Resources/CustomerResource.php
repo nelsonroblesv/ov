@@ -13,6 +13,7 @@ use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\User;
 use App\Models\Zonas;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -32,6 +33,7 @@ use Filament\Notifications\Collection;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -465,14 +467,14 @@ class CustomerResource extends Resource
             ->filters([])
 
             ->actions([
-                 ActionGroup::make([
+                ActionGroup::make([
                     Tables\Actions\ViewAction::make()
-                    ->label('Detalles')
-                    ->color('warning'),
-                Tables\Actions\EditAction::make()
-                     ->label('Editar')
-                     ->color('info'),
-                 ])
+                        ->label('Detalles')
+                        ->color('warning'),
+                    Tables\Actions\EditAction::make()
+                        ->label('Editar')
+                        ->color('info'),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -484,8 +486,8 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-             OrdersRelationManager::class,
-             PaymentsRelationManager::class
+            OrdersRelationManager::class,
+            PaymentsRelationManager::class
         ];
     }
     public static function getPages(): array

@@ -1,0 +1,131 @@
+<x-filament-panels::page>
+
+    <head>
+        <title>Purchase From Nombre del Cliente</title>
+    </head>
+    <div
+        style="background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; max-width: 800px; margin: 0 auto;">
+        <!-- Header -->
+        <table style="width: 100%; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <tr>
+                <td>
+                    <h1 style="font-size: 24px; font-weight: bold; color: #4a5568;">Estado de Cuenta</h1>
+                    <p style="color: #a0aec0;">Cliente</p>
+                    <p style="color: #a0aec0;">Fecha Hoy</p>
+                </td>
+                <td style="text-align: right;">
+                    <img src="http://avyna.test/images/logo_ovalleD.png" alt="Company Logo" style="height: 64px;">
+                </td>
+            </tr>
+        </table>
+
+        <!-- Facturacion -->
+        <table style="width: 100%; margin-top: 24px;">
+            <tr>
+                <td>
+                    <h2 style="font-weight: bold; color: #4a5568;">Datos del Cliente</h2>
+                    <p style="color: #718096;">Direccion</p>
+                    <p style="color: #718096;">Telefono</p>
+                    <p style="color: #718096;">Email:</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    <h2 style="font-weight: bold; color: #4a5568;">Osberth Valle</h2>
+                    <p style="color: #718096;">Current Company</p>
+                    <p style="color: #718096;">Current Address</p>
+                    <p style="color: #718096;">Current Zipcode</p>
+                    <p style="color: #718096;">Email: Current Email</p>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Orders -->
+        <h2 style="font-weight: bold; color: #4a5568;">Pedidos</h2>
+        <table style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+            <thead>
+                <tr style="background-color: #f7fafc;">
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: left; color: #4a5568;">No. de Pedido
+                    </th>
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">Fecha
+                    </th>
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">Importe
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; color: #718096;">
+                        POV-123456789</td>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
+                        22/mayo/2025</td>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
+                        $500.00</td>
+                </tr>
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"
+                        style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
+                        Total</td>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">
+                        $10,000.00</td>
+                </tr>
+            </tfoot>
+        </table>
+
+         <!-- Payments -->
+         <h2 style="font-weight: bold; color: #4a5568;">Pagos</h2>
+        <table style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+            <thead>
+                <tr style="background-color: #f7fafc;">
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: left; color: #4a5568;">Fecha
+                    </th>
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">Tipo de Pago
+                    </th>
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">Importe
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; color: #718096;">
+                        10/05/2025</td>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
+                        Efectivo</td>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
+                        $6,000.00</td>
+                </tr>
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"
+                        style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
+                        Total</td>
+                    <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">
+                        $6,000.00</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <table style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+            <thead>
+                <tr style="background-color: #f7fafc;">
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: left; color: #4a5568;">Saldo
+                    </th>
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">$4,000.00
+                    </th>
+                </tr>
+            </thead>
+        </table>
+
+        <!-- Footer -->
+        <div style="margin-top: 24px; text-align: center; color: #a0aec0;min-width: 800px;">
+            <p>Documento informativo</p>
+            <p>Dudas dev@osberthvalle.com.</p>
+        </div>
+    </div>
+
+</x-filament-panels::page>

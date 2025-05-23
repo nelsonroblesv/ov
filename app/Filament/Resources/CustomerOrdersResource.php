@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,6 +24,7 @@ class CustomerOrdersResource extends Resource
     protected static ?string $model = Customer::class;
 
     protected static ?string $title = 'Pedidos';
+    protected static ?string $slug = 'pedidos';
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
@@ -99,14 +101,15 @@ class CustomerOrdersResource extends Resource
 
                         return $texto;
                     }),
-
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Detalle del Pedido'),
+                    ->label('Detalles'),
+
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -128,7 +131,7 @@ class CustomerOrdersResource extends Resource
             'index' => Pages\ListCustomerOrders::route('/'),
             'create' => Pages\CreateCustomerOrders::route('/create'),
             'edit' => Pages\EditCustomerOrders::route('/{record}/edit'),
-            'view' => Pages\ViewCustomerOrders::route('/{record}'),
+            
         ];
     }
 }

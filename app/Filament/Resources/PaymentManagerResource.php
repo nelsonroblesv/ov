@@ -33,6 +33,7 @@ class PaymentManagerResource extends Resource
 
     protected static string $relationship = 'payments';
     protected static ?string $title = 'Pagos';
+    protected static ?string $slug = 'pagos';
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Administrar Pagos';

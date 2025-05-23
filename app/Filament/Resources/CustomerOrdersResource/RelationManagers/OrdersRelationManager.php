@@ -155,6 +155,7 @@ class OrdersRelationManager extends RelationManager
             ->heading('Pedidos del Cliente')
             ->columns([
                 TextColumn::make('number')->label('# Pedido'),
+                TextColumn::make('created_at')->label('Fecha')->date(),
                 TextColumn::make('grand_total')->label('Importe')->alignRight()
                      ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))
                     ->summarize(
@@ -177,7 +178,6 @@ class OrdersRelationManager extends RelationManager
                         'primary' => 'DEV',
                         'secondary' => 'SIG'
                     ]),
-                TextColumn::make('created_at')->label('Fecha')->date(),
                 TextColumn::make('solicitador.name')->label('Vendedor')
             ])
             ->filters([
