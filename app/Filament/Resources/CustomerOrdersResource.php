@@ -173,9 +173,6 @@ class CustomerOrdersResource extends Resource
                         ])->columns(2)
 
                     ])
-                    ->modalHeading('Registrar Pago')
-                    ->modalDescription('Registrar un nuevo pago del cliente.')
-                    ->modalSubmitActionLabel('Registrar Pago')
                     ->action(function (array $data, Customer $record): void {
                         // Manejo de errores
                         try {
@@ -203,7 +200,10 @@ class CustomerOrdersResource extends Resource
                             ->body('Se ha registrado un Pago por '.number_format($data['importe'],2).' al cliente '.$record->name .' de manera exitosa con fecha '.$data['created_at'].'.')
                             ->icon('heroicon-o-banknotes')
                             ->send();
-                    }),
+                    })
+                    ->modalHeading('Registrar Pago')
+                    ->modalDescription('Registrar un nuevo pago del cliente.')
+                    ->modalSubmitActionLabel('Registrar Pago'),
             ])
             ->bulkActions([]);
     }
