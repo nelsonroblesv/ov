@@ -470,10 +470,10 @@ class CustomerResource extends Resource
                 ActionGroup::make([
                     Tables\Actions\ViewAction::make()
                         ->label('Detalles')
-                        ->color('warning'),
+                        ->color('info'),
                     Tables\Actions\EditAction::make()
                         ->label('Editar')
-                        ->color('info'),
+                        ->color('warning'),
                 ]),
             ])
             ->bulkActions([

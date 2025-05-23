@@ -113,7 +113,11 @@ class PaymentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                     ->label('Registrar Pago')
+                    ->color('success')
+                    ->icon('heroicon-o-banknotes')
+                    ->modalHeading('Registrar Pago'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -107,9 +107,12 @@ class CustomerOrdersResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Detalles'),
-
-                
+                    ->label('Detalles')
+                    ->color('info'),
+                Tables\Actions\Action::make('registrar-pago')
+                    ->label('Registrar Pago')
+                    ->color('success')
+                    ->icon('heroicon-o-banknotes'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -131,7 +134,7 @@ class CustomerOrdersResource extends Resource
             'index' => Pages\ListCustomerOrders::route('/'),
             'create' => Pages\CreateCustomerOrders::route('/create'),
             'edit' => Pages\EditCustomerOrders::route('/{record}/edit'),
-            
+
         ];
     }
 }

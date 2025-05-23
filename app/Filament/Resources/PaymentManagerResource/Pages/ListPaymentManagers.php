@@ -9,11 +9,14 @@ use Filament\Resources\Pages\ListRecords;
 class ListPaymentManagers extends ListRecords
 {
     protected static string $resource = PaymentManagerResource::class;
+    protected static ?string $title = 'Pagos';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Registrar Pago')
+                ->icon('heroicon-o-banknotes'),
         ];
     }
 }
