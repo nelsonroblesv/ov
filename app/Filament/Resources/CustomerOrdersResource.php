@@ -69,8 +69,8 @@ class CustomerOrdersResource extends Resource
                     );
             })
             ->defaultSort('total_ordenes', 'DESC')
-            ->heading('Lista de Pedidos por Cliente')
-            ->description('TOTAL: Indica el importe total del o los Pedidos realizados por los clientes. PAGOS: Suma de los importes de cada pago generado y que ha sido verificado. SALDO: Diferencia entre el Total y los Pagos. El saldo a favor se indica con A FAVOR. *NOTA: Es importante marcar los Pagos como Verificados para que se reflejen correctamente en el saldo.')
+            ->heading('Pedidos')
+            ->description('Lista de Pedidos de Clientes.')
             ->columns([
                 TextColumn::make('name')
                     ->label('Cliente')

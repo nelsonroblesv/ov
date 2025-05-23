@@ -38,7 +38,7 @@ class PaymentManagerResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Administrar Pagos';
     protected static ?string $breadcrumb = "Administrar Pagos";
-     protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 3;
 
 
     public static function form(Form $form): Form
@@ -112,6 +112,8 @@ class PaymentManagerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->heading('Pagos')
+            ->description('Lista de Pagos de clientes registrados en el sistema.')
             ->defaultSort('created_at', 'DESC')
             ->columns([
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),

@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListPaymentManagers extends ListRecords
 {
     protected static string $resource = PaymentManagerResource::class;
-    protected static ?string $title = 'Pagos';
+    protected static ?string $title = 'Administrar Pagos';
 
     protected function getHeaderActions(): array
     {

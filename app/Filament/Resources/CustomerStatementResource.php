@@ -47,7 +47,7 @@ class CustomerStatementResource extends Resource
             ->recordUrl(null)
             ->defaultSort('name', 'ASC')
             ->heading('Estados de Cuenta')
-            ->description('')
+            ->description('Lista de Estados de Cuenta de Clientes registrados en el sistema.')
             ->columns([
                 TextColumn::make('name')
                     ->label('Cliente')
