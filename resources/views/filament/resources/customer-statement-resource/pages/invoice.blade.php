@@ -121,7 +121,7 @@
                     <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;font-size:1.5em">
                         @if($order->sum('grand_total') - $payment->sum('importe') < 0)
                            $ {{number_format($order->sum('grand_total') - $payment->sum('importe'), 2)}} (A favor)
-                        @elseif
+                        @else
                             $ {{number_format($order->sum('grand_total') - $payment->sum('importe'), 2)}}
                         @endif
                     </th>
