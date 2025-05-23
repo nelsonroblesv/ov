@@ -55,7 +55,7 @@ class CustomerStatementResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+               // Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('view_invoice')
                     ->label('Estado de Cuenta')
                     ->icon('heroicon-o-document-chart-bar')

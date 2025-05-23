@@ -9,6 +9,7 @@ use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaWidget;
 use App\Filament\Resources\UbicacionUsuarioResource\Widgets\MapRecorridosWidget;
 use App\Filament\Widgets\MapRecorridosWidget as WidgetsMapRecorridosWidget;
 use App\Filament\Widgets\SemanaActual as WidgetsSemanaActual;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -39,6 +40,7 @@ class DashboardPanelProvider extends PanelProvider
             ->login(CustomLogin::class)
             ->profile()
             ->brandLogo(fn() => view('filament.logo'))
+            ->defaultThemeMode(ThemeMode::Light)
             ->darkModeBrandLogo(fn() => view('filament.dark-logo'))
             ->databaseNotifications()
             ->favicon(asset('images/favicon.ico'))
