@@ -23,6 +23,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
@@ -117,8 +118,10 @@ class CustomerOrdersResource extends Resource
                 //
             ])
             ->actions([
+                ActionGroup::make([
                 Tables\Actions\EditAction::make()
-                    ->label('Detalles')
+                    ->label('Pedidos')
+                    ->icon('heroicon-o-shopping-cart')
                     ->color('info'),
 
                 Tables\Actions\Action::make('registrar-pago')
@@ -206,6 +209,7 @@ class CustomerOrdersResource extends Resource
                     ->modalDescription('Registrar un nuevo pago del cliente.')
                     ->modalSubmitActionLabel('Registrar Pago'),
             ])
+                ])
             ->bulkActions([]);
     }
 

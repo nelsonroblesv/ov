@@ -49,9 +49,9 @@ class CustomerStatementResource extends Resource
             ->heading('Estados de Cuenta')
             ->description('Lista de Estados de Cuenta de Clientes registrados en el sistema.')
             ->columns([
-                TextColumn::make('name')
-                    ->label('Cliente')
-                    ->searchable(),
+                TextColumn::make('name')->label('Cliente')->searchable(),
+                TextColumn::make('email')->label('Correo')->searchable()->badge()->color('warning'),
+                TextColumn::make('phone')->label('Telefono')->searchable()->badge()->color('info'),
             ])
             ->filters([
                 //
