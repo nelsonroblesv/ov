@@ -130,7 +130,7 @@
         </table>
 
         <!-- Footer -->
-        <div style="margin-top: 24px; text-align: center; color: #a0aec0;min-width: 800px;">
+        <div style="margin-top: 24px; text-align: center; color: #a0aec0;">
             <p>Documento informativo</p>
             <p>Dudas dev@osberthvalle.com.</p>
         </div>
