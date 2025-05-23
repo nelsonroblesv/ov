@@ -38,7 +38,8 @@ class HistorialPedidosResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Historial de Pedidos';
     protected static ?string $breadcrumb = "Historial de Pedidos";
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 5;
+    
     public static function form(Form $form): Form
     {
         return $form

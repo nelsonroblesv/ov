@@ -23,9 +23,10 @@ class CustomerStatementResource extends Resource
     protected static ?string $title = 'Estado de Cuenta';
     protected static ?string $slug = 'estados-cuenta';
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
-    //protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Estados de Cuenta';
     protected static ?string $breadcrumb = "Estados de Cuenta";
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

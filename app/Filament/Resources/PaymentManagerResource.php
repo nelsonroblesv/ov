@@ -38,6 +38,7 @@ class PaymentManagerResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Administrar Pagos';
     protected static ?string $breadcrumb = "Administrar Pagos";
+     protected static ?int $navigationSort = 3;
 
 
     public static function form(Form $form): Form
