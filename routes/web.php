@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 Route::get('ReporteIndividual/{order}', OrdenPDFController::class)->name('ReporteIndividual'); 
 
-Route::get('/print-invoice{id}', [InvoiceController::class, 'printCustomerInvoice'])->name('PRINT.CUSTOMER_INVOICE');
+Route::get('/print-invoice/{id}', [InvoiceController::class, 'printCustomerInvoice'])->name('PRINT.CUSTOMER_INVOICE');
 
 /*
 Route::post('/guardar-ubicacion', function (Request $request) {
