@@ -1,6 +1,13 @@
- <head>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
      <title>Estado de Cuenta {{ $customer->name }}</title>
  </head>
+
+ <body>
  <div
      style="background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; max-width: 800px; margin: 0 auto;">
      <!-- Header -->
@@ -136,3 +143,5 @@
          </thead>
      </table>
  </div>
+</body>
+</html>
