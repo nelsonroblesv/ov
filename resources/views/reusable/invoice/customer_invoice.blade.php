@@ -12,7 +12,7 @@
                  <p style="color: #a0aec0;">Fecha: {{ now()->format('d/m/Y') }}</p>
              </td>
              <td style="text-align: right;">
-                 <img src="{{ asset('images/logo_ovalleB.png') }}" alt="Logo OV" style="width: 64px;">
+                 <img src="https://app.osberthvalle.com/images/logo_ovalleB.png" alt="Logo OV" style="width: 64px;">
              </td>
          </tr>
      </table>
