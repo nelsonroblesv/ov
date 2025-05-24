@@ -1,6 +1,5 @@
 
 <head>
-
      <title>Estado de Cuenta {{ $customer->name }}</title>
  </head>
 
@@ -16,7 +15,8 @@
                  <p style="color: #a0aec0;">Fecha: {{ now()->format('d/m/Y') }}</p>
              </td>
              <td style="text-align: right;">
-                 <img src="https://osberthvalle.com/wp-content/uploads/2024/12/profile_osberthvalle.webp" alt="Logo OV" style="width: 64px;">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo OV" style="width: 64px;">
+
              </td>
          </tr>
      </table>

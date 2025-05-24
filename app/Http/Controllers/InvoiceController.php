@@ -18,7 +18,7 @@ class InvoiceController extends Controller
         $payment = Payments::where('customer_id', $id)->where('is_verified', true)->get();
 
         if ($customer) {
-            $pdf = \PDF::loadView('pdf.customer_invoice', compact('customer', 'order', 'payment'),['isRemote', true]);
+            $pdf = \PDF::loadView('pdf.customer_invoice', compact('customer', 'order', 'payment'));
             return $pdf->stream('EC - ' . $customer->name . '.pdf');
         }else{
             Notification::make()
