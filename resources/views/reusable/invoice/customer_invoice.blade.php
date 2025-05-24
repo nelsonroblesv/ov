@@ -16,7 +16,7 @@
                  <p style="color: #a0aec0;">Fecha: {{ now()->format('d/m/Y') }}</p>
              </td>
              <td style="text-align: right;">
-                 <img src="https://app.osberthvalle.com/images/logo_ovalleB.png" alt="Logo OV" style="width: 64px;">
+                 <img src="https://osberthvalle.com/wp-content/uploads/2024/12/profile_osberthvalle.webp" alt="Logo OV" style="width: 64px;">
              </td>
          </tr>
      </table>
