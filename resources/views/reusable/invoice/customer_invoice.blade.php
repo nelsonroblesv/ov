@@ -9,7 +9,7 @@
     <table class="invoice" style="width: 100%; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
         <tr>
             <td>
-                <h1 class='invoice'>Estado de Cuenta</h1>
+                <h1 class='invoice' style="margin-bottom: 15px;">Estado de Cuenta</h1>
                 <p class='customer'>{{ $customer->name }}</p>
                 <p class='invoice'> {{ now()->format('d/m/Y') }}</p>
                 <p class='invoice'> {{ $customer->full_address }}</p>

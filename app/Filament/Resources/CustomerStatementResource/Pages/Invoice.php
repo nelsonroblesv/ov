@@ -50,5 +50,5 @@ class Invoice extends Page
                 ->modalDescription('¿Estas seguro de que deseas imprimir el estado de cuenta?'),
         ];
     }
-        
+    
 }
