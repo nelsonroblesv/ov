@@ -7,7 +7,10 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Payments;
 use DragonCode\Contracts\Cashier\Config\Payment;
+use Filament\Actions\Action as ActionsAction;
+use Filament\Actions\Modal\Actions\Action;
 use Filament\Resources\Pages\Page;
+use Illuminate\Contracts\View\View;
 
 class Invoice extends Page
 {
@@ -32,4 +35,20 @@ class Invoice extends Page
         $this->order = Order::where('customer_id', $record)->get();
         $this->payment = Payments::where('customer_id', $record)->where('is_verified', true)->get();
     }
+
+    public function getHeaderActions(): array
+    {
+        return [
+            ActionsAction::make('print')
+                ->label('Imprimir')
+                ->icon('heroicon-o-printer')
+                ->color('info')
+                ->url(route('PRINT.CUSTOMER_INVOICE', ['id'=>$this->record]))
+                ->openUrlInNewTab()
+                ->requiresConfirmation()
+                ->modalHeading('Imprimir Estado de Cuenta')
+                ->modalDescription('¿Estas seguro de que deseas imprimir el estado de cuenta?'),
+        ];
+    }
+        
 }
