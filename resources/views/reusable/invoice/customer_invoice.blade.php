@@ -27,7 +27,8 @@
                     <p style="color: #718096;"> {{ $customer->email }}</p>
                 </td>
             </tr>
-            <tr>
+            
+            <!--tr>
                 <td style="text-align: right;">
                     <h2 style="font-weight: bold; color: #4a5568;">Osberth Valle</h2>
                     <p style="color: #718096;">Current Company</p>
@@ -35,7 +36,7 @@
                     <p style="color: #718096;">Current Zipcode</p>
                     <p style="color: #718096;">Email: Current Email</p>
                 </td>
-            </tr>
+            </tr-->
         </table>
 
         <!-- Orders -->
