@@ -1,20 +1,26 @@
-*, body{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 14px;
-}
-
-h1{
+h1.invoice {
     font-size: 22px;
     font-weight: bold;
     color: black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-p{
-    color: rgb(104, 104, 104);
-}
-
-p.customer{
+h4.invoice {
     font-size: 16px;
+    font-weight: bold;
+    color: black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+p.invoice, table.invoice {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color:#4a5568;
+    font-size: 14px;
+}
+
+p.customer {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
     font-weight: bold;
     color: black;
 }

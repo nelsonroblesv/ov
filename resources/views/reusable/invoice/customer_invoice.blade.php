@@ -3,19 +3,18 @@
     <link rel="stylesheet" href="{{ asset('css/customer_invoice.css') }}" type="text/css">
 </head>
 
-
 <div
     style="background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; max-width: 800px; margin: 0 auto;">
     <!-- Header -->
     <table style="width: 100%; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
         <tr>
             <td>
-                <h1>Estado de Cuenta</h1>
+                <h1 class='invoice'>Estado de Cuenta</h1>
                 <p class='customer'>{{ $customer->name }}</p>
-                <p> {{ now()->format('d/m/Y') }}</p>
-                <p> {{ $customer->full_address }}</p>
-                <p> {{ $customer->phone }}</p>
-                <p> {{ $customer->email }}</p>
+                <p class='invoice'> {{ now()->format('d/m/Y') }}</p>
+                <p class='invoice'> {{ $customer->full_address }}</p>
+                <p class='invoice'> {{ $customer->phone }}</p>
+                <p class='invoice'> {{ $customer->email }}</p>
             </td>
             <td style="text-align: right;">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo OV" style="width: 64px;">
@@ -25,10 +24,9 @@
     </table>
 
     <!-- Facturacion -->
-    <table style="width: 100%; margin-top: 24px;">
+    <!--table style="width: 100%; margin-top: 24px;">
        
-
-        <!--tr>
+        <tr>
                 <td style="text-align: right;">
                     <h2 style="font-weight: bold; color: #4a5568;">Osberth Valle</h2>
                     <p style="color: #718096;">Current Company</p>
@@ -36,12 +34,12 @@
                     <p style="color: #718096;">Current Zipcode</p>
                     <p style="color: #718096;">Email: Current Email</p>
                 </td>
-            </tr-->
-    </table>
+            </tr>
+    </table-->
 
     <!-- Orders -->
-    <h4 style="font-weight: bold; color: #4a5568;">Pedidos</h4>
-    <table style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+    <h4 class="invoice">Pedidos</h4>
+    <table class="invoice" style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
         <thead>
             <tr style="background-color: #f7fafc;">
                 <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: left; color: #4a5568;">No. de Pedido
@@ -78,8 +76,8 @@
 
     <!-- Payments -->
     <br>
-    <h4 style="font-weight: bold; color: #4a5568;">Pagos</h4>
-    <table style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+    <h4 class="invoice">Pagos</h4>
+    <table class="invoice" style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
         <thead>
             <tr style="background-color: #f7fafc;">
                 <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">Fecha
@@ -112,20 +110,20 @@
         <tfoot>
             <tr>
                 <td colspan="2"
-                    style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
+                    style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold;">
                     Total</td>
-                <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">
+                <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right;">
                     $ {{ number_format($payment->sum('importe'), 2) }}</td>
             </tr>
         </tfoot>
     </table>
 
-    <table style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+    <table class="invoice" style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
         <thead>
-            <tr style="background-color: #f7fafc;">
-                <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: left; color: #4a5568;">Saldo
+            <tr>
+                <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: left;background:#f7fafc">Saldo
                 </th>
-                <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">
+                <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right;">
                     @if ($order->sum('grand_total') - $payment->sum('importe') < 0)
                         $ {{ number_format($order->sum('grand_total') - $payment->sum('importe'), 2) }} (A favor)
                     @else
