@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\App\Resources;
 
-use App\Filament\Resources\PaymentManagerResource\Pages;
-use App\Filament\Resources\PaymentManagerResource\RelationManagers;
+use App\Filament\App\Resources\PaymentManagerResource\Pages;
+use App\Filament\App\Resources\PaymentManagerResource\RelationManagers;
 use App\Models\Customer;
 use App\Models\PaymentManager;
 use App\Models\Payments;
@@ -12,7 +12,6 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -21,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -51,6 +51,7 @@ class PaymentManagerResource extends Resource
                         ->label('Cliente')
                         ->options(Customer::query()
                             ->where('is_active', true)
+                            ->where('user_id', auth()->user()->id)
                             ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                             ->orderBy('name', 'ASC')
                             ->pluck('name', 'id'))
@@ -59,20 +60,7 @@ class PaymentManagerResource extends Resource
                         ->required()
                         ->columnSpanFull(),
 
-                    Select::make('user_id')
-                        ->required()
-                        ->label('Registrado por:')
-                        ->options(
-                            fn() =>
-                            User::whereIn('id', function ($query) {
-                                $query->select('id')
-                                    ->from('users')
-                                    ->where('is_active', true)
-                                    ->where('role', 'Vendedor')
-                                    ->orWhere('username', 'OArrocha')
-                                    ->orderBy('name', 'DESC');
-                            })->pluck('name', 'id')
-                        ),
+                    Hidden::make('user_id')->default(fn() => auth()->id()),
 
                     TextInput::make('importe')
                         ->required()
@@ -91,7 +79,7 @@ class PaymentManagerResource extends Resource
 
                     DatePicker::make('created_at')
                         ->label('Fecha de pago')
-                        ->default(Carbon::now())
+                        ->default(Carbon::now()->format('Y-m-d H:i:s'))
                         ->required(),
 
                     FileUpload::make('voucher')
@@ -104,7 +92,7 @@ class PaymentManagerResource extends Resource
                         ->columnSpanFull(),
 
                     Hidden::make('is_verified')
-                        ->default(true)
+                        ->default(false)
                         ->dehydrated(true),
                 ])->columns(2),
             ]);
@@ -113,8 +101,12 @@ class PaymentManagerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->where('user_id', auth()->user()->id);
+            })
             ->heading('Pagos')
-            ->description('Lista de Pagos de clientes registrados en el sistema.')
+            ->description('Lista de Pagos de mis Clientes.')
             ->defaultSort('id', 'DESC')
             ->columns([
                 TextColumn::make('customer.name')->label('Cliente')->searchable(),
@@ -131,7 +123,12 @@ class PaymentManagerResource extends Resource
                         'warning' => 'T',
                         'info' => 'O'
                     ]),
-                ToggleColumn::make('is_verified')->label('Verificado'),
+                IconColumn::make('is_verified')->label('Verificado')->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->alignCenter(),
             ])
             ->filters([
                 //
