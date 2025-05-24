@@ -6,7 +6,7 @@
 <div
     style="background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; max-width: 800px; margin: 0 auto;">
     <!-- Header -->
-    <table style="width: 100%; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+    <table class="invoice" style="width: 100%; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
         <tr>
             <td>
                 <h1 class='invoice'>Estado de Cuenta</h1>
@@ -75,7 +75,6 @@
     </table>
 
     <!-- Payments -->
-    <br>
     <h4 class="invoice">Pagos</h4>
     <table class="invoice" style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
         <thead>
