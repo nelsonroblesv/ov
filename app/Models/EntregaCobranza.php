@@ -16,4 +16,9 @@ class EntregaCobranza extends Model
         return $this->belongsTo(User::class, 'alta_user_id');
     }
 
+    public function detalles()
+{
+    return $this->hasMany(EntregaCobranzaDetalle::class);
+}
+
 }

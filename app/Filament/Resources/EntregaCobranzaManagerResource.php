@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EntregaCobranzaManagerResource\Pages;
 use App\Filament\Resources\EntregaCobranzaManagerResource\RelationManagers;
+use App\Filament\Resources\EntregaCobranzaManagerResource\RelationManagers\DetallesRelationManager as RelationManagersDetallesRelationManager;
+use App\Filament\Resources\EntregaCobranzaResource\RelationManagers\DetallesRelationManager;
 use App\Models\EntregaCobranza;
 use App\Models\EntregaCobranzaManager;
 use Carbon\Carbon;
@@ -33,6 +35,10 @@ class EntregaCobranzaManagerResource extends Resource
                     DatePicker::make('fecha_programada')
                         ->label('Fecha programada')
                         ->required()
+                        ->unique(ignoreRecord:true)
+                        ->validationMessages([
+                            'unique' => 'Ya existe una entrega programada para esta fecha. Selecciona otra o edita la existente.'
+                        ])
                         ->default(Carbon::now()),
 
                     Hidden::make('alta_user_id')->default(fn() => auth()->id()),
@@ -44,10 +50,13 @@ class EntregaCobranzaManagerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('fecha_programada', 'DESC')
             ->columns([
                 TextColumn::make('fecha_programada')
                         ->label('Fecha programada')
-                        ->date()
+                        ->date(),
+                 TextColumn::make('altaUser.name')
+                        ->label('Registrado por')
             ])
             ->filters([
                 //
@@ -57,7 +66,7 @@ class EntregaCobranzaManagerResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -65,7 +74,7 @@ class EntregaCobranzaManagerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagersDetallesRelationManager::class
         ];
     }
 
