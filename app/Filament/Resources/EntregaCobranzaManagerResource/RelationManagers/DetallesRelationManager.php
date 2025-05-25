@@ -130,10 +130,14 @@ class DetallesRelationManager extends RelationManager
                     ])
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->label('Registrar Entrega/Cobranza')
+                    ->icon('heroicon-o-calendar-days')
+                    ->modalHeading('Nueva Entrega/Cobranza'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->modalHeading('Editar Entrega/Cobranza'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

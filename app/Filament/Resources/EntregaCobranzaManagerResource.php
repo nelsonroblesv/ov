@@ -39,7 +39,8 @@ class EntregaCobranzaManagerResource extends Resource
                         ->validationMessages([
                             'unique' => 'Ya existe una entrega programada para esta fecha. Selecciona otra o edita la existente.'
                         ])
-                        ->default(Carbon::now()),
+                        ->default(Carbon::now())
+                        ->disabledOn('edit'),
 
                     Hidden::make('alta_user_id')->default(fn() => auth()->id()),
 
