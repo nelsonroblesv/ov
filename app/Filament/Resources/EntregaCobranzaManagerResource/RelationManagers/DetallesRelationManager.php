@@ -5,14 +5,17 @@ namespace App\Filament\Resources\EntregaCobranzaManagerResource\RelationManagers
 use App\Filament\Resources\CustomerResource;
 use App\Models\Customer;
 use App\Models\User;
+use Filament\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -93,7 +96,6 @@ class DetallesRelationManager extends RelationManager
 
                 TextColumn::make('tipo')
                     ->label('Tipo')
-                    ->searchable()
                     ->sortable()
                     ->badge()
                     ->formatStateUsing(fn(string $state): string => [
@@ -133,16 +135,48 @@ class DetallesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Registrar Entrega/Cobranza')
                     ->icon('heroicon-o-calendar-days')
-                    ->modalHeading('Nueva Entrega/Cobranza'),
+                    ->modalHeading('Nueva Entrega/Cobranza')
+                    ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registro agregado.')
+                                ->body('Se ha registrado una nueva Entrega/Cobranza de forma correcta.')
+                                ->icon('heroicon-o-check-circle')
+                                ->iconColor('success')
+                                ->color('success')
+                        ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->modalHeading('Editar Entrega/Cobranza'),
-                Tables\Actions\DeleteAction::make(),
+                ActionsActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                    ->modalHeading('Editar Entrega/Cobranza')
+                    ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registro actualizado')
+                                ->body('La información del registro ha sido actualizada.')
+                                ->icon('heroicon-o-check-circle')
+                                ->iconColor('success')
+                                ->color('success')
+                        ),
+                Tables\Actions\DeleteAction::make()
+                    ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Registro eliminado')
+                                ->body('El registro ha sido eliminado de forma correcta.')
+                                ->icon('heroicon-o-trash')
+                                ->iconColor('success')
+                                ->color('success')
+                        )
+                        ->modalHeading('Borrar registro')
+                        ->modalDescription('Estas seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Si, eliminar'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                  //  Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
