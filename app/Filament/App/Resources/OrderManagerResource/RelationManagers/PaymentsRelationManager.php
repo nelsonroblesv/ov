@@ -15,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -28,6 +29,7 @@ class PaymentsRelationManager extends RelationManager
     protected static string $relationship = 'payments';
     protected static ?string $title = 'Pagos';
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $icon = 'heroicon-o-banknotes';
     //protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Administrar Pagos';
     protected static ?string $breadcrumb = "Administrar Pagos";
@@ -114,8 +116,11 @@ class PaymentsRelationManager extends RelationManager
                     ->modalHeading('Registrar Pago'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->label('Editar Pago'),
+               // Tables\Actions\DeleteAction::make(),
+               ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

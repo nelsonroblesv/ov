@@ -50,8 +50,10 @@ class CustomerStatementResource extends Resource
             ->description('Lista de Estados de Cuenta de mis Clientes.')
             ->columns([
                 TextColumn::make('name')->label('Cliente')->searchable(),
-                TextColumn::make('email')->label('Correo')->searchable()->badge()->color('warning'),
-                TextColumn::make('phone')->label('Telefono')->searchable()->badge()->color('info'),
+                TextColumn::make('email')->label('Correo')->searchable()->badge()->color('warning')
+                    ->toggleable(isToggledHiddenByDefault:false),
+                TextColumn::make('phone')->label('Telefono')->searchable()->badge()->color('info')
+                    ->toggleable(isToggledHiddenByDefault:false),
             ])
             ->filters([
                 //

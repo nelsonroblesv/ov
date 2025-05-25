@@ -26,6 +26,7 @@ class PaymentsRelationManager extends RelationManager
     protected static string $relationship = 'payments';
     protected static ?string $title = 'Pagos';
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $icon = 'heroicon-o-banknotes';
     //protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Administrar Pagos';
     protected static ?string $breadcrumb = "Administrar Pagos";
