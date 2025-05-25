@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EntregaCobranzaResource\Pages;
-use App\Filament\Resources\EntregaCobranzaResource\RelationManagers;
+use App\Filament\Resources\EntregaCobranzaManagerResource\Pages;
+use App\Filament\Resources\EntregaCobranzaManagerResource\RelationManagers;
 use App\Models\EntregaCobranza;
+use App\Models\EntregaCobranzaManager;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -18,7 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EntregaCobranzaResource extends Resource
+class EntregaCobranzaManagerResource extends Resource
 {
     protected static ?string $model = EntregaCobranza::class;
 
@@ -28,12 +29,14 @@ class EntregaCobranzaResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Datos generales')->schema([
+                Section::make('Datos Generales')->schema([
                     DatePicker::make('fecha_programada')
-                    ->required()
-                    ->default(Carbon::now()),
+                        ->label('Fecha programada')
+                        ->required()
+                        ->default(Carbon::now()),
 
-                Hidden::make('alta_user_id')->default(fn() => auth()->id()),
+                    Hidden::make('alta_user_id')->default(fn() => auth()->id()),
+
                 ])
             ]);
     }
@@ -43,10 +46,8 @@ class EntregaCobranzaResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('fecha_programada')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('altaUser.name')
-                    ->label('Registrado por'),
+                        ->label('Fecha programada')
+                        ->date()
             ])
             ->filters([
                 //
@@ -71,9 +72,9 @@ class EntregaCobranzaResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEntregaCobranzas::route('/'),
-            'create' => Pages\CreateEntregaCobranza::route('/create'),
-            'edit' => Pages\EditEntregaCobranza::route('/{record}/edit'),
+            'index' => Pages\ListEntregaCobranzaManagers::route('/'),
+            'create' => Pages\CreateEntregaCobranzaManager::route('/create'),
+            'edit' => Pages\EditEntregaCobranzaManager::route('/{record}/edit'),
         ];
     }
 }

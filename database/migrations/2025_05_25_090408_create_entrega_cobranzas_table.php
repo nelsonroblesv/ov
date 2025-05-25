@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('entrega_cobranzas', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_programada');
             $table->foreignId('alta_user_id')->constrained('users');
+            $table->date('fecha_programada');
             $table->timestamps();
         });
     }
