@@ -17,7 +17,7 @@ class Invoice extends Page
     protected static ?string $navigationLabel = 'Detalles';
     protected static ?string $breadcrumb = "Detalles";
 
-    protected static string $view = 'filament.resources.customer-statement-resource.pages.invoice';
+    protected static string $view = 'filament.app.resources.customer-statement-resource.pages.invoice';
 
     public $record;
     public $customer;
@@ -28,7 +28,6 @@ class Invoice extends Page
     {
         $this->record = $record;
         $this->customer = Customer::find($record);
-
         $this->order = Order::where('customer_id', $record)->get();
         $this->payment = Payments::where('customer_id', $record)->where('is_verified', true)->get();
     }

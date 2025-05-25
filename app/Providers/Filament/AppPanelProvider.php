@@ -32,7 +32,7 @@ class AppPanelProvider extends PanelProvider
             ->login(CustomLogin::class)
             ->unsavedChangesAlerts()
             //->domain('app.osberthvalle.com')
-           // ->passwordReset()
+            // ->passwordReset()
             ->profile()
             ->brandLogo(fn() => view('filament.logo'))
             ->darkModeBrandLogo(fn() => view('filament.dark-logo'))
@@ -66,7 +66,6 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-            
     }
 
     public function boot(): void
@@ -77,7 +76,7 @@ class AppPanelProvider extends PanelProvider
                 'dark' => 'bg-gray-900 text-white',
             ],
             'custom_gray' => '#757275',
-             'custom_light_blue' => '#018079'
+            'custom_light_blue' => '#018079'
         ]);
     }
 }
