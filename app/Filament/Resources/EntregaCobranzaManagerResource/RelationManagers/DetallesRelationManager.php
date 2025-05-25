@@ -133,8 +133,8 @@ class DetallesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Registrar Entrega/Cobranza')
-                    ->icon('heroicon-o-calendar-days')
+                    ->label('Agregar Cliente')
+                    ->icon('heroicon-o-users')
                     ->modalHeading('Nueva Entrega/Cobranza')
                     ->successNotification(
                             Notification::make()
