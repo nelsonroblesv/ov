@@ -4,6 +4,8 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\OrderManagerResource\Pages;
 use App\Filament\App\Resources\OrderManagerResource\RelationManagers;
+use App\Filament\App\Resources\OrderManagerResource\RelationManagers\OrderRelationManager;
+use App\Filament\App\Resources\OrderManagerResource\RelationManagers\PaymentsRelationManager;
 use App\Models\Customer;
 use App\Models\OrderManager;
 use Filament\Forms;
@@ -21,7 +23,13 @@ class OrderManagerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+   protected static ?string $title = 'Pedidos';
+    protected static ?string $slug = 'pedidos';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationLabel = 'Gestionar Pedidos';
+    protected static ?string $breadcrumb = "Gestionar Pedidos";
+     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -115,7 +123,8 @@ class OrderManagerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            OrderRelationManager::class,
+            PaymentsRelationManager::class
         ];
     }
 
