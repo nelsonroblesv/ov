@@ -2,7 +2,16 @@
 
 namespace App\Filament\App\Resources\OrderManagerResource\RelationManagers;
 
+use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -27,9 +36,104 @@ class OrderRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('number')
-                    ->required()
-                    ->maxLength(255),
+                Section::make('Detalles')->schema([
+                    TextInput::make('number')
+                        ->label('Numero de Pedido')
+                        ->default('POV-' . random_int(100000, 9999999))
+                        ->required()
+                        ->maxLength(255)
+                        ->suffixIcon('heroicon-m-hashtag')
+                        ->unique(ignoreRecord: true)
+                        ->disabledOn('edit'),
+
+                    ToggleButtons::make('tipo_nota')
+                        ->label('Tipo de Nota')
+                        ->required()
+                        ->options([
+                            'Sistema' => 'Sistema',
+                            'Remisión' => 'Remisión',
+                        ])
+                        ->inline()
+                        ->default('Sistema')
+                        ->colors([
+                            'Sistema' => 'success',
+                            'Remisión' => 'warning',
+                        ])
+                        ->icons([
+                            'Sistema' => 'heroicon-o-arrow-left-end-on-rectangle',
+                            'Remisión' => 'heroicon-o-arrow-right-end-on-rectangle',
+                        ])
+                        ->default('Sistema'),
+
+                    Select::make('tipo_semana_nota')
+                        ->label('Semana de la Nota')
+                        ->required()
+                        ->options([
+                            'PAR' => 'PAR',
+                            'NON' => 'NON',
+                        ]),
+
+                    Select::make('dia_nota')
+                        ->label('Día de la Nota')
+                        ->required()
+                        ->options([
+                            'Lunes' => 'Lunes',
+                            'Martes' => 'Martes',
+                            'Miercoles' => 'Miercoles',
+                            'Jueves' => 'Jueves',
+                            'Viernes' => 'Viernes',
+                        ]),
+
+                    Select::make('status')
+                        ->label('Estado del Pedido')
+                        ->required()
+                        ->options([
+                            'PEN' => 'Pendiente',
+                            'COM'  => 'Completo',
+                            'REC'  => 'Rechazado',
+                            'REU'  => 'Reubicar',
+                            'DEV'  => 'Devuelta Parcial',
+                            'SIG'  => 'Siguiente Visita'
+                        ]),
+
+                    DatePicker::make('created_at')
+                        ->label('Fecha')
+                        ->default(Carbon::now())
+                        ->required()
+                        ->native(),
+
+                    DatePicker::make('fecha_liquidacion')
+                        ->label('Fecha de liquidación')
+                        ->default(Carbon::now()->addDays(15))
+                        ->native(),
+
+                    TextInput::make('notes')
+                        ->label('Notas adicionales del Pedido')
+                        ->nullable()
+                        ->suffixIcon('heroicon-m-pencil-square'),
+
+                    TextInput::make('grand_total')
+                        ->label('Importe')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->placeholder('0.00')
+                        ->suffixIcon('heroicon-m-currency-dollar'),
+
+                    Hidden::make('solicitado_por')->default(fn() => auth()->id()),
+
+                    FileUpload::make('notas_venta')
+                        ->label('Notas de Venta')
+                        ->placeholder('Haz click para cargar la(s) nota(s) de venta')
+                        ->multiple()
+                        ->directory('notas_venta')
+                        ->openable()
+                        ->downloadable()
+                        ->columnSpanFull(),
+
+                    Hidden::make('registrado_por')->default(fn() => auth()->id()),
+
+                ])->columns(2)
             ]);
     }
 
@@ -72,6 +176,7 @@ class OrderRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Agregar Pedido')
+                    ->icon('heroicon-o-shopping-cart')
                      ->modalHeading('Nuevo Pedido de Cliente')
                     ->successNotification(
                             Notification::make()
@@ -96,7 +201,7 @@ class OrderRelationManager extends RelationManager
                                 ->iconColor('success')
                                 ->color('success')
                         ),
-                    Tables\Actions\DeleteAction::make()
+                  /*  Tables\Actions\DeleteAction::make()
                         ->label('Eliminar')
                         ->successNotification(
                             Notification::make()
@@ -110,6 +215,7 @@ class OrderRelationManager extends RelationManager
                         ->modalHeading('Borrar Pedido de Cliente')
                         ->modalDescription('Estas seguro que deseas eliminar este Pedido? Esta acción no se puede deshacer.')
                         ->modalSubmitActionLabel('Si, eliminar'),
+                        */
                 ])
             ])
             ->bulkActions([

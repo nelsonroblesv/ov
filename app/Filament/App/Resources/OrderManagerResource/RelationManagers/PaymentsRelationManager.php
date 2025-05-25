@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -37,20 +39,7 @@ class PaymentsRelationManager extends RelationManager
             ->schema([
                 Section::make('Informacion del Pago')->schema([
 
-                    Select::make('user_id')
-                        ->required()
-                        ->label('Registrado por:')
-                        ->options(
-                            fn() =>
-                            User::whereIn('id', function ($query) {
-                                $query->select('id')
-                                    ->from('users')
-                                    ->where('is_active', true)
-                                    ->where('role', 'Vendedor')
-                                    ->orWhere('username', 'OArrocha')
-                                    ->orderBy('name', 'DESC');
-                            })->pluck('name', 'id')
-                        ),
+                Hidden::make('user_id')->default(fn() => auth()->id()),
 
                     TextInput::make('importe')
                         ->required()
@@ -108,7 +97,11 @@ class PaymentsRelationManager extends RelationManager
                         'warning' => 'T',
                         'info' => 'O'
                     ]),
-                ToggleColumn::make('is_verified')->label('Verificado'),
+                IconColumn::make('is_verified')->label('Verificado')->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
             ])
             ->filters([
                 //
