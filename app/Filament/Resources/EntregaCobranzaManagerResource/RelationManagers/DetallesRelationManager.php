@@ -14,6 +14,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -74,12 +75,15 @@ class DetallesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('id')
+            ->emptyStateDescription('No hay registros para mostrar')
             ->columns([
-                TextColumn::make('zona')
-                    ->label('Zona'),
+                TextColumn::make('customer.regiones.name')
+                    ->label('Region')
+                    ->sortable(),
 
-                TextColumn::make('region')
-                    ->label('Region'),
+                TextColumn::make('customer.zona.nombre_zona')
+                    ->label('Zona')
+                    ->sortable(),
 
                 TextColumn::make('customer.name'),
 
@@ -91,11 +95,16 @@ class DetallesRelationManager extends RelationManager
                     ->label('Tipo')
                     ->searchable()
                     ->sortable()
+                    ->badge()
                     ->formatStateUsing(fn(string $state): string => [
                         'E' => 'Entrega',
                         'C' => 'Cobranza',
 
-                    ][$state] ?? 'Otro'),
+                    ][$state] ?? 'Otro')
+                    ->colors([
+                        'success' => 'E',
+                        'warning' => 'C'
+                    ]),
 
                 TextColumn::make('user.name')
                     ->label('Vendedor')
@@ -103,7 +112,22 @@ class DetallesRelationManager extends RelationManager
 
             ])
             ->filters([
-                //
+                SelectFilter::make('user_id')
+                    ->label('Vendedor')
+                    ->options(
+                        User::query()
+                            ->where('is_active', true)
+                            ->where('role', 'Vendedor')
+                            ->orderBy('name', 'ASC')
+                            ->pluck('name', 'id')
+                    ),
+
+                 SelectFilter::make('tipo')
+                    ->label('Tipo')
+                    ->options([
+                        'E' => 'Entrega', 
+                        'C' => 'Cobranza'
+                    ])
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
