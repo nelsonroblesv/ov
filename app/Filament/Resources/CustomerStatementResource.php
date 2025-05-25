@@ -64,8 +64,10 @@ class CustomerStatementResource extends Resource
                     ->label('Estado de Cuenta')
                     ->icon('heroicon-o-document-chart-bar')
                     ->url(function($record){
-                       return self::getUrl('invoice',['record'=>$record]);
+                       return self::getUrl('invoice',['record'=>$record], );
                     })
+                    ->openUrlInNewTab()
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

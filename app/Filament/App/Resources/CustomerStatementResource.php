@@ -64,6 +64,8 @@ class CustomerStatementResource extends Resource
                     ->url(function($record){
                        return self::getUrl('invoice',['record'=>$record]);
                     })
+                    ->openUrlInNewTab()
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
