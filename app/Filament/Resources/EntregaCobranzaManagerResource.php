@@ -25,7 +25,13 @@ class EntregaCobranzaManagerResource extends Resource
 {
     protected static ?string $model = EntregaCobranza::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $title = 'Entrega y Cobranza';
+    protected static ?string $slug = 'entrega-cobranza';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationLabel = 'Entrega y Cobranza';
+    protected static ?string $breadcrumb = "Entrega y Cobranza";
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

@@ -34,7 +34,7 @@ class CobranzaResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Cobranza';
     protected static ?string $breadcrumb = "Cobranza";
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
