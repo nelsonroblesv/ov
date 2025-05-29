@@ -34,7 +34,7 @@ class EntregaCobranzaManagerResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Itinerario Semanal';
     protected static ?string $breadcrumb = "Itinerario Semanal";
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {

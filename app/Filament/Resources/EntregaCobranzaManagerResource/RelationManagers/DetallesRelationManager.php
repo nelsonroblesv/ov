@@ -133,7 +133,7 @@ class DetallesRelationManager extends RelationManager
                         'CO' => 'Cobranza',
                     ][$state] ?? 'Otro')
                     ->colors([
-                        'Danger' => 'PR',
+                        'danger' => 'PR',
                         'warning' => 'PO',
                         'info' => 'EP',
                         'success' => 'ER',
@@ -182,8 +182,11 @@ class DetallesRelationManager extends RelationManager
                 SelectFilter::make('tipo')
                     ->label('Tipo')
                     ->options([
-                        'E' => 'Entrega',
-                        'C' => 'Cobranza'
+                        'PR' => 'Prospecto',
+                        'PO' => 'Posible',
+                        'EP' => 'Entrega Primer Pedido',
+                        'ER' => 'Entrega Recurrente',
+                        'CO' => 'Cobranza',
                     ])
             ])
             ->headerActions([
