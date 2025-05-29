@@ -14,12 +14,14 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 
+Carbon::setLocale('es');
+
 class MisVisitas extends BaseWidget
 {
     public function table(Table $table): Table
     {
          return $table
-            ->heading('Visitas para hoy: '.Carbon::now()->locale('es_MX')->format('l j F Y'))
+            ->heading('Visitas para hoy: ' . Carbon::now()->isoFormat('dddd, D [de] MMMM, YYYY'))
             ->query(
                 EntregaCobranzaDetalle::query()
                     ->where('user_id', Auth::id())
