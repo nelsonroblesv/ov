@@ -85,19 +85,6 @@ class DetallesRelationManager extends RelationManager
                         ->preload()
                         ->columnSpanFull(),
 
-                    Select::make('status')->label('Estatus:')->options([
-                        '0' => 'Pendiente',
-                        '1' => 'Completo'
-                    ])
-                        ->required()
-                        ->default(0),
-
-                    ToggleButtons::make('is_verified')->label('Verificado:')->options([
-                        '0' => 'No',
-                        '1' => 'Si'
-                    ])->inline()
-                        ->default(0),
-
                     Textarea::make('notas')
                         ->label('Notas (Administración')
                         ->nullable()
@@ -168,7 +155,8 @@ class DetallesRelationManager extends RelationManager
                 IconColumn::make('status')
                     ->label('Estatus')
                     ->sortable()
-                    ->boolean(),
+                    ->boolean()
+                    ->alignCenter(),
 
                 TextColumn::make('fecha_visita')->label('Visita')->date()
                     ->toggleable(isToggledHiddenByDefault:true)
