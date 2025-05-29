@@ -14,7 +14,12 @@ return new class extends Migration
         Schema::create('entrega_cobranzas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('alta_user_id')->constrained('users');
-            $table->date('fecha_programada');
+            $table->integer('periodo');
+            $table->enum('semana_mes', ['1', '2', '3', '4'])->default(1);
+            $table->integer('semana_anio');
+            $table->boolean('tipo_semana', [0, 1])->default(0);
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
             $table->timestamps();
         });
     }

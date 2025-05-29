@@ -7,8 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class EntregaCobranza extends Model
 {
     protected $fillable = [
-        'fecha_programada',
-        'alta_user_id'
+        'alta_user_id',
+        'periodo',
+        'semana_mes',
+        'semana_anio',
+        'tipo_semana',
+        'fecha_inicio',
+        'fecha_fin'
     ];
 
     public function altaUser()

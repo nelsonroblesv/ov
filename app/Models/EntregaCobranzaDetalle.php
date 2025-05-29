@@ -8,10 +8,15 @@ class EntregaCobranzaDetalle extends Model
 {
     protected $fillable = [
         'entrega_cobranza_id',
-        'customer_id',
+        'fecha_programada',
+        'tipo_visita',
         'user_id',
-        'tipo',
-        'notas'
+        'customer_id',
+        'status',
+        'fecha_visita',
+        'is_verified',
+        'notas_admin',
+        'notas_colab'
     ];
 
     public function entregaCobranza()

@@ -14,8 +14,8 @@ class CreateEntregaCobranzaManager extends CreateRecord
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
-            ->title('Entrega/Cobranza Programada')
-            ->body('Se ha registrado una nueva Entrega/Cobranza. Ahora puedes agregar Clientes.')
+            ->title('Itinerario de Visitas creado')
+            ->body('Se ha registrado un nuevo Itinerario de Visitas. Ahora puedes agregar Colaboradores, Clientes e información de la Visita.')
             ->icon('heroicon-o-check-circle')
             ->iconColor('success')
             ->color('success');

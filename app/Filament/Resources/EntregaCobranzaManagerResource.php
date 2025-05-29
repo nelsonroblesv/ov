@@ -11,8 +11,11 @@ use App\Models\EntregaCobranzaManager;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,12 +28,12 @@ class EntregaCobranzaManagerResource extends Resource
 {
     protected static ?string $model = EntregaCobranza::class;
 
-    protected static ?string $title = 'Entrega y Cobranza';
-    protected static ?string $slug = 'entrega-cobranza';
+    protected static ?string $title = 'Itinerario Semanal';
+    protected static ?string $slug = 'itinerario-semanal';
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
-    protected static ?string $navigationLabel = 'Entrega y Cobranza';
-    protected static ?string $breadcrumb = "Entrega y Cobranza";
+    protected static ?string $navigationLabel = 'Itinerario Semanal';
+    protected static ?string $breadcrumb = "Itinerario Semanal";
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
@@ -38,6 +41,7 @@ class EntregaCobranzaManagerResource extends Resource
         return $form
             ->schema([
                 Section::make('Datos Generales')->schema([
+                    /*
                     DatePicker::make('fecha_programada')
                         ->label('Fecha programada')
                         ->required()
@@ -47,23 +51,58 @@ class EntregaCobranzaManagerResource extends Resource
                         ])
                         ->default(Carbon::now())
                         ->disabledOn('edit'),
+*/
+                    TextInput::make('periodo')->label('Periodo:')->required(),
+
+                    Select::make('semana_mes')->label('Semana (mes):')->options([
+                        '1' => '1',
+                        '2' => '2',
+                        '3' => '3',
+                        '4' => '4',
+                    ])->required(),
+
+                    TextInput::make('semana_anio')->label('Semana (año):')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(52)
+                        ->default(Carbon::now()->weekOfYear)
+                        ->required(),
+
+                    Select::make('tipo_semana')->label('Tipo de semana:')->options([
+                        '0' => 'PAR',
+                        '1' => 'NON'
+                    ])
+                    ->required(),
+
+                    DatePicker::make('fecha_inicio')->label('Fecha de Inicio:')
+                        ->date()
+                        ->default(Carbon::now())
+                         ->required()
+                         ->disabledOn('edit'),
+
+                    DatePicker::make('fecha_fin')->label('Fecha de Fin:')
+                        ->date()
+                        ->default(Carbon::now()->addDay(7))
+                         ->required()
+                         ->disabledOn('edit'),
 
                     Hidden::make('alta_user_id')->default(fn() => auth()->id()),
 
-                ])
+                ])->columns(2)
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('fecha_programada', 'DESC')
+            ->defaultSort('created_at', 'DESC')
             ->columns([
-                TextColumn::make('fecha_programada')
-                        ->label('Fecha programada')
-                        ->date(),
-                 TextColumn::make('altaUser.name')
-                        ->label('Registrado por')
+                TextColumn::make('periodo')->label('Periodo'),
+                TextColumn::make('semana_mes')->label('Semana (mes)')->alignCenter(),
+                TextColumn::make('semana_anio')->label('Semana (anual)')->alignCenter(),
+                TextColumn::make('fecha_inicio')->label('Fecha inicio')->alignCenter(),
+                TextColumn::make('fecha_fin')->label('Fecha_fin'),
+                TextColumn::make('altaUser.name')->label('Registrado por'),
             ])
             ->filters([
                 //

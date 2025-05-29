@@ -4,19 +4,27 @@ namespace App\Filament\Resources\EntregaCobranzaManagerResource\RelationManagers
 
 use App\Filament\Resources\CustomerResource;
 use App\Models\Customer;
+use App\Models\Regiones;
 use App\Models\User;
+use App\Models\Zonas;
+use Carbon\Carbon;
 use Filament\Actions\ActionGroup;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,8 +39,41 @@ class DetallesRelationManager extends RelationManager
         return $form
             ->schema([
                 Section::make('Detalles')->schema([
+                    DatePicker::make('fecha_programada')->label('Fecha programada:')
+                        ->required()
+                        ->default(Carbon::now()),
+
+                    Select::make('tipo_visita')
+                        ->label('Tipo:')
+                        ->required()
+                        ->options([
+                            'PR' => 'Prospecto',
+                            'PO' => 'Posible',
+                            'EP' => 'Entrega Primer Pedido',
+                            'ER' => 'Entrega Recurrente',
+                            'CO' => 'Cobranza',
+                        ]),
+
+                    Select::make('user_id')
+                        ->label('Colaborador asignado:')
+                        ->required()
+                        ->options(
+                            User::query()
+                                ->where('is_active', true)
+                                ->where('role', 'Vendedor')
+                                ->orderBy('name', 'ASC')
+                                ->pluck('name', 'id')
+                        )
+                        ->searchable()
+                        ->preload()
+                        ->columnSpanFull(),
+
+                    // Por el momento se hace manual ya que no hay un orden establecido sobre los clientes
+                    // de cada colaborador. Mas adelante al elegir el cliente, se cargará de forma automatica 
+                    // el colaborador
+
                     Select::make('customer_id')
-                        ->label('Cliente')
+                        ->label('Cliente, Prospecto o Posible:')
                         ->required()
                         ->options(
                             Customer::query()
@@ -44,29 +85,21 @@ class DetallesRelationManager extends RelationManager
                         ->preload()
                         ->columnSpanFull(),
 
-                    Select::make('user_id')
-                        ->label('Vendedor')
+                    Select::make('status')->label('Estatus:')->options([
+                        '0' => 'Pendiente',
+                        '1' => 'Completo'
+                    ])
                         ->required()
-                        ->options(
-                            User::query()
-                                ->where('is_active', true)
-                                ->where('role', 'Vendedor')
-                                ->orderBy('name', 'ASC')
-                                ->pluck('name', 'id')
-                        )
-                        ->searchable()
-                        ->preload(),
+                        ->default(0),
 
-                    Select::make('tipo')
-                        ->label('Tipo')
-                        ->required()
-                        ->options([
-                            'E' => 'Entrega',
-                            'C' => 'Cobranza',
-                        ]),
+                    ToggleButtons::make('is_verified')->label('Verificado:')->options([
+                        '0' => 'No',
+                        '1' => 'Si'
+                    ])->inline()
+                        ->default(0),
 
                     Textarea::make('notas')
-                        ->label('Notas')
+                        ->label('Notas (Administración')
                         ->nullable()
                         ->columnSpanFull()
 
@@ -79,38 +112,72 @@ class DetallesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->emptyStateDescription('No hay registros para mostrar')
+            ->defaultSort('fecha_programada', 'ASC')
             ->columns([
+                TextColumn::make('fecha_programada')->label('Fecha')->date(),
+
                 TextColumn::make('customer.regiones.name')
                     ->label('Region')
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('info')
+                    ->toggleable(isToggledHiddenByDefault:false),
 
                 TextColumn::make('customer.zona.nombre_zona')
                     ->label('Zona')
-                    ->sortable(),
-
-                TextColumn::make('customer.name'),
-
+                    ->sortable()
+                    ->badge()
+                    ->color('danger')
+                    ->toggleable(isToggledHiddenByDefault:false),
+                    
                 TextColumn::make('customer.name')
                     ->label('Cliente')
                     ->searchable(),
 
-                TextColumn::make('tipo')
+                TextColumn::make('tipo_visita')
                     ->label('Tipo')
                     ->sortable()
                     ->badge()
                     ->formatStateUsing(fn(string $state): string => [
-                        'E' => 'Entrega',
-                        'C' => 'Cobranza',
-
+                        'PR' => 'Prospecto',
+                        'PO' => 'Posible',
+                        'EP' => 'Entrega Primer Pedido',
+                        'ER' => 'Entrega Recurrente',
+                        'CO' => 'Cobranza',
                     ][$state] ?? 'Otro')
                     ->colors([
-                        'success' => 'E',
-                        'warning' => 'C'
+                        'Danger' => 'PR',
+                        'warning' => 'PO',
+                        'info' => 'EP',
+                        'success' => 'ER',
+                        'primary' => 'CO',
                     ]),
 
                 TextColumn::make('user.name')
-                    ->label('Vendedor')
+                    ->label('Colaborador')
                     ->searchable(),
+
+                TextColumn::make('notas_admin')
+                    ->label('Notas (Admin)')
+                    ->toggleable(isToggledHiddenByDefault:true),
+
+                TextColumn::make('notas_colab')
+                    ->label('Notas (Colab)')
+                    ->toggleable(isToggledHiddenByDefault:true),
+
+                IconColumn::make('status')
+                    ->label('Estatus')
+                    ->sortable()
+                    ->boolean(),
+
+                TextColumn::make('fecha_visita')->label('Visita')->date()
+                    ->toggleable(isToggledHiddenByDefault:true)
+                    ->alignCenter(),
+
+                  ToggleColumn::make('is_verified')
+                    ->label('Verificado')
+                    ->sortable()
+                    ->alignCenter(),
 
             ])
             ->filters([
@@ -124,33 +191,33 @@ class DetallesRelationManager extends RelationManager
                             ->pluck('name', 'id')
                     ),
 
-                 SelectFilter::make('tipo')
+                SelectFilter::make('tipo')
                     ->label('Tipo')
                     ->options([
-                        'E' => 'Entrega', 
+                        'E' => 'Entrega',
                         'C' => 'Cobranza'
                     ])
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Agregar Cliente')
-                    ->icon('heroicon-o-users')
-                    ->modalHeading('Nueva Entrega/Cobranza')
+                    ->label('Agregar Visita')
+                    ->icon('heroicon-o-list-bullet')
+                    ->modalHeading('Nueva Visita Programada')
                     ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Registro agregado.')
-                                ->body('Se ha registrado una nueva Entrega/Cobranza de forma correcta.')
-                                ->icon('heroicon-o-check-circle')
-                                ->iconColor('success')
-                                ->color('success')
-                        ),
+                        Notification::make()
+                            ->success()
+                            ->title('Registro agregado.')
+                            ->body('Se ha registrado una nueva Visita de forma correcta.')
+                            ->icon('heroicon-o-check-circle')
+                            ->iconColor('success')
+                            ->color('success')
+                    ),
             ])
             ->actions([
                 ActionsActionGroup::make([
                     Tables\Actions\EditAction::make()
-                    ->modalHeading('Editar Entrega/Cobranza')
-                    ->successNotification(
+                        ->modalHeading('Editar Visita')
+                        ->successNotification(
                             Notification::make()
                                 ->success()
                                 ->title('Registro actualizado')
@@ -159,8 +226,8 @@ class DetallesRelationManager extends RelationManager
                                 ->iconColor('success')
                                 ->color('success')
                         ),
-                Tables\Actions\DeleteAction::make()
-                    ->successNotification(
+                    Tables\Actions\DeleteAction::make()
+                        ->successNotification(
                             Notification::make()
                                 ->success()
                                 ->title('Registro eliminado')
@@ -176,7 +243,7 @@ class DetallesRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                  //  Tables\Actions\DeleteBulkAction::make(),
+                    //  Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
