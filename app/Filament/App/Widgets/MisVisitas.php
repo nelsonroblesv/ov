@@ -36,30 +36,45 @@ class MisVisitas extends BaseWidget
             )
             ->columns([
 
-                TextColumn::make('customer.zona.nombre_zona')
-                    ->label('Ubicación')
-                    ->color('info')
-                    ->description(fn($record) => $record->customer?->regiones?->name ?? 'Sin información'),
-
                 TextColumn::make('tipo_visita')
-                    ->label('Visita')
+                    ->label('Ubicaciones')
                     ->html()
                     ->formatStateUsing(function ($record) {
-                        $customer = $record->customer?->name ?? 'Sin información';
-                        $phone = $record->customer?->phone ?? 'Sin información';
-                        $email = $record->customer?->email ?? 'Sin información';
-                        return "
-                            <span style='font-weight:bold;'>{$customer}</span><br>
-                            <span>{$phone}</span><br>
-                            <span>{$email}</span>";
-                    })
-            ])
-            ->filters([
+                        $region = $record->customer?->regiones?->name ?? 'Sin región';
+                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
+                        $tipo = $record->tipo_visita ?? 'Sin tipo';
 
+                        $tipoInfo = match ($tipo) {
+                            'PR' => ['label' => 'Prospecto'],
+                            'PO' => ['label' => 'Posible'],
+                            'EP' => ['label' => 'Entrega Primer Pedido'],
+                            'ER' => ['label' => 'Entrega Recurrente'],
+                            'CO' => ['label' => 'Cobranza'],
+                            default => ['label' => 'Otro'],
+                        };
+
+                        return "<span>📍 {$region}</span><br>
+                                <span>📌 {$zona}<br>
+                                <span>✅ {$tipoInfo['label']}</span>";
+                    }),
+
+                    TextColumn::make('customer_id')
+                    ->label('Detalles')
+                    ->html()
+                    ->formatStateUsing(function ($record) {
+                        $customer = $record->customer?->name ?? 'Sin región';
+                        $phone = $record->customer?->phone ?? 'Sin zona';
+                        $email = $record->customer?->email ?? 'Sin zona';
+
+                        return "<span>{$customer}</span><br>
+                                <span><a href='tel:'{$phone}>{$phone}</a><br>
+                                <span><a href='mailto:'{$email}>{$email}</a>";
+                    }),
             ])
+            ->filters([])
             ->actions([
-                 Tables\Actions\Action::make('view_invoice')
-                    ->label('EC')
+                Tables\Actions\Action::make('view_invoice')
+                    ->label('')
                     ->icon('heroicon-o-document-chart-bar')
                     ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
                     ->openUrlInNewTab()
