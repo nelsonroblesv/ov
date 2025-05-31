@@ -31,7 +31,7 @@ class MisVisitas extends BaseWidget
                 EntregaCobranzaDetalle::query()
                     ->where('user_id', Auth::id())
                     ->whereDate('fecha_programada', '<=', Carbon::now())
-                    ->where('status', false)
+                    ->where('is_verified', false)
                     ->with('customer', 'entregaCobranza')
             )
             ->columns([
@@ -43,6 +43,7 @@ class MisVisitas extends BaseWidget
                         $region = $record->customer?->regiones?->name ?? 'Sin región';
                         $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
                         $tipo = $record->tipo_visita ?? 'Sin tipo';
+                        $fecha =  $record->fecha_programada ?? 'Sin fecha';
 
                         $tipoInfo = match ($tipo) {
                             'PR' => ['label' => 'Prospecto'],
@@ -55,7 +56,9 @@ class MisVisitas extends BaseWidget
 
                         return "<span>📍 {$region}</span><br>
                                 <span>📌 {$zona}<br>
-                                <span>✅ {$tipoInfo['label']}</span>";
+                                <span>✅ {$tipoInfo['label']}<br>
+                                 <span>🗓️ {$fecha}<br>
+                                </span>";
                     }),
 
                     TextColumn::make('customer_id')
@@ -66,15 +69,15 @@ class MisVisitas extends BaseWidget
                         $phone = $record->customer?->phone ?? 'Sin zona';
                         $email = $record->customer?->email ?? 'Sin zona';
 
-                        return "<span>{$customer}</span><br>
-                                <span><a href='tel:'{$phone}>{$phone}</a><br>
-                                <span><a href='mailto:'{$email}>{$email}</a>";
+                        return "<span>👤 {$customer}</span><br>
+                                <span><a href='tel:'{$phone}>📲 {$phone}</a><br>
+                                <span><a href='mailto:'{$email}>📧 {$email}</a>";
                     }),
             ])
             ->filters([])
             ->actions([
                 Tables\Actions\Action::make('view_invoice')
-                    ->label('')
+                    ->label('EC')
                     ->icon('heroicon-o-document-chart-bar')
                     ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
                     ->openUrlInNewTab()
