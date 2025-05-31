@@ -25,7 +25,8 @@ class MisVisitas extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Visitas para hoy: ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->heading('Visitas programadas: ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->description('Lista de visitas para el día de hoy y anteriores no realizadas.')
             ->query(
                 EntregaCobranzaDetalle::query()
                     ->where('user_id', Auth::id())
@@ -35,7 +36,6 @@ class MisVisitas extends BaseWidget
             )
             ->columns([
 
-
                 TextColumn::make('customer.zona.nombre_zona')
                     ->label('Ubicación')
                     ->color('info')
@@ -43,18 +43,26 @@ class MisVisitas extends BaseWidget
 
                 TextColumn::make('tipo_visita')
                     ->label('Visita')
-                    ->sortable()
-                    ->html() // permite HTML (importante para <br>)
+                    ->html()
                     ->formatStateUsing(function ($record) {
                         $customer = $record->customer?->name ?? 'Sin información';
                         $phone = $record->customer?->phone ?? 'Sin información';
+                        $email = $record->customer?->email ?? 'Sin información';
                         return "
-                            <span class='text-blue-600 font-semibold'>{$customer}</span><br>
-                            <span class='text-red-600'>{$phone}</span>";
+                            <span style='font-weight:bold;'>{$customer}</span><br>
+                            <span>{$phone}</span><br>
+                            <span>{$email}</span>";
                     })
-                    //->description(fn($record) => $record->customer?->name ?? 'Sin información')
             ])
-            ->filters([])
-            ->actions([]);
+            ->filters([
+
+            ])
+            ->actions([
+                 Tables\Actions\Action::make('view_invoice')
+                    ->label('EC')
+                    ->icon('heroicon-o-document-chart-bar')
+                    ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
+                    ->openUrlInNewTab()
+            ]);
     }
 }

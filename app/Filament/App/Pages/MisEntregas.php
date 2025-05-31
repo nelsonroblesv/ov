@@ -119,7 +119,6 @@ class MisEntregas extends Page implements HasTable
                     ->label('Estado de Cuenta')
                     ->icon('heroicon-o-document-chart-bar')
                     ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
-
                     ->openUrlInNewTab()
             ]);
     }
