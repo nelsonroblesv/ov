@@ -7,8 +7,10 @@ use Filament\Pages\Page;
 use Filament\Tables;
 use App\Models\EntregaCobranzaDetalle;
 use Carbon\Carbon;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -37,23 +39,26 @@ class MisEntregas extends Page implements HasTable
                     ->where('user_id', Auth::id())
                     ->with('customer', 'entregaCobranza')
             )
+            ->heading('Administrador de visitas programadas durante la semana.')
+            ->description('Lista de visitas a realizar.')
+            ->emptyStateHeading('No hay visitas programadas')
+            ->defaultSort('fecha_programada', 'ASC')
             ->columns([
                 TextColumn::make('fecha_programada')
                     ->label('Fecha')
                     ->sortable()
                     ->date(),
 
-                TextColumn::make('customer.regiones.name')
-                    ->label('Region')
-                    ->sortable()
-                    ->badge()
-                    ->color('info'),
+                TextColumn::make('customer_id')
+                    ->label('Ubicaciones')
+                    ->html()
+                    ->formatStateUsing(function ($record) {
+                        $region = $record->customer?->regiones?->name ?? 'Sin región';
+                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
 
-                TextColumn::make('customer.zona.nombre_zona')
-                    ->label('Zona')
-                    ->sortable()
-                    ->badge()
-                    ->color('danger'),
+                        return "<span>📍 {$region}</span><br>
+                                <span>📌 {$zona}</span>";
+                    }),
 
                 TextColumn::make('customer.name')->label('Cliente'),
                 TextColumn::make('tipo_visita')
@@ -72,27 +77,23 @@ class MisEntregas extends Page implements HasTable
                         'warning' => 'PO',
                         'info' => 'EP',
                         'success' => 'ER',
-                        'primary' => 'CO',
+                        'black' => 'CO',
                     ]),
 
-                IconColumn::make('status')
-                    ->label('Estatus')
+                ToggleColumn::make('status')
+                    ->label('Completado')
                     ->sortable()
-                    ->boolean()
                     ->alignCenter(),
-
+                /*
                 TextColumn::make('fecha_visita')->label('Visita')->date()
                     ->toggleable(isToggledHiddenByDefault:true)
                     ->alignCenter(),
-
-               IconColumn::make('is_verified')
+*/
+                IconColumn::make('is_verified')
                     ->label('Verificado')
                     ->sortable()
                     ->boolean()
-                    ->alignCenter(),
-
-                TextColumn::make('fecha_visita')->label('Visita')->date()
-                    ->alignCenter(),
+                    ->alignCenter()
             ])
             ->filters([
                 Filter::make('hoy')
@@ -115,11 +116,13 @@ class MisEntregas extends Page implements HasTable
                     }),
             ])
             ->actions([
-                Tables\Actions\Action::make('view_invoice')
-                    ->label('Estado de Cuenta')
-                    ->icon('heroicon-o-document-chart-bar')
-                    ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
-                    ->openUrlInNewTab()
+                ActionGroup::make([
+                    Tables\Actions\Action::make('view_invoice')
+                        ->label('Estado de Cuenta')
+                        ->icon('heroicon-o-document-chart-bar')
+                        ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
+                        ->openUrlInNewTab()
+                ])
             ]);
     }
 }

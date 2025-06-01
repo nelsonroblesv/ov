@@ -21,12 +21,14 @@ class MisVisitas extends BaseWidget
 {
 
     //protected int | string | array $columnSpan = 'full';
+    protected static ?int $sort = 0;
 
     public function table(Table $table): Table
     {
         return $table
             ->heading('Visitas programadas: ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
-            ->description('Lista de visitas para el día de hoy y anteriores no realizadas.')
+            ->description('Lista de visitas pendientes y no verificadas.')
+            ->emptyStateHeading('No hay visitas programadas')
             ->query(
                 EntregaCobranzaDetalle::query()
                     ->where('user_id', Auth::id())
@@ -42,23 +44,19 @@ class MisVisitas extends BaseWidget
                     ->formatStateUsing(function ($record) {
                         $region = $record->customer?->regiones?->name ?? 'Sin región';
                         $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
-                        $tipo = $record->tipo_visita ?? 'Sin tipo';
                         $fecha =  $record->fecha_programada ?? 'Sin fecha';
-
-                        $tipoInfo = match ($tipo) {
-                            'PR' => ['label' => 'Prospecto'],
-                            'PO' => ['label' => 'Posible'],
-                            'EP' => ['label' => 'Entrega Primer Pedido'],
-                            'ER' => ['label' => 'Entrega Recurrente'],
-                            'CO' => ['label' => 'Cobranza'],
+                        $status =  $record->status ?? 'Sin info';
+                        $tipoStatus = match ($status) {
+                            1 => ['label' => 'Completado'],
+                            0 => ['label' => 'Pendiente'],
                             default => ['label' => 'Otro'],
                         };
 
-                        return "<span>📍 {$region}</span><br>
-                                <span>📌 {$zona}<br>
-                                <span>✅ {$tipoInfo['label']}<br>
-                                 <span>🗓️ {$fecha}<br>
-                                </span>";
+                        return "
+                                <span>🗓️ {$fecha}</span><br>
+                                <span>📍 {$region}</span><br>
+                                <span>📌 {$zona}</span><br>
+                                 <span>🚚 {$tipoStatus['label']}</span><br>";
                     }),
 
                     TextColumn::make('customer_id')
@@ -69,18 +67,31 @@ class MisVisitas extends BaseWidget
                         $phone = $record->customer?->phone ?? 'Sin zona';
                         $email = $record->customer?->email ?? 'Sin zona';
 
-                        return "<span>👤 {$customer}</span><br>
+                        $tipo = $record->tipo_visita ?? 'Sin tipo';
+                        $tipoInfo = match ($tipo) {
+                            'PR' => ['label' => 'Prospecto'],
+                            'PO' => ['label' => 'Posible'],
+                            'EP' => ['label' => 'Entrega Primer Pedido'],
+                            'ER' => ['label' => 'Entrega Recurrente'],
+                            'CO' => ['label' => 'Cobranza'],
+                            default => ['label' => 'Otro'],
+                        };
+
+                        return "<span>📢 {$tipoInfo['label']}</span><br>
+                                <span>👤 {$customer}</span><br>
                                 <span><a href='tel:'{$phone}>📲 {$phone}</a><br>
                                 <span><a href='mailto:'{$email}>📧 {$email}</a>";
                     }),
             ])
             ->filters([])
             ->actions([
+                /*
                 Tables\Actions\Action::make('view_invoice')
                     ->label('EC')
                     ->icon('heroicon-o-document-chart-bar')
                     ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
                     ->openUrlInNewTab()
+                    */
             ]);
     }
 }
