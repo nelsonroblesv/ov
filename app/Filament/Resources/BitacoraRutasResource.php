@@ -30,10 +30,10 @@ class BitacoraRutasResource extends Resource
     protected static ?string $model = BitacoraCustomers::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?string $navigationGroup = 'Bitacora';
-    protected static ?string $navigationLabel = 'Registros de Rutas';
-    protected static ?string $breadcrumb = 'Registros de Rutas';
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Rutas';
+    protected static ?string $navigationLabel = 'Bitacora';
+    protected static ?string $breadcrumb = 'Bitacora';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

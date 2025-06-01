@@ -28,12 +28,12 @@ class EntregaCobranzaManagerResource extends Resource
 {
     protected static ?string $model = EntregaCobranza::class;
 
-    protected static ?string $title = 'Itinerario Semanal';
-    protected static ?string $slug = 'itinerario-semanal';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationGroup = 'Pedidos & Pagos';
-    protected static ?string $navigationLabel = 'Itinerario Semanal';
-    protected static ?string $breadcrumb = "Itinerario Semanal";
+    protected static ?string $title = 'Administrar Agenda';
+    protected static ?string $slug = 'administrar-agenda';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
+    protected static ?string $navigationGroup = 'Agenda de Trabajo';
+    protected static ?string $navigationLabel = 'Agendar Visitas';
+    protected static ?string $breadcrumb = "Agendar Visitas";
     protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form

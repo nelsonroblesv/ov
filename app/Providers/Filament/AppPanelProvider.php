@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Widgets\StatsVisitas;
 use App\Filament\Auth\CustomLogin;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActualWidget;
 use Filament\Http\Middleware\Authenticate;

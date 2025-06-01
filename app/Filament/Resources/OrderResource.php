@@ -49,6 +49,8 @@ class OrderResource extends Resource
     protected static ?string $breadcrumb = "Pedidos";
     protected static ?int $navigationSort = 6;
 
+    protected static bool $shouldRegisterNavigation = false;
+
 
     public static function form(Form $form): Form
     {
@@ -276,10 +278,11 @@ class OrderResource extends Resource
         return static::getModel()::where('status', '-', 'PEN')->count() > 1 ? 'success' : 'info';
     }
 
+    protected static ?string $navigationBadgeTooltip = 'Pedidos Pendientes';
+/*
     public static function shouldRegisterNavigation(): bool
     {
         return auth()->user()?->role === 'Administrador';
     }
-
-    protected static ?string $navigationBadgeTooltip = 'Pedidos Pendientes';
+        */
 }

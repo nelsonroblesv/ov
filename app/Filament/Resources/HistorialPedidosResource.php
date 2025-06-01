@@ -39,6 +39,7 @@ class HistorialPedidosResource extends Resource
     protected static ?string $navigationLabel = 'Historial de Pedidos';
     protected static ?string $breadcrumb = "Historial de Pedidos";
     protected static ?int $navigationSort = 5;
+    protected static bool $shouldRegisterNavigation = false;
     
     public static function form(Form $form): Form
     {
@@ -325,9 +326,10 @@ class HistorialPedidosResource extends Resource
             'edit' => Pages\EditHistorialPedidos::route('/{record}/edit'),
         ];
     }
-
+/*
     public static function shouldRegisterNavigation(): bool
     {
         return auth()->user()?->role === 'Administrador';
     }
+        */
 }

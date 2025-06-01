@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Widgets\StatsVisitas;
 use App\Filament\Auth\CustomLogin;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActual;
 use App\Filament\Resources\AsignarTipoSemanaResource\Widgets\SemanaActualWidget;
@@ -68,6 +69,7 @@ class DashboardPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Clientes & Prospectos',
                 'Pedidos & Pagos',
+                'Agenda de Trabajo',
                 'Catalogo',
                 'Bitacora',
                 'Administrar'
