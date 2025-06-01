@@ -10,7 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditEntregaCobranzaManager extends EditRecord
 {
     protected static string $resource = EntregaCobranzaManagerResource::class;
-    protected static ?string $title = 'Editar Entrega y Cobranza';
+    protected static ?string $title = 'Editar Detalles de la Visita';
 
     protected function getHeaderActions(): array
     {

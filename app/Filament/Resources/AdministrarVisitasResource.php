@@ -46,19 +46,16 @@ class AdministrarVisitasResource extends Resource
             ->columns([
                 TextColumn::make('fecha_programada')->label('Fecha')->date(),
 
-                TextColumn::make('customer.regiones.name')
-                    ->label('Region')
-                    ->sortable()
-                    ->badge()
-                    ->color('info')
-                    ->toggleable(isToggledHiddenByDefault:false),
+               TextColumn::make('customer_id')
+                    ->label('Ubicaciones')
+                    ->html()
+                    ->formatStateUsing(function ($record) {
+                        $region = $record->customer?->regiones?->name ?? 'Sin región';
+                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
 
-                TextColumn::make('customer.zona.nombre_zona')
-                    ->label('Zona')
-                    ->sortable()
-                    ->badge()
-                    ->color('danger')
-                    ->toggleable(isToggledHiddenByDefault:false),
+                        return "<span>📍 {$region}</span><br>
+                                <span>📌 {$zona}</span>";
+                    }),
                     
                 TextColumn::make('customer.name')
                     ->label('Cliente')
