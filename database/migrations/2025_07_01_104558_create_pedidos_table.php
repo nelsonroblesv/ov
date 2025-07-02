@@ -30,7 +30,6 @@ return new class extends Migration
             $table->string('estado_pedido')->nullable();
             $table->date('fecha_entrega')->nullable();
             $table->date('fecha_liquidacion')->nullable();
-            $table->foreignId('distribuidor')->constrained('users')->cascadeOnDelete();
             $table->foreignId('entrega')->constrained('users')->cascadeOnDelete();
             $table->foreignId('reparto')->constrained('users')->cascadeOnDelete();
             $table->longText('observaciones')->nullable();

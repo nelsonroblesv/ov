@@ -31,7 +31,6 @@ class Pedido extends Model
         'estado_pedido',
         'fecha_entrega',
         'fecha_liquidacion',
-        'distribuidor',
         'entrega',
         'reparto',
         'observaciones',

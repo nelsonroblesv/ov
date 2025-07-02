@@ -232,13 +232,6 @@ class PedidosResource extends Resource
                                     ->suffixIcon('heroicon-m-calendar-date-range')
                                     ->default(Carbon::now()->addDays(15)),
 
-                                Select::make('distribuidor')
-                                    ->label('Distribuidor')
-                                    ->suffixIcon('heroicon-m-building-library')
-                                    ->options([
-                                        '1' => 'OSBERTH',
-                                    ]),
-
                                 Select::make('entrega')
                                     ->label('Entrega')
                                     ->suffixIcon('heroicon-m-archive-box-arrow-down')
