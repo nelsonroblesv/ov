@@ -28,7 +28,13 @@ class PedidosResource extends Resource
 {
     protected static ?string $model = Pedido::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $title = 'Pedidos';
+    protected static ?string $slug = 'pedidos';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationLabel = 'Gestionar Pedidos';
+    protected static ?string $breadcrumb = "Gestionar Pedidos";
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
