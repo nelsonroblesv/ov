@@ -311,13 +311,7 @@ class PedidosResource extends Resource
                         'V' => 'VIERNES'
                     ][$state] ?? 'Otro')
                     ->badge()
-                    ->color(fn(string $state): string => [
-                        'L' => 'info',
-                        'M' => 'secondary',
-                        'X' => 'warning',
-                        'J' => 'danger',
-                        'V' => 'success'
-                    ][$state] ?? 'primary'),
+                    ->color('primary'),
 
                 TextColumn::make('userDistribuidor.name')
                     ->label('Distribuidor')
@@ -332,15 +326,15 @@ class PedidosResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->badge()
-                    ->color('info')
+                    ->color('danger')
                     ->icon('heroicon-m-archive-box-arrow-down'),
 
                 TextColumn::make('userReparto.name')
                     ->label('Reparto')
                     ->searchable()
                     ->sortable()->badge()
-                    ->color('danger')
-                    ->icon('heroicon-m-truck'),
+                    ->color('info')
+                    ->icon('heroicon-m-archive-box-arrow-down'),
 
                 TextColumn::make('customer_type')
                     ->label('Tipo Cliente')

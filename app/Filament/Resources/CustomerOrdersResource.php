@@ -40,6 +40,8 @@ class CustomerOrdersResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
     protected static ?string $breadcrumb = "Gestionar Pedidos";
+    protected static bool $shouldRegisterNavigation = false;
+
      protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

@@ -9,11 +9,14 @@ use Filament\Resources\Pages\ListRecords;
 class ListPedidos extends ListRecords
 {
     protected static string $resource = PedidosResource::class;
+     protected static ?string $title = 'Historial de Pedidos';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Registrar Pedido')
+            ->icon('heroicon-o-shopping-bag'),
         ];
     }
 }
