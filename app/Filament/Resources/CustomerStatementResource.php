@@ -27,6 +27,7 @@ class CustomerStatementResource extends Resource
     protected static ?string $navigationLabel = 'Estados de Cuenta';
     protected static ?string $breadcrumb = "Estados de Cuenta";
     protected static ?int $navigationSort = 1;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

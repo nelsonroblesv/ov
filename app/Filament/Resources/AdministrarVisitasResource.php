@@ -28,6 +28,7 @@ class AdministrarVisitasResource extends Resource
     protected static ?string $navigationLabel = 'Administrar Visitas';
     protected static ?string $breadcrumb = "Administrar Visitas";
     protected static ?int $navigationSort = 1;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

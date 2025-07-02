@@ -35,6 +35,7 @@ class EntregaCobranzaManagerResource extends Resource
     protected static ?string $navigationLabel = 'Agendar Visitas';
     protected static ?string $breadcrumb = "Agendar Visitas";
     protected static ?int $navigationSort = 0;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

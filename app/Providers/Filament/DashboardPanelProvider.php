@@ -62,7 +62,7 @@ class DashboardPanelProvider extends PanelProvider
                 //Widgets\FilamentInfoWidget::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Ver como Usuario')
+                NavigationItem::make('Vista Vendedor')
                     ->url('/', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-eye')
             ])

@@ -48,8 +48,7 @@ class OrderResource extends Resource
     protected static ?string $navigationLabel = 'Pedidos OLD';
     protected static ?string $breadcrumb = "Pedidos OLD";
     protected static ?int $navigationSort = 2;
-
-
+   protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {
