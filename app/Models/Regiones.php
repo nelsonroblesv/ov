@@ -18,4 +18,10 @@ class Regiones extends Model
     {
         return $this->hasMany(Rutas::class);
     }
+
+     public function pedido()
+    {
+        return $this->belongsTo(Pedido::class);
+    }
+
 }

@@ -31,4 +31,10 @@ class Zonas extends Model
     {
         return $this->hasMany(Customer::class);
     }
+
+     public function pedido()
+    {
+        return $this->belongsTo(Pedido::class);
+    }
+
 }

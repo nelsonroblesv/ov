@@ -3,11 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PedidosResource\Pages;
-use App\Filament\Resources\PedidosResource\RelationManagers;
+use App\Models\Customer;
 use App\Models\Pedido;
-use Filament\Forms;
+use App\Models\User;
+use App\Models\Zonas;
+use Carbon\Carbon;
+use DragonCode\Contracts\Cashier\Auth\Auth;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -17,9 +21,12 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class PedidosResource extends Resource
 {
@@ -37,21 +44,66 @@ class PedidosResource extends Resource
                             Section::make()->schema([
                                 Select::make('customer_id')
                                     ->label('Cliente')
-                                    ->columnSpanFull(),
+                                    ->searchable()
+                                    ->suffixIcon('heroicon-m-user')
+                                    ->columnSpanFull()
+                                    ->options(Customer::query()
+                                        ->where('is_active', true)
+                                        ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                                        ->orderBy('name', 'ASC')
+                                        ->pluck('name', 'id'))
+                                    ->reactive()
+                                    ->preload()
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $customer = Customer::with(['zona', 'regiones'])->find($state);
+                                        if ($customer) {
+                                            $set('zona_nombre', $customer->zona?->nombre_zona);
+                                            $set('region_nombre', $customer->regiones?->name);
+                                            $set('zonas_id', $customer->zona?->id);
+                                            $set('regiones_id', $customer->regiones?->id);
+                                        } else {
+                                            $set('zona_nombre', null);
+                                            $set('region_nombre', null);
+                                            $set('zonas_id', null);
+                                            $set('regiones_id', null);
+                                        }
+                                    }),
 
-                                TextInput::make('zonas_id')
+                                TextInput::make('zona_nombre')
                                     ->label('Zona')
-                                    ->disabled(),
+                                    ->suffixIcon('heroicon-m-map')
+                                    ->disabled()
+                                    ->dehydrated(false),
 
-                                TextInput::make('regiones_id')
+                                Hidden::make('zonas_id')
+                                    ->dehydrated(true),
+                                Hidden::make('regiones_id')
+                                    ->dehydrated(true),
+
+                                TextInput::make('region_nombre')
                                     ->label('Región')
-                                    ->disabled(),
+                                    ->suffixIcon('heroicon-m-map-pin')
+                                    ->disabled()
+                                    ->dehydrated(false),
+
 
                                 Select::make('customer_type')
-                                    ->label('Tipo de Cliente'),
+                                    ->label('Tipo de Cliente')
+                                    ->suffixIcon('heroicon-m-cursor-arrow-rays')
+                                    ->options([
+                                        'N' => 'NUEVO',
+                                        'R' => 'RECURRENTE'
+                                    ])
+                                    ->default('R'),
 
                                 Select::make('factura')
-                                    ->label('Factura'),
+                                    ->label('Factura')
+                                    ->options([
+                                        '1' => 'SI',
+                                        '0' => 'NO'
+                                    ])
+                                    ->default('0')
+                                    ->suffixIcon('heroicon-m-document-currency-dollar'),
 
                             ])->columns(2)
 
@@ -60,28 +112,83 @@ class PedidosResource extends Resource
                         ->schema([
                             Section::make()->schema([
                                 TextInput::make('num_pedido')
-                                    ->label('# Pedido'),
+                                    ->label('# Pedido')
+                                    ->suffixIcon('heroicon-m-hashtag'),
 
                                 DatePicker::make('fecha_pedido')
-                                    ->label('Fecha del Pedido'),
+                                    ->label('Fecha del Pedido')
+                                    ->suffixIcon('heroicon-m-calendar')
+                                    ->default(Carbon::now()),
 
                                 Select::make('tipo_nota')
-                                    ->label('Tipo de Nota'),
+                                    ->label('Tipo de Nota')
+                                    ->suffixIcon('heroicon-m-document-text')
+                                    ->options([
+                                        'sistema' => 'SISTEMA',
+                                        'real' => 'REAL',
+                                        'stock' => 'DESDE STOCK'
+                                    ]),
 
                                 Select::make('tipo_semana_nota')
-                                    ->label('Tipo de Semana'),
+                                    ->label('Tipo de Semana')
+                                    ->suffixIcon('heroicon-m-calendar')
+                                    ->options([
+                                        'P' => 'PAR',
+                                        'N' => 'NON'
+                                    ]),
 
                                 Select::make('periodo')
-                                    ->label('Periodo'),
+                                    ->label('Periodo')
+                                    ->suffixIcon('heroicon-m-calendar-date-range')
+                                    ->options([
+                                        '1' => 'P01',
+                                        '2' => 'P02',
+                                        '3' => 'P03',
+                                        '4' => 'P04',
+                                        '5' => 'P05',
+                                        '6' => 'P06',
+                                        '7' => 'P07',
+                                        '8' => 'P08',
+                                        '9' => 'P09',
+                                        '10' => 'P10',
+                                        '11' => 'P11',
+                                        '12' => 'P12',
+                                        '13' => 'P13'
+                                    ]),
 
                                 Select::make('semana')
-                                    ->label('Semana'),
+                                    ->label('Semana')
+                                    ->suffixIcon('heroicon-m-calendar-days')
+                                    ->options([
+                                        '1' => 'S1',
+                                        '2' => 'S2',
+                                        '3' => 'S3',
+                                        '4' => 'S4'
+                                    ]),
 
                                 Select::make('dia_nota')
-                                    ->label('Día de Nota'),
+                                    ->label('Día de Nota')
+                                    ->suffixIcon('heroicon-m-calendar-days')
+                                    ->options([
+                                        'L' => 'LUNES',
+                                        'M' => 'MARTES',
+                                        'X' => 'MIÉRCOLES',
+                                        'J' => 'JUEVES',
+                                        'V' => 'VIERNES'
+                                    ]),
 
                                 Select::make('estado_pedido')
-                                    ->label('Estado del Pedido'),
+                                    ->label('Estado del Pedido')
+                                    ->suffixIcon('heroicon-m-check-circle')
+                                    ->options([
+                                        'cambio' => 'CAMBIO',
+                                        'cancelado' => 'CANCELADO',
+                                        'entrega' => 'ENTREGA',
+                                        'pagado' => 'PAGADO',
+                                        'pendiente' => 'PENDIENTE',
+                                        'reposicion' => 'REPOSICIÓN',
+                                        'susana' => 'SUSANA'
+                                    ]),
 
                             ])->columns(2)
 
@@ -90,25 +197,50 @@ class PedidosResource extends Resource
                         ->schema([
                             Section::make()->schema([
                                 TextInput::make('monto')
-                                    ->label('Monto del Pedido'),
+                                    ->label('Monto del Pedido')
+                                    ->required()
+                                    ->numeric()
+                                    ->placeholder('0.00')
+                                    ->suffixIcon('heroicon-m-currency-dollar'),
 
-                                Select::make('num_ruta')
-                                    ->label('# Ruta'),
+                                TextInput::make('num_ruta')
+                                    ->label('# Ruta')
+                                    ->suffixIcon('heroicon-m-map'),
 
                                 DatePicker::make('fecha_entrega')
-                                    ->label('Fecha de Entrega'),
+                                    ->label('Fecha de Entrega')
+                                    ->suffixIcon('heroicon-m-calendar-date-range')
+                                    ->default(Carbon::now()->addDays(15)),
 
                                 DatePicker::make('fecha_liquidacion')
-                                    ->label('Fecha de Liquidación'),
+                                    ->label('Fecha de Liquidación')
+                                    ->suffixIcon('heroicon-m-calendar-date-range')
+                                    ->default(Carbon::now()->addDays(15)),
 
                                 Select::make('distribuidor')
-                                    ->label('Distribuidor'),
+                                    ->label('Distribuidor')
+                                    ->suffixIcon('heroicon-m-building-library')
+                                    ->options([
+                                        '1' => 'OSBERTH',
+                                    ]),
 
                                 Select::make('entrega')
-                                    ->label('Entrega'),
+                                    ->label('Entrega')
+                                    ->suffixIcon('heroicon-m-archive-box-arrow-down')
+                                    ->options(User::query()
+                                        ->where('is_active', true)
+                                        ->whereIn('role', ['Vendedor'])
+                                        ->orderBy('name', 'ASC')
+                                        ->pluck('name', 'id')),
 
                                 Select::make('reparto')
-                                    ->label('Reparto'),
+                                    ->label('Reparto')
+                                    ->suffixIcon('heroicon-m-truck')
+                                    ->options(User::query()
+                                        ->where('is_active', true)
+                                        ->whereIn('role', ['Vendedor', 'Repartidor'])
+                                        ->orderBy('name', 'ASC')
+                                        ->pluck('name', 'id')),
 
                                 Textarea::make('observaciones')
                                     ->label('Observaciones')
@@ -121,24 +253,165 @@ class PedidosResource extends Resource
                                     ->directory('notas_venta')
                                     ->openable()
                                     ->downloadable()
-                                    ->columnSpanFull()
+                                    ->columnSpanFull(),
+
+                                Hidden::make('registrado_por')->default(fn() => auth()->id()),
+
                             ])->columns(2)
                         ]),
                 ])->columnSpanFull()
-                    ->startOnStep(3)
-
-
+                    ->startOnStep(1)
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+
             ->columns([
-                //
+                TextColumn::make('fecha_pedido')
+                    ->label('Fecha de Pedido')
+                    ->searchable()
+                    ->sortable()
+                    ->date(),
+
+                TextColumn::make('num_pedido')
+                    ->label('# Pedido')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('tipo_semana_nota')
+                    ->label('PAR/NON')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'P' => 'PAR',
+                        'N' => 'NON'
+                    ][$state] ?? 'Otro'),
+
+                TextColumn::make('dia_nota')
+                    ->label('Día Nota')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'L' => 'LUNES',
+                        'M' => 'MARTES',
+                        'X' => 'MIÉRCOLES',
+                        'J' => 'JUEVES',
+                        'V' => 'VIERNES'
+                    ][$state] ?? 'Otro'),
+
+                TextColumn::make('userDistribuidor.name')
+                    ->label('Distribuidor')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('userEntrega.name')
+                    ->label('Entrega')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('userReparto.name')
+                    ->label('Reparto')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('customer_type')
+                    ->label('Tipo Cliente')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'N' => 'NUEVO',
+                        'R' => 'RECURRENTE'
+                    ][$state] ?? 'Otro'),
+
+                TextColumn::make('zona.nombre_zona')
+                    ->label('Zona')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('region.name')
+                    ->label('Región')
+                    ->searchable()
+                    ->sortable(),
+
+                IconColumn::make('factura')
+                    ->label('Factura')
+                    ->searchable()
+                    ->boolean()
+                    ->sortable(),
+
+                TextColumn::make('periodo'),
+
+                TextColumn::make('semana'),
+
+                TextColumn::make('num_ruta'),
+
+                TextColumn::make('customer.name')
+                    ->label('Cliente')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('fecha_entrega')
+                    ->label('Fecha Entrega')
+                    ->searchable()
+                    ->sortable()
+                    ->date(),
+
+                TextColumn::make('tipo_nota')
+                    ->label('Tipo Nota')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'sistema' => 'SISTEMA',
+                        'real' => 'REAL',
+                        'stock' => 'DE STOCK'
+                    ][$state] ?? 'Otro'),
+
+                TextColumn::make('monto'),
+
+                TextColumn::make('estado_pedido')
+                    ->label('Tipo Nota')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'cambio' => 'CAMBIO',
+                        'cancelado' => 'CANCELADO',
+                        'entrega' => 'ENTREGA',
+                        'pagado' => 'PAGADO',
+                        'pendiente' => 'PENDIENTE',
+                        'reposicion' => 'REPOSICIÓN',
+                        'susana' => 'SUSANA'
+                    ][$state] ?? 'Otro'),
+
+                TextColumn::make('fecha_liquidacion')
+                    ->label('Fecha Liquidación')
+                    ->searchable()
+                    ->sortable()
+                    ->date(),
             ])
             ->filters([
-                //
+                SelectFilter::make('tipo_semana_nota')
+                    ->label('Tipo Semana')
+                    ->options([
+                        'P' => 'PAR',
+                        'N' => 'NON'
+                    ]),
+
+                SelectFilter::make('dia_nota')
+                    ->label('Día Nota')
+                    ->options([
+                        'L' => 'LUNES',
+                        'M' => 'MARTES'
+                    ])
+                    ->multiple(),
+
+                 SelectFilter::make('customer_type')
+                    ->label('Tipo Cliente')
+                    ->options([
+                        'N' => 'NUEVO',
+                        'R' => 'RECURRENTE'
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

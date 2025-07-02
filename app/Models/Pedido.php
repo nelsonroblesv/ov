@@ -14,11 +14,29 @@ class Pedido extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'customer_id', 'customer_type', 'zonas_id', 'regiones_id', 'factura', 'num_pedido', 'fecha_pedido', 
-        'tipo_nota', 'tipo_semana_nota', 'periodo', 'semana', 'dia_nota', 'num_ruta', 
-        'monto', 'estado_pedido', 'fecha_entrega', 'fecha_liquidacion',
-        'distribuidor', 'entrega', 'reparto', 'observaciones',
-        'notas_venta', 'registrado_por'
+        'customer_id',
+        'customer_type',
+        'zonas_id',
+        'regiones_id',
+        'factura',
+        'num_pedido',
+        'fecha_pedido',
+        'tipo_nota',
+        'tipo_semana_nota',
+        'periodo',
+        'semana',
+        'dia_nota',
+        'num_ruta',
+        'monto',
+        'estado_pedido',
+        'fecha_entrega',
+        'fecha_liquidacion',
+        'distribuidor',
+        'entrega',
+        'reparto',
+        'observaciones',
+        'notas_venta',
+        'registrado_por'
     ];
 
     protected $casts = [
@@ -29,12 +47,22 @@ class Pedido extends Model
         'monto' => 'decimal:2',
     ];
 
-    public function customer() :BelongsTo
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function registrador() :BelongsTo
+    public function zona(): BelongsTo
+    {
+        return $this->belongsTo(Zonas::class, 'zonas_id');
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Regiones::class, 'regiones_id');
+    }
+
+    public function registrador(): BelongsTo
     {
         return $this->belongsTo(User::class, 'registrado_por');
     }
@@ -44,4 +72,16 @@ class Pedido extends Model
         return $this->hasMany(Payments::class);
     }
 
+    public function userDistribuidor()
+    {
+        return $this->belongsTo(User::class, 'distribuidor');
+    }
+     public function userEntrega()
+    {
+        return $this->belongsTo(User::class, 'entrega');
+    }
+     public function userReparto()
+    {
+        return $this->belongsTo(User::class, 'reparto');
+    }
 }

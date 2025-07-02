@@ -22,12 +22,12 @@ return new class extends Migration
             $table->date('fecha_pedido')->nullable();
             $table->enum('tipo_nota', ['sistema', 'real', 'stock'])->default('sistema');
             $table->enum('tipo_semana_nota', ['P', 'N'])->default('P');
-            $table->string('periodo')->unique();
+            $table->string('periodo')->nullable();
             $table->enum('semana', ['1', '2', '3', '4'])->default('1');
             $table->enum('dia_nota', ['L', 'M', 'X', 'J', 'V'])->default('L');
-            $table->string('num_ruta')->unique();
+            $table->string('num_ruta')->nullable();
             $table->decimal('monto', 10, 2)->nullable();
-            $table->string('estado_pedido')->unique();
+            $table->string('estado_pedido')->nullable();
             $table->date('fecha_entrega')->nullable();
             $table->date('fecha_liquidacion')->nullable();
             $table->foreignId('distribuidor')->constrained('users')->cascadeOnDelete();
