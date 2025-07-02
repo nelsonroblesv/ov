@@ -49,6 +49,7 @@ class PedidosResource extends Resource
                                     ->searchable()
                                     ->suffixIcon('heroicon-m-user')
                                     ->columnSpanFull()
+                                    ->disabledOn('edit')
                                     ->options(Customer::query()
                                         ->where('is_active', true)
                                         ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
