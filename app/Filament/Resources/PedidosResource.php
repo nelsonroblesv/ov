@@ -126,7 +126,9 @@ class PedidosResource extends Resource
                             Section::make()->schema([
                                 TextInput::make('num_pedido')
                                     ->label('# Pedido')
-                                    ->suffixIcon('heroicon-m-hashtag'),
+                                    ->suffixIcon('heroicon-m-hashtag')
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
 
                                 DatePicker::make('fecha_pedido')
                                     ->label('Fecha del Pedido')
