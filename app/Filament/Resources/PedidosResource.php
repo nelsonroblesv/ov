@@ -6,9 +6,7 @@ use App\Filament\Resources\PedidosResource\Pages;
 use App\Models\Customer;
 use App\Models\Pedido;
 use App\Models\User;
-use App\Models\Zonas;
 use Carbon\Carbon;
-use DragonCode\Contracts\Cashier\Auth\Auth;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -25,8 +23,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 class PedidosResource extends Resource
 {
@@ -296,7 +292,12 @@ class PedidosResource extends Resource
                     ->formatStateUsing(fn(string $state): string => [
                         'P' => 'PAR',
                         'N' => 'NON'
-                    ][$state] ?? 'Otro'),
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'P' => 'success',
+                        'N' => 'info'
+                    ][$state] ?? 'primary'),
 
                 TextColumn::make('dia_nota')
                     ->label('Día Nota')
@@ -308,22 +309,38 @@ class PedidosResource extends Resource
                         'X' => 'MIÉRCOLES',
                         'J' => 'JUEVES',
                         'V' => 'VIERNES'
-                    ][$state] ?? 'Otro'),
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'L' => 'info',
+                        'M' => 'secondary',
+                        'X' => 'warning',
+                        'J' => 'danger',
+                        'V' => 'success'
+                    ][$state] ?? 'primary'),
 
                 TextColumn::make('userDistribuidor.name')
                     ->label('Distribuidor')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('warning')
+                    ->icon('heroicon-m-building-library'),
 
                 TextColumn::make('userEntrega.name')
                     ->label('Entrega')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('info')
+                    ->icon('heroicon-m-archive-box-arrow-down'),
 
                 TextColumn::make('userReparto.name')
                     ->label('Reparto')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()->badge()
+                    ->color('danger')
+                    ->icon('heroicon-m-truck'),
 
                 TextColumn::make('customer_type')
                     ->label('Tipo Cliente')
@@ -332,17 +349,24 @@ class PedidosResource extends Resource
                     ->formatStateUsing(fn(string $state): string => [
                         'N' => 'NUEVO',
                         'R' => 'RECURRENTE'
-                    ][$state] ?? 'Otro'),
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'N' => 'success',
+                        'R' => 'info'
+                    ][$state] ?? 'primary'),
 
                 TextColumn::make('zona.nombre_zona')
                     ->label('Zona')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                     ->color('info'),
 
                 TextColumn::make('region.name')
                     ->label('Región')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->color('primary'),
 
                 IconColumn::make('factura')
                     ->label('Factura')
@@ -350,11 +374,18 @@ class PedidosResource extends Resource
                     ->boolean()
                     ->sortable(),
 
-                TextColumn::make('periodo'),
+                TextColumn::make('periodo')
+                    ->badge()
+                    ->color('info')
+                    ->alignCenter(),
 
-                TextColumn::make('semana'),
+                TextColumn::make('semana')
+                    ->badge()
+                    ->color('danger')
+                    ->alignCenter(),
 
-                TextColumn::make('num_ruta'),
+                TextColumn::make('num_ruta')
+                    ->alignCenter(),
 
                 TextColumn::make('customer.name')
                     ->label('Cliente')
@@ -375,9 +406,23 @@ class PedidosResource extends Resource
                         'sistema' => 'SISTEMA',
                         'real' => 'REAL',
                         'stock' => 'DE STOCK'
-                    ][$state] ?? 'Otro'),
+                    ][$state] ?? 'Otro')
+                     ->formatStateUsing(fn(string $state): string => [
+                        'sistema' => 'SISTEMA',
+                        'real' => 'REAL',
+                        'stock' => 'STOCK'
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'sistema' => 'success',
+                        'real' => 'info',
+                        'stock' => 'warning'
+                    ][$state] ?? 'primary'),
 
-                TextColumn::make('monto'),
+                TextColumn::make('monto')
+                    ->badge()
+                    ->color('info')
+                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
 
                 TextColumn::make('estado_pedido')
                     ->label('Tipo Nota')
@@ -391,7 +436,17 @@ class PedidosResource extends Resource
                         'pendiente' => 'PENDIENTE',
                         'reposicion' => 'REPOSICIÓN',
                         'susana' => 'SUSANA'
-                    ][$state] ?? 'Otro'),
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'cambio' => 'info',
+                        'cancelado' => 'danger',
+                        'entrega' => 'warning',
+                        'pagado' => 'success',
+                        'pendiente' => 'primary',
+                        'reposicion' => 'info',
+                        'susana' => 'light'
+                    ][$state] ?? 'primary'),
 
                 TextColumn::make('fecha_liquidacion')
                     ->label('Fecha Liquidación')
