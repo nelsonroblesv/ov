@@ -34,7 +34,7 @@ class PedidosResource extends Resource
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
     protected static ?string $breadcrumb = "Gestionar Pedidos";
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -45,6 +45,7 @@ class PedidosResource extends Resource
                         ->schema([
                             Section::make()->schema([
                                 Select::make('customer_id')
+                                    ->required()
                                     ->label('Cliente')
                                     ->searchable()
                                     ->suffixIcon('heroicon-m-user')

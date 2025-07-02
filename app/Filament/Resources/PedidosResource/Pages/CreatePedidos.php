@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PedidosResource\Pages;
 use App\Filament\Resources\PedidosResource;
 use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Actions\Action as ActionsAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -29,19 +30,17 @@ class CreatePedidos extends CreateRecord
             ->color('success');
     }
 
-    protected function getSaveFormAction(): Action
-       {
-           return parent::getSaveFormAction()
-               ->label('Update User')
-               ->icon('heroicon-o-check-circle')
-               ->color('success');
-       }
+    protected function getFormActions(): array
+    {
+        return [
+           $this->getCreateFormAction()
+            ->label('Registrar Pedido')
+            ->icon('heroicon-o-check'),
 
-       protected function getCancelFormAction(): Action
-       {
-           return parent::getCancelFormAction()
-               ->label('Cancelar')
-               ->icon('heroicon-o-x-mark')
-               ->color('gray');
-       }
+           $this->getCreateAnotherFormAction()->label('Guardar y Registrar Otro')
+           ->hidden(),
+           $this->getCancelFormAction()->label('Cancelar')
+            ->icon('heroicon-o-x-mark'),
+        ];
+    }
 }
