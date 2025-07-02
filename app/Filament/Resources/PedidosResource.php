@@ -67,6 +67,15 @@ class PedidosResource extends Resource
                                             $set('zonas_id', null);
                                             $set('regiones_id', null);
                                         }
+                                    })
+                                    ->afterStateHydrated(function ($state, callable $set) {
+                                        $customer = Customer::with(['zona', 'regiones'])->find($state);
+                                        if ($customer) {
+                                            $set('zona_nombre', $customer->zona?->nombre_zona);
+                                            $set('region_nombre', $customer->regiones?->name);
+                                            $set('zonas_id', $customer->zona?->id);
+                                            $set('regiones_id', $customer->regiones?->id);
+                                        }
                                     }),
 
                                 TextInput::make('zona_nombre')
@@ -406,7 +415,7 @@ class PedidosResource extends Resource
                     ])
                     ->multiple(),
 
-                 SelectFilter::make('customer_type')
+                SelectFilter::make('customer_type')
                     ->label('Tipo Cliente')
                     ->options([
                         'N' => 'NUEVO',
