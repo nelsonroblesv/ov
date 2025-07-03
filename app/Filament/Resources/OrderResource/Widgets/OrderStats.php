@@ -17,7 +17,7 @@ class OrderStats extends BaseWidget
             Stat::make('REUBICADOS', Order::query()->where('status', 'REU')->count()),
             Stat::make('DEVUELTOS', Order::query()->where('status', 'DEV')->count()),
             Stat::make('SIGUIENTE VISITA', Order::query()->where('status', 'SIG')->count()),
-           // Stat::make('Total', Number::currency(Order::query()->sum('grand_total'), 'MXN'))
+           Stat::make('Total', Number::currency(Order::query()->sum('grand_total'), 'MXN'))
             
         ];
     }
