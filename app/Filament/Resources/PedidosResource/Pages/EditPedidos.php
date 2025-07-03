@@ -4,8 +4,10 @@ namespace App\Filament\Resources\PedidosResource\Pages;
 
 use App\Filament\Resources\PedidosResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\IconPosition;
 
 class EditPedidos extends EditRecord
 {
@@ -34,5 +36,22 @@ class EditPedidos extends EditRecord
             Actions\DeleteAction::make()
                 ->label('Borrar'),
         ];
+    }
+
+    // Customize the "Save" button
+    protected function getSaveFormAction(): Action
+    {
+        return parent::getSaveFormAction()
+            ->label('Actualizar Pedido')
+            ->icon('heroicon-o-check-circle')
+            ->iconPosition(IconPosition::Before);
+    }
+
+    // Customize the "Cancel" button
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Cancelar')
+            ->icon('heroicon-o-x-mark');
     }
 }
