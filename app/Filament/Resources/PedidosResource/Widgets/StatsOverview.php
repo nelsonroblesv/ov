@@ -53,11 +53,12 @@ class StatsOverview extends BaseWidget
                 ->description('Hoy: $' . number_format(Pedido::query()->where('created_at', Carbon::now())->sum('monto'), 2))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
-
+/*
            Stat::make('Saldo Total', '$'.number_format(Pedido::query()->sum('monto'), 2))
                 ->description('Hoy: $' . number_format(Pedido::query()->where('created_at', Carbon::now())->sum('monto'), 2))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('warning'),
+                */
         ];
     }
 }
