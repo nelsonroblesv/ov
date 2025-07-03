@@ -23,6 +23,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
 
 class PedidosResource extends Resource
 {
@@ -65,20 +66,31 @@ class PedidosResource extends Resource
                                             $set('region_nombre', $customer->regiones?->name);
                                             $set('zonas_id', $customer->zona?->id);
                                             $set('regiones_id', $customer->regiones?->id);
+
+                                            $ultimoNumero = Pedido::where('customer_id', $state)
+                                                ->max('num_pedido');
+                                            $nuevoNumero = $ultimoNumero ? ($ultimoNumero + 1) : 1;
+                                            $set('num_pedido', $nuevoNumero);
                                         } else {
                                             $set('zona_nombre', null);
                                             $set('region_nombre', null);
                                             $set('zonas_id', null);
                                             $set('regiones_id', null);
+                                            $set('num_pedido', null);
                                         }
                                     })
-                                    ->afterStateHydrated(function ($state, callable $set) {
+                                    ->afterStateHydrated(function ($state, callable $set, $get) {
                                         $customer = Customer::with(['zona', 'regiones'])->find($state);
                                         if ($customer) {
                                             $set('zona_nombre', $customer->zona?->nombre_zona);
                                             $set('region_nombre', $customer->regiones?->name);
                                             $set('zonas_id', $customer->zona?->id);
                                             $set('regiones_id', $customer->regiones?->id);
+
+                                            if (!$get('num_pedido')) {
+                                                $ultimoNumero = Pedido::where('customer_id', $state)->max('num_pedido');
+                                                $set('num_pedido', $ultimoNumero ? ($ultimoNumero + 1) : 1);
+                                            }
                                         }
                                     }),
 
@@ -127,13 +139,13 @@ class PedidosResource extends Resource
                                 TextInput::make('num_pedido')
                                     ->label('# Pedido')
                                     ->suffixIcon('heroicon-m-hashtag')
-                                    ->required()
-                                    ->unique(ignoreRecord: true),
+                                    ->disabled()
+                                    ->dehydrated(),
 
-                                DatePicker::make('fecha_pedido')
-                                    ->label('Fecha del Pedido')
-                                    ->suffixIcon('heroicon-m-calendar')
-                                    ->default(Carbon::now()),
+                                TextInput::make('id_nota')
+                                    ->label('ID Nota')
+                                    ->suffixIcon('heroicon-m-document-check')
+                                    ->unique(ignoreRecord: true, column: 'id_nota'),
 
                                 Select::make('tipo_nota')
                                     ->label('Tipo de Nota')
@@ -220,7 +232,9 @@ class PedidosResource extends Resource
 
                                 TextInput::make('num_ruta')
                                     ->label('# Ruta')
-                                    ->suffixIcon('heroicon-m-map'),
+                                    ->suffixIcon('heroicon-m-map')
+                                    ->numeric()
+                                    ->minValue(1),
 
                                 DatePicker::make('fecha_entrega')
                                     ->label('Fecha de Entrega')
@@ -232,8 +246,8 @@ class PedidosResource extends Resource
                                     ->suffixIcon('heroicon-m-calendar-date-range')
                                     ->default(Carbon::now()->addDays(15)),
 
-                                Select::make('entrega')
-                                    ->label('Entrega')
+                                Select::make('distribuidor')
+                                    ->label('Distribuidor')
                                     ->suffixIcon('heroicon-m-archive-box-arrow-down')
                                     ->options(User::query()
                                         ->where('is_active', true)
@@ -263,6 +277,10 @@ class PedidosResource extends Resource
                                     ->downloadable()
                                     ->columnSpanFull(),
 
+                                Hidden::make('day')->default(fn() => Carbon::now()->day),
+                                Hidden::make('month')->default(fn() => Carbon::now()->month),
+                                Hidden::make('year')->default(fn() => Carbon::now()->year),
+
                                 Hidden::make('registrado_por')->default(fn() => auth()->id()),
 
                             ])->columns(2)
@@ -277,16 +295,95 @@ class PedidosResource extends Resource
         return $table
 
             ->columns([
-                TextColumn::make('fecha_pedido')
-                    ->label('Fecha de Pedido')
+
+                TextColumn::make('num_ruta')
+                    ->label('# Ruta')
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: false),
+
+                TextColumn::make('customer.name')
+                    ->label('Cliente')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('userDistribuidor.name')
+                    ->label('Distribuidor')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('warning')
+                    ->icon('heroicon-m-building-library'),
+
+                TextColumn::make('userReparto.name')
+                    ->label('Reparto')
+                    ->searchable()
+                    ->sortable()->badge()
+                    ->color('info')
+                    ->icon('heroicon-m-archive-box-arrow-down'),
+
+                TextColumn::make('fecha_entrega')
+                    ->label('Fecha Entrega')
                     ->searchable()
                     ->sortable()
                     ->date(),
 
-                TextColumn::make('num_pedido')
-                    ->label('# Pedido')
+                TextColumn::make('fecha_liquidacion')
+                    ->label('Fecha Liquidación')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->date(),
+
+                TextColumn::make('monto')
+                    ->badge()
+                    ->color('info')
+                    ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
+
+                TextColumn::make('saldo'),
+
+                TextColumn::make('tipo_nota')
+                    ->label('Tipo Nota')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'sistema' => 'SISTEMA',
+                        'real' => 'REAL',
+                        'stock' => 'DE STOCK'
+                    ][$state] ?? 'Otro')
+                    ->formatStateUsing(fn(string $state): string => [
+                        'sistema' => 'SISTEMA',
+                        'real' => 'REAL',
+                        'stock' => 'STOCK'
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'sistema' => 'success',
+                        'real' => 'info',
+                        'stock' => 'warning'
+                    ][$state] ?? 'primary'),
+
+                TextColumn::make('estado_pedido')
+                    ->label('Estado Pedido')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(fn(string $state): string => [
+                        'cambio' => 'CAMBIO',
+                        'cancelado' => 'CANCELADO',
+                        'entrega' => 'ENTREGA',
+                        'pagado' => 'PAGADO',
+                        'pendiente' => 'PENDIENTE',
+                        'reposicion' => 'REPOSICIÓN',
+                        'susana' => 'SUSANA'
+                    ][$state] ?? 'Otro')
+                    ->badge()
+                    ->color(fn(string $state): string => [
+                        'cambio' => 'info',
+                        'cancelado' => 'danger',
+                        'entrega' => 'warning',
+                        'pagado' => 'success',
+                        'pendiente' => 'primary',
+                        'reposicion' => 'info',
+                        'susana' => 'light'
+                    ][$state] ?? 'primary'),
 
                 TextColumn::make('tipo_semana_nota')
                     ->label('PAR/NON')
@@ -316,29 +413,6 @@ class PedidosResource extends Resource
                     ->badge()
                     ->color('primary'),
 
-                TextColumn::make('userDistribuidor.name')
-                    ->label('Distribuidor')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color('warning')
-                    ->icon('heroicon-m-building-library'),
-
-                TextColumn::make('userEntrega.name')
-                    ->label('Entrega')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color('danger')
-                    ->icon('heroicon-m-archive-box-arrow-down'),
-
-                TextColumn::make('userReparto.name')
-                    ->label('Reparto')
-                    ->searchable()
-                    ->sortable()->badge()
-                    ->color('info')
-                    ->icon('heroicon-m-archive-box-arrow-down'),
-
                 TextColumn::make('customer_type')
                     ->label('Tipo Cliente')
                     ->searchable()
@@ -357,19 +431,7 @@ class PedidosResource extends Resource
                     ->label('Zona')
                     ->searchable()
                     ->sortable()
-                     ->color('info'),
-
-                TextColumn::make('region.name')
-                    ->label('Región')
-                    ->searchable()
-                    ->sortable()
-                    ->color('primary'),
-
-                IconColumn::make('factura')
-                    ->label('Factura')
-                    ->searchable()
-                    ->boolean()
-                    ->sortable(),
+                    ->color('info'),
 
                 TextColumn::make('periodo')
                     ->badge()
@@ -381,75 +443,37 @@ class PedidosResource extends Resource
                     ->color('danger')
                     ->alignCenter(),
 
-                TextColumn::make('num_ruta')
-                    ->alignCenter(),
-
-                TextColumn::make('customer.name')
-                    ->label('Cliente')
+                IconColumn::make('factura')
+                    ->label('Factura')
                     ->searchable()
+                    ->boolean()
                     ->sortable(),
 
-                TextColumn::make('fecha_entrega')
-                    ->label('Fecha Entrega')
+                TextColumn::make('created_at')
+                    ->label('Fecha Creación')
                     ->searchable()
                     ->sortable()
                     ->date(),
 
-                TextColumn::make('tipo_nota')
-                    ->label('Tipo Nota')
+                TextColumn::make('id_nota')
+                    ->label('ID Nota')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'sistema' => 'SISTEMA',
-                        'real' => 'REAL',
-                        'stock' => 'DE STOCK'
-                    ][$state] ?? 'Otro')
-                     ->formatStateUsing(fn(string $state): string => [
-                        'sistema' => 'SISTEMA',
-                        'real' => 'REAL',
-                        'stock' => 'STOCK'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color(fn(string $state): string => [
-                        'sistema' => 'success',
-                        'real' => 'info',
-                        'stock' => 'warning'
-                    ][$state] ?? 'primary'),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('monto')
-                    ->badge()
-                    ->color('info')
-                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
-
-                TextColumn::make('estado_pedido')
-                    ->label('Tipo Nota')
+                TextColumn::make('num_pedido')
+                    ->label('# Pedido')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'cambio' => 'CAMBIO',
-                        'cancelado' => 'CANCELADO',
-                        'entrega' => 'ENTREGA',
-                        'pagado' => 'PAGADO',
-                        'pendiente' => 'PENDIENTE',
-                        'reposicion' => 'REPOSICIÓN',
-                        'susana' => 'SUSANA'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color(fn(string $state): string => [
-                        'cambio' => 'info',
-                        'cancelado' => 'danger',
-                        'entrega' => 'warning',
-                        'pagado' => 'success',
-                        'pendiente' => 'primary',
-                        'reposicion' => 'info',
-                        'susana' => 'light'
-                    ][$state] ?? 'primary'),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('fecha_liquidacion')
-                    ->label('Fecha Liquidación')
+                TextColumn::make('region.name')
+                    ->label('Región')
                     ->searchable()
                     ->sortable()
-                    ->date(),
+                    ->color('primary')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([
                 SelectFilter::make('tipo_semana_nota')
@@ -462,17 +486,61 @@ class PedidosResource extends Resource
                 SelectFilter::make('dia_nota')
                     ->label('Día Nota')
                     ->options([
-                        'L' => 'LUNES',
-                        'M' => 'MARTES'
+                        'L' => 'Lunes',
+                        'M' => 'Martes',
+                        'X' => 'Miércoles',
+                        'J' => 'Jueves',
+                        'V' => 'Viernes'
                     ])
                     ->multiple(),
 
                 SelectFilter::make('customer_type')
                     ->label('Tipo Cliente')
                     ->options([
-                        'N' => 'NUEVO',
-                        'R' => 'RECURRENTE'
-                    ])
+                        'N' => 'Nuevo',
+                        'R' => 'Recurrente'
+                    ]),
+
+                SelectFilter::make('distribuidor')
+                    ->label('Distribuidor')
+                    ->options(User::query()
+                        ->where('is_active', true)
+                        ->whereIn('role', ['Vendedor'])
+                        ->orderBy('name', 'ASC')
+                        ->pluck('name', 'id')),
+
+                SelectFilter::make('reparto')
+                    ->label('Reparto')
+                    ->options(User::query()
+                        ->where('is_active', true)
+                        ->whereIn('role', ['Vendedor', 'Repartidor'])
+                        ->orderBy('name', 'ASC')
+                        ->pluck('name', 'id')),
+
+                SelectFilter::make('year')
+                    ->label('Año')
+                    ->options([
+                        '2024' => '2024',
+                        '2025' => '2025',
+                    ]),
+                
+                 SelectFilter::make('month')
+                    ->label('Mes')
+                    ->options([
+                        '1' => 'Enero',
+                        '2' => 'Febrero',
+                        '3' => 'Marzo',
+                        '4' => 'Abril',
+                        '5' => 'Mayo',
+                        '6' => 'Junio',
+                        '7' => 'Julio',
+                        '8' => 'Agosto',
+                        '9' => 'Septiembre',
+                        '10' => 'Octubre',
+                        '11' => 'Noviembre',
+                        '12' => 'Diciembre'
+                    ]),
+                   
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -20,7 +20,7 @@ class Pedido extends Model
         'regiones_id',
         'factura',
         'num_pedido',
-        'fecha_pedido',
+        'id_nota',
         'tipo_nota',
         'tipo_semana_nota',
         'periodo',
@@ -31,17 +31,19 @@ class Pedido extends Model
         'estado_pedido',
         'fecha_entrega',
         'fecha_liquidacion',
-        'entrega',
+        'distribuidor',
         'reparto',
         'observaciones',
         'notas_venta',
-        'registrado_por'
+        'registrado_por',
+        'day',
+        'month',
+        'year'
     ];
 
     protected $casts = [
         'notas_venta' => 'array',
         'fecha_liquidacion' => 'date',
-        'fecha_pedido' => 'date',
         'fecha_entrega' => 'date',
         'monto' => 'decimal:2',
     ];
@@ -74,10 +76,6 @@ class Pedido extends Model
     public function userDistribuidor()
     {
         return $this->belongsTo(User::class, 'distribuidor');
-    }
-     public function userEntrega()
-    {
-        return $this->belongsTo(User::class, 'entrega');
     }
      public function userReparto()
     {

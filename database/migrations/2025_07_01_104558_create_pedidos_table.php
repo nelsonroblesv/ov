@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('zonas_id')->constrained('zonas')->cascadeOnDelete();
             $table->foreignId('regiones_id')->constrained('regiones')->cascadeOnDelete();
             $table->boolean('factura')->default(0);
-            $table->string('num_pedido')->unique();
-            $table->date('fecha_pedido')->nullable();
+            $table->string('num_pedido')->nullable();
+            $table->string('id_nota')->unique();
             $table->enum('tipo_nota', ['sistema', 'real', 'stock'])->default('sistema');
             $table->enum('tipo_semana_nota', ['P', 'N'])->default('P');
             $table->string('periodo')->nullable();
@@ -30,11 +30,14 @@ return new class extends Migration
             $table->string('estado_pedido')->nullable();
             $table->date('fecha_entrega')->nullable();
             $table->date('fecha_liquidacion')->nullable();
-            $table->foreignId('entrega')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('distribuidor')->constrained('users')->cascadeOnDelete();
             $table->foreignId('reparto')->constrained('users')->cascadeOnDelete();
             $table->longText('observaciones')->nullable();
             $table->json('notas_venta')->nullable();
-            $table->foreignId('registrado_por')->constrained('users')->cascadeOnDelete();;
+            $table->foreignId('registrado_por')->constrained('users')->cascadeOnDelete();
+            $table->string('day')->nullable();
+            $table->string('month')->nullable();
+            $table->string('year')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
