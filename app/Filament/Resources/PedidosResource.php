@@ -21,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
@@ -349,7 +350,6 @@ class PedidosResource extends Resource
         return $table
 
             ->columns([
-
                 TextColumn::make('num_ruta')
                     ->label('# Ruta')
                     ->alignCenter()
@@ -528,12 +528,14 @@ class PedidosResource extends Resource
 
             ])
             ->filters([
-                SelectFilter::make('tipo_semana_nota')
-                    ->label('Tipo Semana')
-                    ->options([
-                        'P' => 'PAR',
-                        'N' => 'NON'
-                    ]),
+
+/*
+Select::make('tipo_semana_nota')
+                            ->label('Tipo Semana')
+                            ->options([
+                                'P' => 'PAR',
+                                'N' => 'NON'
+                            ]),
 
                 SelectFilter::make('periodo')
                     ->label('Periodo')
@@ -619,6 +621,7 @@ class PedidosResource extends Resource
                         '11' => 'Noviembre',
                         '12' => 'Diciembre'
                     ]),
+                    */
 
             ])
             ->actions([
