@@ -82,6 +82,7 @@ class PedidosResource extends Resource
                                         ->pluck('name', 'id'))
                                     ->reactive()
                                     ->preload()
+                                    ->dehydrated()
                                     ->afterStateUpdated(function ($state, callable $set) {
                                         $customer = Customer::with(['zona', 'regiones'])->find($state);
                                         if ($customer) {

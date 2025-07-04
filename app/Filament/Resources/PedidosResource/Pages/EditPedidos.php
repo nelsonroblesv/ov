@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PedidosResource\Pages;
 
 use App\Filament\Resources\PedidosResource;
+use App\Models\Pedido;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -53,5 +54,29 @@ class EditPedidos extends EditRecord
         return parent::getCancelFormAction()
             ->label('Cancelar')
             ->icon('heroicon-o-x-mark');
+    }
+
+    protected function beforeSave(): void
+    {
+        $data = $this->form->getState();
+       
+        $existe = Pedido::where('customer_id', $data['customer_id'])
+            ->where('dia_nota', $data['dia_nota'])
+            ->where('tipo_semana_nota', $data['tipo_semana_nota'])
+            ->where('periodo', $data['periodo'])
+            ->where('semana', $data['semana'])
+            ->where('id', '!=', $this->record->id)
+            ->exists();
+
+        if ($existe) {
+            Notification::make()
+                ->title('Registro existente')
+                ->body('Este Cliente ya tiene una ruta registrada con la misma combinación de datos. Por favor, verifica los datos ingresados.')
+                ->danger()
+                ->persistent()
+                ->send();
+
+            $this->halt(); // Detiene la actualización
+        }
     }
 }
