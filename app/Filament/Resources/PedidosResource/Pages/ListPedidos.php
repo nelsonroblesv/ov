@@ -13,6 +13,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\View\View;
 
 class ListPedidos extends ListRecords
 {
@@ -362,4 +363,5 @@ class ListPedidos extends ListRecords
             StatsOverview::class
         ];
     }
+
 }
