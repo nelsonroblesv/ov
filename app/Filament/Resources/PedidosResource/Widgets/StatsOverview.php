@@ -50,7 +50,7 @@ class StatsOverview extends BaseWidget
                 ->chart([7, 7, 7, 7, 7, 7, 7]),
 
             Stat::make('Total General', '$'.number_format(Pedido::query()->sum('monto'), 2))
-                ->description('Hoy: $' . number_format(Pedido::query()->where('created_at', Carbon::now())->sum('monto'), 2))
+                ->description('Hoy: $' . number_format($pedidosDeHoy = Pedido::whereDate('created_at', Carbon::today())->get()->sum('monto'), 2))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
 /*

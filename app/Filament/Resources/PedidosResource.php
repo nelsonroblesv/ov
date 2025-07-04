@@ -39,6 +39,29 @@ class PedidosResource extends Resource
 
     public static function form(Form $form): Form
     {
+
+        function calcularNumeroRuta(callable $set, callable $get): void
+        {
+            $dia = $get('dia_nota');
+            $tipoSemana = $get('tipo_semana_nota');
+            $periodo = $get('periodo');
+            $semana = $get('semana');
+
+            // Solo ejecuta si todos los campos están llenos
+            if ($dia && $tipoSemana && $periodo && $semana) {
+                $max = Pedido::where('dia_nota', $dia)
+                    ->where('tipo_semana_nota', $tipoSemana)
+                    ->where('periodo', $periodo)
+                    ->where('semana', $semana)
+                    ->max('num_ruta');
+
+                $siguiente = $max ? $max + 1 : 1;
+
+                $set('num_ruta', $siguiente);
+            } else {
+                $set('num_ruta', null);
+            }
+        }
         return $form
             ->schema([
                 Wizard::make([
@@ -142,11 +165,6 @@ class PedidosResource extends Resource
                                     ->disabled()
                                     ->dehydrated(),
 
-                                TextInput::make('id_nota')
-                                    ->label('ID Nota')
-                                    ->suffixIcon('heroicon-m-document-check')
-                                    ->unique(ignoreRecord: true, column: 'id_nota'),
-
                                 Select::make('tipo_nota')
                                     ->label('Tipo de Nota')
                                     ->suffixIcon('heroicon-m-document-text')
@@ -154,7 +172,26 @@ class PedidosResource extends Resource
                                         'sistema' => 'SISTEMA',
                                         'real' => 'REAL',
                                         'stock' => 'DESDE STOCK'
-                                    ]),
+                                    ])
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if ($state !== 'sistema') {
+                                            do {
+                                                $folio = 'OV-' . str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
+                                            } while (Pedido::where('id_nota', $folio)->exists());
+
+                                            $set('id_nota', $folio);
+                                        } else {
+                                            $set('id_nota', null);
+                                        }
+                                    }),
+
+                                TextInput::make('id_nota')
+                                    ->label('ID de Nota')
+                                    ->disabled(fn(callable $get) => $get('tipo_nota') !== 'sistema')
+                                    ->required()
+                                    ->unique(ignoreRecord: true, column: 'id_nota')
+                                    ->dehydrated(),
 
                                 Select::make('tipo_semana_nota')
                                     ->label('Tipo de Semana')
@@ -162,7 +199,10 @@ class PedidosResource extends Resource
                                     ->options([
                                         'P' => 'PAR',
                                         'N' => 'NON'
-                                    ]),
+                                    ])
+                                    ->reactive()
+                                    ->required()
+                                    ->afterStateUpdated(fn($state, callable $set, callable $get) => calcularNumeroRuta($set, $get)),
 
                                 Select::make('periodo')
                                     ->label('Periodo')
@@ -181,7 +221,10 @@ class PedidosResource extends Resource
                                         '11' => 'P11',
                                         '12' => 'P12',
                                         '13' => 'P13'
-                                    ]),
+                                    ])
+                                    ->reactive()
+                                    ->required()
+                                    ->afterStateUpdated(fn($state, callable $set, callable $get) => calcularNumeroRuta($set, $get)),
 
                                 Select::make('semana')
                                     ->label('Semana')
@@ -191,7 +234,10 @@ class PedidosResource extends Resource
                                         '2' => 'S2',
                                         '3' => 'S3',
                                         '4' => 'S4'
-                                    ]),
+                                    ])
+                                    ->reactive()
+                                    ->required()
+                                    ->afterStateUpdated(fn($state, callable $set, callable $get) => calcularNumeroRuta($set, $get)),
 
                                 Select::make('dia_nota')
                                     ->label('Día de Nota')
@@ -202,7 +248,10 @@ class PedidosResource extends Resource
                                         'X' => 'MIÉRCOLES',
                                         'J' => 'JUEVES',
                                         'V' => 'VIERNES'
-                                    ]),
+                                    ])
+                                    ->reactive()
+                                    ->required()
+                                    ->afterStateUpdated(fn($state, callable $set, callable $get) => calcularNumeroRuta($set, $get)),
 
                                 Select::make('estado_pedido')
                                     ->label('Estado del Pedido')
@@ -233,8 +282,12 @@ class PedidosResource extends Resource
                                 TextInput::make('num_ruta')
                                     ->label('# Ruta')
                                     ->suffixIcon('heroicon-m-map')
-                                    ->numeric()
-                                    ->minValue(1),
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->required()
+                                    ->validationMessages([
+                                        'required' => 'Completa el Dia de Nota, Tipo Semana, Periodo y Semana.',
+                                    ]),
 
                                 DatePicker::make('fecha_entrega')
                                     ->label('Fecha de Entrega')
@@ -334,8 +387,6 @@ class PedidosResource extends Resource
                     ->date(),
 
                 TextColumn::make('monto')
-                    ->badge()
-                    ->color('info')
                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
 
                 TextColumn::make('saldo'),
@@ -483,6 +534,33 @@ class PedidosResource extends Resource
                         'N' => 'NON'
                     ]),
 
+                SelectFilter::make('periodo')
+                    ->label('Periodo')
+                    ->options([
+                        '1' => 'P01',
+                        '2' => 'P02',
+                        '3' => 'P03',
+                        '4' => 'P04',
+                        '5' => 'P05',
+                        '6' => 'P06',
+                        '7' => 'P07',
+                        '8' => 'P08',
+                        '9' => 'P09',
+                        '10' => 'P10',
+                        '11' => 'P11',
+                        '12' => 'P12',
+                        '13' => 'P13'
+                    ]),
+
+                SelectFilter::make('semana')
+                    ->label('Semana')
+                    ->options([
+                        '1' => 'S1',
+                        '2' => 'S2',
+                        '3' => 'S3',
+                        '4' => 'S4'
+                    ]),
+
                 SelectFilter::make('dia_nota')
                     ->label('Día Nota')
                     ->options([
@@ -523,8 +601,8 @@ class PedidosResource extends Resource
                         '2024' => '2024',
                         '2025' => '2025',
                     ]),
-                
-                 SelectFilter::make('month')
+
+                SelectFilter::make('month')
                     ->label('Mes')
                     ->options([
                         '1' => 'Enero',
@@ -540,7 +618,7 @@ class PedidosResource extends Resource
                         '11' => 'Noviembre',
                         '12' => 'Diciembre'
                     ]),
-                   
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

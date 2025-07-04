@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PedidosResource\Pages;
 
 use App\Filament\Resources\PedidosResource;
+use App\Models\Pedido;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions\Action as ActionsAction;
@@ -24,7 +25,7 @@ class CreatePedidos extends CreateRecord
         return Notification::make()
             ->success()
             ->title('Pedido registrado')
-            ->body('Se ha registrado una nueva Pedido de forma exitosa.')
+            ->body('Se ha registrado un nuevo Pedido de forma exitosa.')
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');
@@ -42,5 +43,33 @@ class CreatePedidos extends CreateRecord
            $this->getCancelFormAction()->label('Cancelar')
             ->icon('heroicon-o-x-mark'),
         ];
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $data;
+    }
+
+     protected function beforeCreate(): void
+    {
+        $data = $this->form->getState();
+
+        $existe = Pedido::where('customer_id', $data['customer_id'])
+            ->where('dia_nota', $data['dia_nota'])
+            ->where('tipo_semana_nota', $data['tipo_semana_nota'])
+            ->where('periodo', $data['periodo'])
+            ->where('semana', $data['semana'])
+            ->exists();
+
+        if ($existe) {
+            Notification::make()
+                ->title('Registro existente')
+                ->body('Este Cliente ya tiene una ruta registrada con la misma combinación de datos. Por favor, verifica los datos ingresados.')
+                ->danger()
+                ->persistent()
+                ->send();
+
+            $this->halt(); // Detiene el guardado
+        }
     }
 }
