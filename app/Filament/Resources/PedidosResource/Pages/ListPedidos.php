@@ -24,10 +24,6 @@ class ListPedidos extends ListRecords
 
     protected function getFiltrosHtml(): ?HtmlString
     {
-        if (empty($this->filtros)) {
-            return null;
-        }
-
         $etiquetas = [
             'year' => 'Año',
             'tipo_semana_nota' => 'Tipo Semana',
@@ -37,29 +33,14 @@ class ListPedidos extends ListRecords
             'customer_type' => 'Tipo Cliente',
         ];
 
-         $semana = [
-            'P' => 'Par',
-            'N' => 'Non'
-        ];
+        $semana = ['P' => 'Par', 'N' => 'Non'];
+        $days = ['L' => 'Lunes', 'M' => 'Martes', 'X' => 'Miércoles', 'J' => 'Jueves', 'V' => 'Viernes'];
+        $customerTypes = ['N' => 'Nuevo', 'R' => 'Recurrente'];
 
-        $days = [
-            'L' => 'Lunes',
-            'M' => 'Martes',
-            'X' => 'Miércoles',
-            'J' => 'Jueves',
-            'V' => 'Viernes'
-        ];
-
-        $customerTypes = [
-            'N' => 'Nuevo',
-            'R' => 'Recurrente'
-        ];
-
-        $html = '<div style="font-size:13px;">';
+        $badges = [];
 
         foreach ($this->filtros as $campo => $valor) {
             if (!blank($valor)) {
-
                 $etiqueta = $etiquetas[$campo] ?? ucfirst(str_replace('_', ' ', $campo));
 
                 if ($campo === 'tipo_semana_nota' && isset($semana[$valor])) {
@@ -74,14 +55,28 @@ class ListPedidos extends ListRecords
                     $valor = $customerTypes[$valor];
                 }
 
-                $html .=  '<span style="font-family:Poppins;font-size:11px;padding:3px 9px 3px 9px;border-radius:5px;background:#3a3327;margin-right:5px;color:#e19f1e;border:1px solid #e19f1e">' . e($etiqueta) . ': ' . e($valor) . '</span>';
+                $badges[] = '<span style="font-family:Poppins;font-size:11px;padding:3px 9px;border-radius:5px;background:#3a3327;margin-right:5px;color:#e19f1e;border:1px solid #e19f1e">'
+                    . e($etiqueta) . ': ' . e($valor) .
+                    '</span>';
             }
         }
 
-        $html .= '</div>';
+        // Si no hay badges, retorna null
+        if (empty($badges)) {
+            return null;
+        }
+
+        $html = '<div style="font-size:13px; margin-bottom:5px;">
+                <strong style="color:#3cca73; font-family:Poppins; font-size:12px;">
+                    Filtros aplicados:
+                </strong>
+             </div>';
+
+        $html .= '<div style="font-size:13px;">' . implode('', $badges) . '</div>';
 
         return new HtmlString($html);
     }
+
 
     public function table(Table $table): Table
     {
@@ -355,9 +350,9 @@ class ListPedidos extends ListRecords
                     ->label('Limpiar filtros')
                     ->icon('heroicon-m-x-circle')
                     ->color('gray')
-                    ->action(function() {
+                    ->action(function () {
                         $this->filtros = [];
-                         $this->resetTable();
+                        $this->resetTable();
                     })
             ])
             ->modifyQueryUsing(function ($query) {
