@@ -12,8 +12,9 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\View\View;
+use Illuminate\Support\HtmlString;
 
 class ListPedidos extends ListRecords
 {
@@ -21,11 +22,72 @@ class ListPedidos extends ListRecords
     protected static ?string $title = 'Historial de Pedidos';
     public array $filtros = [];
 
+    protected function getFiltrosHtml(): ?HtmlString
+    {
+        if (empty($this->filtros)) {
+            return null;
+        }
+
+        $etiquetas = [
+            'year' => 'Año',
+            'tipo_semana_nota' => 'Tipo Semana',
+            'periodo' => 'Periodo',
+            'semana' => 'Semana',
+            'dia_nota' => 'Día Nota',
+            'customer_type' => 'Tipo Cliente',
+        ];
+
+         $semana = [
+            'P' => 'Par',
+            'N' => 'Non'
+        ];
+
+        $days = [
+            'L' => 'Lunes',
+            'M' => 'Martes',
+            'X' => 'Miércoles',
+            'J' => 'Jueves',
+            'V' => 'Viernes'
+        ];
+
+        $customerTypes = [
+            'N' => 'Nuevo',
+            'R' => 'Recurrente'
+        ];
+
+        $html = '<div style="font-size:13px;">';
+
+        foreach ($this->filtros as $campo => $valor) {
+            if (!blank($valor)) {
+
+                $etiqueta = $etiquetas[$campo] ?? ucfirst(str_replace('_', ' ', $campo));
+
+                if ($campo === 'tipo_semana_nota' && isset($semana[$valor])) {
+                    $valor = $semana[$valor];
+                }
+
+                if ($campo === 'dia_nota' && isset($days[$valor])) {
+                    $valor = $days[$valor];
+                }
+
+                if ($campo === 'customer_type' && isset($customerTypes[$valor])) {
+                    $valor = $customerTypes[$valor];
+                }
+
+                $html .=  '<span style="font-family:Poppins;font-size:11px;padding:3px 9px 3px 9px;border-radius:5px;background:#3a3327;margin-right:5px;color:#e19f1e;border:1px solid #e19f1e">' . e($etiqueta) . ': ' . e($valor) . '</span>';
+            }
+        }
+
+        $html .= '</div>';
+
+        return new HtmlString($html);
+    }
+
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Lista de Pedidos')
-            ->description('Pedidos registrados en el sistema')
+            ->heading('Lista de pedidos')
+            ->description($this->getFiltrosHtml() ?? '')
             ->columns([
                 TextColumn::make('num_ruta')
                     ->label('# Ruta')
@@ -207,145 +269,143 @@ class ListPedidos extends ListRecords
             ->headerActions([
 
                 Action::make('filtrar')
-                    ->label('Filtros')
+                    ->label('Filtros avanzados')
                     ->icon('heroicon-m-funnel')
+                    ->color('warning')
                     ->form([
-                       Section::make('Selecciona los filtros a aplicar')->schema([
-                         Select::make('tipo_semana_nota')
-                            ->label('Tipo de semana')
-                            ->placeholder('Todos')
-                            ->options([
-                                'P' => 'PAR',
-                                'N' => 'NON',
-                            ])
-                            ->default($this->filtros['tipo_semana_nota'] ?? null),
+                        Section::make('Selecciona los filtros a aplicar')->schema([
+                            Select::make('year')
+                                ->label('Año')
+                                ->placeholder('Todos')
+                                ->options([
+                                    '2024' => '2024',
+                                    '2025' => '2025',
+                                ])
+                                ->default($this->filtros['year'] ?? null),
 
-                        Select::make('periodo')
-                            ->label('Periodo')
-                            ->placeholder('Todos')
-                            ->options([
-                                '1' => 'P01',
-                                '2' => 'P02',
-                                '3' => 'P03',
-                                '4' => 'P04',
-                                '5' => 'P05',
-                                '6' => 'P06',
-                                '7' => 'P07',
-                                '8' => 'P08',
-                                '9' => 'P09',
-                                '10' => 'P10',
-                                '11' => 'P11',
-                                '12' => 'P12',
-                                '13' => 'P13',
-                            ])
-                            ->default($this->filtros['periodo'] ?? null),
+                            Select::make('tipo_semana_nota')
+                                ->label('Tipo de semana')
+                                ->placeholder('Todos')
+                                ->options([
+                                    'P' => 'PAR',
+                                    'N' => 'NON',
+                                ])
+                                ->default($this->filtros['tipo_semana_nota'] ?? null),
 
-                        Select::make('semana')
-                            ->label('Semana')
-                            ->placeholder('Todos')
-                            ->options([
-                                '1' => 'S1',
-                                '2' => 'S2',
-                                '3' => 'S3',
-                                '4' => 'S4'
-                            ])
-                            ->default($this->filtros['semana'] ?? null),
+                            Select::make('periodo')
+                                ->label('Periodo')
+                                ->placeholder('Todos')
+                                ->options([
+                                    '1' => 'P01',
+                                    '2' => 'P02',
+                                    '3' => 'P03',
+                                    '4' => 'P04',
+                                    '5' => 'P05',
+                                    '6' => 'P06',
+                                    '7' => 'P07',
+                                    '8' => 'P08',
+                                    '9' => 'P09',
+                                    '10' => 'P10',
+                                    '11' => 'P11',
+                                    '12' => 'P12',
+                                    '13' => 'P13',
+                                ])
+                                ->default($this->filtros['periodo'] ?? null),
 
-                        Select::make('dia_nota')
-                            ->label('Día Nota')
-                            ->placeholder('Todos')
-                            ->options([
-                                'L' => 'Lunes',
-                                'M' => 'Martes',
-                                'X' => 'Miércoles',
-                                'J' => 'Jueves',
-                                'V' => 'Viernes'
-                            ])
-                            ->default($this->filtros['dia_nota'] ?? null),
+                            Select::make('semana')
+                                ->label('Semana')
+                                ->placeholder('Todos')
+                                ->options([
+                                    '1' => 'S1',
+                                    '2' => 'S2',
+                                    '3' => 'S3',
+                                    '4' => 'S4'
+                                ])
+                                ->default($this->filtros['semana'] ?? null),
 
-                        Select::make('customer_type')
-                            ->label('Tipo Cliente')
-                            ->placeholder('Todos')
-                            ->options([
-                                'N' => 'Nuevo',
-                                'R' => 'Recurrente'
-                            ])
-                            ->default($this->filtros['customer_type'] ?? null),
+                            Select::make('dia_nota')
+                                ->label('Día Nota')
+                                ->placeholder('Todos')
+                                ->options([
+                                    'L' => 'Lunes',
+                                    'M' => 'Martes',
+                                    'X' => 'Miércoles',
+                                    'J' => 'Jueves',
+                                    'V' => 'Viernes'
+                                ])
+                                ->default($this->filtros['dia_nota'] ?? null),
 
-                        Select::make('distribuidor')
-                            ->label('Distribuidor')
-                            ->placeholder('Todos')
-                            ->options(User::query()
-                                ->where('is_active', true)
-                                ->whereIn('role', ['Vendedor'])
-                                ->orderBy('name', 'ASC')
-                                ->pluck('name', 'id'))
-                            ->default($this->filtros['distribuidor'] ?? null),
-
-                        Select::make('reparto')
-                            ->label('Reparto')
-                            ->placeholder('Todos')
-                            ->options(User::query()
-                                ->where('is_active', true)
-                                ->whereIn('role', ['Vendedor', 'Repartidor'])
-                                ->orderBy('name', 'ASC')
-                                ->pluck('name', 'id'))
-                            ->default($this->filtros['reparto'] ?? null),
-
-                        Select::make('year')
-                            ->label('Año')
-                            ->placeholder('Todos')
-                            ->options([
-                                '2024' => '2024',
-                                '2025' => '2025',
-                            ])
-                            ->default($this->filtros['year'] ?? null),
-
-                        Select::make('month')
-                            ->label('Mes')
-                            ->placeholder('Todos')
-                            ->options([
-                                '1' => 'Enero',
-                                '2' => 'Febrero',
-                                '3' => 'Marzo',
-                                '4' => 'Abril',
-                                '5' => 'Mayo',
-                                '6' => 'Junio',
-                                '7' => 'Julio',
-                                '8' => 'Agosto',
-                                '9' => 'Septiembre',
-                                '10' => 'Octubre',
-                                '11' => 'Noviembre',
-                                '12' => 'Diciembre'
-                            ]) 
-                            ->default($this->filtros['month'] ?? null),
-                       ])->columns(3)
+                            Select::make('customer_type')
+                                ->label('Tipo Cliente')
+                                ->placeholder('Todos')
+                                ->options([
+                                    'N' => 'Nuevo',
+                                    'R' => 'Recurrente'
+                                ])
+                                ->default($this->filtros['customer_type'] ?? null),
+                        ])->columns(3)
                     ])
                     ->action(function (array $data): void {
-                        $this->filtros = $data;
+                        $this->filtros = $data ?? [];
                     })
                     ->modalHeading('Filtros')
-                    ->modalSubmitActionLabel('Aplicar')
-                   ,
+                    ->modalSubmitActionLabel('Aplicar'),
 
                 Action::make('limpiarFiltros')
                     ->label('Limpiar filtros')
                     ->icon('heroicon-m-x-circle')
                     ->color('gray')
-                    ->action(fn() => $this->filtros = [])
+                    ->action(function() {
+                        $this->filtros = [];
+                         $this->resetTable();
+                    })
             ])
             ->modifyQueryUsing(function ($query) {
                 return $query
+                    ->when($this->filtros['year'] ?? null, fn($q, $valor) => $q->where('year', $valor))
                     ->when($this->filtros['tipo_semana_nota'] ?? null, fn($q, $valor) => $q->where('tipo_semana_nota', $valor))
                     ->when($this->filtros['periodo'] ?? null, fn($q, $valor) => $q->where('periodo', $valor))
                     ->when($this->filtros['semana'] ?? null, fn($q, $valor) => $q->where('semana', $valor))
                     ->when($this->filtros['dia_nota'] ?? null, fn($q, $valor) => $q->where('dia_nota', $valor))
-                    ->when($this->filtros['customer_type'] ?? null, fn($q, $valor) => $q->where('customer_type', $valor))
-                    ->when($this->filtros['distribuidor'] ?? null, fn($q, $valor) => $q->where('distribuidor', $valor))
-                    ->when($this->filtros['reparto'] ?? null, fn($q, $valor) => $q->where('reparto', $valor))
-                    ->when($this->filtros['year'] ?? null, fn($q, $valor) => $q->where('year', $valor))
-                    ->when($this->filtros['month'] ?? null, fn($q, $valor) => $q->where('month', $valor));
-            });
+                    ->when($this->filtros['customer_type'] ?? null, fn($q, $valor) => $q->where('customer_type', $valor));
+            })
+            ->filters([
+                SelectFilter::make('month')
+                    ->label('Mes')
+                    ->placeholder('Todos')
+                    ->options([
+                        '1' => 'Enero',
+                        '2' => 'Febrero',
+                        '3' => 'Marzo',
+                        '4' => 'Abril',
+                        '5' => 'Mayo',
+                        '6' => 'Junio',
+                        '7' => 'Julio',
+                        '8' => 'Agosto',
+                        '9' => 'Septiembre',
+                        '10' => 'Octubre',
+                        '11' => 'Noviembre',
+                        '12' => 'Diciembre'
+                    ]),
+
+                SelectFilter::make('distribuidor')
+                    ->label('Distribuidor')
+                    ->placeholder('Todos')
+                    ->options(User::query()
+                        ->where('is_active', true)
+                        ->whereIn('role', ['Vendedor'])
+                        ->orderBy('name', 'ASC')
+                        ->pluck('name', 'id')),
+
+                SelectFilter::make('reparto')
+                    ->label('Reparto')
+                    ->placeholder('Todos')
+                    ->options(User::query()
+                        ->where('is_active', true)
+                        ->whereIn('role', ['Vendedor', 'Repartidor'])
+                        ->orderBy('name', 'ASC')
+                        ->pluck('name', 'id')),
+            ]);
     }
 
     protected function getHeaderActions(): array
@@ -363,5 +423,4 @@ class ListPedidos extends ListRecords
             StatsOverview::class
         ];
     }
-
 }
