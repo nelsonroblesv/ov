@@ -55,10 +55,13 @@ class ListPedidos extends ListRecords
                     $valor = $customerTypes[$valor];
                 }
 
-                $badges[] = '<span>'
-                    . e($etiqueta) . ': ' . e($valor) .
-                    '</span>';
-            }
+               $badges[] = <<<HTML
+                <span style="font-family:Poppins;font-size:11px;padding:3px 9px;border-radius:5px;background:#3a3327;margin-right:5px;color:#e19f1e;border:1px solid #e19f1e;display:inline-flex;align-items:center;gap:5px;">
+                    {$etiqueta}: {$valor}
+                    <button wire:click="quitarFiltro('{$campo}')" style="background:transparent;border:none;cursor:pointer;">x</button>
+                </span>
+            HTML;
+        }
         }
 
         // Si no hay badges, retorna null
@@ -75,6 +78,15 @@ class ListPedidos extends ListRecords
         $html .= '<div class="filtros-aplicados" style="font-size:13px;">' . implode('', $badges) . '</div>';
 
         return new HtmlString($html);
+    }
+
+    public function quitarFiltro(string $campo): void
+    {
+        unset($this->filtros[$campo]);
+
+        // Limpia el campo pero mantiene los demás filtros
+        $this->resetPage();     // Opcional: reinicia paginación
+        $this->resetTable();    // 🔁 fuerza recarga de la tabla
     }
 
 
