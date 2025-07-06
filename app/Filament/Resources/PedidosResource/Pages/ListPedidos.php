@@ -29,7 +29,7 @@ class ListPedidos extends ListRecords
             'tipo_semana_nota' => 'Tipo Semana',
             'periodo' => 'Periodo',
             'semana' => 'Semana',
-            'dia_nota' => 'Día Nota',
+            'dia_nota' => 'Día',
             'customer_type' => 'Tipo Cliente',
         ];
 
@@ -55,7 +55,7 @@ class ListPedidos extends ListRecords
                     $valor = $customerTypes[$valor];
                 }
 
-                $badges[] = '<span style="font-family:Poppins;font-size:11px;padding:3px 9px;border-radius:5px;background:#3a3327;margin-right:5px;color:#e19f1e;border:1px solid #e19f1e">'
+                $badges[] = '<span>'
                     . e($etiqueta) . ': ' . e($valor) .
                     '</span>';
             }
@@ -66,13 +66,13 @@ class ListPedidos extends ListRecords
             return null;
         }
 
-        $html = '<div style="font-size:13px; margin-bottom:5px;">
+        $html = '<div class="filtros-aplicados">
                 <strong style="color:#3cca73; font-family:Poppins; font-size:12px;">
                     Filtros aplicados:
                 </strong>
              </div>';
 
-        $html .= '<div style="font-size:13px;">' . implode('', $badges) . '</div>';
+        $html .= '<div class="filtros-aplicados" style="font-size:13px;">' . implode('', $badges) . '</div>';
 
         return new HtmlString($html);
     }

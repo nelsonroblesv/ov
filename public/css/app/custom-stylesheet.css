@@ -1,0 +1,22 @@
+.filtros-aplicados {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.filtros-aplicados span {
+    font-family: Poppins;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 5px;
+    background: #3a3327;
+    margin-right: 5px;
+    color: #e19f1e;
+    border: 1px solid #e19f1e
+}
+
+@media (max-width: 640px) {
+    .filtros-aplicados span{
+        display: inline-block;
+        margin-top: 4px;
+    }
+}

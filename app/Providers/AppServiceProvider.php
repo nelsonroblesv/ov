@@ -15,6 +15,8 @@ use App\Observers\PreferredItemObserver;
 use Barryvdh\DomPDF\ServiceProvider as DomPDFServiceProvider;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Filament\Forms\Components\Component;
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,7 +39,11 @@ class AppServiceProvider extends ServiceProvider
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
-                ->locales(['es','en']); // also accepts a closure
+                ->locales(['es', 'en']); // also accepts a closure
         });
+
+        FilamentAsset::register([
+            Css::make('custom-stylesheet', __DIR__ . '/../../resources/css/pedidos.css'),
+        ]);
     }
 }
