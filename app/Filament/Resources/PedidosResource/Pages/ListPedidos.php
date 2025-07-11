@@ -95,10 +95,13 @@ class ListPedidos extends ListRecords
         return $table
             ->heading('Lista de pedidos')
             ->description($this->getFiltrosHtml() ?? '')
+            ->reorderable('num_ruta')
+            ->defaultSort('created_at', 'ASC')
             ->columns([
                 TextColumn::make('num_ruta')
                     ->label('# Ruta')
                     ->alignCenter()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('customer.name')

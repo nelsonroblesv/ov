@@ -177,7 +177,7 @@ class PedidosResource extends Resource
                                     ])
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, callable $set) {
-                                        if ($state !== 'sistema') {
+                                        if ($state === 'stock') {
                                             do {
                                                 $folio = 'OV-' . str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
                                             } while (Pedido::where('id_nota', $folio)->exists());
@@ -190,7 +190,7 @@ class PedidosResource extends Resource
 
                                 TextInput::make('id_nota')
                                     ->label('ID de Nota')
-                                    ->disabled(fn(callable $get) => $get('tipo_nota') !== 'sistema')
+                                    ->disabled(fn(callable $get) => $get('tipo_nota') === 'stock')
                                     ->required()
                                     ->unique(ignoreRecord: true, column: 'id_nota')
                                     ->dehydrated(),
@@ -527,103 +527,7 @@ class PedidosResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
             ])
-            ->filters([
-
-/*
-Select::make('tipo_semana_nota')
-                            ->label('Tipo Semana')
-                            ->options([
-                                'P' => 'PAR',
-                                'N' => 'NON'
-                            ]),
-
-                SelectFilter::make('periodo')
-                    ->label('Periodo')
-                    ->options([
-                        '1' => 'P01',
-                        '2' => 'P02',
-                        '3' => 'P03',
-                        '4' => 'P04',
-                        '5' => 'P05',
-                        '6' => 'P06',
-                        '7' => 'P07',
-                        '8' => 'P08',
-                        '9' => 'P09',
-                        '10' => 'P10',
-                        '11' => 'P11',
-                        '12' => 'P12',
-                        '13' => 'P13'
-                    ]),
-
-                SelectFilter::make('semana')
-                    ->label('Semana')
-                    ->options([
-                        '1' => 'S1',
-                        '2' => 'S2',
-                        '3' => 'S3',
-                        '4' => 'S4'
-                    ]),
-
-                SelectFilter::make('dia_nota')
-                    ->label('Día Nota')
-                    ->options([
-                        'L' => 'Lunes',
-                        'M' => 'Martes',
-                        'X' => 'Miércoles',
-                        'J' => 'Jueves',
-                        'V' => 'Viernes'
-                    ])
-                    ->multiple(),
-
-                SelectFilter::make('customer_type')
-                    ->label('Tipo Cliente')
-                    ->options([
-                        'N' => 'Nuevo',
-                        'R' => 'Recurrente'
-                    ]),
-
-                SelectFilter::make('distribuidor')
-                    ->label('Distribuidor')
-                    ->options(User::query()
-                        ->where('is_active', true)
-                        ->whereIn('role', ['Vendedor'])
-                        ->orderBy('name', 'ASC')
-                        ->pluck('name', 'id')),
-
-                SelectFilter::make('reparto')
-                    ->label('Reparto')
-                    ->options(User::query()
-                        ->where('is_active', true)
-                        ->whereIn('role', ['Vendedor', 'Repartidor'])
-                        ->orderBy('name', 'ASC')
-                        ->pluck('name', 'id')),
-
-                SelectFilter::make('year')
-                    ->label('Año')
-                    ->options([
-                        '2024' => '2024',
-                        '2025' => '2025',
-                    ]),
-
-                SelectFilter::make('month')
-                    ->label('Mes')
-                    ->options([
-                        '1' => 'Enero',
-                        '2' => 'Febrero',
-                        '3' => 'Marzo',
-                        '4' => 'Abril',
-                        '5' => 'Mayo',
-                        '6' => 'Junio',
-                        '7' => 'Julio',
-                        '8' => 'Agosto',
-                        '9' => 'Septiembre',
-                        '10' => 'Octubre',
-                        '11' => 'Noviembre',
-                        '12' => 'Diciembre'
-                    ]),
-                    */
-
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
