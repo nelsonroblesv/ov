@@ -38,7 +38,8 @@ class Pedido extends Model
         'registrado_por',
         'day',
         'month',
-        'year'
+        'year', 
+        'real_id'
     ];
 
     protected $casts = [
@@ -77,8 +78,10 @@ class Pedido extends Model
     {
         return $this->belongsTo(User::class, 'distribuidor');
     }
+
      public function userReparto()
     {
         return $this->belongsTo(User::class, 'reparto');
     }
+    
 }

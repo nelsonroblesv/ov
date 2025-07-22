@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Pedido;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -14,6 +15,8 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
@@ -32,7 +35,7 @@ class PedidosResource extends Resource
 
     protected static ?string $title = 'Pedidos';
     protected static ?string $slug = 'pedidos';
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationGroup = 'Pedidos & Pagos';
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
     protected static ?string $breadcrumb = "Gestionar Pedidos";
@@ -266,8 +269,29 @@ class PedidosResource extends Resource
                                         'pendiente' => 'PENDIENTE',
                                         'reposicion' => 'REPOSICIÓN',
                                         'susana' => 'SUSANA'
-                                    ]),
+                                    ])
+                                    ->required()
+                                    ->reactive()
+                                     ->afterStateUpdated(fn (callable $set) => $set('real_id', null)),
 
+                                Select::make('real_id')
+                                    ->label(fn(callable $get) => match ($get('estado_pedido')) {
+                                        'cambio' => 'Selecciona un cliente real',
+                                        'susana' => 'Selecciona un usuario',
+                                        default => 'Selecciona una opción',
+                                    })
+                                    ->options(function (callable $get) {
+                                        return match ($get('estado_pedido')) {
+                                            'cambio' => Customer::pluck('name', 'id'),
+                                            'susana' => User::pluck('name', 'id'),
+                                            default => [],
+                                        };
+                                    })
+                                    ->searchable()
+                                    ->reactive()
+                                    ->required()
+                                    ->visible(fn(callable $get) => in_array($get('estado_pedido'), ['cambio', 'susana']))
+                                    ->columnSpanFull(),
                             ])->columns(2)
 
                         ]),
@@ -322,7 +346,30 @@ class PedidosResource extends Resource
                                 Textarea::make('observaciones')
                                     ->label('Observaciones')
                                     ->columnSpanFull(),
+/*
+                                ToggleButtons::make('Tipo de visita')
+                                    ->label('Tipo de Visita')
+                                    ->helperText('Selecciona el tipo de visita que realizará el colaborador.')
+                                    ->options([
+                                        'cobranza' => 'Cobranza',
+                                        'liquidacion' => 'Liquidación',
+                                        'cancelado' => 'Cancelado',
 
+                                    ])
+                                    ->icons([
+                                        'cobranza' => 'heroicon-o-banknotes',
+                                        'liquidacion' => 'heroicon-o-check-badge',
+                                        'cancelado' => 'heroicon-o-archive-box-x-mark',
+                                    ])
+                                    ->colors([
+                                        'cobranza' => 'info',
+                                        'liquidacion' => 'success',
+                                        'cancelado' => 'danger',
+                                    ])
+                                    ->default('cobranza')
+                                    ->inline()
+                                    ->columnSpanFull(),
+*/
                                 FileUpload::make('notas_venta')
                                     ->label('Notas de Venta')
                                     ->placeholder('Haz click para cargar la(s) nota(s) de venta')
@@ -349,184 +396,7 @@ class PedidosResource extends Resource
     {
         return $table
 
-            ->columns([
-                TextColumn::make('num_ruta')
-                    ->label('# Ruta')
-                    ->alignCenter()
-                    ->toggleable(isToggledHiddenByDefault: false),
-
-                TextColumn::make('customer.name')
-                    ->label('Cliente')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('userDistribuidor.name')
-                    ->label('Distribuidor')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color('warning')
-                    ->icon('heroicon-m-building-library'),
-
-                TextColumn::make('userReparto.name')
-                    ->label('Reparto')
-                    ->searchable()
-                    ->sortable()->badge()
-                    ->color('info')
-                    ->icon('heroicon-m-archive-box-arrow-down'),
-
-                TextColumn::make('fecha_entrega')
-                    ->label('Fecha Entrega')
-                    ->searchable()
-                    ->sortable()
-                    ->date(),
-
-                TextColumn::make('fecha_liquidacion')
-                    ->label('Fecha Liquidación')
-                    ->searchable()
-                    ->sortable()
-                    ->date(),
-
-                TextColumn::make('monto')
-                    ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
-
-                TextColumn::make('saldo'),
-
-                TextColumn::make('tipo_nota')
-                    ->label('Tipo Nota')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'sistema' => 'SISTEMA',
-                        'real' => 'REAL',
-                        'stock' => 'DE STOCK'
-                    ][$state] ?? 'Otro')
-                    ->formatStateUsing(fn(string $state): string => [
-                        'sistema' => 'SISTEMA',
-                        'real' => 'REAL',
-                        'stock' => 'STOCK'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color(fn(string $state): string => [
-                        'sistema' => 'success',
-                        'real' => 'info',
-                        'stock' => 'warning'
-                    ][$state] ?? 'primary'),
-
-                TextColumn::make('estado_pedido')
-                    ->label('Estado Pedido')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'cambio' => 'CAMBIO',
-                        'cancelado' => 'CANCELADO',
-                        'entrega' => 'ENTREGA',
-                        'pagado' => 'PAGADO',
-                        'pendiente' => 'PENDIENTE',
-                        'reposicion' => 'REPOSICIÓN',
-                        'susana' => 'SUSANA'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color(fn(string $state): string => [
-                        'cambio' => 'info',
-                        'cancelado' => 'danger',
-                        'entrega' => 'warning',
-                        'pagado' => 'success',
-                        'pendiente' => 'primary',
-                        'reposicion' => 'info',
-                        'susana' => 'light'
-                    ][$state] ?? 'primary'),
-
-                TextColumn::make('tipo_semana_nota')
-                    ->label('PAR/NON')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'P' => 'PAR',
-                        'N' => 'NON'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color(fn(string $state): string => [
-                        'P' => 'success',
-                        'N' => 'info'
-                    ][$state] ?? 'primary'),
-
-                TextColumn::make('dia_nota')
-                    ->label('Día Nota')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'L' => 'LUNES',
-                        'M' => 'MARTES',
-                        'X' => 'MIÉRCOLES',
-                        'J' => 'JUEVES',
-                        'V' => 'VIERNES'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color('primary'),
-
-                TextColumn::make('customer_type')
-                    ->label('Tipo Cliente')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(fn(string $state): string => [
-                        'N' => 'NUEVO',
-                        'R' => 'RECURRENTE'
-                    ][$state] ?? 'Otro')
-                    ->badge()
-                    ->color(fn(string $state): string => [
-                        'N' => 'success',
-                        'R' => 'info'
-                    ][$state] ?? 'primary'),
-
-                TextColumn::make('zona.nombre_zona')
-                    ->label('Zona')
-                    ->searchable()
-                    ->sortable()
-                    ->color('info'),
-
-                TextColumn::make('periodo')
-                    ->badge()
-                    ->color('info')
-                    ->alignCenter(),
-
-                TextColumn::make('semana')
-                    ->badge()
-                    ->color('danger')
-                    ->alignCenter(),
-
-                IconColumn::make('factura')
-                    ->label('Factura')
-                    ->searchable()
-                    ->boolean()
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Fecha Creación')
-                    ->searchable()
-                    ->sortable()
-                    ->date(),
-
-                TextColumn::make('id_nota')
-                    ->label('ID Nota')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('num_pedido')
-                    ->label('# Pedido')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('region.name')
-                    ->label('Región')
-                    ->searchable()
-                    ->sortable()
-                    ->color('primary')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-            ])
+            ->columns([])
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),

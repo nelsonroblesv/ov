@@ -4,6 +4,7 @@ namespace App\Filament\Resources\PedidosResource\Pages;
 
 use App\Filament\Resources\PedidosResource;
 use App\Filament\Resources\PedidosResource\Widgets\StatsOverview;
+use App\Models\Customer;
 use App\Models\User;
 use Filament\Actions;
 use Filament\Forms\Components\Section;
@@ -55,13 +56,13 @@ class ListPedidos extends ListRecords
                     $valor = $customerTypes[$valor];
                 }
 
-               $badges[] = <<<HTML
+                $badges[] = <<<HTML
                 <span style="font-family:Poppins;font-size:11px;padding:3px 9px;border-radius:5px;background:#3a3327;margin-right:5px;color:#e19f1e;border:1px solid #e19f1e;display:inline-flex;align-items:center;gap:5px;">
                     {$etiqueta}: {$valor}
                     <button wire:click="quitarFiltro('{$campo}')" style="background:transparent;border:none;cursor:pointer;">x</button>
                 </span>
             HTML;
-        }
+            }
         }
 
         // Si no hay badges, retorna null
@@ -108,6 +109,23 @@ class ListPedidos extends ListRecords
                     ->label('Cliente')
                     ->searchable()
                     ->sortable(),
+
+                TextColumn::make('real_id')
+                    ->label('Cliente Real')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($record->estado_pedido === 'cambio') {
+                            return optional(Customer::find($state))->name;
+                        }
+
+                        if ($record->estado_pedido === 'susana') {
+                            return optional(User::find($state))->name;
+                        }
+
+                        return '—';
+                    }),
 
                 TextColumn::make('userDistribuidor.name')
                     ->label('Distribuidor')
@@ -380,6 +398,19 @@ class ListPedidos extends ListRecords
                     ->when($this->filtros['customer_type'] ?? null, fn($q, $valor) => $q->where('customer_type', $valor));
             })
             ->filters([
+                SelectFilter::make('estado_pedido')
+                    ->label('Estado Pedido')
+                    ->placeholder('Todos')
+                    ->options([
+                        'cambio' => 'CAMBIO',
+                        'cancelado' => 'CANCELADO',
+                        'entrega' => 'ENTREGA',
+                        'pagado' => 'PAGADO',
+                        'pendiente' => 'PENDIENTE',
+                        'reposicion' => 'REPOSICIÓN',
+                        'susana' => 'SUSANA'
+                    ]),
+
                 SelectFilter::make('month')
                     ->label('Mes')
                     ->placeholder('Todos')
