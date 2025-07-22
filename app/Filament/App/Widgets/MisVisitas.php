@@ -6,6 +6,7 @@ use App\Filament\App\Resources\CustomerStatementResource;
 use App\Filament\Resources\CustomerResource;
 use Filament\Tables;
 use App\Models\EntregaCobranzaDetalle;
+use App\Models\Pedido;
 use Carbon\Carbon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -26,19 +27,27 @@ class MisVisitas extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Visitas programadas: ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
-            ->description('Lista de visitas pendientes y no verificadas.')
-            ->emptyStateHeading('No hay visitas programadas')
+            ->heading('Visitas programadas hoy ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->description('Lista de visitas pendientes por día.')
+            ->emptyStateHeading('No hay visitas programadas para hoy')
+            ->defaultSort('num_ruta', 'ASC')
             ->query(
-                EntregaCobranzaDetalle::query()
-                    ->where('user_id', Auth::id())
-                    ->whereDate('fecha_programada', '<=', Carbon::now())
-                    ->where('is_verified', false)
-                    ->with('customer', 'entregaCobranza')
+                Pedido::query()
+                    ->where('distribuidor', Auth::id())
+                    ->whereDate('fecha_entrega', '<=', Carbon::now())
+                    //->where('is_verified', false)
+                    //->with('customer', 'entregaCobranza')
             )
             ->columns([
+                 TextColumn::make('num_ruta')
+                    ->label('# Ruta')
+                    ->alignCenter(),
 
-                TextColumn::make('tipo_visita')
+                 TextColumn::make('customer.name')
+                    ->label('Cliente')
+                    ->description(fn (Pedido $record): string => $record->monto)
+/*
+                TextColumn::make('customer_id.name')
                     ->label('Ubicaciones')
                     ->html()
                     ->formatStateUsing(function ($record) {
@@ -82,6 +91,7 @@ class MisVisitas extends BaseWidget
                                 <span><a href='tel:'{$phone}>📲 {$phone}</a><br>
                                 <span><a href='mailto:'{$email}>📧 {$email}</a>";
                     }),
+*/
             ])
             ->filters([])
             ->actions([
