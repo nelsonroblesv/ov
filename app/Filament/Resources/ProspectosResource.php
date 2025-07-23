@@ -306,9 +306,80 @@ class ProspectosResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([])
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->whereIn('tipo_cliente', ['PO', 'PR'])
+                    ->where('is_active', true);
+            })
+            ->heading('Lista de Prospectos')
+            ->description('Prospectos registrados en el sistema.')
+            ->defaultSort('name', 'ASC')
+            ->columns([
+                //TextColumn::make('altaUser.name')->label('Registrado por:')->searchable()->sortable(),
+                //TextColumn::make('user.name')->label('Asignado a:')->searchable()->sortable(),
+                TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('tipo_cliente')->label('Tipo')->badge()->toggleable(isToggledHiddenByDefault: false)
+                    ->colors([
+                        'danger' => 'PO',
+                        'warning' => 'PR'
+                    ])
+                    ->icons([
+                        'heroicon-o-map' => 'PO',
+                        'heroicon-o-star' => 'PR'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PO' => 'Posible',
+                        'PR' => 'Prospecto',
+                    ][$state] ?? 'Otro'),
+                TextColumn::make('simbolo')->label('Simbolo')->badge()->toggleable(isToggledHiddenByDefault: false)
+                    ->colors([
+                        'black',/*
+					'custom' => 'SB',
+					'success' => 'BB',
+					'success' => 'UN',
+					'success' => 'OS',
+					'success' => 'CR',
+					'success' => 'UB',
+					'success' => 'NC'*/
+                    ])
+                    ->icons([
+                        'heroicon-o-scissors' => 'SB',
+                        'heroicon-o-building-storefront' => 'BB',
+                        'heroicon-o-hand-raised' => 'UN',
+                        'heroicon-o-rocket-launch' => 'OS',
+                        'heroicon-o-x-mark' => 'CR',
+                        'heroicon-o-map-pin' => 'UB',
+                        'heroicon-o-exclamation-triangle' => 'NC',
+                        'heroicon-o-sparkles' => 'EU',
+                        'heroicon-o-home-modern' => 'SYB'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'SB' => 'Salón de Belleza',
+                        'SYB' => 'Salón y Barbería',
+                        'EU' => 'Estética Unisex',
+                        'BB' => 'Barbería',
+                        'UN' => 'Salón de Uñas',
+                        'OS' => 'OSBERTH',
+                        'CR' => 'Cliente Pedido Rechazado',
+                        'UB' => 'Ubicación en Grupo',
+                        'NC' => 'Ya no compran'
+                    ][$state] ?? 'Otro'),
+                TextColumn::make('regiones.name')->label('Region')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+
+
+
+                TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('extra')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                ToggleColumn::make('is_active')->label('Activo')
+            ]);
+        /*
             ->content(null)
             ->paginated(false);
+            */
     }
 
     public static function getPages(): array

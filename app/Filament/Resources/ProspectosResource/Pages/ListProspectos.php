@@ -25,7 +25,7 @@ class ListProspectos extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            ProspectosMapWidget::class,
+          //ProspectosMapWidget::class,
         ];
     }
 }
