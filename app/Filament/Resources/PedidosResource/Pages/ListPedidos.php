@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
@@ -268,8 +269,13 @@ class ListPedidos extends ListRecords
                     ->boolean()
                     ->sortable(),
 
+                ToggleColumn::make('is_active')
+                    ->label('Activo')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
-                    ->label('Fecha Creación')
+                    ->label('Registrado')
                     ->searchable()
                     ->sortable()
                     ->date(),
