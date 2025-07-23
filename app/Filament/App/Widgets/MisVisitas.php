@@ -28,13 +28,14 @@ class MisVisitas extends BaseWidget
     {
         return $table
             ->heading('Visitas programadas hoy ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
-            ->description('Lista de visitas pendientes por día.')
-            ->emptyStateHeading('No hay visitas programadas para hoy')
+           // ->description('Lista de visitas pendientes desde el '.Carbon::now()->startOfWeek()->isoFormat('dddd D [de] MMMM, YYYY') . ' hasta el ' . Carbon::now()->endOfWeek()->isoFormat('dddd D [de] MMMM, YYYY'))
+           ->description('Lista de visitas pendientes.') 
+           ->emptyStateHeading('No hay visitas programadas para hoy')
             ->defaultSort('num_ruta', 'ASC')
             ->query(
                 Pedido::query()
                     ->where('distribuidor', Auth::id())
-                    ->whereDate('fecha_entrega', '<=', Carbon::now())
+                    ->whereDate('fecha_entrega', '=', Carbon::now())
                     //->where('is_verified', false)
                     //->with('customer', 'entregaCobranza')
             )
