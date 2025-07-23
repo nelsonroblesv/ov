@@ -8,6 +8,9 @@ use Filament\Tables;
 use App\Models\EntregaCobranzaDetalle;
 use App\Models\Pedido;
 use Carbon\Carbon;
+use Filament\Actions\ActionGroup;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,27 +30,45 @@ class MisVisitas extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Visitas programadas hoy ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
-           // ->description('Lista de visitas pendientes desde el '.Carbon::now()->startOfWeek()->isoFormat('dddd D [de] MMMM, YYYY') . ' hasta el ' . Carbon::now()->endOfWeek()->isoFormat('dddd D [de] MMMM, YYYY'))
-           ->description('Lista de visitas pendientes.') 
-           ->emptyStateHeading('No hay visitas programadas para hoy')
+            ->heading('Hoy '.Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
+            // ->description('Lista de visitas pendientes desde el '.Carbon::now()->startOfWeek()->isoFormat('dddd D [de] MMMM, YYYY') . ' hasta el ' . Carbon::now()->endOfWeek()->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->description('Visitas programadas.')
+            ->emptyStateHeading('No hay visitas programadas para hoy')
             ->defaultSort('num_ruta', 'ASC')
             ->query(
                 Pedido::query()
                     ->where('distribuidor', Auth::id())
                     ->whereDate('fecha_entrega', '=', Carbon::now())
-                    //->where('is_verified', false)
-                    //->with('customer', 'entregaCobranza')
+                //->where('is_verified', false)
+                //->with('customer', 'entregaCobranza')
             )
             ->columns([
-                 TextColumn::make('num_ruta')
+                TextColumn::make('num_ruta')
                     ->label('# Ruta')
                     ->alignCenter(),
 
-                 TextColumn::make('customer.name')
-                    ->label('Cliente')
-                    ->description(fn (Pedido $record): string => $record->monto)
-/*
+                TextColumn::make('num_ruta')
+                    ->label('# Ruta')
+                    ->alignCenter(),
+
+                TextColumn::make('customer.name')
+                    ->label('Detalles')
+                    ->html()
+                    ->formatStateUsing(function ($record) {
+                        $customer = $record->customer?->name ?? 'N/E';
+                        $customer_latitude = $record->customer?->latitude ?? '';
+                        $customer_longitude = $record->customer?->longitude ?? '';
+                        $region = $record->customer?->regiones?->name ?? 'Sin región';
+                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
+                        $phone = $record->customer?->phone ?? 'Sin zona';
+                        return "
+                                <span>👤 {$customer}</span><br>
+                                <span>📍 {$region}</span><br>
+                                <span><a href='https://www.google.com/maps/search/?api=1&query={$customer_latitude},{$customer_longitude}' target='_blank'>🌎 {$zona}</a></span><br>
+                                <span><a href='https://wa.me/" . urlencode($phone) . "'>📞 {$phone}</a></span><br>
+                                ";
+                    })
+                /*
                 TextColumn::make('customer_id.name')
                     ->label('Ubicaciones')
                     ->html()
@@ -96,13 +117,21 @@ class MisVisitas extends BaseWidget
             ])
             ->filters([])
             ->actions([
-                /*
-                Tables\Actions\Action::make('view_invoice')
-                    ->label('EC')
-                    ->icon('heroicon-o-document-chart-bar')
-                    ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
-                    ->openUrlInNewTab()
-                    */
+                ActionsActionGroup::make([
+                    Action::make('view_invoice')
+                        ->label('EC')
+                        ->icon('heroicon-o-document-chart-bar')
+                        ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
+                        ->openUrlInNewTab(),
+
+                    Action::make('register_visit')
+                        ->label('Registrar Visita')
+                        ->icon('heroicon-o-calendar')
+                        ->form([])
+                        ->action(function (array $data): void {})
+                        ->modalHeading('Registrar Visita')
+                        ->modalSubmitActionLabel('Terminar Visita')
+                ])
             ]);
     }
 }
