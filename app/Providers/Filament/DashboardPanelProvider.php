@@ -57,8 +57,8 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                SemanaActualWidget::class,
                 Widgets\AccountWidget::class,
+                SemanaActualWidget::class,
                 //Widgets\FilamentInfoWidget::class,
             ])
             ->navigationItems([
