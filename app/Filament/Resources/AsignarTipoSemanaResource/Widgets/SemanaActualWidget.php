@@ -19,6 +19,8 @@ class SemanaActualWidget extends BaseWidget
         $semana = AsignarTipoSemana::first(); // Asegúrate de que exista al menos un registro
 
         $tipo = $semana && $semana->tipo_semana == 1 ? 'NON' : 'PAR';
+        $periodo = $semana ? $semana->periodo : 'Desconocido';
+        $semana = $semana ? $semana->semana : 'Desconocida';
 
         $color = $tipo === 'PAR' ? 'success' : 'info'; // success: verde, info: azul
         $label = $tipo === 'PAR' ? '🟢 Semana PAR' : '🔵 Semana NON';
@@ -26,7 +28,7 @@ class SemanaActualWidget extends BaseWidget
 
         return [
             Stat::make('Semana Actual', $label)
-                ->description('Planifica tus rutas correctamente.')
+                ->description('Periodo: ' . $periodo . ' | Semana: ' . $semana)
                 ->descriptionIcon($icon)
                 ->color($color)
                 ->extraAttributes([
