@@ -5,13 +5,11 @@ namespace App\Filament\App\Resources;
 use App\Enums\CfdiTypeEnum;
 use App\Enums\SociedadTypeEnum;
 use App\Filament\App\Resources\CustomerUserResource\Pages;
-use App\Filament\App\Resources\CustomerUserResource\RelationManagers;
 use App\Models\Customer;
 use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -25,9 +23,10 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class CustomerUserResource extends Resource
 {
@@ -283,7 +282,7 @@ class CustomerUserResource extends Resource
                                         ->multiple()
                                         //->maxSize(2048)
                                         ->columnSpanFull(),
-                                        
+
                                 ])->columns(2)->icon('heroicon-o-camera'),
 
                             Section::make('Informacion adicional')
@@ -356,11 +355,96 @@ class CustomerUserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        // Hide table from Resource
         return $table
-            ->columns([])
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->where('user_id', auth()->id())
+                    ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                    ->where('is_active', true);
+            })
+            ->heading('Mis Clientes')
+            ->description('Clientes registrados en el sistema.')
+            ->defaultSort('name', 'ASC')
+            ->columns([
+                TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('tipo_cliente')->label('Tipo')->badge()
+                    ->colors([
+                        'success' => 'PV',
+                        'danger' => 'RD',
+                        'custom_black' => 'BK',
+                        'custom_gray' => 'SL'
+                    ])
+                    ->icons([
+                        'heroicon-o-building-storefront' => 'PV',
+                        'heroicon-o-user' => 'RD',
+                        'heroicon-o-star' => 'BK',
+                        'heroicon-o-sparkles' => 'SL'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PV' => 'Punto Venta',
+                        'RD' => 'Red',
+                        'BK' => 'Black',
+                        'SL' => 'Silver',
+                    ][$state] ?? 'Otro'),
+                //TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+                TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
+                TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
+                TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'success' => 'PAR',
+                        'danger' => 'NON',
+                    ])
+                    ->icons([
+                        'heroicon-o-arrow-long-down' => 'PAR',
+                        'heroicon-o-arrow-long-up' => 'NON',
+                    ]),
+                TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'Lun',
+                        'warning' => 'Mar',
+                        'danger' => 'Me',
+                        'success' => 'Jue',
+                        'custom_light_blue' => 'Vie',
+                    ]),
+                TextColumn::make('paquete_inicio.nombre')->label('Paquete Inicio')->searchable()->sortable(),
+                TextColumn::make('simbolo')->label('Simbolo')->badge()
+                    ->colors([
+                        'black',
+                    ])
+                    ->icons([
+                        'heroicon-o-scissors' => 'SB',
+                        'heroicon-o-building-storefront' => 'BB',
+                        'heroicon-o-hand-raised' => 'UN',
+                        'heroicon-o-rocket-launch' => 'OS',
+                        'heroicon-o-x-mark' => 'CR',
+                        'heroicon-o-map-pin' => 'UB',
+                        'heroicon-o-exclamation-triangle' => 'NC',
+                        'heroicon-o-sparkles' => 'EU',
+                        'heroicon-o-home-modern' => 'SYB'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'SB' => 'Salón de Belleza',
+                        'SYB' => 'Salón y Barbería',
+                        'EU' => 'Estética Unisex',
+                        'BB' => 'Barbería',
+                        'UN' => 'Salón de Uñas',
+                        'OS' => 'OSBERTH',
+                        'CR' => 'Cliente Pedido Rechazado',
+                        'UB' => 'Ubicación en Grupo',
+                        'NC' => 'Ya no compran'
+                    ][$state] ?? 'Otro'),
+                TextColumn::make('full_address')->label('Direccion')->searchable()->sortable(),
+                TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()
+            ]);
+        /*// Hide table from Resource
             ->content(null)
             ->paginated(false);
+            */
     }
 
     public static function getRelations(): array

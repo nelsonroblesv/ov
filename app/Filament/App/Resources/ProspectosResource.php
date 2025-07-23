@@ -2,29 +2,34 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Enums\CfdiTypeEnum;
+use App\Enums\SociedadTypeEnum;
+use App\Filament\App\Resources\CustomerUserResource\Pages;
 use App\Filament\App\Resources\ProspectosResource\Pages\CreateProspectos;
 use App\Filament\App\Resources\ProspectosResource\Pages\EditProspectos;
 use App\Filament\App\Resources\ProspectosResource\Pages\ListProspectos;
 use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
 use App\Models\Customer;
+use App\Models\PaquetesInicio;
 use App\Models\Regiones;
-use App\Models\Services;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProspectosResource extends Resource
 {
@@ -269,9 +274,91 @@ class ProspectosResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([])
+            ->modifyQueryUsing(function (Builder $query) {
+                $query
+                    ->where('user_id', auth()->id())
+                    ->whereIn('tipo_cliente', ['PO', 'PR'])
+                    ->where('is_active', true);
+            })
+            ->heading('Mis Prospectos')
+            ->description('Lista de prospectos registrados en el sistema.')
+            ->defaultSort('name', 'ASC')
+            ->columns([
+                TextColumn::make('name')->label('Identificador')->searchable()->sortable(),
+                TextColumn::make('tipo_cliente')->label('Tipo')->badge()
+                    ->colors([
+                        'danger' => 'PO',
+                        'warning' => 'PR'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'PO' => 'Posible',
+                        'PR' => 'Prospecto',
+                    ][$state] ?? 'Otro'),
+                //TextColumn::make('user.name')->label('Alta por')->searchable()->sortable(),
+                TextColumn::make('regiones.name')->label('Region')->searchable()->sortable(),
+                TextColumn::make('zona.nombre_zona')->label('Zona')->searchable()->sortable(),
+                TextColumn::make('zona.tipo_semana')->label('Semana')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'success' => 'PAR',
+                        'danger' => 'NON',
+                    ])
+                    ->icons([
+                        'heroicon-o-arrow-long-down' => 'PAR',
+                        'heroicon-o-arrow-long-up' => 'NON',
+                    ]),
+                TextColumn::make('zona.dia_zona')->label('Dia')->searchable()->sortable()
+                    ->badge()
+                    ->colors([
+                        'info' => 'Lun',
+                        'warning' => 'Mar',
+                        'danger' => 'Me',
+                        'success' => 'Jue',
+                        'custom_light_blue' => 'Vie',
+                    ]),
+                TextColumn::make('simbolo')->label('Simbolo')->badge()
+                    ->colors([
+                        'black',/*
+					'custom' => 'SB',
+					'success' => 'BB',
+					'success' => 'UN',
+					'success' => 'OS',
+					'success' => 'CR',
+					'success' => 'UB',
+					'success' => 'NC'*/
+                    ])
+                    ->icons([
+                        'heroicon-o-scissors' => 'SB',
+                        'heroicon-o-building-storefront' => 'BB',
+                        'heroicon-o-hand-raised' => 'UN',
+                        'heroicon-o-rocket-launch' => 'OS',
+                        'heroicon-o-x-mark' => 'CR',
+                        'heroicon-o-map-pin' => 'UB',
+                        'heroicon-o-exclamation-triangle' => 'NC',
+                        'heroicon-o-sparkles' => 'EU',
+                        'heroicon-o-home-modern' => 'SYB'
+                    ])
+                    ->formatStateUsing(fn(string $state): string => [
+                        'SB' => 'Salón de Belleza',
+                        'SYB' => 'Salón y Barbería',
+                        'EU' => 'Estética Unisex',
+                        'BB' => 'Barbería',
+                        'UN' => 'Salón de Uñas',
+                        'OS' => 'OSBERTH',
+                        'CR' => 'Cliente Pedido Rechazado',
+                        'UB' => 'Ubicación en Grupo',
+                        'NC' => 'Ya no compran'
+                    ][$state] ?? 'Otro'),
+                TextColumn::make('full_address')->label('Direccion')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('email')->label('Correo')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('phone')->label('Telefono')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('notes')->label('Notas')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Registro')->dateTime()->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false)
+            ]);
+        /*
             ->content(null)
             ->paginated(false);
+            */
     }
 
 
