@@ -7,21 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Visita extends Model
 {
     protected $fillable = [
-        'pedidos_id',
-        'users_id',
+        'pedido_id',
+        'user_id',
         'fecha_visita',
         'tipo_visita',
-        'observaciones',
+        'notas',
         'evidencias',
     ];
 
     public function pedido()
     {
-        return $this->belongsTo(Pedido::class, 'pedidos_id');
+        return $this->belongsTo(Pedido::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'users_id');
+        return $this->belongsTo(User::class);
     }
 }

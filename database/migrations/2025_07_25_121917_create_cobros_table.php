@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('cobros', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pedidos_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('visitas_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('users_id')->nullable()->constrained(); // vendedor que lo capturó
+            $table->foreignId('pedido_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('visita_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained(); // vendedor que lo capturó
             $table->decimal('monto', 10, 2);
             $table->date('fecha_pago');
-            $table->enum('tipo_pago', ['efectivo', 'transferencia', 'otro']);
+            $table->enum('tipo_pago', ['EF', 'TR', 'DP', 'CH', 'OT']);
             $table->text('comentarios')->nullable(); // ej: “cliente transfirió el domingo”
             $table->string('comprobantes')->nullable(); // para la imagen/foto
             $table->boolean('aprobado')->default(false);

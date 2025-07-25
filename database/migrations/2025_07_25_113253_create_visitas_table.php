@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('visitas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pedidos_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('users_id')->constrained(); // vendedor que realiza la visita
+            $table->foreignId('pedido_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained(); // vendedor que realiza la visita
             $table->date('fecha_visita');
-            $table->enum('tipo_visita', ['entrega', 'seguimiento', 'siguiente visita']);
-            $table->text('observaciones')->nullable();
+            $table->enum('tipo_visita', ['EN', 'SE', 'SV']);
+            $table->text('notas')->nullable();
             $table->string('evidencias')->nullable(); // foto de entrega, firma, etc.
             $table->timestamps();
         });
