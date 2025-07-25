@@ -63,16 +63,38 @@ class MisEntregas extends Page implements HasTable
                 TextColumn::make('fecha_entrega')
                     ->label('Fecha')
                     ->sortable()
-                    ->date(),
+                    ->date()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('customer.name')
-                    ->label('Cliente'),
+                    ->label('Cliente')
+                    ->badge()
+                    ->color('info'),
 
                 TextColumn::make('region.name')
-                    ->label('Región'),
+                    ->html()
+                    ->formatStateUsing(function ($record) {
+                        $region = $record->customer?->regiones?->name ?? 'Sin región';
+                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
+                        return "
+                                <span>📍 {$region}</span><br>
+                                <span>🗺️ {$zona}</span><br>";
+                    }),
 
-                TextColumn::make('zona.nombre_zona')
-                    ->label('Zona'),
+                TextColumn::make('customer.phone')
+                    ->label('Telefono')
+                    ->badge()
+                    ->color('success')
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->url(fn($record) => 'https://wa.me/' . urlencode($record->customer->phone), true)
+                    ->openUrlInNewTab(),
+
+                TextColumn::make('customer.full_address')
+                    ->label('Ubicación')
+                    ->badge()
+                    ->icon('heroicon-o-map-pin')
+                    ->color('danger')
+                    ->url(fn($record) => 'https://www.google.com/maps/search/?api=1&query=' . $record->customer->latitude . ',' . $record->customer->longitude, true),
 
                 IconColumn::make('visitado')
                     ->label('Visitado')

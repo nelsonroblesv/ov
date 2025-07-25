@@ -38,6 +38,7 @@ class MisVisitas extends BaseWidget
             ->query(
                 Pedido::query()
                     ->where('distribuidor', Auth::id())
+                     ->where('estado_general', 'abierto')
                     ->whereDate('fecha_entrega', '=', Carbon::now())
                 //->where('is_verified', false)
                 //->with('customer', 'entregaCobranza')
@@ -64,56 +65,11 @@ class MisVisitas extends BaseWidget
                         return "
                                 <span>👤 {$customer}</span><br>
                                 <span>📍 {$region}</span><br>
-                                <span><a href='https://www.google.com/maps/search/?api=1&query={$customer_latitude},{$customer_longitude}' target='_blank'>🌎 {$zona}</a></span><br>
+                                <span><a href='https://www.google.com/maps/search/?api=1&query={$customer_latitude},{$customer_longitude}' target='_blank'>🗺️ {$zona}</a></span><br>
                                 <span><a href='https://wa.me/" . urlencode($phone) . "'>📞 {$phone}</a></span><br>
                                 ";
                     })
-                /*
-                TextColumn::make('customer_id.name')
-                    ->label('Ubicaciones')
-                    ->html()
-                    ->formatStateUsing(function ($record) {
-                        $region = $record->customer?->regiones?->name ?? 'Sin región';
-                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
-                        $fecha =  $record->fecha_programada ?? 'Sin fecha';
-                        $status =  $record->status ?? 'Sin info';
-                        $tipoStatus = match ($status) {
-                            1 => ['label' => 'Completado'],
-                            0 => ['label' => 'Pendiente'],
-                            default => ['label' => 'Otro'],
-                        };
 
-                        return "
-                                <span>🗓️ {$fecha}</span><br>
-                                <span>📍 {$region}</span><br>
-                                <span>📌 {$zona}</span><br>
-                                 <span>🚚 {$tipoStatus['label']}</span><br>";
-                    }),
-
-                    TextColumn::make('customer_id')
-                    ->label('Detalles')
-                    ->html()
-                    ->formatStateUsing(function ($record) {
-                        $customer = $record->customer?->name ?? 'Sin región';
-                        $phone = $record->customer?->phone ?? 'Sin zona';
-                        $email = $record->customer?->email ?? 'Sin zona';
-
-                        $tipo = $record->tipo_visita ?? 'Sin tipo';
-                        $tipoInfo = match ($tipo) {
-                            'PR' => ['label' => 'Prospecto'],
-                            'PO' => ['label' => 'Posible'],
-                            'EP' => ['label' => 'Entrega Primer Pedido'],
-                            'ER' => ['label' => 'Entrega Recurrente'],
-                            'CO' => ['label' => 'Cobranza'],
-                            default => ['label' => 'Otro'],
-                        };
-
-                        return "<span>📢 {$tipoInfo['label']}</span><br>
-                                <span>👤 {$customer}</span><br>
-                                <span><a href='tel:'{$phone}>📲 {$phone}</a><br>
-                                <span><a href='mailto:'{$email}>📧 {$email}</a>";
-                    }),
-*/
             ])
             ->filters([])
             ->actions([
