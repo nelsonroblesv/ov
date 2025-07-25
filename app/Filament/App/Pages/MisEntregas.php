@@ -38,6 +38,7 @@ class MisEntregas extends Page implements HasTable
             ->query(
                 Pedido::query()
                     ->where('distribuidor', Auth::id())
+                    ->where('estado_general', 'abierto')
             )
             ->heading('Visitas programadas durante la semana.')
             ->description('Lista de visitas a realizar.')

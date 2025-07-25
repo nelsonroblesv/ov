@@ -269,8 +269,9 @@ class ListPedidos extends ListRecords
                     ->boolean()
                     ->sortable(),
 
-                ToggleColumn::make('is_active')
-                    ->label('Activo')
+                TextColumn::make('estado_general')
+                    ->label('Estado General')
+                    ->alignCenter()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
