@@ -53,6 +53,7 @@ class RutasResource extends Resource
     protected static ?string $navigationLabel = 'Mi Ruta de Hoy';
     protected static ?string $breadcrumb = "Mi Ruta";
     protected static ?int $navigationSort = 1;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

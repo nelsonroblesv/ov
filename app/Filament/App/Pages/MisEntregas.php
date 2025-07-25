@@ -6,6 +6,7 @@ use App\Filament\App\Resources\CustomerStatementResource;
 use Filament\Pages\Page;
 use Filament\Tables;
 use App\Models\EntregaCobranzaDetalle;
+use App\Models\Pedido;
 use Carbon\Carbon;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
@@ -22,12 +23,12 @@ class MisEntregas extends Page implements HasTable
     use InteractsWithTable;
 
     protected static string $view = 'filament.app.pages.mis-entregas';
-    protected static ?string $title = 'Itinerario de Visitas';
-    protected static ?string $slug = 'itinerario-visitas';
+    protected static ?string $title = 'Itinerario de Rutas';
+    protected static ?string $slug = 'itinerario-rutas';
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationGroup = 'Pedidos & Pagos';
-    protected static ?string $navigationLabel = 'Itinerario de Visitas';
-    protected static ?string $breadcrumb = "Itinerario de Visitas";
+    protected static ?string $navigationGroup = 'Rutas';
+    protected static ?string $navigationLabel = 'Itinerario de Rutas';
+    protected static ?string $breadcrumb = "Itinerario de Rutas";
     protected static ?int $navigationSort = 0;
 
 
@@ -35,20 +36,28 @@ class MisEntregas extends Page implements HasTable
     {
         return $table
             ->query(
-                EntregaCobranzaDetalle::query()
-                    ->where('user_id', Auth::id())
-                    ->with('customer', 'entregaCobranza')
+                Pedido::query()
+                    ->where('distribuidor', Auth::id())
             )
-            ->heading('Administrador de visitas programadas durante la semana.')
+            ->heading('Visitas programadas durante la semana.')
             ->description('Lista de visitas a realizar.')
             ->emptyStateHeading('No hay visitas programadas')
-            ->defaultSort('fecha_programada', 'ASC')
+            ->defaultSort('fecha_entrega', 'ASC')
             ->columns([
-                TextColumn::make('fecha_programada')
+                TextColumn::make('fecha_entrega')
                     ->label('Fecha')
                     ->sortable()
                     ->date(),
 
+                TextColumn::make('customer.name')
+                    ->label('Cliente'),
+
+                TextColumn::make('region.name')
+                    ->label('Región'),
+
+                TextColumn::make('zona.nombre_zona')
+                    ->label('Zona'),
+                /*
                 TextColumn::make('customer_id')
                     ->label('Ubicaciones')
                     ->html()
@@ -88,12 +97,13 @@ class MisEntregas extends Page implements HasTable
                 TextColumn::make('fecha_visita')->label('Visita')->date()
                     ->toggleable(isToggledHiddenByDefault:true)
                     ->alignCenter(),
-*/
+
                 IconColumn::make('is_verified')
                     ->label('Verificado')
                     ->sortable()
                     ->boolean()
                     ->alignCenter()
+                    */
             ])
             ->filters([
                 Filter::make('hoy')
