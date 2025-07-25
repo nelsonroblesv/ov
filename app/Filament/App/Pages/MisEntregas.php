@@ -76,7 +76,7 @@ class MisEntregas extends Page implements HasTable
 
                 IconColumn::make('visitado')
                     ->label('Visitado')
-                    ->boolean() 
+                    ->boolean()
                     ->getStateUsing(function ($record) {
                         return $record->visitas()->whereDate('fecha_visita', now()->toDateString())->exists();
                     })
@@ -172,6 +172,10 @@ class MisEntregas extends Page implements HasTable
                                 ->body('La información de la visita fue guardada correctamente.')
                                 ->success()
                                 ->send();
+                        })->visible(function ($record) {
+                            return !$record->visitas()
+                                ->whereDate('fecha_visita', Carbon::now()->toDateString())
+                                ->exists();
                         }),
 
                     Tables\Actions\Action::make('view_invoice')
