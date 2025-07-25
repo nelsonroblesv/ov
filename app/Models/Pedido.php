@@ -89,4 +89,9 @@ class Pedido extends Model
     {
         return $this->hasMany(Visita::class);
     }
+
+    public function cobros()
+    {
+        return $this->hasMany(Cobro::class);
+    }
 }
