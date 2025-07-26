@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('cobros', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pedido_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('visita_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('visita_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained(); // vendedor que lo capturó
+            $table->foreignId('customer_id')->nullable()->constrained();
             $table->decimal('monto', 10, 2);
             $table->date('fecha_pago');
             $table->enum('tipo_pago', ['EF', 'TR', 'DP', 'CH', 'OT']);

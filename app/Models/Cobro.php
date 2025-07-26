@@ -10,6 +10,7 @@ class Cobro extends Model
         'pedido_id',
         'visita_id',
         'user_id',
+        'customer_id',
         'monto',
         'fecha_pago',
         'tipo_pago',
@@ -26,6 +27,7 @@ class Cobro extends Model
     {
         return $this->belongsTo(Pedido::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -34,5 +36,10 @@ class Cobro extends Model
     public function visita()
     {
         return $this->belongsTo(Visita::class);
+    }
+
+     public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

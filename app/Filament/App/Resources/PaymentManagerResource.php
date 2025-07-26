@@ -4,11 +4,14 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\PaymentManagerResource\Pages;
 use App\Filament\App\Resources\PaymentManagerResource\RelationManagers;
+use App\Models\Cobro;
 use App\Models\Customer;
 use App\Models\PaymentManager;
 use App\Models\Payments;
+use App\Models\Pedido;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -26,76 +29,109 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentManagerResource extends Resource
 {
-    protected static ?string $model = Payments::class;
+    protected static ?string $model = Cobro::class;
 
     protected static string $relationship = 'payments';
     protected static ?string $title = 'Pagos';
     protected static ?string $slug = 'pagos';
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationGroup = 'Pedidos & Pagos';
-    protected static ?string $navigationLabel = 'Administrar Pagos';
-    protected static ?string $breadcrumb = "Administrar Pagos";
+    protected static ?string $navigationGroup = 'Rutas';
+    protected static ?string $navigationLabel = 'Pagos';
+    protected static ?string $breadcrumb = "Pagos";
     protected static ?int $navigationSort = 3;
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Informacion del Pago')->schema([
 
-                    Select::make('customer_id')
-                        ->label('Cliente')
-                        ->options(Customer::query()
-                            ->where('is_active', true)
-                            ->where('user_id', auth()->user()->id)
-                            ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
-                            ->orderBy('name', 'ASC')
-                            ->pluck('name', 'id'))
-                        ->preload()
-                        ->searchable()
-                        ->required()
-                        ->columnSpanFull(),
 
-                    Hidden::make('user_id')->default(fn() => auth()->id()),
+                Section::make('Cliente')
+                    ->icon('heroicon-o-user')
+                    ->schema([
 
-                    TextInput::make('importe')
-                        ->required()
-                        ->numeric()
-                        ->minValue(1)
-                        ->placeholder('0.00'),
+                        Select::make('customer_id')
+                            ->label('Clientes')
+                            ->options(Customer::query()
+                                ->where('is_active', true)
+                                ->where('user_id', Auth::id())
+                                ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
+                                ->whereHas('pedidos', function ($query) {
+                                    $query->where('estado_general', 'abierto');
+                                })
+                                ->orderBy('name', 'ASC')
+                                ->pluck('name', 'id'))
+                            ->live()
+                            ->preload()
+                            ->searchable()
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(fn(callable $set) => $set('pedido_id', null))
+                            ->columns(2),
 
-                    Select::make('tipo')
-                        ->options([
-                            'E' => 'Efectivo',
-                            'T' => 'Transferencia',
-                            'O' => 'Otro',
-                        ])
-                        ->default('E')
-                        ->required(),
+                        Select::make('pedido_id')
+                            ->label('Pedido')
+                            ->options(function (callable $get) {
+                                $customerId = $get('customer_id');
+                                if (!$customerId) {
+                                    return [];
+                                }
 
-                    DatePicker::make('created_at')
-                        ->label('Fecha de pago')
-                        ->default(Carbon::now()->format('Y-m-d H:i:s'))
-                        ->required(),
+                                return Pedido::where('customer_id', $customerId)
+                                    ->where('estado_general', 'abierto')
+                                    ->orderBy('created_at', 'desc')
+                                    ->pluck('id_nota', 'id');
+                            })
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                    ])->columns(2),
 
-                    FileUpload::make('voucher')
-                        ->label('Comprobante')
-                        ->directory('recibos')
-                        ->columnSpanFull(),
+                Section::make('Cobranza')
+                    ->icon('heroicon-o-banknotes')
+                    ->schema([
+                        Hidden::make('user_id')->default(fn() => Auth::id()),
+                        Hidden::make('visita_id')->default(fn() => null),
+                        Hidden::make('fecha_pago')->default(fn() => Carbon::now()),
 
-                    Textarea::make('notas')
-                        ->rows(3)
-                        ->columnSpanFull(),
+                        TextInput::make('monto')
+                            ->required()
+                            ->numeric()
+                            ->minValue(1)
+                            ->placeholder('0.00'),
 
-                    Hidden::make('is_verified')
-                        ->default(false)
-                        ->dehydrated(true),
-                ])->columns(2),
+                        Select::make('tipo_pago')
+                            ->options([
+                                'EF' => 'Efectivo',
+                                'TR' => 'Transferencia',
+                                'CH' => 'Cheque',
+                                'DP' => 'Depósito',
+                                'OT' => 'Otro',
+                            ])
+                            ->default('EF')
+                            ->required(),
+
+                        Textarea::make('comentarios')
+                            ->rows(3)
+                            ->columnSpanFull(),
+
+                        FileUpload::make('comprobantes')
+                            ->label('Comprobante')
+                            ->directory('comprobantes-cobros')
+                            ->columnSpanFull()
+                            ->multiple()
+                            ->required(),
+
+                        Hidden::make('aprobado')
+                            ->default(false)
+                            ->dehydrated(true),
+                    ])->columns(2),
             ]);
     }
 
@@ -104,44 +140,39 @@ class PaymentManagerResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 $query
-                    ->where('user_id', auth()->user()->id);
+                    ->where('user_id', Auth::id());
             })
             ->heading('Pagos')
-            ->description('Lista de Pagos de mis Clientes.')
-            ->defaultSort('id', 'DESC')
+            ->description('Lista de Pagos registrados.')
+            ->defaultSort('fecha_pago', 'DESC')
             ->columns([
-                TextColumn::make('customer.name')->label('Cliente')->searchable(),
-                TextColumn::make('created_at')->label('Fecha de Pago')->date(),
-                TextColumn::make('importe')->label('Importe')
+                TextColumn::make('fecha_pago')->label('Fecha de Pago')->date(),
+                TextColumn::make('pedido.id_nota')->label('ID Nota'),
+                TextColumn::make('pedido.customer.name')->label('Cliente')->searchable(),
+                TextColumn::make('monto')->label('Monto')
                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
-                TextColumn::make('tipo')->label('Tipo de Pago')->badge()
+                TextColumn::make('tipo_pago')->label('Tipo de Pago')->badge()
                     ->formatStateUsing(fn(string $state): string => [
-                        'E' => 'Efectivo',
-                        'T' => 'Transferencia',
+                        'EF' => 'Efectivo',
+                        'TR' => 'Transferencia',
+                        'CH' => 'Cheque',
+                        'DP' => 'Depósito',
+                        'OT' => 'Otro',
                     ][$state] ?? 'Otro')
-                    ->colors([
-                        'success' => 'E',
-                        'warning' => 'T',
-                        'info' => 'O'
-                    ]),
-                IconColumn::make('is_verified')->label('Verificado')->boolean()
+                    ->alignCenter(),
+
+                TextColumn::make('comentarios')->label('Comentarios'),
+
+                IconColumn::make('aprobado')->label('Verificado')->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger')
                     ->alignCenter(),
             ])
-            ->filters([
-                //
-            ])
-            ->actions([
-               // Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    //Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->filters([])
+            ->actions([])
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
@@ -157,6 +188,7 @@ class PaymentManagerResource extends Resource
             'index' => Pages\ListPaymentManagers::route('/'),
             'create' => Pages\CreatePaymentManager::route('/create'),
             'edit' => Pages\EditPaymentManager::route('/{record}/edit'),
+            'view' => Pages\ViewPaymentManager::route('/{record}'),
         ];
     }
 }

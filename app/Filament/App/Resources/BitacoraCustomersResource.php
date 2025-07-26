@@ -23,12 +23,12 @@ class BitacoraCustomersResource extends Resource
 {
     protected static ?string $model = Visita::class;
 
-    protected static ?string $title = 'Bitacora de Usuario';
-    protected static ?string $slug = 'bitacora-usuario';
+    protected static ?string $title = 'Bitacora de Visitas';
+    protected static ?string $slug = 'bitacora-visitas';
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $navigationGroup = 'Rutas';
-    protected static ?string $navigationLabel = 'Bitacora';
-    protected static ?string $breadcrumb = "Bitacora";
+    protected static ?string $navigationLabel = 'Bitacora de Visitas';
+    protected static ?string $breadcrumb = "Bitacora de Visitas";
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -77,7 +77,7 @@ class BitacoraCustomersResource extends Resource
                 Visita::query()
                     ->where('user_id', Auth::id())
             )
-            ->heading('Bitácora de Usuario')
+            ->heading('Bitácora de Visitas a Clientes')
             ->description('Registro de visitas realizadas.')
             ->emptyStateHeading('No hay visitas registradas.')
             ->defaultSort('fecha_visita', 'DESC')

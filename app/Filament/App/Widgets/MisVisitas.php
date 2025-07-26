@@ -30,7 +30,7 @@ class MisVisitas extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Hoy '.Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->heading('Hoy ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
             // ->description('Lista de visitas pendientes desde el '.Carbon::now()->startOfWeek()->isoFormat('dddd D [de] MMMM, YYYY') . ' hasta el ' . Carbon::now()->endOfWeek()->isoFormat('dddd D [de] MMMM, YYYY'))
             ->description('Visitas programadas.')
             ->emptyStateHeading('No hay visitas programadas para hoy')
@@ -38,10 +38,8 @@ class MisVisitas extends BaseWidget
             ->query(
                 Pedido::query()
                     ->where('distribuidor', Auth::id())
-                     ->where('estado_general', 'abierto')
+                    ->where('estado_general', 'abierto')
                     ->whereDate('fecha_entrega', '=', Carbon::now())
-                //->where('is_verified', false)
-                //->with('customer', 'entregaCobranza')
             )
             ->columns([
                 TextColumn::make('num_ruta')
@@ -72,22 +70,6 @@ class MisVisitas extends BaseWidget
 
             ])
             ->filters([])
-            ->actions([
-                ActionsActionGroup::make([
-                    Action::make('view_invoice')
-                        ->label('EC')
-                        ->icon('heroicon-o-document-chart-bar')
-                        ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
-                        ->openUrlInNewTab(),
-
-                    Action::make('register_visit')
-                        ->label('Registrar Visita')
-                        ->icon('heroicon-o-calendar')
-                        ->form([])
-                        ->action(function (array $data): void {})
-                        ->modalHeading('Registrar Visita')
-                        ->modalSubmitActionLabel('Terminar Visita')
-                ])
-            ]);
+            ->actions([]);
     }
 }

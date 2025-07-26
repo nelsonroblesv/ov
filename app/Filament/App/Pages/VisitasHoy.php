@@ -110,24 +110,31 @@ class VisitasHoy extends Page implements HasTable
                         ->icon('heroicon-o-pencil-square')
                         ->color('warning')
                         ->modalHeading('Registrar visita')
+                        ->modalSubmitActionLabel('Registrar Visita')
                         ->form([
-                            Select::make('tipo_visita')
-                                ->label('Tipo de Visita')
-                                ->options([
-                                    'EN' => 'Entrega',
-                                    'SE' => 'Seguimiento',
-                                    'SV' => 'Siguiente Visita',
-                                ])
-                                ->required(),
+                            Section::make('Datos de la visita')
+                                ->description('Completa la información que se solicita sobre la visita.')
+                                ->collapsible()
+                                ->schema([
+                                Select::make('tipo_visita')
+                                    ->label('Tipo de Visita')
+                                    ->options([
+                                        'EN' => 'Entrega',
+                                        'SE' => 'Seguimiento',
+                                        'SV' => 'Siguiente Visita',
+                                    ])
+                                    ->required(),
 
-                            Textarea::make('notas')
-                                ->label('Observaciones')
-                                ->rows(3),
+                                Textarea::make('notas')
+                                    ->label('Observaciones')
+                                    ->rows(3),
 
-                            FileUpload::make('evidencias')
-                                ->label('Evidencia')
-                                ->directory('evidencias-visitas')
-                                ->multiple(),
+                                FileUpload::make('evidencias')
+                                    ->label('Evidencia')
+                                    ->directory('evidencias-visitas')
+                                    ->multiple()
+                                    ->required(),
+                            ]),
 
                             Section::make('Cobro')
                                 ->collapsed()

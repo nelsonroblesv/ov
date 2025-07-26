@@ -201,4 +201,9 @@ class Customer extends Model
     {
         return $this->hasMany(Cobranza::class);
     }
+
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
 }
