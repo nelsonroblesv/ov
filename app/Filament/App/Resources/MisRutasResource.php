@@ -33,9 +33,10 @@ class MisRutasResource extends Resource
     protected static ?string $model = Pedido::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-up-down';
+     protected static ?string $slug = 'ruta-semanal';
     protected static ?string $navigationGroup = 'Rutas & Visitas';
-    protected static ?string $navigationLabel = 'Administrar Rutas';
-    protected static ?string $breadcrumb = "Administrar Ruta";
+    protected static ?string $navigationLabel = 'Ruta Semanal';
+    protected static ?string $breadcrumb = "Ruta Semanal";
     protected static ?int $navigationSort = 1;
     protected static bool $shouldRegisterNavigation = true;
 

@@ -13,7 +13,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListMisRutas extends ListRecords
 {
     protected static string $resource = MisRutasResource::class;
-    protected static ?string $title = 'Administrar Rutas';
+    protected static ?string $title = 'Ruta Semanal';
 
     protected function getHeaderActions(): array
     {

@@ -27,7 +27,7 @@ class VisitasSemana extends Page implements HasTable
 
     protected static string $view = 'filament.app.pages.visitas-semana';
     protected static ?string $title = 'Ruta Semanal';
-    protected static ?string $slug = 'ruta-semanal';
+    protected static ?string $slug = 'ruta';
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
     protected static ?string $navigationGroup = 'Rutas & Visitas';
     protected static ?string $navigationLabel = 'Semana';
