@@ -32,10 +32,10 @@ class MisRutasResource extends Resource
 {
     protected static ?string $model = Pedido::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrows-up-down';
-     protected static ?string $slug = 'ruta-semanal';
-    protected static ?string $navigationGroup = 'Rutas & Visitas';
-    protected static ?string $navigationLabel = 'Ruta Semanal';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?string $slug = 'ruta-semanal';
+    protected static ?string $navigationGroup = 'Rutas';
+    protected static ?string $navigationLabel = 'Itinerario Semanal';
     protected static ?string $breadcrumb = "Ruta Semanal";
     protected static ?int $navigationSort = 1;
     protected static bool $shouldRegisterNavigation = true;
@@ -50,7 +50,7 @@ class MisRutasResource extends Resource
 
     public static function table(Table $table): Table
     {
-      return $table
+        return $table
             ->query(
                 Pedido::query()
                     ->where('distribuidor', Auth::id())
@@ -61,19 +61,51 @@ class MisRutasResource extends Resource
                     ])
             )
             ->recordUrl(null)
-            ->heading('Mis Rutas')
-            ->description('Estas son tus Rutas. Utiliza los controles disponibles para organizar tus rutas.
-            Puedes arrastrar y soltar para cambiar el orden de las rutas. Seleccionar 
-            el dia, filtrar por tipo de semana y buscar por nombre de cliente.')
-            ->reorderable('orden')
+            ->heading('Semana: ' .  Carbon::now()->startOfWeek(Carbon::MONDAY)->isoFormat('dddd D [de] MMMM, YYYY') . ' - ' . Carbon::now()->startOfWeek(Carbon::MONDAY)->addDays(4)->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->description('Lista de visitas a realizar durante la semana.')
+            ->emptyStateHeading('No hay visitas programadas.')
+            ->defaultSort('num_ruta', 'ASC')
             ->columns([
-             
-                TextColumn::make('customer.name')->label('Cliente')->searchable(),
-               
+                TextColumn::make('num_ruta')
+                    ->label('# Ruta')
+                    ->alignCenter(),
+
+                TextColumn::make('fecha_entrega')
+                    ->label('Fecha')
+                    ->date(),
+
+                TextColumn::make('customer.name')
+                    ->label('Cliente')
+                    ->badge()
+                    ->color('info'),
+
+                TextColumn::make('region.name')
+                    ->html()
+                    ->formatStateUsing(function ($record) {
+                        $region = $record->customer?->regiones?->name ?? 'Sin región';
+                        $zona = $record->customer?->zona?->nombre_zona ?? 'Sin zona';
+                        return "
+                                <span>📍 {$region}</span><br>
+                                <span>🗺️ {$zona}</span><br>";
+                    }),
+
+                TextColumn::make('customer.phone')
+                    ->label('Telefono')
+                    ->badge()
+                    ->color('success')
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->url(fn($record) => 'https://wa.me/' . urlencode($record->customer->phone), true)
+                    ->openUrlInNewTab(),
+
+                TextColumn::make('customer.full_address')
+                    ->label('Ubicación')
+                    ->badge()
+                    ->icon('heroicon-o-map-pin')
+                    ->color('danger')
+                    ->url(fn($record) => 'https://www.google.com/maps/search/?api=1&query=' . $record->customer->latitude . ',' . $record->customer->longitude, true),
+
             ])
-            ->filters([
-               
-            ])
+            ->filters([])
             ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

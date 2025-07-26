@@ -28,8 +28,8 @@ class VisitasHoy extends Page implements HasTable
     protected static string $view = 'filament.app.pages.visitas-hoy';
     protected static ?string $title = 'Ruta de Hoy';
     protected static ?string $slug = 'ruta-hoy';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?string $navigationGroup = 'Rutas & Visitas';
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static ?string $navigationGroup = 'Rutas';
     protected static ?string $navigationLabel = 'Hoy';
     protected static ?string $breadcrumb = "Ruta Hoy";
     protected static ?int $navigationSort = 0;
