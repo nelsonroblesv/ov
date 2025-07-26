@@ -5,37 +5,30 @@ namespace App\Filament\App\Pages;
 use App\Filament\App\Resources\CustomerStatementResource;
 use Filament\Pages\Page;
 use Filament\Tables;
-use App\Models\EntregaCobranzaDetalle;
 use App\Models\Pedido;
 use Carbon\Carbon;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class MisEntregas extends Page implements HasTable
+class VisitasHoy extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static string $view = 'filament.app.pages.mis-entregas';
+    protected static string $view = 'filament.app.pages.visitas-hoy';
     protected static ?string $title = 'Ruta de Hoy';
     protected static ?string $slug = 'ruta-hoy';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $navigationGroup = 'Rutas & Visitas';
     protected static ?string $navigationLabel = 'Hoy';
     protected static ?string $breadcrumb = "Ruta Hoy";
@@ -51,7 +44,7 @@ class MisEntregas extends Page implements HasTable
                     ->where('estado_general', 'abierto')
                     ->whereDate('fecha_entrega', '=', Carbon::now())
             )
-            ->heading('Hoy ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
+            ->heading('Hoy: ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
             ->description('Lista de visitas a realizar durante el día.')
             ->emptyStateHeading('No hay visitas programadas para hoy')
             ->defaultSort('num_ruta', 'ASC')
