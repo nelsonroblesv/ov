@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('fecha_pago');
             $table->enum('tipo_pago', ['EF', 'TR', 'DP', 'CH', 'OT']);
             $table->text('comentarios')->nullable(); // ej: “cliente transfirió el domingo”
-            $table->string('comprobantes')->nullable(); // para la imagen/foto
+            $table->json('comprobantes')->nullable(); // para la imagen/foto
             $table->boolean('aprobado')->default(false);
             $table->timestamps();
         });

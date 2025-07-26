@@ -126,7 +126,8 @@ class VisitasHoy extends Page implements HasTable
 
                             FileUpload::make('evidencias')
                                 ->label('Evidencia')
-                                ->directory('evidencias-visitas'),
+                                ->directory('evidencias-visitas')
+                                ->multiple(),
 
                             Section::make('Cobro')
                                 ->collapsed()
@@ -144,11 +145,13 @@ class VisitasHoy extends Page implements HasTable
                                             'DP' => 'Depósito bancario',
                                             'CH' => 'Cheque',
                                             'OT' => 'Otro',
-                                        ]),
+                                        ])
+                                        ->default('EF'),
 
                                     FileUpload::make('comprobantes')
                                         ->label('Comprobantes de pago')
                                         ->directory('comprobantes-cobros')
+                                        ->multiple()
                                         ->columnSpanFull(),
 
                                     Textarea::make('comentarios')

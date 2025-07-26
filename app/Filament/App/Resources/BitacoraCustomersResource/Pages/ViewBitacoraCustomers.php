@@ -9,5 +9,6 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewBitacoraCustomers extends ViewRecord
 {
     protected static string $resource = BitacoraCustomersResource::class;
-    protected static ?string $title = 'Vista Registro de Bitacora';
+    protected static ?string $title = 'Vista Detalle';
+
 }

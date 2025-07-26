@@ -15,6 +15,10 @@ class Visita extends Model
         'evidencias',
     ];
 
+    protected $casts = [
+        'evidencias' => 'array',
+    ];
+
     public function pedido()
     {
         return $this->belongsTo(Pedido::class);
@@ -23,5 +27,10 @@ class Visita extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function cobro()
+    {
+        return $this->hasOne(Cobro::class);
     }
 }

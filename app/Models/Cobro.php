@@ -18,6 +18,10 @@ class Cobro extends Model
         'aprobado',
     ];
 
+     protected $casts = [
+        'comprobantes' => 'array',
+    ];
+
     public function pedido()
     {
         return $this->belongsTo(Pedido::class);

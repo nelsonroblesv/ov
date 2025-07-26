@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('fecha_visita');
             $table->enum('tipo_visita', ['EN', 'SE', 'SV']);
             $table->text('notas')->nullable();
-            $table->string('evidencias')->nullable(); // foto de entrega, firma, etc.
+            $table->json('evidencias')->nullable(); // foto de entrega, firma, etc.
             $table->timestamps();
         });
     }

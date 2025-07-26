@@ -346,30 +346,7 @@ class PedidosResource extends Resource
                                 Textarea::make('observaciones')
                                     ->label('Observaciones')
                                     ->columnSpanFull(),
-/*
-                                ToggleButtons::make('Tipo de visita')
-                                    ->label('Tipo de Visita')
-                                    ->helperText('Selecciona el tipo de visita que realizará el colaborador.')
-                                    ->options([
-                                        'cobranza' => 'Cobranza',
-                                        'liquidacion' => 'Liquidación',
-                                        'cancelado' => 'Cancelado',
-
-                                    ])
-                                    ->icons([
-                                        'cobranza' => 'heroicon-o-banknotes',
-                                        'liquidacion' => 'heroicon-o-check-badge',
-                                        'cancelado' => 'heroicon-o-archive-box-x-mark',
-                                    ])
-                                    ->colors([
-                                        'cobranza' => 'info',
-                                        'liquidacion' => 'success',
-                                        'cancelado' => 'danger',
-                                    ])
-                                    ->default('cobranza')
-                                    ->inline()
-                                    ->columnSpanFull(),
-*/
+                                    
                                 FileUpload::make('notas_venta')
                                     ->label('Notas de Venta')
                                     ->placeholder('Haz click para cargar la(s) nota(s) de venta')
