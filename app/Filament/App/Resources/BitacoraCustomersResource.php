@@ -36,11 +36,11 @@ class BitacoraCustomersResource extends Resource
         return $form
             ->schema([
                 Section::make('Detalles de la Visita')
-                    ->columns(2)
+                    ->collapsible()
                     ->schema([
-                         Placeholder::make('notas')
+                        Placeholder::make('notas')
                             ->label('ID Nota')
-                            ->content(fn($record) => $record?->pedido?->id_nota ?? 'Sin cliente'),
+                            ->content(fn($record) => $record?->pedido?->id_nota ?? 'Sin nota'),
 
                         Placeholder::make('cliente')
                             ->label('Cliente')
@@ -55,8 +55,7 @@ class BitacoraCustomersResource extends Resource
                                 'EN' => 'Entrega',
                                 'SE' => 'Seguimiento',
                                 'SV' => 'Siguiente Visita',
-                            ])
-                            ->required(),
+                            ]),
 
                         Textarea::make('notas')
                             ->label('Notas de la Visita')
@@ -64,11 +63,10 @@ class BitacoraCustomersResource extends Resource
 
                         FileUpload::make('evidencias')
                             ->label('Evidencias de la Visita')
-                            ->directory('evidencias-visitas')
                             ->downloadable()
                             ->multiple()
                             ->columnSpanFull(),
-                    ]),
+                    ])->columns(2),
             ]);
     }
 
