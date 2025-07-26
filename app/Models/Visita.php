@@ -29,8 +29,8 @@ class Visita extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function cobro()
+    public function cobros()
     {
-        return $this->hasOne(Cobro::class);
+        return $this->hasMany(Cobro::class);
     }
 }

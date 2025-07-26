@@ -24,4 +24,9 @@ class BitacoraCustomers extends Model
     {
         return $this->belongsTo(Visita::class);
     }
+
+    public function cobros()
+    {
+        return $this->hasMany(Cobro::class);
+    }
 }

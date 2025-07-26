@@ -2,10 +2,10 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Filament\App\Resources\BitacoraCustomerResource\RelationManagers\CobroRelationManager;
 use App\Filament\App\Resources\BitacoraCustomersResource\Pages;
 use App\Filament\App\Resources\BitacoraCustomersResource\Pages\ViewBitacoraCustomers;
 use App\Models\Visita;
-use DragonCode\Contracts\Http\Builder;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -107,10 +107,13 @@ class BitacoraCustomersResource extends Resource
                     ]),
 
                 TextColumn::make('notas'),
+
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Detalles')
+                    ->color('warning'),
             ])
             ->bulkActions([]);
     }
@@ -118,7 +121,7 @@ class BitacoraCustomersResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CobroRelationManager::class
         ];
     }
 

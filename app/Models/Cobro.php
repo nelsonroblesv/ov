@@ -18,7 +18,7 @@ class Cobro extends Model
         'aprobado',
     ];
 
-     protected $casts = [
+    protected $casts = [
         'comprobantes' => 'array',
     ];
 
