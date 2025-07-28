@@ -50,6 +50,7 @@ class VisitasResource extends Resource
                     ->where('estado_general', 'abierto')
                     ->whereDate('fecha_entrega', '=', Carbon::now())
             )
+            ->recordUrl(null)
             ->heading('Hoy: ' . Carbon::now()->isoFormat('dddd D [de] MMMM, YYYY'))
             ->description('Lista de visitas a realizar durante el día.')
             ->emptyStateHeading('No hay visitas programadas para hoy')
