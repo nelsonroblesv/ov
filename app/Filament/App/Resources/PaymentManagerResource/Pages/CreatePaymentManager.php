@@ -3,9 +3,11 @@
 namespace App\Filament\App\Resources\PaymentManagerResource\Pages;
 
 use App\Filament\App\Resources\PaymentManagerResource;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreatePaymentManager extends CreateRecord
 {
@@ -27,5 +29,23 @@ class CreatePaymentManager extends CreateRecord
             ->icon('heroicon-o-check')
             ->iconColor('success')
             ->color('success');
+    }
+
+    protected function afterCreate(): void
+    {
+        $data = $this->record;
+        $admin = User::where('role', 'Administrador')->get();
+        $username = Auth::user()?->name ?? 'Usuario';
+        $customer = $data->customer->name ?? 'Cliente desconocido';
+
+        $body = "{$username} ha registrado una Cobranza a {$customer} por $". number_format($data->monto, 2);
+
+        Notification::make()
+            ->title('Cobranza registrada')
+            ->body($body)
+            ->icon('heroicon-o-banknotes')
+            ->iconColor('info')
+            ->color('info')
+            ->sendToDatabase($admin);
     }
 }

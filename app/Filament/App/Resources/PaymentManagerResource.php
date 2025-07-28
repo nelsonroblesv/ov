@@ -144,7 +144,7 @@ class PaymentManagerResource extends Resource
             })
             ->heading('Pagos')
             ->description('Lista de Pagos registrados.')
-            ->defaultSort('fecha_pago', 'DESC')
+            ->defaultSort('id', 'DESC')
             ->columns([
                 TextColumn::make('fecha_pago')->label('Fecha de Pago')->date(),
                 TextColumn::make('pedido.id_nota')->label('ID Nota'),

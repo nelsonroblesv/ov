@@ -150,7 +150,9 @@ class VisitasResource extends Resource
                                 ->schema([
                                     TextInput::make('monto')
                                         ->label('Monto del cobro')
-                                        ->numeric(),
+                                        ->numeric()
+                                        ->minValue(1)
+                                        ->placeholder('0.00'),
 
                                     Select::make('tipo_pago')
                                         ->label('Método de pago')
@@ -209,10 +211,10 @@ class VisitasResource extends Resource
                             $admin = User::where('role', 'Administrador')->get();
                             $username = Auth::user()?->name ?? 'Usuario';
                             $customer = $record->customer->name ?? 'Cliente desconocido';
-                          
-                            if(!empty($data['monto']) && $data['monto'] > 0) {
-                               $body = "{$username} ha registrado una visita a {$customer} con una cobranza de $".number_format($data['monto'],2);
-                             } else {
+
+                            if (!empty($data['monto']) && $data['monto'] > 0) {
+                                $body = "{$username} ha registrado una visita a {$customer} con una cobranza de $" . number_format($data['monto'], 2);
+                            } else {
                                 $body = "{$username} ha registrado una visita a {$customer}.";
                             }
 
@@ -223,6 +225,7 @@ class VisitasResource extends Resource
                                 ->iconColor('info')
                                 ->color('info')
                                 ->sendToDatabase($admin);
+                                
                         })->visible(function ($record) {
                             return !$record->visitas()
                                 ->whereDate('fecha_visita', Carbon::now()->toDateString())
