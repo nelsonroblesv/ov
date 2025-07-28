@@ -24,6 +24,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -126,7 +127,8 @@ class PaymentManagerResource extends Resource
                             ->directory('comprobantes-cobros')
                             ->columnSpanFull()
                             ->multiple()
-                            ->required(),
+                            ->required()
+                            ->downloadable(),
 
                         Hidden::make('aprobado')
                             ->default(false)
@@ -160,6 +162,12 @@ class PaymentManagerResource extends Resource
                         'OT' => 'Otro',
                     ][$state] ?? 'Otro')
                     ->alignCenter(),
+
+                ImageColumn::make('comprobantes')
+                    ->circular()
+                    ->stacked()
+                    ->limit(3)
+                    ->limitedRemainingText(),
 
                 TextColumn::make('comentarios')->label('Comentarios'),
 

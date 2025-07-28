@@ -45,11 +45,6 @@ class CobroRelationManager extends RelationManager
                     ->alignCenter()
                     ->badge(),
                 TextColumn::make('comentarios'),
-                ImageColumn::make('comprobantes')
-                    ->circular()
-                    ->stacked()
-                    ->limit(3)
-                    ->limitedRemainingText(),
                     
                 IconColumn::make('aprobado')
                     ->boolean()
