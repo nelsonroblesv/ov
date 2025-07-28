@@ -1,31 +1,32 @@
 <?php
 
-namespace App\Filament\App\Pages;
+namespace App\Filament\App\Resources;
 
-use App\Filament\App\Resources\CustomerStatementResource;
-use Filament\Pages\Page;
-use Filament\Tables;
+use App\Filament\App\Resources\VisitasResource\Pages;
 use App\Models\Pedido;
+use App\Models\User;
+use App\Models\Visita;
 use Carbon\Carbon;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class VisitasHoy extends Page implements HasTable
+class VisitasResource extends Resource
 {
-    use InteractsWithTable;
+    protected static ?string $model = Visita::class;
 
-    protected static string $view = 'filament.app.pages.visitas-hoy';
     protected static ?string $title = 'Ruta de Hoy';
     protected static ?string $slug = 'ruta-hoy';
     protected static ?string $navigationIcon = 'heroicon-o-truck';
@@ -33,10 +34,14 @@ class VisitasHoy extends Page implements HasTable
     protected static ?string $navigationLabel = 'Hoy';
     protected static ?string $breadcrumb = "Ruta Hoy";
     protected static ?int $navigationSort = 0;
-    protected static bool $shouldRegisterNavigation = false;
 
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([]);
+    }
 
-    public function table(Tables\Table $table): Tables\Table
+    public static function table(Table $table): Table
     {
         return $table
             ->query(
@@ -102,7 +107,9 @@ class VisitasHoy extends Page implements HasTable
                     ->falseColor('danger')
                     ->alignCenter()
             ])
-            ->filters([])
+            ->filters([
+                //
+            ])
             ->actions([
                 ActionGroup::make([
 
@@ -117,25 +124,25 @@ class VisitasHoy extends Page implements HasTable
                                 ->description('Completa la información que se solicita sobre la visita.')
                                 ->collapsible()
                                 ->schema([
-                                Select::make('tipo_visita')
-                                    ->label('Tipo de Visita')
-                                    ->options([
-                                        'EN' => 'Entrega',
-                                        'SE' => 'Seguimiento',
-                                        'SV' => 'Siguiente Visita',
-                                    ])
-                                    ->required(),
+                                    Select::make('tipo_visita')
+                                        ->label('Tipo de Visita')
+                                        ->options([
+                                            'EN' => 'Entrega',
+                                            'SE' => 'Seguimiento',
+                                            'SV' => 'Siguiente Visita',
+                                        ])
+                                        ->required(),
 
-                                Textarea::make('notas')
-                                    ->label('Observaciones')
-                                    ->rows(3),
+                                    Textarea::make('notas')
+                                        ->label('Observaciones')
+                                        ->rows(3),
 
-                                FileUpload::make('evidencias')
-                                    ->label('Evidencia')
-                                    ->directory('evidencias-visitas')
-                                    ->multiple()
-                                    ->required(),
-                            ]),
+                                    FileUpload::make('evidencias')
+                                        ->label('Evidencia')
+                                        ->directory('evidencias-visitas')
+                                        ->multiple()
+                                        ->required(),
+                                ]),
 
                             Section::make('Cobro')
                                 ->collapsed()
@@ -198,6 +205,24 @@ class VisitasHoy extends Page implements HasTable
                                 ->icon('heroicon-o-check-circle')
                                 ->success()
                                 ->send();
+
+                            $admin = User::where('role', 'Administrador')->get();
+                            $username = Auth::user()?->name ?? 'Usuario';
+                            $customer = $record->customer->name ?? 'Cliente desconocido';
+                          
+                            if(!empty($data['monto']) && $data['monto'] > 0) {
+                               $body = "{$username} ha registrado una visita a {$customer} con una cobranza de $".number_format($data['monto'],2);
+                             } else {
+                                $body = "{$username} ha registrado una visita a {$customer}.";
+                            }
+
+                            Notification::make()
+                                ->title('Visita registrada')
+                                ->body($body)
+                                ->icon('heroicon-o-truck')
+                                ->iconColor('info')
+                                ->color('info')
+                                ->sendToDatabase($admin);
                         })->visible(function ($record) {
                             return !$record->visitas()
                                 ->whereDate('fecha_visita', Carbon::now()->toDateString())
@@ -211,6 +236,28 @@ class VisitasHoy extends Page implements HasTable
                         ->url(fn($record) => CustomerStatementResource::getUrl(name: 'invoice', parameters: ['record' => $record->customer]))
                         ->openUrlInNewTab(),
                 ])
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListVisitas::route('/'),
+            'create' => Pages\CreateVisitas::route('/create'),
+            'edit' => Pages\EditVisitas::route('/{record}/edit'),
+            'view' => Pages\ViewVisitas::route('/{record}'),
+        ];
     }
 }
