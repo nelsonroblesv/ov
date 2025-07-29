@@ -51,8 +51,6 @@ class PaymentManagerResource extends Resource
     {
         return $form
             ->schema([
-
-
                 Section::make('Cliente')
                     ->icon('heroicon-o-user')
                     ->schema([
@@ -61,7 +59,7 @@ class PaymentManagerResource extends Resource
                             ->label('Clientes')
                             ->options(Customer::query()
                                 ->where('is_active', true)
-                                ->where('user_id', Auth::id())
+                              //  ->where('user_id', Auth::id())
                                 ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
                                 ->whereHas('pedidos', function ($query) {
                                     $query->where('estado_general', 'abierto');

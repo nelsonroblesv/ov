@@ -123,6 +123,7 @@ class VisitasResource extends Resource
                         ->form([
                             Section::make('Datos de la visita')
                                 ->description('Completa la información que se solicita sobre la visita.')
+                                ->icon('heroicon-o-book-open')
                                 ->collapsible()
                                 ->schema([
                                     Select::make('tipo_visita')
@@ -141,12 +142,12 @@ class VisitasResource extends Resource
                                     FileUpload::make('evidencias')
                                         ->label('Evidencia')
                                         ->directory('evidencias-visitas')
-                                        ->multiple()
-                                        ->required(),
+                                        ->multiple(),
                                 ]),
 
                             Section::make('Cobro')
                                 ->collapsed()
+                                 ->icon('heroicon-o-banknotes')
                                 ->description('Si se realiza un cobro, complete la siguiente información.')
                                 ->schema([
                                     TextInput::make('monto')
@@ -198,6 +199,7 @@ class VisitasResource extends Resource
                                         'comprobantes' => $data['comprobantes'] ?? null,
                                         'comentarios' => $data['comentarios'] ?? null,
                                         'user_id' => Auth::id(),
+                                        'customer_id' => $record->customer_id,
                                         'visita_id' => $visita->id,
                                     ]);
                                 }
