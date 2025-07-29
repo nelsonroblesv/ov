@@ -52,8 +52,9 @@ class CobroRelationManager extends RelationManager
                     ->badge(),
                 TextColumn::make('comentarios'),
                     
-                ToggleColumn::make('aprobado')
-                    ->label('Aprobar')
+                IconColumn::make('aprobado')
+                    ->label('Aprobado')
+                    ->boolean()
                     ->alignCenter(),
             ])
             ->filters([

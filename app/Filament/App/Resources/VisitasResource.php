@@ -142,7 +142,8 @@ class VisitasResource extends Resource
                                     FileUpload::make('evidencias')
                                         ->label('Evidencia')
                                         ->directory('evidencias-visitas')
-                                        ->multiple(),
+                                        ->multiple()
+                                        ->required(),
                                 ]),
 
                             Section::make('Cobro')
