@@ -5,6 +5,8 @@ namespace App\Filament\App\Resources;
 use App\Filament\App\Resources\BitacoraCustomerResource\RelationManagers\CobroRelationManager;
 use App\Filament\App\Resources\BitacoraCustomersResource\Pages;
 use App\Filament\App\Resources\BitacoraCustomersResource\Pages\ViewBitacoraCustomers;
+use App\Filament\App\Resources\BitacoraCustomersResource\RelationManagers\CobroRelationManager as BitacoraCustomersResourceRelationManagersCobroRelationManager;
+use App\Filament\Resources\BitacoraRutasResource\RelationManagers\CobroRelationManager as RelationManagersCobroRelationManager;
 use App\Models\Visita;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
@@ -121,7 +123,7 @@ class BitacoraCustomersResource extends Resource
     public static function getRelations(): array
     {
         return [
-            CobroRelationManager::class
+            BitacoraCustomersResourceRelationManagersCobroRelationManager::class
         ];
     }
 

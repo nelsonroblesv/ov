@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\App\Resources\BitacoraCustomerResource\RelationManagers;
+namespace App\Filament\App\Resources\BitacoraCustomersResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
