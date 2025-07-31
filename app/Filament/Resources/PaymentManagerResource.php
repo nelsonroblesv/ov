@@ -11,6 +11,7 @@ use App\Models\Payments;
 use App\Models\Pedido;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -51,7 +52,7 @@ class PaymentManagerResource extends Resource
     protected static bool $shouldRegisterNavigation = true;
 
 
-     public static function form(Form $form): Form
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -80,15 +81,19 @@ class PaymentManagerResource extends Resource
                         Select::make('pedido_id')
                             ->label('Pedido')
                             ->options(function (callable $get) {
-                                
-                                return Pedido::where('estado_general', 'abierto')
+                                $customerId = $get('customer_id');
+                                if (!$customerId) {
+                                    return [];
+                                }
+
+                                return Pedido::where('customer_id', $customerId)
                                     ->orderBy('created_at', 'desc')
                                     ->pluck('id_nota', 'id');
                             })
                             ->required()
                             ->searchable()
                             ->preload()
-                             ->disabledOn('edit')
+                            ->disabledOn('edit')
                     ])->columns(2),
 
                 Section::make('Cobranza')
@@ -145,10 +150,10 @@ class PaymentManagerResource extends Resource
             ]);
     }
 
-     public static function table(Table $table): Table
+    public static function table(Table $table): Table
     {
         return $table
-            
+
             ->heading('Pagos')
             ->description('Lista de Pagos registrados.')
             ->defaultSort('id', 'DESC')

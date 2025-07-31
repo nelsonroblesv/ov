@@ -27,6 +27,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PedidosResource extends Resource
@@ -360,7 +361,7 @@ class PedidosResource extends Resource
                                 Hidden::make('month')->default(fn() => Carbon::now()->month),
                                 Hidden::make('year')->default(fn() => Carbon::now()->year),
 
-                                Hidden::make('registrado_por')->default(fn() => auth()->id()),
+                                Hidden::make('registrado_por')->default(fn() => Auth::id()),
 
                             ])->columns(2)
                         ]),

@@ -158,7 +158,33 @@ class ListPedidos extends ListRecords
                 TextColumn::make('monto')
                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
 
-                TextColumn::make('saldo'),
+                TextColumn::make('saldo')
+                    ->label('Saldo')
+                    ->badge()
+                    ->color(function ($record) {
+                        $totalCobrosAprobados = $record->cobros()
+                            ->where('aprobado', true)
+                            ->sum('monto');
+
+                        $saldo = $record->monto - $totalCobrosAprobados;
+
+                        return match (true) {
+                            $saldo === 0.0     => 'success', // verde
+                            $saldo < 0         => 'info',    // azul (excedente)
+                            $saldo > 0         => 'danger',  // rojo
+                        };
+                    })
+                    ->getStateUsing(function ($record) {
+                        $totalCobrosAprobados = $record->cobros()
+                            ->where('aprobado', true)
+                            ->sum('monto');
+
+                        $saldo = $record->monto - $totalCobrosAprobados;
+
+                        return '$ '.number_format($saldo, 2);
+                    }),
+
+
 
                 TextColumn::make('tipo_nota')
                     ->label('Tipo Nota')
