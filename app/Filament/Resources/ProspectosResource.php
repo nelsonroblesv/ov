@@ -45,6 +45,7 @@ use Filament\Tables\Table;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 use function Laravel\Prompts\table;
@@ -70,7 +71,7 @@ class ProspectosResource extends Resource
                         ->description('Informacion Basica')
                         ->schema([
 
-                            Hidden::make('alta_user_id')->default(fn() => auth()->id()),
+                            Hidden::make('alta_user_id')->default(fn() => Auth::id()),
 
                             Select::make('user_id')
                                 ->required()

@@ -12,6 +12,7 @@ use App\Filament\Resources\ProspectosResource\Pages\ViewProspectos;
 use App\Models\Customer;
 use App\Models\PaquetesInicio;
 use App\Models\Regiones;
+use App\Models\Services;
 use App\Models\Zonas;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\DatePicker;
@@ -21,15 +22,19 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+
 
 class ProspectosResource extends Resource
 {
@@ -50,8 +55,8 @@ class ProspectosResource extends Resource
                     Step::make('Ubicacion')
                         ->description('Informacion Basica')
                         ->schema([
-                            Hidden::make('user_id')->default(fn() => auth()->id()),
-                            Hidden::make('alta_user_id')->default(fn() => auth()->id()),
+                            Hidden::make('user_id')->default(fn() =>  Auth::id()),
+                            Hidden::make('alta_user_id')->default(fn() => Auth::id()),
 
                             ToggleButtons::make('tipo_cliente')
                                 ->label('Tipo de Registro')
@@ -197,7 +202,7 @@ class ProspectosResource extends Resource
                                             ->whereIn('id', function ($subquery) {
                                                 $subquery->select('zonas_id')
                                                     ->from('zona_usuario')
-                                                    ->where('users_id', auth()->id());
+                                                    ->where('users_id',  Auth::id());
                                             });
                                     })->pluck('name', 'id')
                                 )
@@ -210,7 +215,7 @@ class ProspectosResource extends Resource
                                 ->required()
                                 ->searchable()
                                 ->options(fn(callable $get) => Zonas::where('regiones_id', $get('regiones_id')) // Obtiene el valor de 'regiones_id'
-                                    ->whereHas('users', fn($query) => $query->where('users.id', auth()->id())) // Filtra por el usuario autenticado
+                                    ->whereHas('users', fn($query) => $query->where('users.id',  Auth::id())) // Filtra por el usuario autenticado
                                     ->pluck('nombre_zona', 'id'))
                                 ->reactive()
                                 ->disabled(fn(callable $get) => empty($get('regiones_id'))),
@@ -276,7 +281,7 @@ class ProspectosResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 $query
-                    ->where('user_id', auth()->id())
+                    ->where('user_id',  Auth::id())
                     ->whereIn('tipo_cliente', ['PO', 'PR'])
                     ->where('is_active', true);
             })
