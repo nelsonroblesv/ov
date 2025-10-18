@@ -30,7 +30,7 @@ class PaqueteGuiasResource extends Resource
     protected static ?string $model = PaqueteGuias::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationGroup = 'Logistica';
+    protected static ?string $navigationGroup = 'Logística';
     protected static ?string $navigationLabel = 'Paquete de Guias';
     protected static ?string $breadcrumb = "Paquete de Guias";
     protected static ?int $navigationSort = 0;
