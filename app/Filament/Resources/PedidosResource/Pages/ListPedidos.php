@@ -6,6 +6,7 @@ use App\Filament\Resources\PedidosResource;
 use App\Filament\Resources\PedidosResource\Widgets\StatsOverview;
 use App\Models\Customer;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\ListRecords;
@@ -88,7 +89,7 @@ class ListPedidos extends ListRecords
 
         // Limpia el campo pero mantiene los demás filtros
         $this->resetPage();     // Opcional: reinicia paginación
-        $this->resetTable();    // 🔁 fuerza recarga de la tabla
+        $this->resetTable();    // fuerza recarga de la tabla
     }
 
 
@@ -150,10 +151,33 @@ class ListPedidos extends ListRecords
                     ->date(),
 
                 TextColumn::make('fecha_liquidacion')
-                    ->label('Fecha Liquidación')
-                    ->searchable()
-                    ->sortable()
-                    ->date(),
+                    ->label('Fecha de Liquidación')
+                    ->badge() 
+                    ->formatStateUsing(function ($state, $record) {
+                        if (! $state) {
+                            return '-';
+                        }
+
+                        $fechaLiquidacion = Carbon::parse($record->fecha_liquidacion);
+                        $diasTranscurridos = intval($fechaLiquidacion->diffInDays(Carbon::now()));
+
+                        return $fechaLiquidacion->translatedFormat('d M, Y') . " ({$diasTranscurridos} días)";
+                    })
+                    ->color(function ($record) {
+                        if (! $record->fecha_liquidacion) {
+                            return 'gray';
+                        }
+
+                        $fechaLiquidacion = Carbon::parse($record->fecha_liquidacion);
+                        $diasTranscurridos = $fechaLiquidacion->diffInDays(Carbon::now());
+
+                        return match (true) {
+                            $diasTranscurridos <= 30 => 'success',
+                            $diasTranscurridos <= 45 => 'warning',
+                            default => 'danger',                
+                        };
+                    })
+                    ->sortable(),
 
                 TextColumn::make('monto')
                     ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2)),
@@ -181,7 +205,7 @@ class ListPedidos extends ListRecords
 
                         $saldo = $record->monto - $totalCobrosAprobados;
 
-                        return '$ '.number_format($saldo, 2);
+                        return '$ ' . number_format($saldo, 2);
                     }),
 
 

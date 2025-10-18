@@ -324,7 +324,7 @@ class PedidosResource extends Resource
                                 DatePicker::make('fecha_liquidacion')
                                     ->label('Fecha de Liquidación')
                                     ->suffixIcon('heroicon-m-calendar-date-range')
-                                    ->default(Carbon::now()->addDays(15)),
+                                    ->default(Carbon::now()->addDays(30)),
 
                                 Select::make('distribuidor')
                                     ->label('Distribuidor')
