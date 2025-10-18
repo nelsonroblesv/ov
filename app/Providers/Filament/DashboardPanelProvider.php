@@ -68,11 +68,13 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Clientes & Prospectos',
-                'Pedidos & Pagos',
-                'Agenda de Trabajo',
+                'Ingresos',
                 'Catalogo',
-                'Bitacora',
-                'Administrar'
+                'Administrar',
+                'Logística',
+                'Rutas',
+                'Tickets',
+                'OValle'
             ])
             ->middleware([
                 EncryptCookies::class,

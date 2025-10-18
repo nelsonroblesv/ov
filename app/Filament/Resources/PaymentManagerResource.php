@@ -45,10 +45,10 @@ class PaymentManagerResource extends Resource
     protected static ?string $title = 'Pagos';
     protected static ?string $slug = 'pagos';
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationGroup = 'Ingresos';
     protected static ?string $navigationLabel = 'Administrar Pagos';
     protected static ?string $breadcrumb = "Administrar Pagos";
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
     protected static bool $shouldRegisterNavigation = true;
 
 

@@ -37,10 +37,10 @@ class PedidosResource extends Resource
     protected static ?string $title = 'Pedidos';
     protected static ?string $slug = 'pedidos';
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationGroup = 'Ingresos';
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
     protected static ?string $breadcrumb = "Gestionar Pedidos";
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
