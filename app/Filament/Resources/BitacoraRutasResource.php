@@ -34,14 +34,13 @@ class BitacoraRutasResource extends Resource
 {
     protected static ?string $model = Visita::class;
 
-
     protected static ?string $title = 'Bitacora de Visitas';
     protected static ?string $slug = 'bitacora-visitas';
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?string $navigationGroup = 'Pedidos & Pagos';
+    protected static ?string $navigationGroup = 'Administrar';
     protected static ?string $navigationLabel = 'Bitacora de Visitas';
     protected static ?string $breadcrumb = "Bitacora de Visitas";
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 1;
     protected static bool $shouldRegisterNavigation = true;
 
     public static function form(Form $form): Form
