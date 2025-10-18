@@ -161,7 +161,7 @@ class ListPedidos extends ListRecords
                         $fechaLiquidacion = Carbon::parse($record->fecha_liquidacion);
                         $diasTranscurridos = intval($fechaLiquidacion->diffInDays(Carbon::now()));
 
-                        return $fechaLiquidacion->translatedFormat('d M, Y') . " ({$diasTranscurridos} días)";
+                        return $fechaLiquidacion->translatedFormat('M d, Y') . " ({$diasTranscurridos} días)";
                     })
                     ->color(function ($record) {
                         if (! $record->fecha_liquidacion) {
@@ -208,8 +208,6 @@ class ListPedidos extends ListRecords
                         return '$ ' . number_format($saldo, 2);
                     }),
 
-
-
                 TextColumn::make('tipo_nota')
                     ->label('Tipo Nota')
                     ->searchable()
@@ -219,17 +217,12 @@ class ListPedidos extends ListRecords
                         'real' => 'REAL',
                         'stock' => 'DE STOCK'
                     ][$state] ?? 'Otro')
-                    ->formatStateUsing(fn(string $state): string => [
-                        'sistema' => 'SISTEMA',
-                        'real' => 'REAL',
-                        'stock' => 'STOCK'
-                    ][$state] ?? 'Otro')
-                    ->badge()
+                  /*  ->badge()
                     ->color(fn(string $state): string => [
                         'sistema' => 'success',
                         'real' => 'info',
                         'stock' => 'warning'
-                    ][$state] ?? 'primary'),
+                    ][$state] ?? 'primary')*/,
 
                 TextColumn::make('estado_pedido')
                     ->label('Estado Pedido')
