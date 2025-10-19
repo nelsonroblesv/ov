@@ -1,11 +1,11 @@
 {
-  "name": "OV APP",
-  "short_name": "OV",
-  "description": "Sistema OV APP",
+  "name": "VAMA APP",
+  "short_name": "VAMA",
+  "description": "Sistema VAMA APP",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#f6a700",
   "icons": [
     {
       "src": "/images/icons/icon-192x192.png",
@@ -42,7 +42,7 @@
     },
     {
       "src": "/images/assets/desk1.png",
-      "sizes": "1350x631",
+      "sizes": "1282x602",
       "type": "image/jpg",
       "form_factor": "wide",
       "label": "Application"
