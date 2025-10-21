@@ -415,6 +415,7 @@ class CustomerResource extends Resource
             ->defaultSort('name', 'ASC')
             ->columns([
                 TextColumn::make('name')->label('Cliente')->searchable()->sortable(),
+                TextColumn::make('name_facturacion')->label('Facturación')->searchable()->sortable(),
                 TextColumn::make('altaUser.name')->label('Registrado por:')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('user.name')->label('Asignado a:')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('regiones.name')->label('Region')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: false),

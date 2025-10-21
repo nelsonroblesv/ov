@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\CustomerResource\Widgets\StatsCustomer as WidgetsStatsCustomer;
+use App\Filament\Resources\PedidosResource;
 use Filament\Actions;
 use Filament\Actions\Action as ActionsAction;
 use Filament\Resources\Pages\ViewRecord;
@@ -20,7 +21,12 @@ class ViewCustomer extends ViewRecord
                 ->label('Nuevo Pedido')
                 ->icon('heroicon-m-shopping-bag')
                 ->color('success')
-                ->action(function () {}),
+                ->url(
+                    PedidosResource::getUrl('create', [
+                        'customer_id' => $this->record->id,
+                    ])
+                )
+                ->openUrlInNewTab(),
 
             Actions\EditAction::make()
                 ->label('Editar Información')
