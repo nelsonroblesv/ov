@@ -4,7 +4,6 @@ namespace App\Filament\Resources\PedidosResource\Widgets;
 
 use App\Models\Pedido;
 use Carbon\Carbon;
-use Illuminate\Support\Number;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

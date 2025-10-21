@@ -13,42 +13,29 @@ use App\Models\PaquetesInicio;
 use App\Models\Regiones;
 use App\Models\User;
 use App\Models\Zonas;
-use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section as ComponentsSection;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
-use Filament\Forms\Get;
-use Filament\Notifications\Collection;
-use Filament\Notifications\Notification;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Filters\Filter as FiltersFilter;
 use Filament\Tables\Table;
-use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Livewire\Attributes\Reactive;
-use PhpParser\ErrorHandler\Collecting;
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Auth;
+use Filament\Infolists\Components;
+use Filament\Infolists\Components\Component;
 
 class CustomerResource extends Resource
 {
@@ -59,6 +46,26 @@ class CustomerResource extends Resource
     protected static ?string $navigationLabel = 'Clientes';
     protected static ?string $breadcrumb = "Clientes";
     protected static ?int $navigationSort = 1;
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+                 Components\Section::make('Información del Cliente') 
+                    ->schema([
+                       Components\TextEntry::make('name')
+                            ->label('Nombre Completo')
+                             ->icon('heroicon-o-user-circle'),
+
+                        Components\TextEntry::make('email')
+                            ->icon('heroicon-o-envelope'),
+
+                        Components\TextEntry::make('phone')
+                            ->label('Teléfono')
+                             ->icon('heroicon-o-phone'),
+                    ])
+                    ->columns(3),
+        ]);
+    }
 
 
     public static function form(Form $form): Form
@@ -477,9 +484,9 @@ class CustomerResource extends Resource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
+               // Tables\Actions\BulkActionGroup::make([
+                   // Tables\Actions\DeleteBulkAction::make(),  
+             //   ]),
             ]);
     }
 
