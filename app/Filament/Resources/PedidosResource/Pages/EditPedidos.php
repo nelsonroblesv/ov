@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PedidosResource\Pages;
 
 use App\Filament\Resources\PedidosResource;
+use App\Models\Customer;
 use App\Models\Pedido;
 use Filament\Actions;
 use Filament\Actions\Action;

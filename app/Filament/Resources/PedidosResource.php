@@ -20,6 +20,8 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
@@ -67,6 +69,33 @@ class PedidosResource extends Resource
                 $set('num_ruta', null);
             }
         }
+
+        // Función de ayuda para la lógica de carga, ¡más limpio!
+        $loadCustomerData = function ($state, Set $set) {
+            if (empty($state)) {
+                $set('zona_nombre', null);
+                $set('region_nombre', null);
+                $set('zonas_id', null);
+                $set('regiones_id', null);
+                $set('num_pedido', null);
+                return;
+            }
+
+            $customer = Customer::with(['zona', 'regiones'])->find($state);
+
+            if ($customer) {
+                $set('zona_nombre', $customer->zona?->nombre_zona);
+                $set('region_nombre', $customer->regiones?->name);
+                $set('zonas_id', $customer->zona?->id);
+                $set('regiones_id', $customer->regiones?->id);
+
+                // Calcular nuevo número de pedido
+                $ultimoNumero = Pedido::where('customer_id', $state)->max('num_pedido');
+                $nuevoNumero = $ultimoNumero ? ($ultimoNumero + 1) : 1;
+                $set('num_pedido', $nuevoNumero);
+            }
+        };
+
         return $form
             ->schema([
                 Wizard::make([
@@ -79,7 +108,20 @@ class PedidosResource extends Resource
                                     ->searchable()
                                     ->suffixIcon('heroicon-m-user')
                                     ->columnSpanFull()
-                                    ->disabledOn('edit')
+                                    ->disabled(function (string $operation) {
+                                        // Deshabilita si estamos creando Y hay un ID en la URL
+                                        if ($operation === 'create') {
+                                            return request()->query('customer_id') !== null;
+                                        }
+
+                                        // Deshabilita si estamos editando
+                                        if ($operation === 'edit') {
+                                            return true;
+                                        }
+
+                                        return false;
+                                    })
+                                    ->default(fn() => request()->query('customer_id'))
                                     ->options(Customer::query()
                                         ->where('is_active', true)
                                         ->whereIn('tipo_cliente', ['PV', 'RD', 'BK', 'SL'])
@@ -88,38 +130,13 @@ class PedidosResource extends Resource
                                     ->reactive()
                                     ->preload()
                                     ->dehydrated()
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        $customer = Customer::with(['zona', 'regiones'])->find($state);
-                                        if ($customer) {
-                                            $set('zona_nombre', $customer->zona?->nombre_zona);
-                                            $set('region_nombre', $customer->regiones?->name);
-                                            $set('zonas_id', $customer->zona?->id);
-                                            $set('regiones_id', $customer->regiones?->id);
 
-                                            $ultimoNumero = Pedido::where('customer_id', $state)
-                                                ->max('num_pedido');
-                                            $nuevoNumero = $ultimoNumero ? ($ultimoNumero + 1) : 1;
-                                            $set('num_pedido', $nuevoNumero);
-                                        } else {
-                                            $set('zona_nombre', null);
-                                            $set('region_nombre', null);
-                                            $set('zonas_id', null);
-                                            $set('regiones_id', null);
-                                            $set('num_pedido', null);
-                                        }
-                                    })
-                                    ->afterStateHydrated(function ($state, callable $set, $get) {
-                                        $customer = Customer::with(['zona', 'regiones'])->find($state);
-                                        if ($customer) {
-                                            $set('zona_nombre', $customer->zona?->nombre_zona);
-                                            $set('region_nombre', $customer->regiones?->name);
-                                            $set('zonas_id', $customer->zona?->id);
-                                            $set('regiones_id', $customer->regiones?->id);
+                                    ->afterStateUpdated(fn($state, Set $set) => $loadCustomerData($state, $set))
+                                    ->afterStateHydrated(function (string $operation, $state, Set $set, Get $get) use ($loadCustomerData) {
+                                        $isEditLoad = ($operation === 'edit' && $state !== null);
 
-                                            if (!$get('num_pedido')) {
-                                                $ultimoNumero = Pedido::where('customer_id', $state)->max('num_pedido');
-                                                $set('num_pedido', $ultimoNumero ? ($ultimoNumero + 1) : 1);
-                                            }
+                                        if ($isEditLoad) {
+                                            $loadCustomerData($state, $set);
                                         }
                                     }),
 
@@ -127,10 +144,11 @@ class PedidosResource extends Resource
                                     ->label('Zona')
                                     ->suffixIcon('heroicon-m-map')
                                     ->disabled()
-                                    ->dehydrated(false),
+                                    ->dehydrated(true),
 
                                 Hidden::make('zonas_id')
                                     ->dehydrated(true),
+
                                 Hidden::make('regiones_id')
                                     ->dehydrated(true),
 
@@ -138,7 +156,7 @@ class PedidosResource extends Resource
                                     ->label('Región')
                                     ->suffixIcon('heroicon-m-map-pin')
                                     ->disabled()
-                                    ->dehydrated(false),
+                                    ->dehydrated(true),
 
 
                                 Select::make('customer_type')
@@ -273,7 +291,7 @@ class PedidosResource extends Resource
                                     ])
                                     ->required()
                                     ->reactive()
-                                     ->afterStateUpdated(fn (callable $set) => $set('real_id', null)),
+                                    ->afterStateUpdated(fn(callable $set) => $set('real_id', null)),
 
                                 Select::make('real_id')
                                     ->label(fn(callable $get) => match ($get('estado_pedido')) {
@@ -347,7 +365,7 @@ class PedidosResource extends Resource
                                 Textarea::make('observaciones')
                                     ->label('Observaciones')
                                     ->columnSpanFull(),
-                                    
+
                                 FileUpload::make('notas_venta')
                                     ->label('Notas de Venta')
                                     ->placeholder('Haz click para cargar la(s) nota(s) de venta')
@@ -367,6 +385,7 @@ class PedidosResource extends Resource
                         ]),
                 ])->columnSpanFull()
                     ->startOnStep(1)
+
             ]);
     }
 
