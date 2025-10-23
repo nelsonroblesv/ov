@@ -356,7 +356,6 @@ class ListPedidos extends ListRecords
                 ]),
             ])
             ->headerActions([
-
                 Action::make('filtrar')
                     ->label('Filtros avanzados')
                     ->icon('heroicon-m-funnel')
