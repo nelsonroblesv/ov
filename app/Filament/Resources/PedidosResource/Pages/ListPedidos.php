@@ -8,10 +8,13 @@ use App\Models\Customer;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions;
+use Filament\Actions\Action as ActionsAction;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -307,7 +310,7 @@ class ListPedidos extends ListRecords
                     ->alignCenter(),
 
                 IconColumn::make('factura')
-                    ->label('Factura')
+                    ->label('Facturada')
                     ->searchable()
                     ->boolean()
                     ->sortable(),
@@ -343,6 +346,14 @@ class ListPedidos extends ListRecords
                     ->color('primary')
                     ->toggleable(isToggledHiddenByDefault: true),
 
+            ])
+            ->actions([
+                ActionsActionGroup::make([
+                    Action::make('facturar')
+                        ->label('Subir Factura')
+                        ->icon('heroicon-m-cloud-arrow-up')
+                        ->color('warning'),
+                ]),
             ])
             ->headerActions([
 
