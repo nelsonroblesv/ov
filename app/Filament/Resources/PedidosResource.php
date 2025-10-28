@@ -337,16 +337,19 @@ class PedidosResource extends Resource
                                 DatePicker::make('fecha_entrega')
                                     ->label('Fecha de Entrega')
                                     ->suffixIcon('heroicon-m-calendar-date-range')
+                                    ->required()
                                     ->default(Carbon::now()->addDays(15)),
 
                                 DatePicker::make('fecha_liquidacion')
                                     ->label('Fecha de Liquidación')
                                     ->suffixIcon('heroicon-m-calendar-date-range')
+                                    ->required()
                                     ->default(Carbon::now()->addDays(30)),
 
                                 Select::make('distribuidor')
                                     ->label('Distribuidor')
                                     ->suffixIcon('heroicon-m-archive-box-arrow-down')
+                                    ->required()
                                     ->options(User::query()
                                         ->where('is_active', true)
                                         ->whereIn('role', ['Vendedor'])
@@ -356,6 +359,7 @@ class PedidosResource extends Resource
                                 Select::make('reparto')
                                     ->label('Reparto')
                                     ->suffixIcon('heroicon-m-truck')
+                                    ->required()
                                     ->options(User::query()
                                         ->where('is_active', true)
                                         ->whereIn('role', ['Vendedor', 'Repartidor'])
