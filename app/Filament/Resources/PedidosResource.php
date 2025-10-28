@@ -7,7 +7,6 @@ use App\Models\Customer;
 use App\Models\Pedido;
 use App\Models\User;
 use Carbon\Carbon;
-use Closure;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -15,8 +14,6 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
@@ -24,13 +21,8 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class PedidosResource extends Resource
 {
@@ -162,6 +154,7 @@ class PedidosResource extends Resource
                                 Select::make('customer_type')
                                     ->label('Tipo de Cliente')
                                     ->suffixIcon('heroicon-m-cursor-arrow-rays')
+                                    ->required()
                                     ->options([
                                         'N' => 'NUEVO',
                                         'R' => 'RECURRENTE'
@@ -170,6 +163,7 @@ class PedidosResource extends Resource
 
                                 Select::make('factura')
                                     ->label('Factura')
+                                    ->required()
                                     ->options([
                                         '1' => 'SI',
                                         '0' => 'NO'
@@ -192,6 +186,7 @@ class PedidosResource extends Resource
                                 Select::make('tipo_nota')
                                     ->label('Tipo de Nota')
                                     ->suffixIcon('heroicon-m-document-text')
+                                    ->required()
                                     ->options([
                                         'sistema' => 'SISTEMA',
                                         'real' => 'REAL',

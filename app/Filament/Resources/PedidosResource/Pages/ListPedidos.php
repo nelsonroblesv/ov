@@ -25,7 +25,7 @@ use Illuminate\Support\HtmlString;
 class ListPedidos extends ListRecords
 {
     protected static string $resource = PedidosResource::class;
-    protected static ?string $title = 'Historial de Pedidos';
+    protected static ?string $title = 'Gestión de Pedidos';
     public array $filtros = [];
 
     protected function getFiltrosHtml(): ?HtmlString
