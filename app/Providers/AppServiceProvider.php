@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
-                ->locales(['es']); // also accepts a closure
+                ->locales(['es', 'en']); // also accepts a closure
         });
 
         FilamentAsset::register([
