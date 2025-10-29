@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PedidosResource\Pages;
+use App\Filament\Resources\PedidosResource\RelationManagers\ItemsRelationManager;
 use App\Models\Customer;
 use App\Models\Pedido;
 use App\Models\User;
@@ -407,7 +408,7 @@ class PedidosResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+          ItemsRelationManager::class,
         ];
     }
 
@@ -416,7 +417,8 @@ class PedidosResource extends Resource
         return [
             'index' => Pages\ListPedidos::route('/'),
             'create' => Pages\CreatePedidos::route('/create'),
-            'edit' => Pages\EditPedidos::route('/{record}/edit'),
+            //'edit' => Pages\EditPedidos::route('/{record}/edit'),
+            'view' => Pages\ViewPedidos::route('/{record}'),
         ];
     }
 }

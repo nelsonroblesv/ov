@@ -2,19 +2,15 @@
 
 namespace App\Providers;
 
-use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Pedido;
 use Illuminate\Support\ServiceProvider;
 
-use App\Observers\PaymentObserver;
-use App\Models\Payment;
+
+use App\Models\PedidosItems;
 use App\Models\PreferredModuleItem;
-use App\Observers\OrderItemObserver;
-use App\Observers\OrderObserver;
+use App\Observers\PedidosItemsObserver;
 use App\Observers\PreferredItemObserver;
-use Barryvdh\DomPDF\ServiceProvider as DomPDFServiceProvider;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
-use Filament\Forms\Components\Component;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 
@@ -33,8 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        OrderItem::observe(OrderItemObserver::class);
+        PedidosItems::observe(PedidosItemsObserver::class);
         PreferredModuleItem::observe(PreferredItemObserver::class);
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {

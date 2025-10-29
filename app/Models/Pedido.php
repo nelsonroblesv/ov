@@ -94,4 +94,9 @@ class Pedido extends Model
     {
         return $this->hasMany(Cobro::class);
     }
+
+    public function items() :HasMany
+    {
+        return $this->hasMany(PedidosItems::class);
+    }
 }

@@ -10,14 +10,17 @@ use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Actions\Action as ActionsAction;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
+use Filament\Tables\Actions\EditAction as ActionsEditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
@@ -138,14 +141,14 @@ class ListPedidos extends ListRecords
                     ->sortable()
                     ->badge()
                     ->color('warning')
-                    ->icon('heroicon-m-building-library'),
+                    ->icon('heroicon-m-user'),
 
                 TextColumn::make('userReparto.name')
                     ->label('Reparto')
                     ->searchable()
                     ->sortable()->badge()
                     ->color('info')
-                    ->icon('heroicon-m-archive-box-arrow-down'),
+                    ->icon('heroicon-m-truck'),
 
                 TextColumn::make('fecha_entrega')
                     ->label('Fecha Entrega')
@@ -155,7 +158,7 @@ class ListPedidos extends ListRecords
 
                 TextColumn::make('fecha_liquidacion')
                     ->label('Fecha de Liquidación')
-                    ->badge() 
+                    ->badge()
                     ->formatStateUsing(function ($state, $record) {
                         if (! $state) {
                             return '-';
@@ -177,7 +180,7 @@ class ListPedidos extends ListRecords
                         return match (true) {
                             $diasTranscurridos <= 30 => 'success',
                             $diasTranscurridos <= 45 => 'warning',
-                            default => 'danger',                
+                            default => 'danger',
                         };
                     })
                     ->sortable(),
@@ -220,7 +223,7 @@ class ListPedidos extends ListRecords
                         'real' => 'REAL',
                         'stock' => 'DE STOCK'
                     ][$state] ?? 'Otro')
-                  /*  ->badge()
+                /*  ->badge()
                     ->color(fn(string $state): string => [
                         'sistema' => 'success',
                         'real' => 'info',
@@ -348,13 +351,18 @@ class ListPedidos extends ListRecords
 
             ])
             ->actions([
-                ActionsActionGroup::make([
-                    Action::make('facturar')
-                        ->label('Subir Factura')
-                        ->icon('heroicon-m-cloud-arrow-up')
-                        ->color('warning'),
-                ]),
-            ])
+                ActionsEditAction::make()
+                    ->label('Editar')
+                    ->icon('heroicon-m-shopping-cart')
+                    ->color('success'),
+
+                Action::make('facturar')
+                    ->label('Facturar')
+                    ->icon('heroicon-m-arrow-right-end-on-rectangle')
+                    ->color('warning'),
+
+            ], position: ActionsPosition::BeforeColumns)
+            
             ->headerActions([
                 Action::make('filtrar')
                     ->label('Filtros avanzados')
@@ -524,4 +532,5 @@ class ListPedidos extends ListRecords
             StatsOverview::class
         ];
     }
+
 }

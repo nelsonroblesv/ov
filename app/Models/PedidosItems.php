@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrderItem extends Model
+class PedidosItems extends Model
 {
-    //
-    protected $fillable = [
+        protected $fillable = [
         'pedidos_id', 'product_id', 'quantity', 'price_publico', 'total_price'
     ];
 
