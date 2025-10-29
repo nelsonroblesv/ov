@@ -36,7 +36,8 @@ class EditPedidos extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-                ->label('Borrar'),
+                ->label('Borrar Pedido')
+                ->icon('heroicon-o-trash'),
         ];
     }
 
@@ -60,7 +61,7 @@ class EditPedidos extends EditRecord
     protected function beforeSave(): void
     {
         $data = $this->form->getState();
-       
+
         $existe = Pedido::where('customer_id', $data['customer_id'])
             ->where('dia_nota', $data['dia_nota'])
             ->where('tipo_semana_nota', $data['tipo_semana_nota'])

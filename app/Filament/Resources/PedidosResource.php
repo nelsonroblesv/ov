@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Pedido;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -20,8 +21,13 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\Section as ComponentsSection;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +42,21 @@ class PedidosResource extends Resource
     protected static ?string $navigationLabel = 'Gestionar Pedidos';
     protected static ?string $breadcrumb = "Gestionar Pedidos";
     protected static ?int $navigationSort = 0;
+
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+                 ComponentsSection::make('Información del Cliente') 
+                    ->schema([
+                       TextEntry::make('customer.name')
+                            ->label('Nombre del Cliente')
+                             ->icon('heroicon-o-user-circle'),
+                    ])
+                    ->columns(3),
+        ]);
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -395,9 +416,8 @@ class PedidosResource extends Resource
 
             ->columns([])
             ->filters([])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+            ->actions([])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -417,7 +437,7 @@ class PedidosResource extends Resource
         return [
             'index' => Pages\ListPedidos::route('/'),
             'create' => Pages\CreatePedidos::route('/create'),
-            //'edit' => Pages\EditPedidos::route('/{record}/edit'),
+            'edit' => Pages\EditPedidos::route('/{record}/edit'),
             'view' => Pages\ViewPedidos::route('/{record}'),
         ];
     }

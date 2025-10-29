@@ -8,22 +8,19 @@ use App\Models\Customer;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions;
-use Filament\Actions\Action as ActionsAction;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Actions\EditAction as ActionsEditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
+use Illuminate\Database\Eloquent\Model;
+
 
 class ListPedidos extends ListRecords
 {
@@ -106,6 +103,9 @@ class ListPedidos extends ListRecords
             ->description($this->getFiltrosHtml() ?? '')
             ->reorderable('num_ruta')
             ->defaultSort('created_at', 'ASC')
+            ->recordUrl(
+                fn (Model $record): string => PedidosResource::getUrl('view', ['record' => $record]),
+                )
             ->columns([
                 TextColumn::make('num_ruta')
                     ->label('# Ruta')
