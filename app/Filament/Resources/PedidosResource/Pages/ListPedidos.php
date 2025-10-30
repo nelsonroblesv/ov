@@ -353,13 +353,13 @@ class ListPedidos extends ListRecords
             ->actions([
                 ActionsEditAction::make()
                     ->label('Editar')
-                    ->icon('heroicon-m-shopping-cart')
-                    ->color('success'),
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('warning'),
 
                 Action::make('facturar')
                     ->label('Facturar')
-                    ->icon('heroicon-m-arrow-right-end-on-rectangle')
-                    ->color('warning'),
+                    ->icon('heroicon-m-document-text')
+                    ->color('success'),
 
             ], position: ActionsPosition::BeforeColumns)
             

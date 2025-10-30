@@ -8,7 +8,6 @@ use App\Models\Customer;
 use App\Models\Pedido;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -21,13 +20,13 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Section as ComponentsSection;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Enums\ActionsPosition;
+
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,13 +46,35 @@ class PedidosResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
-                 ComponentsSection::make('Información del Cliente') 
-                    ->schema([
-                       TextEntry::make('customer.name')
-                            ->label('Nombre del Cliente')
-                             ->icon('heroicon-o-user-circle'),
-                    ])
-                    ->columns(3),
+
+          Grid::make(4) 
+                ->schema([
+                    // Columna Principal (3/4)
+                    ComponentsSection::make('Información del Cliente')
+                        ->schema([
+                            // Agrega tus TextEntry y otros componentes aquí
+                            TextEntry::make('customer.name'),
+                            TextEntry::make('customer.phone'),
+                            TextEntry::make('customer.email'),
+                            // ...
+                        ])
+                        // Ocupa 3 de las 4 columnas del Grid principal (3/4)
+                        ->columnSpan(2), 
+
+                    // Columna Lateral (1/4)
+                    ComponentsSection::make('Detalles del Pedido')
+                        ->schema([
+                            // Agrega tus TextEntry y otros componentes aquí
+                            TextEntry::make('id_nota'),
+                             TextEntry::make('tipo_nota'),
+                            TextEntry::make('created_at'),
+                            // ...
+                        ])
+                        // Ocupa 1 de las 4 columnas del Grid principal (1/4)
+                        ->columnSpan(2), 
+                ]),
+           
+
         ]);
     }
 
@@ -428,7 +449,7 @@ class PedidosResource extends Resource
     public static function getRelations(): array
     {
         return [
-          ItemsRelationManager::class,
+            ItemsRelationManager::class,
         ];
     }
 
