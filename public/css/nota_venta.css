@@ -1,0 +1,50 @@
+*{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+table.encabezado{
+    width: 100%; padding-bottom: 16px;
+    text-align: center;
+    margin-top:40px;
+}
+
+table.encabezado h1{
+    color:#000;
+    font-weight: bold;
+}
+
+table.encabezado span, table.encabezado p{
+     color:#2b2929;
+}
+
+table.encabezado div{
+    display: inline-flex;
+}
+
+table.datos{
+    width: 100%; padding-bottom: 16px;
+    margin-top:30px;
+    font-size: 12px;
+}
+
+table.datos tr{
+    border-bottom: 1px solid #e2e8f0;
+    height: 30px;
+}
+
+table.datos tr td{
+    width: 25%;
+}
+
+table.datos p{
+     color:#585858;
+}
+
+table.pedido{
+    width: 100%; margin-top: 24px; border-collapse: collapse;font-size: 12px;
+}
+
+table.pedido th{
+    border-bottom: 1px solid #666;
+    padding: 8px; text-align: center; color: #4a5568;
+}
