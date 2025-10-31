@@ -351,6 +351,14 @@ class ListPedidos extends ListRecords
 
             ])
             ->actions([
+
+                Action::make('ver_nota')
+                    ->label('Nota de Venta')
+                    ->icon('heroicon-m-document-text')
+                    ->color('success')
+                    ->url(fn($record) => PedidosResource::getUrl('nota-venta', ['record' => $record]))
+                    ->openUrlInNewTab(),
+
                 ActionsEditAction::make()
                     ->label('Editar')
                     ->icon('heroicon-m-pencil-square')

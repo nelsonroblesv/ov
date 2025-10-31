@@ -16,6 +16,8 @@ use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -85,10 +87,18 @@ class ItemsRelationManager extends RelationManager
                 TextColumn::make('quantity')->label('Cantidad'),
                 TextColumn::make('product.price_publico')->label('Precio'),
                 TextColumn::make('total_price'),
+                TextColumn::make('quantity')->label('Productos')
+                    ->summarize(
+                        Sum::make()
+                            ->label('Productos')
+                    ),
                 TextColumn::make('total_price')->label('Subtotal')
-                    ->summarize(Sum::make()
-                        ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))
-                        ->label('Total del Pedido')),
+                    ->summarize(
+                        Sum::make()
+                            ->label('Subtotal')
+                            ->formatStateUsing(fn(string $state) => '$ ' . number_format($state, 2))
+                    ),
+
             ])
             ->filters([
                 //

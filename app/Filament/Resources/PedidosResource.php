@@ -460,6 +460,7 @@ class PedidosResource extends Resource
             'create' => Pages\CreatePedidos::route('/create'),
             'edit' => Pages\EditPedidos::route('/{record}/edit'),
             'view' => Pages\ViewPedidos::route('/{record}'),
+            'nota-venta' => Pages\NotaVenta::route('/{record}/nota-venta'),
         ];
     }
 }

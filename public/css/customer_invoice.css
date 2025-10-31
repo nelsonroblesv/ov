@@ -20,6 +20,7 @@ p.invoice, table.invoice {
 
 table.invoice{
     margin-bottom: 10px;
+     font-size: 12px;
 }
 
 p.customer {
