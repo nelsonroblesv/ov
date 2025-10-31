@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -21,6 +22,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Group as ComponentsGroup;
 use Filament\Infolists\Components\Section as ComponentsSection;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -47,33 +49,41 @@ class PedidosResource extends Resource
     {
         return $infolist->schema([
 
-          Grid::make(4) 
-                ->schema([
-                    // Columna Principal (3/4)
-                    ComponentsSection::make('Información del Cliente')
-                        ->schema([
-                            // Agrega tus TextEntry y otros componentes aquí
-                            TextEntry::make('customer.name'),
-                            TextEntry::make('customer.phone'),
-                            TextEntry::make('customer.email'),
-                            // ...
-                        ])
-                        // Ocupa 3 de las 4 columnas del Grid principal (3/4)
-                        ->columnSpan(2), 
+            ComponentsSection::make('Datos del Cliente')->schema([
+                TextEntry::make('customer.name')->label('Nombre')->icon('heroicon-o-user-circle'),
+                TextEntry::make('customer.phone')->label('Teléfono')->icon('heroicon-o-phone'),
+                TextEntry::make('customer.email')->label('Correo')->icon('heroicon-o-envelope'),
+                TextEntry::make('customer.name_facturacion')->label('Facturación')->icon('heroicon-o-credit-card'),
+                TextEntry::make('customer.razon_social')->label('Razón Social')->icon('heroicon-o-building-office'),
+                TextEntry::make('customer.postal_code_facturacion')->label('Código Postal')->icon('heroicon-o-map-pin'),
+            ])->columns(3),
 
-                    // Columna Lateral (1/4)
-                    ComponentsSection::make('Detalles del Pedido')
+
+            Grid::make(2)->schema([
+                ComponentsSection::make('Pedido')->icon('heroicon-o-document')
+                    ->schema([
+                        TextEntry::make('id_nota'),
+                        TextEntry::make('estado_general'),
+                        TextEntry::make('created_at')->label('Registro'),
+                        TextEntry::make('fecha_entrega')->date(),
+                        TextEntry::make('fecha_liquidacion')->date(),
+
+                    ])->columnSpan(1),
+
+                ComponentsGroup::make()->schema([
+                    ComponentsSection::make('Ruta')->icon('heroicon-o-map')
                         ->schema([
-                            // Agrega tus TextEntry y otros componentes aquí
-                            TextEntry::make('id_nota'),
-                             TextEntry::make('tipo_nota'),
-                            TextEntry::make('created_at'),
-                            // ...
+                            TextEntry::make('zona.nombre_zona'),
+                            TextEntry::make('region.name'),
+                        ]),
+                    ComponentsSection::make('Logistica')->icon('heroicon-o-truck')
+                        ->schema([
+                            TextEntry::make('distribuidor'),
+                            TextEntry::make('reparto'),
                         ])
-                        // Ocupa 1 de las 4 columnas del Grid principal (1/4)
-                        ->columnSpan(2), 
-                ]),
-           
+                ])
+
+            ]),
 
         ]);
     }

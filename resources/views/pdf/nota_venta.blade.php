@@ -47,9 +47,9 @@
                     </th>
                     <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">Cantidad
                     </th>
-                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">Precio
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">Precio
                     </th>
-                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">Importe
+                    <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">Importe
                     </th>
                 </tr>
             </thead>
