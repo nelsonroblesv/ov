@@ -351,7 +351,7 @@ class ListPedidos extends ListRecords
 
             ])
             ->actions([
-
+/*
                 Action::make('ver_nota')
                     ->label('Nota de Venta')
                     ->icon('heroicon-m-document-text')
@@ -368,7 +368,7 @@ class ListPedidos extends ListRecords
                     ->label('Facturar')
                     ->icon('heroicon-m-document-text')
                     ->color('success'),
-
+*/
             ], position: ActionsPosition::BeforeColumns)
             
             ->headerActions([

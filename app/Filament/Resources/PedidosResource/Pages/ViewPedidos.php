@@ -32,6 +32,7 @@ class ViewPedidos extends ViewRecord
                 ->label('Generar Nota')
                 ->icon('heroicon-o-document-text')
                 ->color('info')
+                ->url(fn($record) => PedidosResource::getUrl('nota-venta', ['record' => $record]))
             
         ];
     }
