@@ -33,7 +33,6 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components;
-use Filament\Infolists\Components\Component;
 
 class CustomerResource extends Resource
 {

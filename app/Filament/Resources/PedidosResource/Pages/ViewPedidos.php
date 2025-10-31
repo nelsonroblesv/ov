@@ -29,11 +29,17 @@ class ViewPedidos extends ViewRecord
                 ->icon('heroicon-o-trash'),
 
             Action::make('nota')
-                ->label('Generar Nota')
-                ->icon('heroicon-o-document-text')
+                ->label('Nota de Venta')
+                ->icon('heroicon-o-paper-clip')
                 ->color('info')
-                ->url(fn($record) => PedidosResource::getUrl('nota-venta', ['record' => $record]))
-            
+                ->url(fn($record) => PedidosResource::getUrl('nota-venta', ['record' => $record])),
+
+            Action::make('factura')
+                ->label('Facturación')
+                ->icon('heroicon-o-document-text')
+                ->color('success')
+                //->url(fn($record) => PedidosResource::getUrl('nota-venta', ['record' => $record]))
+
         ];
     }
 }

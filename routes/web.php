@@ -2,6 +2,7 @@
 
 use App\Filament\App\Resources\RutasResource;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\NotaVentaController;
 use App\Http\Controllers\OrdenPDFController;
 use App\Http\Controllers\UbicacionUsuarioController;
 use App\Models\UbicacionUsuario;
@@ -18,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('ReporteIndividual/{order}', OrdenPDFController::class)->name('ReporteIndividual'); 
 
-Route::get('/print-invoice/{id}', [InvoiceController::class, 'printCustomerInvoice'])->name('PRINT.CUSTOMER_INVOICE');
+Route::get('/print-nota/{id}', [NotaVentaController::class, 'printNotaVenta'])->name('PRINT.NOTA_VENTA');
 
 /*
 Route::post('/guardar-ubicacion', function (Request $request) {

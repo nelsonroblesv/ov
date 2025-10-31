@@ -12,7 +12,6 @@ class InvoiceController extends Controller
 {
     public function printCustomerInvoice($id)
     {
-
         $customer = Customer::find($id);
         $order = Order::where('customer_id', $id)->get();
         $payment = Payments::where('customer_id', $id)->where('is_verified', true)->get();

@@ -1,6 +1,4 @@
-<x-filament-panels::page>
-
-    <head>
+<head>
         <title>Nota de Venta {{ $customer->name }}</title>
         <link rel="stylesheet" href="{{ asset('css/customer_invoice.css') }}" type="text/css">
     </head>
@@ -105,5 +103,3 @@
             </p>
         </footer>
     </div>
-
-</x-filament-panels::page>

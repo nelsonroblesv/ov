@@ -28,15 +28,11 @@ class NotaVenta extends Page
     {
         $this->record = $record;
 
-        // Cargar el Pedido, incluyendo los Items Y la relación del Producto para obtener el nombre.
-        // 'items.product' sigue siendo necesario para el nombre.
         $this->pedido = Pedido::with('items.product')->find($record);
         $this->customer = Customer::find($this->pedido->customer_id);
 
-        // $this->productos es una colección de PedidosItems
         $this->productos = $this->pedido->items;
 
-        // Cálculo del total (usando 'total_price', que ya parece ser la suma por línea)
         $total = array_sum(array_column($this->productos->toArray(), 'total_price'));
         $this->total = $total;
     }
@@ -54,7 +50,9 @@ class NotaVenta extends Page
             Action::make('print')
                 ->label('Imprimir')
                 ->icon('heroicon-o-printer')
-                ->color('info'),
+                ->color('info')
+                ->requiresConfirmation()
+                ->url(route('PRINT.NOTA_VENTA', ['id'=>$this->record])),
         ];
     }
 
