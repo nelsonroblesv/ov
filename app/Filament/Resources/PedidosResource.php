@@ -63,23 +63,23 @@ class PedidosResource extends Resource
                 ComponentsSection::make('Pedido')->icon('heroicon-o-document')
                     ->schema([
                         TextEntry::make('id_nota'),
-                        TextEntry::make('estado_general'),
+                        TextEntry::make('estado_pedido'),
                         TextEntry::make('created_at')->label('Registro'),
                         TextEntry::make('fecha_entrega')->date(),
                         TextEntry::make('fecha_liquidacion')->date(),
-
+                        TextEntry::make('monto'),
                     ])->columnSpan(1),
 
                 ComponentsGroup::make()->schema([
                     ComponentsSection::make('Ruta')->icon('heroicon-o-map')
                         ->schema([
-                            TextEntry::make('zona.nombre_zona'),
                             TextEntry::make('region.name'),
+                            TextEntry::make('zona.nombre_zona')
                         ]),
                     ComponentsSection::make('Logistica')->icon('heroicon-o-truck')
                         ->schema([
-                            TextEntry::make('distribuidor'),
-                            TextEntry::make('reparto'),
+                            TextEntry::make('userDistribuidor.name')->label('Distribuidor'),
+                            TextEntry::make('userReparto.name')->label('Reparto'),
                         ])
                 ])
 
