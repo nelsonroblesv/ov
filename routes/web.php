@@ -1,11 +1,13 @@
 <?php
 
 use App\Filament\App\Resources\RutasResource;
+use App\Filament\Resources\PedidosResource\Pages\POS;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotaVentaController;
 use App\Http\Controllers\OrdenPDFController;
 use App\Http\Controllers\UbicacionUsuarioController;
 use App\Models\UbicacionUsuario;
+use App\Services\FacturamaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +20,6 @@ Route::get('/', function () {
 */
 
 Route::get('ReporteIndividual/{order}', OrdenPDFController::class)->name('ReporteIndividual'); 
-
 Route::get('/print-nota/{id}', [NotaVentaController::class, 'printNotaVenta'])->name('PRINT.NOTA_VENTA');
 
 /*

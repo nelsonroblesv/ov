@@ -1,0 +1,56 @@
+<div class="p-4 bg-white shadow rounded-xl dark:bg-gray-800">
+<h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Listado de Productos</h2>
+
+<!-- Input de Búsqueda con Livewire (busca al escribir) -->
+<div class="mb-6">
+    <input 
+        wire:model.live.debounce.300ms="search" 
+        type="text" 
+        placeholder="Buscar por Nombre..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150"
+    >
+</div>
+
+<!-- Tabla de Clientes con Tailwind CSS -->
+<div class="overflow-x-auto border border-gray-200 rounded-lg dark:border-gray-700">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700:width:100%">
+        <thead>
+            <tr class="bg-indigo-600 dark:bg-indigo-800">
+                <th class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Unit Code</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Identificador</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Nombre</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Descripcion</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Precio</th>
+
+
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+            @forelse ($this->filteredProducts as $product)
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-150">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $product['UnitCode'] ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $product['IdentificationNumber'] ?? 'N/A' }}</td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{ $product['Name'] ?? 'N/A' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{ $product['Description'] ?? 'N/A' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{{ $product['Price'] ?? 'N/A' }}</td>
+
+
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="px-6 py-8 text-center text-base font-medium text-gray-500 dark:text-gray-400">
+                        No se encontraron clientes que coincidan con la búsqueda.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+   
+</div>
+
+
+</div>

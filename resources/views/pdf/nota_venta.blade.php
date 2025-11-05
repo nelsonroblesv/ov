@@ -1,7 +1,6 @@
-
     <head>
         <title>Nota de Venta {{ $customer->name }}</title>
-        <link rel="stylesheet" href="{{ asset('css/nota_venta_print.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('css/nota_venta.css') }}" type="text/css">
     </head>
 
     <div
@@ -9,15 +8,17 @@
         
         <table class="encabezado">
             <tr>
-                <td style="text-align: right;">
-                    <img src="{{ asset('images/logo_VAMA_N.png') }}" alt="Logo VAMA" style="width: 64px;">
+                <td style="width:25%">
+                    <div><img src="{{ asset('images/logo_VAMA_N.png') }}" alt="Logo VAMA" style="width: 64px;"></div>
                 </td>
-                <td>
+                <td style="width:50%">
                     <h1>OSBERTH NICOLAS VALLE DE ATOCHA PINZON</h1>
                     <p>ID: 0123456789</p>
                     <P>correo@servidor.com</P>
                 </td>
-                <td><span><b>Folio:</b> 123456</span></td>
+                <td style="width:25%;vertical-align:top;">
+                    <span><b>Folio:</b> 123456</span>
+                </td>
             </tr>
         </table>
 
@@ -54,34 +55,35 @@
 
             
             <!-- Pedidos -->
-            <h4 class="">Productos</h4>
-            <table class=""
-                style="width: 100%; margin-top: 24px; border-collapse: collapse; border: 1px solid #e2e8f0;">
+            <h4 class="">Pedido</h4>
+            <table class="pedido">
                 <thead>
                     <tr style="background-color: #f7fafc;">
-                        <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">
-                            Producto
+                        <th>
+                            <p style="text-align: left;">Producto</p>
                         </th>
-                        <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">
-                            Cantidad
+                        <th>
+                           <p> Cantidad</p>
                         </th>
-                        <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">Precio
+                        <th>
+                            <p style="text-align: right;">Precio</p>
                         </th>
-                        <th style="border: 1px solid #e2e8f0; padding: 8px; text-align: center; color: #4a5568;">Importe
+                        <th>
+                            <p style="text-align: right;">Importe</p>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($productos as $item)
                         <tr>
-                            <td style="border: 1px solid #e2e8f0; padding: 8px; color: #718096;text-align: left">
+                            <td style="padding: 8px; color: #718096;text-align: left">
                                 {{ $item->product->name }}</td>
                             <td
-                                style="border: 1px solid #e2e8f0; padding: 8px; text-align: left; color: #718096;text-align: center">
+                                style="padding: 8px; text-align: left; color: #718096;text-align: center">
                                 {{ $item->quantity }}</td>
-                            <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
+                            <td style="padding: 8px; text-align: right; color: #718096;">
                                 $ {{ number_format($item->price_publico, 2) }}</td>
-                            <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #718096;">
+                            <td style="padding: 8px; text-align: right; color: #718096;">
                                 $ {{ number_format($item->quantity * $item->price_publico, 2) }}</td>
                         </tr>
                     @endforeach
@@ -89,29 +91,56 @@
                 <tfoot>
                     <tr>
                         <td colspan="3"
-                            style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
+                            style="padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
                             Subtotal</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">$
+                        <td style="padding: 8px; text-align: right; color: #4a5568;">$
                             {{ number_format($total, 2) }}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3"
-                            style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
+                            style="paddin: 8px; text-align: right; font-weight: bold; color: #4a5568;">
                             Impuesto</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">$
+                        <td style="padding: 8px; text-align: right; color: #4a5568;">$
                             {{ number_format($total * 0.16, 2) }}
                         </td>
                     <tr>
                         <td colspan="3"
-                            style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
+                            style="padding: 8px; text-align: right; font-weight: bold; color: #4a5568;">
                             Total</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 8px; text-align: right; color: #4a5568;">$
+                        <td style="padding: 8px; text-align: right; color: #4a5568;">$
                             {{ number_format($total * 1.16, 2) }}
                         </td>
                     </tr>
                     </tr>
                 </tfoot>
+            </table>
+
+            <h4 class="">Informacion adicional</h4>
+            <table class="notas">
+                <tr>
+                    <td><p>Método de pago</p></td>
+                    <td><p><b>Pago en una sola exhibicion</b></p>n</td>
+                </tr>
+                <tr>
+                    <td><p>Forma de Pago</p></td>
+                    <td><p><b>Transferencia bancaria</b></p>a</td>
+                </tr>
+                <tr>
+                    <td><p>Uso</p></td>
+                    <td><p><b>Sin efectos fiscales</b></p></td>
+                </tr>
+            </table>
+
+            <table class="declaracion">
+                <tr>
+                    <td style="width: 70%"><p><b>Declaración de conformidad y compromiso de pago</b></p></td>
+                    <td><p style="text-align: center"><b>Firma del Cliente</b></p></td>
+                </tr>
+                <tr>
+                    <td><p>Por medio de la presente, confirmo haber recibido a mi entera satisfacción los productos descritos en esta nota de venta. Me comprometo formalmente a liquidar el total pendiente en los términos acordados con el vendedor. </p></td>
+                    <td></td>
+                </tr>
             </table>
 
 

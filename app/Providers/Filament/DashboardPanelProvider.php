@@ -64,7 +64,7 @@ class DashboardPanelProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make('Vista Vendedor')
                     ->url('/', shouldOpenInNewTab: true)
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-o-eye'),
             ])
             ->navigationGroups([
                 'Clientes & Prospectos',

@@ -2,6 +2,10 @@
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
+h4{
+    color:#2b2929;margin-top:30px;font-weight: bold;
+}
+
 table.encabezado{
     width: 100%; padding-bottom: 16px;
     text-align: center;
@@ -21,12 +25,6 @@ table.encabezado div{
     display: inline-flex;
 }
 
-table.datos{
-    width: 100%; padding-bottom: 16px;
-    margin-top:30px;
-    font-size: 12px;
-}
-
 table.datos tr{
     border-bottom: 1px solid #e2e8f0;
     height: 30px;
@@ -36,15 +34,19 @@ table.datos tr td{
     width: 25%;
 }
 
-table.datos p{
+table.datos p, table.notas p, table.declaracion p{
      color:#585858;
 }
 
-table.pedido{
+table.datos, table.pedido, table.notas, table.declaracion p{
     width: 100%; margin-top: 24px; border-collapse: collapse;font-size: 12px;
 }
 
 table.pedido th{
     border-bottom: 1px solid #666;
     padding: 8px; text-align: center; color: #4a5568;
+}
+
+table.declaracion{
+    margin-top: 30px;
 }

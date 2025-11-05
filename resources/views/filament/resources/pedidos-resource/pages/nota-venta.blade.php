@@ -18,7 +18,7 @@
                     <p>ID: 0123456789</p>
                     <P>correo@servidor.com</P>
                 </td>
-                <td style="width:25%">
+                <td style="width:25%;vertical-align:top;">
                     <span><b>Folio:</b> 123456</span>
                 </td>
             </tr>
@@ -57,21 +57,21 @@
 
             
             <!-- Pedidos -->
-            <h4 class="">Productos</h4>
+            <h4 class="">Pedido</h4>
             <table class="pedido">
                 <thead>
                     <tr style="background-color: #f7fafc;">
                         <th>
-                            <p>Producto</p>
+                            <p style="text-align: left;">Producto</p>
                         </th>
                         <th>
                            <p> Cantidad</p>
                         </th>
                         <th>
-                            <p>Precio</p>
+                            <p style="text-align: right;">Precio</p>
                         </th>
                         <th>
-                            <p>Importe</p>
+                            <p style="text-align: right;">Importe</p>
                         </th>
                     </tr>
                 </thead>
@@ -116,6 +116,33 @@
                     </tr>
                     </tr>
                 </tfoot>
+            </table>
+
+            <h4 class="">Informacion adicional</h4>
+            <table class="notas">
+                <tr>
+                    <td><p>Método de pago</p></td>
+                    <td><p><b>Pago en una sola exhibicion</b></p>n</td>
+                </tr>
+                <tr>
+                    <td><p>Forma de Pago</p></td>
+                    <td><p><b>Transferencia bancaria</b></p>a</td>
+                </tr>
+                <tr>
+                    <td><p>Uso</p></td>
+                    <td><p><b>Sin efectos fiscales</b></p></td>
+                </tr>
+            </table>
+
+            <table class="declaracion">
+                <tr>
+                    <td style="width: 70%"><p><b>Declaración de conformidad y compromiso de pago</b></p></td>
+                    <td><p style="text-align: center"><b>Firma del Cliente</b></p></td>
+                </tr>
+                <tr>
+                    <td><p>Por medio de la presente, confirmo haber recibido a mi entera satisfacción los productos descritos en esta nota de venta. Me comprometo formalmente a liquidar el total pendiente en los términos acordados con el vendedor. </p></td>
+                    <td></td>
+                </tr>
             </table>
 
 
