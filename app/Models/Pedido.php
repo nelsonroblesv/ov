@@ -40,7 +40,9 @@ class Pedido extends Model
         'month',
         'year',
         'real_id',
-        'estado_general'
+        'estado_general',
+        'signature', 
+        'is_signed'
     ];
 
     protected $casts = [

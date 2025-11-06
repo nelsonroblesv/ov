@@ -104,8 +104,8 @@ class ListPedidos extends ListRecords
             ->reorderable('num_ruta')
             ->defaultSort('created_at', 'ASC')
             ->recordUrl(
-                fn (Model $record): string => PedidosResource::getUrl('view', ['record' => $record]),
-                )
+                fn(Model $record): string => PedidosResource::getUrl('view', ['record' => $record]),
+            )
             ->columns([
                 TextColumn::make('num_ruta')
                     ->label('# Ruta')
@@ -349,9 +349,14 @@ class ListPedidos extends ListRecords
                     ->color('primary')
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                IconColumn::make('is_signed')
+                    ->label('Firmado')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->actions([
-/*
+                /*
                 Action::make('ver_nota')
                     ->label('Nota de Venta')
                     ->icon('heroicon-m-document-text')
@@ -368,9 +373,8 @@ class ListPedidos extends ListRecords
                     ->label('Facturar')
                     ->icon('heroicon-m-document-text')
                     ->color('success'),
-*/
-            ], position: ActionsPosition::BeforeColumns)
-            
+*/], position: ActionsPosition::BeforeColumns)
+
             ->headerActions([
                 Action::make('filtrar')
                     ->label('Filtros avanzados')
@@ -540,5 +544,4 @@ class ListPedidos extends ListRecords
             StatsOverview::class
         ];
     }
-
 }
