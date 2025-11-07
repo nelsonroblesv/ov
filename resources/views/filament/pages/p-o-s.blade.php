@@ -34,7 +34,7 @@
                                 $ {{ $item->price_salon }}
                             </p>
                         </div>
-                        <div wire:key="product-{{ $item->id }}">
+                        <div wire:key="item-{{ $item->id }}">
                             <button wire:click="addToCart({{ $item->id }})"
                                 class="w-full py-3 bg-indigo-600 text-white font-bold transition-colors duration-200 
                                                  hover:bg-indigo-700 rounded-b-2xl">
