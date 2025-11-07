@@ -1,8 +1,3 @@
-<head>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    </head>
-    
 <div class="flex h-screen font-sans antialiased text-gray-800 dark:text-gray-100">
     <div class="w-2/3 p-6 flex flex-col">
         <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Productos</h2>
