@@ -34,11 +34,13 @@
                                 $ {{ $item->price_salon }}
                             </p>
                         </div>
-                        <button wire:click="addToCart({{ $item->id }})"
-                            class="w-full py-3 bg-indigo-600 text-white font-bold transition-colors duration-200 
+                        <div wire:key="product-{{ $product->id }}">
+                            <button wire:click="addToCart({{ $item->id }})"
+                                class="w-full py-3 bg-indigo-600 text-white font-bold transition-colors duration-200 
                                                  hover:bg-indigo-700 rounded-b-2xl">
-                            Agregar al Pedido
-                        </button>
+                                Agregar al Pedido
+                            </button>
+                        </div>
                     </div>
                 @empty
                     <p class="col-span-full text-center text-gray-500 dark:text-gray-400 mt-8">No se encontraron
@@ -100,85 +102,85 @@
                         </select>
                     </div>
                 </div>
-              
-                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-neutral-700">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Subtotal:</span>
-                            <span class="font-medium text-gray-800 dark:text-gray-100">$
-                                {{ number_format($this->cartTotalSummary['subtotal'], 2) }}</span>
-                        </div>
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Impuesto (16%):</span>
-                            <span class="font-medium text-gray-800 dark:text-gray-100">$
-                                {{  number_format($this->cartTotalSummary['tax'], 2) }}</span>
-                        </div>
-                        <div
-                            class="flex justify-between items-center text-xl font-bold mt-2 border-t border-gray-200 dark:border-neutral-700 pt-2">
-                            <span>Total:</span>
-                            <span>$ {{ number_format($this->cartTotalSummary['total'], 2) }}</span>
-                        </div>
-               
+
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-neutral-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Subtotal:</span>
+                        <span class="font-medium text-gray-800 dark:text-gray-100">$
+                            {{ number_format($this->cartTotalSummary['subtotal'], 2) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Impuesto (16%):</span>
+                        <span class="font-medium text-gray-800 dark:text-gray-100">$
+                            {{ number_format($this->cartTotalSummary['tax'], 2) }}</span>
+                    </div>
+                    <div
+                        class="flex justify-between items-center text-xl font-bold mt-2 border-t border-gray-200 dark:border-neutral-700 pt-2">
+                        <span>Total:</span>
+                        <span>$ {{ number_format($this->cartTotalSummary['total'], 2) }}</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 mt-6">
+                <button wire:click="checkout" wire:loading.attr="disabled"
+                    class="w-full py-4 bg-green-600 text-white font-bold text-lg rounded-xl 
+                       transition-colors duration-200 hover:bg-green-700 disabled:opacity-50 
+                       disabled:cursor-not-allowed shadow-lg">
+                    Completar Pedido
+                </button>
             </div>
         </div>
 
-        <div class="flex-shrink-0 mt-6">
-            <button wire:click="checkout" wire:loading.attr="disabled"
-                class="w-full py-4 bg-green-600 text-white font-bold text-lg rounded-xl 
-                       transition-colors duration-200 hover:bg-green-700 disabled:opacity-50 
-                       disabled:cursor-not-allowed shadow-lg">
-                Completar Pedido
-            </button>
-        </div>
     </div>
 
-</div>
+    <script>
+        function validateQuantityInput(event) {
+            // Obtener la tecla presionada
+            const key = event.key;
+            const inputElement = event.target;
+            const currentValue = inputElement.value;
 
-<script>
-    function validateQuantityInput(event) {
-        // Obtener la tecla presionada
-        const key = event.key;
-        const inputElement = event.target;
-        const currentValue = inputElement.value;
+            // --- Validación para Bloquear la tecla de Borrar (Backspace) ---
+            // Si la tecla es 'Backspace' y el valor actual es '1' (o está vacío),
+            // cancelamos la acción para asegurar que la cantidad mínima sea 1.
+            // Usamos 'length === 1' para el caso de que el valor sea '1'.
+            if (key === 'Backspace' && currentValue.length === 1) {
+                // En lugar de prevenir por completo, forzamos el valor a '1' y prevenimos el borrado
+                // para mantener una cantidad mínima sin error.
+                setTimeout(() => {
+                    inputElement.value = 1;
+                }, 0);
+                event.preventDefault(); // Evita que la tecla Backspace haga su trabajo
+                return false;
+            }
 
-        // --- Validación para Bloquear la tecla de Borrar (Backspace) ---
-        // Si la tecla es 'Backspace' y el valor actual es '1' (o está vacío),
-        // cancelamos la acción para asegurar que la cantidad mínima sea 1.
-        // Usamos 'length === 1' para el caso de que el valor sea '1'.
-        if (key === 'Backspace' && currentValue.length === 1) {
-            // En lugar de prevenir por completo, forzamos el valor a '1' y prevenimos el borrado
-            // para mantener una cantidad mínima sin error.
-            setTimeout(() => {
-                inputElement.value = 1;
-            }, 0);
-            event.preventDefault(); // Evita que la tecla Backspace haga su trabajo
-            return false;
+            // Si el valor actual es '0' y el usuario intenta ingresar más números, lo reseteamos a 1
+            if (currentValue === '0' && key !== 'Backspace') {
+                setTimeout(() => {
+                    inputElement.value = 1;
+                }, 0);
+                event.preventDefault();
+                return false;
+            }
+
+            // --- Validación Estándar para Campos de Número (Opcional, pero útil) ---
+            // El input type="number" ya maneja esto en la mayoría de los navegadores,
+            // pero esta validación de respaldo asegura que solo se permitan números (0-9).
+            const isNumber = /[0-9]/.test(key);
+
+            // Permitir teclas especiales (flechas, Tab, Ctrl, etc.) y la propia tecla Backspace
+            const isControlKey = event.ctrlKey || event.metaKey || ['ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(
+                key);
+
+            // Si no es un número y no es una tecla de control, prevenir la entrada
+            if (!isNumber && !isControlKey && key.length === 1) {
+                event.preventDefault();
+                return false;
+            }
+
+            // Si es una tecla permitida o un número, permitir la acción
+            return true;
         }
-
-        // Si el valor actual es '0' y el usuario intenta ingresar más números, lo reseteamos a 1
-        if (currentValue === '0' && key !== 'Backspace') {
-            setTimeout(() => {
-                inputElement.value = 1;
-            }, 0);
-            event.preventDefault();
-            return false;
-        }
-
-        // --- Validación Estándar para Campos de Número (Opcional, pero útil) ---
-        // El input type="number" ya maneja esto en la mayoría de los navegadores,
-        // pero esta validación de respaldo asegura que solo se permitan números (0-9).
-        const isNumber = /[0-9]/.test(key);
-
-        // Permitir teclas especiales (flechas, Tab, Ctrl, etc.) y la propia tecla Backspace
-        const isControlKey = event.ctrlKey || event.metaKey || ['ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(
-            key);
-
-        // Si no es un número y no es una tecla de control, prevenir la entrada
-        if (!isNumber && !isControlKey && key.length === 1) {
-            event.preventDefault();
-            return false;
-        }
-
-        // Si es una tecla permitida o un número, permitir la acción
-        return true;
-    }
-</script>
+    </script>
