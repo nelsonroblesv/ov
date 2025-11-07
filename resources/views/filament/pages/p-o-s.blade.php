@@ -35,10 +35,13 @@
                             </p>
                         </div>
                         <div wire:key="item-{{ $item->id }}">
-                            <button wire:click="addToCart({{ $item->id }})"
+                            <button wire:click="addToCart({{ $item->id }})" wire:loading.attr="disabled"
+                                wire:target="addToCart"
                                 class="w-full py-3 bg-indigo-600 text-white font-bold transition-colors duration-200 
                                                  hover:bg-indigo-700 rounded-b-2xl">
-                                Agregar al Pedido
+                                <span wire:loading.remove wire:target="addToCart">Agregar al Pedido</span>
+
+                                <span wire:loading wire:target="addToCart">Procesando...</span>
                             </button>
                         </div>
                     </div>
