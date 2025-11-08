@@ -17,9 +17,7 @@
             <div class=" dark:bg-neutral-800 overflow-hidden"
                 wire:loading.class="opacity-75" wire:target="search">
 
-                <h2 class="text-xl font-semibold p-4 border-b dark:border-neutral-700 text-gray-900 dark:text-gray-100">
-                    Lista de Productos ({{ count($products) }} resultados)
-                </h2>
+               
 
                 <div class="gap-4 bg-gray-50 dark:bg-neutral-700 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-neutral-300"
                     style="display: flex;">
