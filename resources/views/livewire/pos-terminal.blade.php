@@ -13,67 +13,56 @@
                 wire:model.live="search">
         </div>
         <!-- Tabla de productos -->
-        <div class="flex-grow overflow-y-auto pr-2 min-h-0">
-            <div class="bg-white shadow-xl rounded-xl dark:bg-neutral-800 overflow-hidden" 
-                 wire:loading.class="opacity-75" wire:target="search"> {{-- Indicador de carga al buscar --}}
-                
-                <h2 class="text-xl font-semibold p-4 border-b dark:border-neutral-700 text-gray-900 dark:text-gray-100">
-                    Lista de Productos
-                </h2>
-                
-                {{-- ENCABEZADO CRÍTICO: Usamos grid-cols-5 en móvil para más espacio horizontal, 
-                    y md:grid-cols-6 en desktop. --}}
-                <div class="grid grid-cols-5 md:grid-cols-6 gap-4 bg-gray-50 dark:bg-neutral-700 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-neutral-300">
-                    {{-- PRODUCTO: 40% en móvil (2/5), 50% en desktop (3/6) --}}
-                    <div class="col-span-2 md:col-span-3">Producto</div> 
-                    {{-- PRECIO: 20% en móvil (1/5), 16.7% en desktop (1/6) --}}
-                    <div class="col-span-1 md:col-span-1 text-left">Precio</div>
-                    {{-- CANT/ACCIÓN: 40% en móvil (2/5), 33.3% en desktop (2/6) --}}
-                    <div class="col-span-2 md:col-span-2 text-right">Cant. / Acc.</div> 
+        <div class="flex-grow overflow-y-auto min-h-0">
+            <div class=" dark:bg-neutral-800 overflow-hidden"
+                wire:loading.class="opacity-75" wire:target="search">
+
+               
+
+                <div class="gap-4 bg-gray-50 dark:bg-neutral-700 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-neutral-300"
+                    style="display: flex;">
+                    <div class="col-span-3" style="flex:1">Producto</div>
+                    <div class="col-span-1 text-left" style="flex:1">Precio</div>
+                    <div class="col-span-2 text-right" style="flex:1">Cantidad</div>
                 </div>
-                
-                <!-- Cuerpo de la lista -->
+
                 <div class="divide-y divide-gray-200 dark:divide-neutral-700 max-h-[80vh] overflow-y-auto">
-                    
+
                     @forelse ($products as $item)
-                        <div wire:key="product-{{ $item['id'] }}" 
-                            x-data="{ 
-                                quantity: 1, 
-                                itemId: {{ $item['id'] }},
-                                addToCartAction() {
-                                    $wire.addToCart(this.itemId, this.quantity); 
-                                    this.quantity = 1;
-                                } 
-                            }"
-                            {{-- FILA DE PRODUCTO: Usamos grid-cols-5 en móvil, grid-cols-6 en desktop --}}
-                            class="grid grid-cols-5 md:grid-cols-6 gap-4 px-6 py-3 hover:bg-gray-50 dark:hover:bg-neutral-700 transition duration-150 items-center">
-                            
-                            <div class="col-span-2 md:col-span-3">
-                                <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ $item['name'] }}</h4>
+                        <div wire:key="product-{{ $item['id'] }}" x-data="{
+                            quantity: 1,
+                            itemId: {{ $item['id'] }},
+                            addToCartAction() {
+                                $wire.addToCart(this.itemId, this.quantity);
+                                this.quantity = 1;
+                            }
+                        }"
+                            class="gap-4 px-3 py-3 items-center"
+                            style="display: flex;flex:1">
+
+                            <div class="col-span-3" style="display: flex;flex:1">
+                                <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                    {{ $item['name'] }}</h4>
                             </div>
-                            
-                            <div class="col-span-1 md:col-span-1 text-left font-bold text-base text-gray-700 dark:text-gray-300">
+
+                            <div class="col-span-1 text-right text-xs text-gray-700 dark:text-gray-300 " 
+                                style="display: flex;flex:1">
                                 $ {{ number_format($item['price_salon'], 2) }}
                             </div>
-                            
-                            {{-- AJUSTE CLAVE: Como ahora tenemos col-span-2 (40%) en móvil,
-                                podemos mantener la disposición horizontal (flex flex-row) en todas las resoluciones.
-                            --}}
-                            <div class="col-span-2 md:col-span-2 text-right flex flex-row justify-end items-center space-x-2">
-                                
-                                <input type="number" 
-                                    x-model="quantity" 
-                                    min="1" 
-                                    class="w-14 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 flex-shrink-0"
-                                >
-                                
-                                <button x-on:click="addToCartAction()"
-                                    wire:loading.attr="disabled"
-                                    class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 flex-shrink-0"
-                                >
+
+                            <div class="col-span-2 text-right flex justify-end items-center space-x-2">
+
+                                <input type="number" x-model="quantity" min="1"
+                                    class="w-10 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+
+                                <button x-on:click="addToCartAction()" wire:loading.attr="disabled"
+                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
                                     <span wire:loading.remove wire:target="addToCart({{ $item['id'] }})">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                          <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                clip-rule="evenodd" />
                                         </svg>
                                     </span>
                                     <span wire:loading wire:target="addToCart({{ $item['id'] }})">
@@ -90,7 +79,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <div
