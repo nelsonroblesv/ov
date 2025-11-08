@@ -14,7 +14,7 @@
         </div>
         <!-- Tabla de productos -->
         <div class="flex-grow overflow-y-auto pr-2 min-h-0">
-            <div class="bg-white shadow-xl rounded-xl dark:bg-neutral-800 overflow-hidden"
+            <div class=" dark:bg-neutral-800 overflow-hidden"
                 wire:loading.class="opacity-75" wire:target="search">
 
                 <h2 class="text-xl font-semibold p-4 border-b dark:border-neutral-700 text-gray-900 dark:text-gray-100">
