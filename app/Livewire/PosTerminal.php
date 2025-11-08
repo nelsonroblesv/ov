@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Product;
+use Filament\Notifications\Notification;
 use Livewire\Component;
 
 class PosTerminal extends Component
@@ -116,9 +117,15 @@ class PosTerminal extends Component
                 // Añadir al carrito. Por simplicidad, agregamos un nuevo item siempre
                 // en lugar de consolidar items existentes.
                 $this->cart[] = $cartItem;
+
+                Notification::make()
+                    ->title('Producto(s) agregado')
+                    ->success()
+                    ->send();
                 
-                session()->flash('message', '¡Éxito! Producto "' . $product->name . '" agregado al carrito (Cantidad: ' . $quantity . ').');
+                //session()->flash('message', '¡Éxito! Producto "' . $product->name . '" agregado al carrito (Cantidad: ' . $quantity . ').');
                 $this->search = ''; // Limpiar la búsqueda al agregar
+                
             } else {
                  session()->flash('message', 'Error: Producto no encontrado con ID: ' . $productId . '.');
             }
@@ -135,7 +142,11 @@ class PosTerminal extends Component
     {
         // Filtrar el array del carrito para mantener solo los ítems cuyo 'id' no coincida
         $this->cart = array_filter($this->cart, fn($item) => $item['id'] !== $cartItemId);
+        Notification::make()
+                    ->title('Producto(s) borrado')
+                    ->danger()
+                    ->send();
         
-        session()->flash('message', 'Item removido del carrito.');
+       // session()->flash('message', 'Item removido del carrito.');
     }
 }

@@ -39,11 +39,11 @@
                             style="display: flex;flex:1">
 
                             <div class="col-span-3" style="display: flex;flex:1;width:50%">
-                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                <p class="text-sm  text-gray-900 dark:text-gray-100 truncate">
                                     {{ $item['name'] }}</p>
                             </div>
 
-                            <div class="col-span-1 text-right text-sm text-gray-700 dark:text-gray-300 " 
+                            <div class="col-span-1 text-sm text-gray-700 dark:text-gray-300 " 
                                 style="display: flex;flex:1;">
                                 $ {{ number_format($item['price_salon'], 2) }}
                             </div>
