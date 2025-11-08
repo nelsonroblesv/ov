@@ -25,7 +25,7 @@
                     style="display: flex;">
                     <div class="col-span-3" style="flex:1">Producto</div>
                     <div class="col-span-1 text-left" style="flex:1">Precio</div>
-                    <div class="col-span-2 text-right" style="flex:1">Cantidad y Acción</div>
+                    <div class="col-span-2 text-right" style="flex:1">Cantidad</div>
                 </div>
 
                 <div class="divide-y divide-gray-200 dark:divide-neutral-700 max-h-[80vh] overflow-y-auto">
@@ -55,7 +55,7 @@
                             <div class="col-span-2 text-right flex justify-end items-center space-x-2">
 
                                 <input type="number" x-model="quantity" min="1"
-                                    class="w-16 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                                    class="w-10 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
 
                                 <button x-on:click="addToCartAction()" wire:loading.attr="disabled"
                                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
