@@ -13,7 +13,7 @@
                 wire:model.live="search">
         </div>
         <!-- Tabla de productos -->
-        <div class="flex-grow overflow-y-auto pr-2 min-h-0">
+        <div class="flex-grow overflow-y-auto min-h-0">
             <div class=" dark:bg-neutral-800 overflow-hidden"
                 wire:loading.class="opacity-75" wire:target="search">
 
