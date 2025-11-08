@@ -17,8 +17,6 @@
             <div class=" dark:bg-neutral-800 overflow-hidden"
                 wire:loading.class="opacity-75" wire:target="search">
 
-               
-
                 <div class="gap-4 bg-gray-50 dark:bg-neutral-700 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-neutral-300"
                     style="display: flex;">
                     <div class="col-span-3" style="flex:1">Producto</div>
@@ -40,17 +38,17 @@
                             class="gap-4 px-3 py-3 items-center"
                             style="display: flex;flex:1">
 
-                            <div class="col-span-3" style="display: flex;flex:1">
-                                <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                    {{ $item['name'] }}</h4>
+                            <div class="col-span-3" style="display: flex;flex:1;width:50%">
+                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                    {{ $item['name'] }}</p>
                             </div>
 
-                            <div class="col-span-1 text-right text-xs text-gray-700 dark:text-gray-300 " 
-                                style="display: flex;flex:1">
+                            <div class="col-span-1 text-right text-sm text-gray-700 dark:text-gray-300 " 
+                                style="display: flex;flex:1;width:30%">
                                 $ {{ number_format($item['price_salon'], 2) }}
                             </div>
 
-                            <div class="col-span-2 text-right flex justify-end items-center space-x-2">
+                            <div class="col-span-2  flex justify-end space-x-2">
 
                                 <input type="number" x-model="quantity" min="1"
                                     class="w-10 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
