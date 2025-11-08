@@ -39,7 +39,7 @@
                                 this.quantity = 1;
                             }
                         }"
-                            class="gap-4 px-6 py-3 hover:bg-gray-50 dark:hover:bg-neutral-700 transition duration-150 items-center"
+                            class="gap-4 px-6 py-3 items-center"
                             style="display: flex;flex:1">
 
                             <div class="col-span-3" style="display: flex;flex:1">
