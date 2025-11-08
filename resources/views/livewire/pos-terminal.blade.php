@@ -47,7 +47,7 @@
                                     {{ $item['name'] }}</h4>
                             </div>
 
-                            <div class="col-span-1 text-left text-sm text-gray-700 dark:text-gray-300 " 
+                            <div class="col-span-1 text-left text-xs text-gray-700 dark:text-gray-300 " 
                                 style="display: flex;flex:1">
                                 $ {{ number_format($item['price_salon'], 2) }}
                             </div>
