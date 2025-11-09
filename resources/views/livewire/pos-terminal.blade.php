@@ -90,7 +90,7 @@
 
             <select id="customer_id"
                 wire:model.live="selectedCustomerId" {{-- Enlaza al ID seleccionado --}}
-                class="w-full p-3 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-sm bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 mb-3">
+                class="w-full p-3 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-sm bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 mb-5">
                 <option value="">Selecciona un cliente</option>
                 
                 {{-- Iteración sobre la lista de clientes proporcionada por Livewire --}}
