@@ -2,18 +2,28 @@
 
 namespace App\Livewire;
 
+use App\Models\Customer;
 use App\Models\Product;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 
 class PosTerminal extends Component
 {
-    // Propiedad que se sincronizará con el campo de búsqueda en la vista.
     public string $search = '';
+    public $customers = []; // Lista completa de clientes
+    public $selectedCustomerId = '';
 
     // Propiedad para almacenar los items del carrito. 
     // Cada ítem será un array: ['id', 'product_id', 'name', 'quantity', 'price', 'total']
     public array $cart = [];
+
+     /***Clientes  */
+    public function updatedSelectedCustomerId($value)
+    {
+        // Lógica que se ejecuta cuando el cliente cambia (ej: aplicar descuentos, etc.)
+    }
+
+    
 
     /**
      * Hook de Livewire que se ejecuta cada vez que la propiedad $search cambia.
@@ -34,10 +44,10 @@ class PosTerminal extends Component
     public function getFilteredProductsProperty(): array
     {
         $search = trim($this->search); // Usamos la propiedad $search actualizada.
-        
+
         // 2. CONSTRUCCIÓN DE LA CONSULTA ELOQUENT
         $query = Product::select('id', 'name', 'price_salon')
-                        ->orderBy('name');
+            ->orderBy('name');
 
         // 3. APLICAR FILTRO DE BÚSQUEDA
         if (!empty($search)) {
@@ -49,11 +59,11 @@ class PosTerminal extends Component
         }
 
         // 4. EJECUTAR LA CONSULTA Y CONVERTIR A ARREGLO
-        return $query->limit(5)->get()->toArray(); 
+        return $query->limit(5)->get()->toArray();
     }
-    
+
     // --- PROPIEDADES COMPUTADAS PARA CÁLCULO DE TOTALES ---
-    
+
     /**
      * Calcula el subtotal de todos los artículos en el carrito.
      */
@@ -69,7 +79,7 @@ class PosTerminal extends Component
     public function getTaxProperty(): float
     {
         // Tasa de IVA del 16%
-        return $this->subtotal * 0.16; 
+        return $this->subtotal * 0.16;
     }
 
     /**
@@ -88,7 +98,12 @@ class PosTerminal extends Component
             'products' => $this->filteredProducts,
         ]);
     }
-    
+
+    public function mount()
+    {
+        $this->customers = Customer::query()->where('is_active', true)->orderBy('name')->get();
+    }
+
     /**
      * Agrega un producto al carrito.
      */
@@ -102,7 +117,7 @@ class PosTerminal extends Component
 
         try {
             $product = Product::select('id', 'name', 'price_salon')->find($productId);
-            
+
             if ($product) {
                 // --- LÓGICA DE CARRITO: IMPLEMENTACIÓN DE AGREGACIÓN SIMPLE ---
                 $cartItem = [
@@ -113,7 +128,7 @@ class PosTerminal extends Component
                     'price' => $product->price_salon,
                     'total' => $product->price_salon * (int) $quantity,
                 ];
-                
+
                 // Añadir al carrito. Por simplicidad, agregamos un nuevo item siempre
                 // en lugar de consolidar items existentes.
                 $this->cart[] = $cartItem;
@@ -122,19 +137,19 @@ class PosTerminal extends Component
                     ->title('Producto(s) agregado')
                     ->success()
                     ->send();
-                
+
                 //session()->flash('message', '¡Éxito! Producto "' . $product->name . '" agregado al carrito (Cantidad: ' . $quantity . ').');
                 $this->search = ''; // Limpiar la búsqueda al agregar
-                
+
             } else {
-                 session()->flash('message', 'Error: Producto no encontrado con ID: ' . $productId . '.');
+                session()->flash('message', 'Error: Producto no encontrado con ID: ' . $productId . '.');
             }
         } catch (\Exception $e) {
             Log::error('Error al agregar al carrito: ' . $e->getMessage());
             session()->flash('message', '¡Error! No se pudo agregar el producto. Mensaje: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Quita un producto del carrito basado en su ID único (no el product_id).
      */
@@ -143,10 +158,10 @@ class PosTerminal extends Component
         // Filtrar el array del carrito para mantener solo los ítems cuyo 'id' no coincida
         $this->cart = array_filter($this->cart, fn($item) => $item['id'] !== $cartItemId);
         Notification::make()
-                    ->title('Producto(s) borrado')
-                    ->danger()
-                    ->send();
-        
-       // session()->flash('message', 'Item removido del carrito.');
+            ->title('Producto(s) borrado')
+            ->danger()
+            ->send();
+
+        // session()->flash('message', 'Item removido del carrito.');
     }
 }

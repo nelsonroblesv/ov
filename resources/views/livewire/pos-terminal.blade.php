@@ -4,7 +4,6 @@
 
     <div class="w-full md:w-2/3 p-4 md:p-6 flex flex-col space-y-6 overflow-y-hidden">
         <!-- Encabezado -->
-        
 
         <!-- Buscador -->
         <div class="w-full flex-shrink-0">
@@ -86,6 +85,22 @@
             class="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400 border-b pb-2 dark:border-neutral-700 flex-shrink-0">
             Detalle del Pedido
         </h2>
+
+         <div class="w-full flex-shrink-0 space-y-3">
+
+            <select id="customer_id"
+                wire:model.live="selectedCustomerId" {{-- Enlaza al ID seleccionado --}}
+                class="w-full p-3 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-sm bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 mb-3">
+                <option value="">Selecciona un cliente</option>
+                
+                {{-- Iteración sobre la lista de clientes proporcionada por Livewire --}}
+                @foreach ($customers ?? [] as $customer)
+                    <option value="{{ $customer['id'] }}">
+                        {{ $customer['name'] }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
         <details open class="border border-gray-200 dark:border-neutral-700 rounded-lg shadow-md mb-4 flex-shrink-0 ">
             <summary
