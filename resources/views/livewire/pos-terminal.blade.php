@@ -1,6 +1,6 @@
 <div
     class="flex flex-col md:flex-row w-full min-h-screen pos-terminal-container antialiased text-gray-800 dark:text-gray-100">
-
+    
     <div class="w-full md:w-2/3 p-4 md:p-6 flex flex-col space-y-6 overflow-y-hidden">
         <!-- Encabezado -->
 
@@ -15,15 +15,12 @@
             <div class=" dark:bg-neutral-800 overflow-hidden"
                 wire:loading.class="opacity-75" wire:target="search">
 
-                <div class="gap-4 bg-gray-50 dark:bg-neutral-700 px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-neutral-300"
-                    style="display: flex;">
-                    <div class="col-span-3" style="flex:1">Producto</div>
-                    <div class="col-span-1 text-left" style="flex:1">Precio</div>
-                    <div class="col-span-2 text-right" style="flex:1">Cantidad</div>
+                <div class="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-neutral-700 px-6 py-3 text-base font-medium text-gray-500 uppercase tracking-wider">
+                    <div class="">Producto</div>
+                    <div class="text-right">Cantidad</div>
                 </div>
 
                 <div class="divide-y divide-gray-200 dark:divide-neutral-700 max-h-[80vh] overflow-y-auto">
-
                     @forelse ($products as $item)
                         <div wire:key="product-{{ $item['id'] }}" x-data="{
                             quantity: 1,
@@ -33,23 +30,20 @@
                                 this.quantity = 1;
                             }
                         }"
-                            class="gap-4 px-3 py-3 items-center"
-                            style="display: flex;flex:1">
+                            class="grid grid-cols-2 gap-2 items-center px-3 py-4">
 
-                            <div class="col-span-3" style="display: flex;flex:1;width:50%">
-                                <p class="text-sm  text-gray-900 dark:text-gray-100 truncate">
+                            <div class="">
+                                <p class="text-base  text-gray-900 dark:text-gray-100 truncate">
                                     {{ $item['name'] }}</p>
-                            </div>
-
-                            <div class="col-span-1 text-sm text-gray-700 dark:text-gray-300 " 
-                                style="display: flex;flex:1;">
-                                $ {{ number_format($item['price_salon'], 2) }}
+                                <p class="text-xs  text-gray-900 dark:text-gray-100 truncate">
+                                     ${{ number_format($item['price_salon'], 2) }}
+                                </p>
                             </div>
 
                             <div class="col-span-2  flex justify-end space-x-2">
 
                                 <input type="number" x-model="quantity" min="1"
-                                    class="w-10 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                                    class="w-16 p-1 text-center border border-gray-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
 
                                 <button x-on:click="addToCartAction()" wire:loading.attr="disabled"
                                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
@@ -104,7 +98,7 @@
         <details open class="border border-gray-200 dark:border-neutral-700 rounded-lg shadow-md mb-4 flex-shrink-0 ">
             <summary
                 class="p-3 font-bold cursor-pointer bg-gray-50 dark:bg-neutral-700 rounded-t-lg flex justify-between items-center text-gray-800 dark:text-gray-100">
-                <span>Productos agregados ({{ count($cart) }})</span>
+                <span>Productos agregados ({{ $this->cartQuantity}})</span>
                 <svg class="h-5 w-5 transition-transform duration-200 transform details-arrow"
                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"

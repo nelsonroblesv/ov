@@ -17,13 +17,11 @@ class PosTerminal extends Component
     // Cada ítem será un array: ['id', 'product_id', 'name', 'quantity', 'price', 'total']
     public array $cart = [];
 
-     /***Clientes  */
+    /***Clientes  */
     public function updatedSelectedCustomerId($value)
     {
         // Lógica que se ejecuta cuando el cliente cambia (ej: aplicar descuentos, etc.)
     }
-
-    
 
     /**
      * Hook de Livewire que se ejecuta cada vez que la propiedad $search cambia.
@@ -59,7 +57,7 @@ class PosTerminal extends Component
         }
 
         // 4. EJECUTAR LA CONSULTA Y CONVERTIR A ARREGLO
-        return $query->limit(5)->get()->toArray();
+        return $query->limit(10)->get()->toArray();
     }
 
     // --- PROPIEDADES COMPUTADAS PARA CÁLCULO DE TOTALES ---
@@ -107,61 +105,64 @@ class PosTerminal extends Component
     /**
      * Agrega un producto al carrito.
      */
-    public function addToCart(int $productId, int $quantity = 1)
+     public function addToCart($productId, $quantity = 1)
     {
-        // Nos aseguramos de que la cantidad sea un número válido y positivo.
-        if ($quantity < 1) {
-            session()->flash('message', 'Error: La cantidad debe ser al menos 1.');
+        $product = collect(Product::all())->firstWhere('id', $productId);
+
+        if (!$product) {
+            session()->flash('message', '¡Error! Producto no encontrado.');
             return;
         }
 
-        try {
-            $product = Product::select('id', 'name', 'price_salon')->find($productId);
+        // Usamos el ID del producto como clave temporal para fácil acceso
+        $cartItemId = $productId; 
+        $quantity = max(1, (int) $quantity); // Asegurar que la cantidad sea al menos 1
+        $price = $product['price_salon'];
 
-            if ($product) {
-                // --- LÓGICA DE CARRITO: IMPLEMENTACIÓN DE AGREGACIÓN SIMPLE ---
-                $cartItem = [
-                    'id' => uniqid(), // ID único para el item del carrito
-                    'product_id' => $productId,
-                    'name' => $product->name,
-                    'quantity' => (int) $quantity,
-                    'price' => $product->price_salon,
-                    'total' => $product->price_salon * (int) $quantity,
-                ];
-
-                // Añadir al carrito. Por simplicidad, agregamos un nuevo item siempre
-                // en lugar de consolidar items existentes.
-                $this->cart[] = $cartItem;
-
-                Notification::make()
-                    ->title('Producto(s) agregado')
-                    ->success()
-                    ->send();
-
-                //session()->flash('message', '¡Éxito! Producto "' . $product->name . '" agregado al carrito (Cantidad: ' . $quantity . ').');
-                $this->search = ''; // Limpiar la búsqueda al agregar
-
-            } else {
-                session()->flash('message', 'Error: Producto no encontrado con ID: ' . $productId . '.');
-            }
-        } catch (\Exception $e) {
-            Log::error('Error al agregar al carrito: ' . $e->getMessage());
-            session()->flash('message', '¡Error! No se pudo agregar el producto. Mensaje: ' . $e->getMessage());
+        if (isset($this->cart[$cartItemId])) {
+            // Actualizar cantidad y total si ya existe
+            $this->cart[$cartItemId]['quantity'] += $quantity;
+            $this->cart[$cartItemId]['total'] = $this->cart[$cartItemId]['quantity'] * $price;
+        } else {
+            // Agregar nuevo ítem al carrito
+            $this->cart[$cartItemId] = [
+                'id' => $productId,
+                'name' => $product['name'],
+                'quantity' => $quantity,
+                'price' => $price,
+                'total' => $quantity * $price,
+            ];
         }
+        
+        Notification::make()
+            ->title('Producto agregado al Pedido.')
+            ->success()
+            ->send();
+
+        $this->search = ''; // Limpiar búsqueda después de agregar
     }
 
     /**
      * Quita un producto del carrito basado en su ID único (no el product_id).
      */
-    public function removeFromCart(string $cartItemId)
+     public function removeFromCart($cartItemId)
     {
-        // Filtrar el array del carrito para mantener solo los ítems cuyo 'id' no coincida
-        $this->cart = array_filter($this->cart, fn($item) => $item['id'] !== $cartItemId);
-        Notification::make()
-            ->title('Producto(s) borrado')
+        if (isset($this->cart[$cartItemId])) {
+            unset($this->cart[$cartItemId]);
+
+            Notification::make()
+            ->title('Producto borrado del Pedido.')
             ->danger()
             ->send();
 
-        // session()->flash('message', 'Item removido del carrito.');
+        } else {
+            session()->flash('message', 'Error al remover: Producto no estaba en el carrito.');
+        }
+    }
+
+    public function getCartQuantityProperty()
+    {
+        // Usamos array_column para obtener todas las cantidades, y luego sumamos
+        return array_sum(array_column($this->cart, 'quantity'));
     }
 }
