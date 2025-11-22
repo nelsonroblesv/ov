@@ -30,4 +30,28 @@ class FacturamaService
     {
         return $this->client->get('products');
     }
+
+    public function getInvoices()
+    {
+        $params = [
+            'type' => '',
+            'folioStart' => '',
+            'folioEnd' => '',
+            'rfc' => '',
+            'dateStart' => '',
+            'dateEnd' => '',
+            'status' => 'all',
+            'OrderNumber' => '',
+            'taxEntityName' => '',
+            'idBranch' => '',
+            'serie' => '',
+            'id' => '',
+            'invoiceType' => '',
+            'paymentMethod' => '',
+            'rfcIssuer' => '',
+            'page' => '0',
+        ];
+
+        return $this->client->get('Cfdi', $params);
+    }
 }

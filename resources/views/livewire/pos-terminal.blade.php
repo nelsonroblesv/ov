@@ -1,7 +1,6 @@
 <div
     class="flex flex-col md:flex-row w-full min-h-screen pos-terminal-container antialiased text-gray-800 dark:text-gray-100">
 
-
     <div class="w-full md:w-2/3 p-4 md:p-6 flex flex-col space-y-6 overflow-y-hidden">
         <!-- Encabezado -->
 
