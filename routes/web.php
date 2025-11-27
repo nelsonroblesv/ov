@@ -6,6 +6,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotaVentaController;
 use App\Http\Controllers\OrdenPDFController;
 use App\Http\Controllers\UbicacionUsuarioController;
+use App\Livewire\Cart;
 use App\Models\UbicacionUsuario;
 use App\Services\FacturamaService;
 use Carbon\Carbon;
