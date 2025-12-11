@@ -47,7 +47,7 @@ class ProductResource extends Resource
                             ->maxLength(255)
                             ->label('Nombre')
                             ->helperText('Ingresa el nombre del Producto')
-                            ->unique(ignoreRecord:true)
+                            ->unique(ignoreRecord: true)
                             //->disabledOn('edit')
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
@@ -78,8 +78,8 @@ class ProductResource extends Resource
                             ->label('Imagen del Producto')
                             ->imageEditor()
                             ->directory('product-images'),
-                        
-                            TextInput::make('sku')
+
+                        TextInput::make('sku')
                     ])->columns(2),
 
                 Section::make('Inventario')
@@ -108,8 +108,7 @@ class ProductResource extends Resource
                             ->numeric()
                             ->prefix('$')
                             ->disabled()
-                            ->dehydrated()
-                            ->hidden(),
+                            ->dehydrated(),
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
@@ -172,7 +171,7 @@ class ProductResource extends Resource
                 TextColumn::make('marca.name')->label('Marca')->searchable()->sortable(),
                 TextColumn::make('familia.name')->label('Familia')->searchable()->sortable(),
                 TextColumn::make('sku')->label('SKU')->searchable()->toggleable(isToggledHiddenByDefault: true),
-               // TextColumn::make('price_distribuidor')->label('Distribuidor')->sortable(),
+                // TextColumn::make('price_distribuidor')->label('Distribuidor')->sortable(),
                 TextColumn::make('price_salon')->label('Salon')->sortable(),
                 TextColumn::make('price_publico')->label('Publico')->sortable(),
                 IconColumn::make('visibility')->label('Visible')->boolean()
