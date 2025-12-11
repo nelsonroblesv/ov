@@ -96,19 +96,11 @@ class ProductResource extends Resource
                             ->live(onBlur: true)
                             ->afterStateUpdated(function ($state, callable $set) {
                                 $price_salon = $state * 1.7;
-                                $price_distribuidor = $state * 2.4;
+                                $price_distribuidor =  $price_salon * 1.7;
 
                                 $set('price_salon', round($price_salon, 2));
                                 $set('price_distribuidor', round($price_distribuidor, 2));
                             }),
-
-                        TextInput::make('price_distribuidor')
-                            ->label('Precio Distribuidor')
-                            ->required()
-                            ->numeric()
-                            ->prefix('$')
-                            ->disabled()
-                            ->dehydrated(),
 
                         TextInput::make('price_salon')
                             ->label('Precio Salon')
@@ -118,6 +110,13 @@ class ProductResource extends Resource
                             ->disabled()
                             ->dehydrated(),
 
+                        TextInput::make('price_distribuidor')
+                            ->label('Precio Distribuidor')
+                            ->required()
+                            ->numeric()
+                            ->prefix('$')
+                            ->disabled()
+                            ->dehydrated(),
                         /*TextInput::make('sku')
                             //->required()
                             ->label('SKU')
